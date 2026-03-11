@@ -1,0 +1,84 @@
+/* src/components/MenuBar.module.css */
+.menuBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--menu-bar-height);
+  background: var(--mac-white);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  z-index: 50;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+}
+
+.apple {
+  padding: 0 10px;
+  font-size: 14px;
+  cursor: default;
+  line-height: var(--menu-bar-height);
+}
+
+.menuItem {
+  position: relative;
+}
+
+.menuLabel {
+  padding: 0 8px;
+  height: var(--menu-bar-height);
+  background: transparent;
+  border: none;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+}
+
+.menuLabel:hover,
+.menuLabelActive {
+  background: var(--mac-black);
+  color: var(--mac-white);
+}
+
+.menuLabelInert {
+  padding: 0 8px;
+  height: var(--menu-bar-height);
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  cursor: default;
+}
+
+.dropdown {
+  position: absolute;
+  top: var(--menu-bar-height);
+  left: 0;
+  background: var(--mac-white);
+  border: var(--border);
+  box-shadow: var(--window-shadow);
+  list-style: none;
+  min-width: 160px;
+  z-index: 200;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 3px 16px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  text-align: left;
+  cursor: default;
+}
+
+.dropdownItem:hover {
+  background: var(--mac-black);
+  color: var(--mac-white);
+}
