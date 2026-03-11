@@ -1,0 +1,71 @@
+/* src/components/ArtifactModal.module.css */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.card {
+  background: var(--mac-white);
+  border: var(--border);
+  box-shadow: var(--window-shadow);
+  padding: 32px 36px;
+  width: 400px;
+  max-width: 90vw;
+  font-family: var(--font-geneva);
+}
+
+.eyebrow {
+  font-family: var(--font-chicago);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--mac-gray);
+  margin-bottom: 8px;
+}
+
+.year {
+  font-family: var(--font-chicago);
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--mac-black);
+  margin-bottom: 4px;
+}
+
+.artifactTitle {
+  font-family: var(--font-chicago);
+  font-size: 16px;
+  color: var(--mac-black);
+  border-top: var(--border);
+  border-bottom: var(--border);
+  padding: 8px 0;
+  margin-bottom: 16px;
+}
+
+.body {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--mac-black);
+  margin-bottom: 24px;
+}
+
+.continueBtn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: var(--mac-black);
+  color: var(--mac-white);
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  border: var(--border);
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.continueBtn:hover {
+  background: var(--mac-gray);
+}
