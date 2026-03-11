@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(npm install)",
-      "Bash(npm install -D vitest @vitest/ui jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event)"
+      "Bash(npm install -D vitest @vitest/ui jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event)",
+      "Bash(npm run test)",
+      "Bash(timeout 3 npm run dev)",
+      "Bash(npm run build)",
+      "Bash(test -f src/assets)",
+      "Bash(test -f src/App.css)",
+      "Bash(test -f src/index.css)",
+      "Bash(test -d .git)",
+      "Bash(npm test)"
     ]
   }
 }
