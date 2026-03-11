@@ -1,0 +1,36 @@
+/* src/styles/theme.css */
+:root {
+  --mac-white: #ffffff;
+  --mac-black: #000000;
+  --mac-gray: #888888;
+  --mac-light-gray: #dddddd;
+  --mac-mid-gray: #aaaaaa;
+  --mac-bg: #555555;
+  --mac-menu-bar: #ffffff;
+
+  --font-chicago: 'Chicago', 'Monaco', 'Courier New', monospace;
+  --font-geneva: 'Geneva', 'Helvetica Neue', 'Helvetica', sans-serif;
+
+  --border: 1px solid #000000;
+  --window-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
+
+  --menu-bar-height: 20px;
+  --tracker-panel-width: 160px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-geneva);
+  font-size: 12px;
+  overflow: hidden;
+  background: var(--mac-bg);
+  user-select: none;
+  -webkit-user-select: none;
+}
