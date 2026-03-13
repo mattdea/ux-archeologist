@@ -53,6 +53,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
   const dragInterval = useRef(null)
   const dragResult = useRef(null)   // set to 'trashed' in drop handler
   const draggingIcon = useRef(null) // which icon is being dragged
+  const trackMouseRef = useRef(null)
 
   const startDragOutline = (x, y) => {
     const outline = document.createElement('div')
@@ -82,8 +83,8 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     const trackMouse = (e) => {
       dragMousePos.current = { x: e.clientX, y: e.clientY }
     }
+    trackMouseRef.current = trackMouse
     document.addEventListener('pointermove', trackMouse)
-    dragOutline.current._trackMouse = trackMouse
   }
 
   const stopDragOutline = () => {
@@ -91,10 +92,11 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
       clearInterval(dragInterval.current)
       dragInterval.current = null
     }
+    if (trackMouseRef.current) {
+      document.removeEventListener('pointermove', trackMouseRef.current)
+      trackMouseRef.current = null
+    }
     if (dragOutline.current) {
-      if (dragOutline.current._trackMouse) {
-        document.removeEventListener('pointermove', dragOutline.current._trackMouse)
-      }
       document.body.removeChild(dragOutline.current)
       dragOutline.current = null
     }
@@ -129,8 +131,10 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     if (dragResult.current === 'trashed') return  // position handled by trash drop
     const rect = desktopRef.current?.getBoundingClientRect()
     if (!rect) return
-    const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
-    const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
+    const mouseX = dragMousePos.current?.x ?? e.clientX
+    const mouseY = dragMousePos.current?.y ?? e.clientY
+    const x = Math.max(4, Math.min(rect.width - 56, mouseX - rect.left - 24))
+    const y = Math.max(34, Math.min(rect.height - 70, mouseY - rect.top - 26))
     setIconPositions(prev => ({ ...prev, [iconName]: { x, y } }))
   }
 
@@ -145,13 +149,15 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
 
   const handleTrashDrop = (e) => {
     e.preventDefault()
-    stopDragOutline()
     setTrashHighlighted(false)
     const item = e.dataTransfer.getData('text/plain')
     if (item === 'notes') {
-      dragResult.current = 'trashed'
+      dragResult.current = 'trashed'  // set FIRST
+      stopDragOutline()
       setTrashContents(['notes'])
       completeObjective('trashFile')
+    } else {
+      stopDragOutline()
     }
   }
 
@@ -230,6 +236,11 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     el.addEventListener('touchmove', moveGhost, { passive: false })
     return () => el.removeEventListener('touchmove', moveGhost)
   }, [notesOnDesktop])
+
+  // Cleanup drag outline on unmount to prevent ghost divs or listener leaks
+  useEffect(() => {
+    return () => stopDragOutline()
+  }, [])
 
   const handleFolderDoubleClick = () => {
     openWindow('projects', { x: 80, y: 50 })
