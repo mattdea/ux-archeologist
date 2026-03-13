@@ -23,15 +23,12 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
   const notesOnDesktop = !trashContents.includes('notes')
 
   const openWindow = (type, defaultPos) => {
+    const z = nextZ
+    setNextZ(n => n + 1)
     setWindows(prev => {
-      const exists = prev.find(w => w.type === type)
-      if (exists) {
-        const z = nextZ
-        setNextZ(n => n + 1)
+      if (prev.find(w => w.type === type)) {
         return prev.map(w => w.type === type ? { ...w, z } : w)
       }
-      const z = nextZ
-      setNextZ(n => n + 1)
       return [...prev, { id: type, type, pos: defaultPos, z }]
     })
   }
@@ -252,6 +249,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
   const handleMenuOpen = () => {}
 
   const handleDesktopDrop = (e) => {
+    e.preventDefault()
     const item = e.dataTransfer.getData('text/plain')
     if (item === 'notes-restore') {
       setTrashContents([])
