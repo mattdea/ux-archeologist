@@ -1,0 +1,74 @@
+/* src/components/NotesWindowContent.module.css */
+.viewport {
+  display: flex;
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+}
+
+.content {
+  flex: 1;
+  padding: 6px 8px;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--mac-black);
+  will-change: transform;
+}
+
+.content p {
+  margin-bottom: 0;
+}
+
+.pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--mac-black);
+}
+
+.scrollbarTrack {
+  width: 16px;
+  border-left: var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.scrollArrow {
+  height: 16px;
+  width: 100%;
+  background: var(--mac-white);
+  border: none;
+  border-bottom: var(--border);
+  font-size: 9px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: var(--font-chicago);
+}
+
+.scrollArrow:last-child {
+  border-bottom: none;
+  border-top: var(--border);
+}
+
+.scrollThumbArea {
+  flex: 1;
+  background: var(--mac-white);
+  position: relative;
+  border-bottom: var(--border);
+}
+
+.scrollThumb {
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  right: 2px;
+  height: 24px;
+  background: var(--mac-black);
+}

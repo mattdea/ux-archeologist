@@ -84,4 +84,24 @@ describe('DesktopScene', () => {
     await user.dblClick(screen.getByText('Trash'))
     expect(screen.getByText(/0 items/)).toBeInTheDocument()
   })
+
+  it('trash window shows Notes when notes has been trashed', async () => {
+    const completeObjective = vi.fn()
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
+
+    // Drag notes to trash
+    const notesLabel = screen.getByText('Notes')
+    const notesEl = notesLabel.closest('[draggable="true"]') || notesLabel.closest('div')
+    const trashLabel = screen.getByText('Trash')
+    const trashEl = trashLabel.closest('div')
+    const dt = { setData: vi.fn(), getData: vi.fn(() => 'notes'), setDragImage: vi.fn() }
+    fireEvent.dragStart(notesEl, { dataTransfer: dt })
+    fireEvent.dragOver(trashEl, { preventDefault: vi.fn(), dataTransfer: dt })
+    fireEvent.drop(trashEl, { preventDefault: vi.fn(), dataTransfer: dt })
+
+    // Open trash
+    await user.dblClick(screen.getByText('Trash'))
+    expect(screen.getByText('1 item')).toBeInTheDocument()
+  })
 })

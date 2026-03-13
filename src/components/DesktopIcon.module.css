@@ -3,60 +3,73 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  width: 56px;
+  gap: 5px;
+  width: 100px;
   cursor: default;
 }
 
 .label {
   font-family: var(--font-chicago);
-  font-size: 10px;
-  color: var(--mac-white);
+  font-size: 13px;
+  color: var(--mac-black);
   text-align: center;
   line-height: 1.2;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
   white-space: nowrap;
+  background: var(--mac-white);
+  padding: 1px 5px;
+}
+
+/* ── Selected state ── */
+.icon.selected .label {
+  background: var(--mac-black);
+  color: var(--mac-white);
 }
 
 /* Folder icon */
 .folderWrap {
-  width: 40px;
+  width: 72px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .folderTab {
-  width: 16px;
-  height: 6px;
+  width: 28px;
+  height: 11px;
   background: var(--mac-white);
   border: var(--border);
   border-bottom: none;
-  margin-left: 2px;
+  margin-left: 3px;
 }
 
 .folderBody {
-  width: 40px;
-  height: 28px;
+  width: 72px;
+  height: 50px;
   background: var(--mac-white);
   border: var(--border);
+}
+
+.icon.selected .folderTab,
+.icon.selected .folderBody {
+  background: var(--mac-black);
+  border-color: var(--mac-white);
 }
 
 /* Notes icon */
 .notesWrap {
-  width: 36px;
-  height: 44px;
+  width: 64px;
+  height: 78px;
 }
 
 .notesPage {
-  width: 36px;
-  height: 44px;
+  width: 64px;
+  height: 78px;
   background: var(--mac-white);
   border: var(--border);
-  padding: 8px 4px 4px;
+  padding: 14px 7px 7px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
 .notesLine {
@@ -65,9 +78,18 @@
   width: 100%;
 }
 
+.icon.selected .notesPage {
+  background: var(--mac-black);
+  border-color: var(--mac-white);
+}
+
+.icon.selected .notesLine {
+  background: var(--mac-mid-gray);
+}
+
 /* Trash icon */
 .trashWrap {
-  width: 36px;
+  width: 66px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,26 +101,43 @@
 }
 
 .trashLid {
-  width: 32px;
-  height: 5px;
+  width: 58px;
+  height: 10px;
   background: var(--mac-white);
   border: var(--border);
   margin-bottom: 1px;
 }
 
 .trashBody {
-  width: 28px;
-  height: 36px;
+  width: 50px;
+  height: 64px;
   background: var(--mac-white);
   border: var(--border);
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  padding: 6px 3px;
+  padding: 10px 5px;
 }
 
 .trashLine {
   width: 2px;
   height: 100%;
   background: var(--mac-light-gray);
+}
+
+.icon.selected .trashLid,
+.icon.selected .trashBody {
+  background: var(--mac-black);
+  border-color: var(--mac-white);
+}
+
+.icon.selected .trashLine {
+  background: var(--mac-mid-gray);
+}
+
+.trashFull .trashBody {
+  background: var(--mac-black);
+}
+.trashFull .trashLine {
+  background: var(--mac-white);
 }
