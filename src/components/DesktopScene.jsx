@@ -41,6 +41,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     })
   }
 
+  const desktopRef = useRef(null)
   const trashRef = useRef(null)
   const notesRef = useRef(null)
   const touchDragging = useRef(false)
@@ -50,6 +51,8 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
   const dragOutline = useRef(null)
   const dragMousePos = useRef({ x: 0, y: 0 })
   const dragInterval = useRef(null)
+  const dragResult = useRef(null)   // set to 'trashed' in drop handler
+  const draggingIcon = useRef(null) // which icon is being dragged
 
   const startDragOutline = (x, y) => {
     const outline = document.createElement('div')
@@ -79,7 +82,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     const trackMouse = (e) => {
       dragMousePos.current = { x: e.clientX, y: e.clientY }
     }
-    document.addEventListener('dragover', trackMouse)
+    document.addEventListener('pointermove', trackMouse)
     dragOutline.current._trackMouse = trackMouse
   }
 
@@ -90,7 +93,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     }
     if (dragOutline.current) {
       if (dragOutline.current._trackMouse) {
-        document.removeEventListener('dragover', dragOutline.current._trackMouse)
+        document.removeEventListener('pointermove', dragOutline.current._trackMouse)
       }
       document.body.removeChild(dragOutline.current)
       dragOutline.current = null
@@ -108,23 +111,27 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     return () => el.removeEventListener('touchmove', handler)
   }, [notesOnDesktop])
 
-  // HTML5 DnD — mouse drag
-  const handleNotesDragStart = (e) => {
-    e.dataTransfer.setData('text/plain', 'notes')
-    // Hide default ghost — use invisible image
+  // HTML5 DnD — mouse drag (generic, works for all icons)
+  const handleIconDragStart = (iconName, e) => {
+    draggingIcon.current = iconName
+    dragResult.current = null
+    e.dataTransfer.setData('text/plain', iconName)
     const ghost = document.createElement('div')
-    ghost.style.width = '1px'
-    ghost.style.height = '1px'
-    ghost.style.position = 'fixed'
-    ghost.style.top = '-100px'
+    ghost.style.cssText = 'width:1px;height:1px;position:fixed;top:-100px'
     document.body.appendChild(ghost)
     e.dataTransfer.setDragImage(ghost, 0, 0)
     setTimeout(() => document.body.removeChild(ghost), 0)
     startDragOutline(e.clientX, e.clientY)
   }
 
-  const handleNotesDragEnd = () => {
+  const handleIconDragEnd = (iconName, e) => {
     stopDragOutline()
+    if (dragResult.current === 'trashed') return  // position handled by trash drop
+    const rect = desktopRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
+    const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
+    setIconPositions(prev => ({ ...prev, [iconName]: { x, y } }))
   }
 
   const handleTrashDragOver = (e) => {
@@ -142,6 +149,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     setTrashHighlighted(false)
     const item = e.dataTransfer.getData('text/plain')
     if (item === 'notes') {
+      dragResult.current = 'trashed'
       setTrashContents(['notes'])
       completeObjective('trashFile')
     }
@@ -244,8 +252,6 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     completeObjective('useMenu')
   }
 
-  const desktopRef = useRef(null)
-
   const handleMenuOpen = () => {}
 
   const handleDesktopDrop = (e) => {
@@ -285,13 +291,13 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
           ref={notesRef}
           label="Notes"
           icon="notes"
-          className={styles.iconNotes}
+          style={{ position: 'absolute', left: iconPositions.notes.x, top: iconPositions.notes.y }}
           draggable={true}
           isSelected={selectedIcon === 'notes'}
           onClick={() => setSelectedIcon('notes')}
           onDoubleClick={handleNotesDoubleClick}
-          onDragStart={handleNotesDragStart}
-          onDragEnd={handleNotesDragEnd}
+          onDragStart={(e) => handleIconDragStart('notes', e)}
+          onDragEnd={(e) => handleIconDragEnd('notes', e)}
           onTouchStart={handleNotesTouchStart}
           onTouchEnd={handleNotesTouchEnd}
         />
@@ -300,11 +306,13 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
       <DesktopIcon
         label="Projects"
         icon="folder"
-        className={styles.iconProjects}
+        style={{ position: 'absolute', left: iconPositions.projects.x, top: iconPositions.projects.y }}
         draggable={true}
         isSelected={selectedIcon === 'projects'}
         onClick={() => setSelectedIcon('projects')}
         onDoubleClick={handleFolderDoubleClick}
+        onDragStart={(e) => handleIconDragStart('projects', e)}
+        onDragEnd={(e) => handleIconDragEnd('projects', e)}
       />
 
       <DesktopIcon
@@ -312,7 +320,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
         label="Trash"
         icon="trash"
         isFull={trashContents.length > 0}
-        className={styles.iconTrash}
+        style={{ position: 'absolute', left: iconPositions.trash.x, top: iconPositions.trash.y }}
         isHighlighted={trashHighlighted}
         isSelected={selectedIcon === 'trash'}
         onClick={() => setSelectedIcon('trash')}

@@ -2,13 +2,7 @@
 .desktop {
   position: absolute;
   inset: 0;
-  background-color: var(--mac-bg);
-  background-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px
-  );
-  background-size: 16px 16px;
+  background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 2px 2px;
   padding-top: var(--menu-bar-height);
 }
 
@@ -16,21 +10,4 @@
   pointer-events: none;
 }
 
-/* Icon positions */
-.iconProjects {
-  position: absolute;
-  top: calc(var(--menu-bar-height) + 20px);
-  right: 24px;
-}
 
-.iconNotes {
-  position: absolute;
-  top: calc(var(--menu-bar-height) + 120px);
-  right: 24px;
-}
-
-.iconTrash {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-}
