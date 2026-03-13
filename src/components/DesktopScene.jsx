@@ -263,7 +263,17 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     completeObjective('useMenu')
   }
 
-  const handleMenuOpen = () => {}
+  const handleMenuOpen = () => {
+    if (!selectedIcon) return
+    if (selectedIcon === 'notes') {
+      openWindow('notes', { x: 60, y: 55 })
+      completeObjective('openFolder')
+    } else if (selectedIcon === 'projects') {
+      openWindow('projects', { x: 80, y: 50 })
+    } else if (selectedIcon === 'trash') {
+      openWindow('trash', { x: 90, y: 60 })
+    }
+  }
 
   const handleDesktopDrop = (e) => {
     e.preventDefault()
@@ -291,7 +301,7 @@ export default function DesktopScene({ objectives, completeObjective, active }) 
     >
       <MenuBar
         onMenuItemClick={handleMenuItemClick}
-        canOpen={windows.length === 0}
+        canOpen={selectedIcon !== null && !windows.some(w => w.type === selectedIcon)}
         canClose={windows.length > 0}
         onOpen={handleMenuOpen}
         onClose={closeTopWindow}

@@ -56,4 +56,31 @@ describe('MenuBar', () => {
     await user.click(screen.getByTestId('outside'))
     expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
   })
+
+  it('File > Open is disabled when canOpen is false', async () => {
+    const user = userEvent.setup()
+    const onOpen = vi.fn()
+    render(<MenuBar onMenuItemClick={() => {}} canOpen={false} onOpen={onOpen} canClose={false} onClose={() => {}} />)
+    await user.click(screen.getByText('File'))
+    const openBtn = screen.getByText('Open').closest('button')
+    expect(openBtn).toHaveClass('dropdownItemDisabled')
+  })
+
+  it('File > Open calls onOpen when canOpen is true', async () => {
+    const user = userEvent.setup()
+    const onOpen = vi.fn()
+    render(<MenuBar onMenuItemClick={() => {}} canOpen={true} onOpen={onOpen} canClose={false} onClose={() => {}} />)
+    await user.click(screen.getByText('File'))
+    await user.click(screen.getByText('Open'))
+    expect(onOpen).toHaveBeenCalledTimes(1)
+  })
+
+  it('File > Close calls onClose when canClose is true', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    render(<MenuBar onMenuItemClick={() => {}} canOpen={false} onOpen={() => {}} canClose={true} onClose={onClose} />)
+    await user.click(screen.getByText('File'))
+    await user.click(screen.getByText('Close'))
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
 })
