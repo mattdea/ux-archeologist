@@ -12,14 +12,15 @@
   gap: 0;
   z-index: 50;
   font-family: var(--font-chicago);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .apple {
   padding: 0 10px;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
   cursor: default;
-  line-height: var(--menu-bar-height);
+  height: var(--menu-bar-height);
 }
 
 .menuItem {
@@ -32,7 +33,7 @@
   background: transparent;
   border: none;
   font-family: var(--font-chicago);
-  font-size: 12px;
+  font-size: 14px;
   cursor: default;
   display: flex;
   align-items: center;
@@ -44,16 +45,6 @@
   color: var(--mac-white);
 }
 
-.menuLabelInert {
-  padding: 0 8px;
-  height: var(--menu-bar-height);
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-chicago);
-  font-size: 12px;
-  cursor: default;
-}
-
 .dropdown {
   position: absolute;
   top: var(--menu-bar-height);
@@ -62,23 +53,52 @@
   border: var(--border);
   box-shadow: var(--window-shadow);
   list-style: none;
-  min-width: 160px;
+  min-width: 200px;
   z-index: 200;
+  padding: 2px 0;
 }
 
 .dropdownItem {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  padding: 3px 16px;
+  padding: 2px 8px;
   background: transparent;
   border: none;
   font-family: var(--font-chicago);
-  font-size: 12px;
+  font-size: 14px;
   text-align: left;
   cursor: default;
+  white-space: nowrap;
 }
 
-.dropdownItem:hover {
+.dropdownItem:not(.dropdownItemDisabled):hover {
   background: var(--mac-black);
   color: var(--mac-white);
+}
+
+.dropdownItemDisabled {
+  color: var(--mac-gray);
+}
+
+.dropdownSeparator {
+  height: 1px;
+  background: var(--mac-black);
+  margin: 2px 0;
+}
+
+.checkCol {
+  display: inline-block;
+  min-width: 14px;
+  font-size: 11px;
+}
+
+.itemLabel {
+  flex: 1;
+}
+
+.shortcut {
+  margin-left: 24px;
+  font-family: var(--font-chicago);
+  font-size: 14px;
 }

@@ -90,7 +90,30 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
 
   return (
     <div className={styles.menuBar} ref={menuBarRef}>
-      <span className={styles.apple}>⌘</span>
+      <span className={styles.apple} aria-hidden="true">
+        <svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Pixel-art black apple silhouette — System 1 style */}
+          <rect x="5" y="0" width="3" height="2" fill="#000"/>
+          <rect x="4" y="1" width="2" height="1" fill="#000"/>
+          <rect x="2" y="2" width="9" height="1" fill="#000"/>
+          <rect x="1" y="3" width="11" height="1" fill="#000"/>
+          <rect x="0" y="4" width="13" height="1" fill="#000"/>
+          <rect x="0" y="5" width="6" height="1" fill="#000"/>
+          <rect x="7" y="5" width="6" height="1" fill="#000"/>
+          <rect x="0" y="6" width="6" height="1" fill="#000"/>
+          <rect x="7" y="6" width="6" height="1" fill="#000"/>
+          <rect x="0" y="7" width="13" height="1" fill="#000"/>
+          <rect x="0" y="8" width="13" height="1" fill="#000"/>
+          <rect x="0" y="9" width="13" height="1" fill="#000"/>
+          <rect x="1" y="10" width="11" height="1" fill="#000"/>
+          <rect x="1" y="11" width="5" height="1" fill="#000"/>
+          <rect x="7" y="11" width="5" height="1" fill="#000"/>
+          <rect x="2" y="12" width="4" height="1" fill="#000"/>
+          <rect x="7" y="12" width="4" height="1" fill="#000"/>
+          <rect x="3" y="13" width="3" height="1" fill="#000"/>
+          <rect x="7" y="13" width="3" height="1" fill="#000"/>
+        </svg>
+      </span>
       {MENUS.map(menu => (
         <div key={menu.id} className={styles.menuItem}>
           <button
