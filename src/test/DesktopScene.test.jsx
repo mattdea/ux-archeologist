@@ -15,14 +15,14 @@ describe('DesktopScene', () => {
     expect(screen.getByText('File')).toBeInTheDocument()
   })
 
-  it('opens Projects window on double-click and calls completeObjective openFolder', async () => {
+  it('opens Notes window on double-click and calls completeObjective openFolder', async () => {
     const completeObjective = vi.fn()
     const user = userEvent.setup()
     render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
-    await user.dblClick(screen.getByText('Projects'))
+    await user.dblClick(screen.getByText('Notes'))
     expect(completeObjective).toHaveBeenCalledWith('openFolder')
-    // Window title visible (icon label + window title bar both say "Projects")
-    expect(screen.getAllByText('Projects').length).toBeGreaterThanOrEqual(1)
+    // Notes label still visible (icon label remains)
+    expect(screen.getAllByText('Notes').length).toBeGreaterThanOrEqual(1)
   })
 
   it('does not show window initially', () => {
@@ -69,5 +69,19 @@ describe('DesktopScene', () => {
     fireEvent.drop(trashEl, { preventDefault: vi.fn(), dataTransfer: dataTransferMock })
 
     expect(completeObjective).toHaveBeenCalledWith('trashFile')
+  })
+
+  it('double-clicking Notes icon opens a notes window', async () => {
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
+    await user.dblClick(screen.getByText('Notes'))
+    expect(screen.getByText(/1984/)).toBeInTheDocument()
+  })
+
+  it('double-clicking Trash opens a trash window', async () => {
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
+    await user.dblClick(screen.getByText('Trash'))
+    expect(screen.getByText(/0 items/)).toBeInTheDocument()
   })
 })
