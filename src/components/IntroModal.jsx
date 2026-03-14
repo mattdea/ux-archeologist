@@ -2,8 +2,8 @@
 import styles from './IntroModal.module.css'
 
 const TASKS = [
-  'Open the Projects folder',
-  'Drag Notes to the Trash',
+  'Open the Notes file',
+  'Drag Projects to the Trash',
   'Use the File menu',
 ]
 

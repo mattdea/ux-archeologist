@@ -1,6 +1,6 @@
 /* src/components/ArtifactModal.module.css */
 .overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   display: flex;
@@ -20,7 +20,7 @@
 }
 
 .eyebrow {
-  font-family: var(--font-chicago);
+  font-family: var(--font-geneva);
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -29,7 +29,7 @@
 }
 
 .year {
-  font-family: var(--font-chicago);
+  font-family: var(--font-geneva);
   font-size: 32px;
   font-weight: bold;
   color: var(--mac-black);
@@ -37,7 +37,7 @@
 }
 
 .artifactTitle {
-  font-family: var(--font-chicago);
+  font-family: var(--font-geneva);
   font-size: 16px;
   color: var(--mac-black);
   border-top: var(--border);
@@ -59,7 +59,7 @@
   padding: 8px;
   background: var(--mac-black);
   color: var(--mac-white);
-  font-family: var(--font-chicago);
+  font-family: var(--font-geneva);
   font-size: 12px;
   border: var(--border);
   cursor: pointer;

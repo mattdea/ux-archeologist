@@ -1,6 +1,6 @@
 /* src/components/IntroModal.module.css */
 .overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
@@ -21,7 +21,7 @@
 }
 
 .year {
-  font-family: var(--font-chicago);
+  font-family: var(--font-geneva);
   font-size: 11px;
   color: var(--mac-gray);
   letter-spacing: 2px;
@@ -30,8 +30,8 @@
 }
 
 .title {
-  font-family: var(--font-chicago);
-  font-size: 18px;
+  font-family: var(--font-geneva);
+  font-size: 22px;
   font-weight: bold;
   color: var(--mac-black);
   margin-bottom: 14px;
@@ -51,7 +51,7 @@
 }
 
 .taskHeader {
-  font-family: var(--font-chicago);
+  font-family: var(--font-geneva);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -83,8 +83,8 @@
   padding: 8px;
   background: var(--mac-black);
   color: var(--mac-white);
-  font-family: var(--font-chicago);
-  font-size: 12px;
+  font-family: var(--font-geneva);
+  font-size: 13px;
   border: var(--border);
   cursor: pointer;
   letter-spacing: 1px;

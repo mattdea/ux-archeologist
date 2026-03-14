@@ -1,8 +1,10 @@
 // src/App.jsx
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import styles from './App.module.css'
+import MonitorBezel from './components/MonitorBezel'
 import IntroModal from './components/IntroModal'
 import DesktopScene from './components/DesktopScene'
+import BootSequence from './components/BootSequence'
 import ArtifactModal from './components/ArtifactModal'
 import CompletionScreen from './components/CompletionScreen'
 
@@ -14,18 +16,6 @@ export default function App() {
     useMenu: false,
   })
 
-  useEffect(() => {
-    if (
-      screen === 'playing' &&
-      objectives.openFolder &&
-      objectives.trashFile &&
-      objectives.useMenu
-    ) {
-      const timer = setTimeout(() => setScreen('artifact'), 600)
-      return () => clearTimeout(timer)
-    }
-  }, [objectives, screen])
-
   const completeObjective = (key) => {
     setObjectives(prev => ({ ...prev, [key]: true }))
   }
@@ -35,29 +25,36 @@ export default function App() {
     setScreen('intro')
   }
 
-  const showDesktop = screen === 'playing' || screen === 'artifact' || screen === 'intro'
+  const showDesktop = screen === 'playing' || screen === 'artifact' || screen === 'intro' || screen === 'booting'
 
   return (
-    <div className={styles.app}>
-      {showDesktop && (
-        <DesktopScene
-          objectives={objectives}
-          completeObjective={completeObjective}
-          active={screen === 'playing'}
-        />
-      )}
+    <MonitorBezel booting={screen === 'booting'}>
+      <div className={styles.app}>
+        {showDesktop && (
+          <DesktopScene
+            objectives={objectives}
+            completeObjective={completeObjective}
+            active={screen === 'playing'}
+            onContinue={() => setScreen('artifact')}
+          />
+        )}
 
-      {screen === 'intro' && (
-        <IntroModal onBegin={() => setScreen('playing')} />
-      )}
+        {screen === 'intro' && (
+          <IntroModal onBegin={() => setScreen('booting')} />
+        )}
 
-      {screen === 'artifact' && (
-        <ArtifactModal onContinue={() => setScreen('complete')} />
-      )}
+        {screen === 'booting' && (
+          <BootSequence onComplete={() => setScreen('playing')} />
+        )}
 
-      {screen === 'complete' && (
-        <CompletionScreen onReset={handleReset} />
-      )}
-    </div>
+        {screen === 'artifact' && (
+          <ArtifactModal onContinue={() => setScreen('complete')} />
+        )}
+
+        {screen === 'complete' && (
+          <CompletionScreen onReset={handleReset} />
+        )}
+      </div>
+    </MonitorBezel>
   )
 }

@@ -1,0 +1,122 @@
+/* src/components/BootSequence.module.css */
+
+/* Full-screen overlay sitting above DesktopScene */
+.boot {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 50;
+  overflow: hidden;
+}
+
+/* ─── Desktop background ─────────────────────────────────────────── */
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 2px 2px;
+  /* Start fully clipped — nothing visible */
+  clip-path: inset(0 0 100% 0);
+}
+
+/* Reveal top-to-bottom in ~20 discrete steps (CRT scan-line feel) */
+.bgReveal {
+  animation: scanReveal 700ms steps(20, end) forwards;
+}
+
+@keyframes scanReveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0% 0); }
+}
+
+/* ─── Happy Mac icon ─────────────────────────────────────────────── */
+
+.happyCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.happyMacSvg {
+  display: block;
+  /* Render at 2× the 25×33 viewBox */
+  width:  50px;
+  height: 66px;
+  image-rendering: pixelated;
+}
+
+/* ─── Welcome to Macintosh dialog ────────────────────────────────── */
+
+.welcomeCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcomeWindow {
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: 0 28px;
+  min-width: 280px;
+}
+
+.welcomeText {
+  font-family: var(--font-chicago);
+  font-size: 14px;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* ─── Fake menu bar ──────────────────────────────────────────────── */
+
+.fakeMenuBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--menu-bar-height);
+  background: #fff;
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.menuApple {
+  font-family: var(--font-chicago);
+  font-size: 14px;
+  padding: 0 6px;
+}
+
+.menuItem {
+  font-family: var(--font-chicago);
+  font-size: 13px;
+  padding: 0 8px;
+}
+
+/* ─── Flash-in animation ─────────────────────────────────────────── */
+
+/* Digital blink: on → off → on (no smooth interpolation) */
+@keyframes flashIn {
+  0%    { opacity: 0; }
+  5%    { opacity: 1; }
+  40%   { opacity: 1; }
+  41%   { opacity: 0; }
+  70%   { opacity: 0; }
+  71%   { opacity: 1; }
+  100%  { opacity: 1; }
+}
+
+.flashIn {
+  animation: flashIn 380ms linear forwards;
+}

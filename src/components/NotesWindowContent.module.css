@@ -9,7 +9,7 @@
 .content {
   flex: 1;
   padding: 6px 8px;
-  font-family: var(--font-chicago);
+  font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.5;
   color: var(--mac-black);
@@ -23,7 +23,7 @@
 .pre {
   margin: 0;
   white-space: pre-wrap;
-  font-family: var(--font-chicago);
+  font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.5;
   color: var(--mac-black);
@@ -66,9 +66,10 @@
 
 .scrollThumb {
   position: absolute;
-  top: 4px;
+  top: 0;
   left: 2px;
   right: 2px;
   height: 24px;
   background: var(--mac-black);
+  cursor: default;
 }

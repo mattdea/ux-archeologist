@@ -2,12 +2,13 @@
 import styles from './ObjectiveTracker.module.css'
 
 const OBJECTIVE_LABELS = [
-  { key: 'openFolder', label: 'Open Projects folder' },
-  { key: 'trashFile', label: 'Drag Notes to Trash' },
+  { key: 'openFolder', label: 'Open the Notes file' },
+  { key: 'trashFile', label: 'Drag Projects to Trash' },
   { key: 'useMenu', label: 'Use the File menu' },
 ]
 
-export default function ObjectiveTracker({ objectives }) {
+export default function ObjectiveTracker({ objectives, onContinue }) {
+  const allComplete = Object.values(objectives).every(Boolean)
   return (
     <div className={styles.panel}>
       <div className={styles.header}>Objectives</div>
@@ -15,7 +16,7 @@ export default function ObjectiveTracker({ objectives }) {
         {OBJECTIVE_LABELS.map(({ key, label }) => (
           <li key={key} className={styles.item}>
             <span className={`${styles.indicator} ${objectives[key] ? styles.complete : ''}`}>
-              {objectives[key] ? '✓' : '○'}
+              {objectives[key] ? '☑' : '☐'}
             </span>
             <span className={`${styles.label} ${objectives[key] ? styles.labelComplete : ''}`}>
               {label}
@@ -23,6 +24,9 @@ export default function ObjectiveTracker({ objectives }) {
           </li>
         ))}
       </ul>
+      <button className={styles.continueBtn} disabled={!allComplete} onClick={onContinue}>
+        Continue
+      </button>
     </div>
   )
 }

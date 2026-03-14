@@ -24,12 +24,39 @@ The Mac's success proved that good design was a competitive advantage. Companies
 
 This machine ran on a 7.8336 MHz Motorola 68000 processor with 128KB of RAM and a 3.5-inch floppy disk. It cost $2,495 — roughly $7,500 in today's dollars. Despite its limitations, it changed everything.`
 
+const THUMB_HEIGHT = 24
+const ARROW_STEP = 36
+
 export default function NotesWindowContent() {
   const viewportRef = useRef(null)
   const contentRef = useRef(null)
+  const thumbRef = useRef(null)
+  const thumbAreaRef = useRef(null)
   const scrollPos = useRef(0)
   const pending = useRef(0)
   const intervalRef = useRef(null)
+
+  const getMaxScroll = () => {
+    const content = contentRef.current
+    const viewport = viewportRef.current
+    if (!content || !viewport) return 0
+    return Math.max(0, content.scrollHeight - viewport.clientHeight)
+  }
+
+  const applyScroll = (newPos) => {
+    const maxScroll = getMaxScroll()
+    scrollPos.current = Math.max(0, Math.min(maxScroll, newPos))
+    if (contentRef.current) {
+      contentRef.current.style.transform = `translateY(${-scrollPos.current}px)`
+    }
+    // Update thumb position
+    const thumbArea = thumbAreaRef.current
+    const thumb = thumbRef.current
+    if (thumbArea && thumb && maxScroll > 0) {
+      const trackH = thumbArea.clientHeight - THUMB_HEIGHT
+      thumb.style.top = `${(scrollPos.current / maxScroll) * trackH}px`
+    }
+  }
 
   // Choppy scroll: accumulate wheel delta, apply in 120ms chunks
   useEffect(() => {
@@ -50,12 +77,7 @@ export default function NotesWindowContent() {
           }
           const step = Math.sign(pending.current) * Math.min(Math.abs(pending.current), 36)
           pending.current -= step
-          const content = contentRef.current
-          const viewport = viewportRef.current
-          if (!content || !viewport) return
-          const maxScroll = content.scrollHeight - viewport.clientHeight
-          scrollPos.current = Math.max(0, Math.min(maxScroll, scrollPos.current + step))
-          content.style.transform = `translateY(${-scrollPos.current}px)`
+          applyScroll(scrollPos.current + step)
         }, 120)
       }
     }
@@ -68,17 +90,67 @@ export default function NotesWindowContent() {
     }
   }, [])
 
+  // Arrow button handlers
+  const handleArrowUp = () => applyScroll(scrollPos.current - ARROW_STEP)
+  const handleArrowDown = () => applyScroll(scrollPos.current + ARROW_STEP)
+
+  // Thumb drag
+  const thumbDragStart = useRef(null)
+
+  const handleThumbMouseDown = (e) => {
+    e.preventDefault()
+    const startY = e.clientY
+    const startScroll = scrollPos.current
+
+    const handleMove = (ev) => {
+      const thumbArea = thumbAreaRef.current
+      if (!thumbArea) return
+      const trackH = thumbArea.clientHeight - THUMB_HEIGHT
+      if (trackH <= 0) return
+      const maxScroll = getMaxScroll()
+      const deltaY = ev.clientY - startY
+      applyScroll(startScroll + (deltaY / trackH) * maxScroll)
+    }
+
+    const handleUp = () => {
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('mouseup', handleUp)
+    }
+
+    document.addEventListener('mousemove', handleMove)
+    document.addEventListener('mouseup', handleUp)
+    thumbDragStart.current = { startY, startScroll }
+  }
+
+  // Click on thumb track (not thumb) — jump scroll
+  const handleTrackClick = (e) => {
+    if (e.target !== thumbAreaRef.current) return
+    const thumbArea = thumbAreaRef.current
+    if (!thumbArea) return
+    const rect = thumbArea.getBoundingClientRect()
+    const clickRatio = (e.clientY - rect.top) / rect.height
+    applyScroll(clickRatio * getMaxScroll())
+  }
+
   return (
     <div ref={viewportRef} className={styles.viewport}>
       <div ref={contentRef} className={styles.content}>
         <pre className={styles.pre}>{NOTES_TEXT}</pre>
       </div>
       <div className={styles.scrollbarTrack}>
-        <button className={styles.scrollArrow}>▲</button>
-        <div className={styles.scrollThumbArea}>
-          <div className={styles.scrollThumb} />
+        <button className={styles.scrollArrow} onMouseDown={handleArrowUp}>▲</button>
+        <div
+          ref={thumbAreaRef}
+          className={styles.scrollThumbArea}
+          onMouseDown={handleTrackClick}
+        >
+          <div
+            ref={thumbRef}
+            className={styles.scrollThumb}
+            onMouseDown={handleThumbMouseDown}
+          />
         </div>
-        <button className={styles.scrollArrow}>▼</button>
+        <button className={styles.scrollArrow} onMouseDown={handleArrowDown}>▼</button>
       </div>
     </div>
   )

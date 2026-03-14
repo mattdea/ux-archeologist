@@ -75,7 +75,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-chicago);
+  font-family: var(--font-mono);
   font-size: 13px;
 }
 

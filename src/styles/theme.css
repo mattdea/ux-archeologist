@@ -1,4 +1,11 @@
 /* src/styles/theme.css */
+@font-face {
+  font-family: 'Chicago';
+  src: url('../../fonts/chicago-12-1.otf.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --mac-white: #ffffff;
   --mac-black: #000000;
@@ -9,13 +16,14 @@
   --mac-menu-bar: #ffffff;
 
   --font-chicago: 'Chicago', 'Monaco', 'Courier New', monospace;
+  --font-mono: 'Monaco', 'Courier New', monospace;
   --font-geneva: 'Geneva', 'Helvetica Neue', 'Helvetica', sans-serif;
 
   --border: 1px solid #000000;
   --window-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
 
-  --menu-bar-height: 20px;
-  --tracker-panel-width: 160px;
+  --menu-bar-height: 30px;
+  --tracker-panel-width: 190px;
 }
 
 *,
