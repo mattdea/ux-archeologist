@@ -1,7 +1,7 @@
 // src/pages/Timeline.jsx
 import { useNavigate } from 'react-router-dom'
 import styles from './Timeline.module.css'
-import { getCurrentLevel, isLevelComplete } from '../state/state'
+import { getCurrentLevel, isLevelComplete, resetAll } from '../state/state'
 
 const ENTRIES = [
   { level: 1, year: '1984', title: 'The Desktop Arrives',  artifact: 'Direct Manipulation',            path: '/level/1' },
@@ -30,7 +30,7 @@ export default function Timeline() {
               active   ? styles.entryActive   : '',
               locked   ? styles.entryLocked   : '',
             ].join(' ')}
-            onClick={active ? () => navigate(entry.path) : undefined}
+            onClick={(active || complete) ? () => navigate(entry.path) : undefined}
           >
             <span
               className={[
@@ -54,6 +54,14 @@ export default function Timeline() {
           </div>
         )
       })}
+
+      {/* ── Dev helper ─────────────────────────────────────────────── */}
+      <button
+        className={styles.resetBtn}
+        onClick={() => { resetAll(); navigate('/') }}
+      >
+        Reset progress
+      </button>
     </div>
   )
 }

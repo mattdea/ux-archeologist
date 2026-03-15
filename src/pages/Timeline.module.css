@@ -40,6 +40,10 @@
   cursor: pointer;
 }
 
+.entryComplete {
+  cursor: pointer;
+}
+
 /* ── Dot ──────────────────────────────────────────────────────────── */
 .dot {
   display: block;
@@ -122,6 +126,14 @@
   color: #ccc;
 }
 
+.entryComplete:hover .title {
+  color: #999;
+}
+
+.entryComplete:hover .year {
+  color: #888;
+}
+
 /* ── Arrow (active only) ──────────────────────────────────────────── */
 .arrow {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -135,4 +147,23 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 11px;
   color: #555;
+}
+
+/* ── Dev helper: Reset progress ───────────────────────────────────── */
+.resetBtn {
+  display: block;
+  margin-top: 48px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 11px;
+  color: #333;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+}
+
+.resetBtn:hover {
+  color: #666;
+  text-decoration: underline;
 }

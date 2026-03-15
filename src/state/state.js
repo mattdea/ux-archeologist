@@ -41,3 +41,8 @@ export function getCurrentLevel() {
   }
   return 5
 }
+
+/** Wipe all progress. Useful for development / testing. */
+export function resetAll() {
+  try { localStorage.removeItem(KEY) } catch { /* quota/private mode */ }
+}
