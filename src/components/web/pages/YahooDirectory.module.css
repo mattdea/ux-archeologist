@@ -58,7 +58,7 @@
 
 .bannerImg {
   display: block;
-  max-width: 300px;
+  max-width: 200px;
   width: 100%;
   height: auto;
   flex-shrink: 0;
