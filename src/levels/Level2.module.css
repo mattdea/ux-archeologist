@@ -1,6 +1,31 @@
 /* src/levels/Level2.module.css */
 
 /*
+ * Level layout — flex column filling the full content area.
+ * Artifact zone stacks above the tracker with no overlap.
+ */
+.levelLayout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/*
+ * Artifact zone — takes remaining space above the tracker,
+ * centers the scaled browser chrome.
+ */
+.artifactZone {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+/*
  * Outer wrapper — explicit width/height set via inline style to the
  * scaled browser footprint (BROWSER_W * scale × BROWSER_H * scale).
  * overflow: visible so BrowserChrome's drop-shadow renders fully.
@@ -22,14 +47,12 @@
 }
 
 /*
- * ObjectiveTracker anchor — fixed to museum viewport, bottom-left.
- * z-index 50: above browser, below modal overlays (z-index 100).
- * Entrance animation matches the HUD bottom-left stagger (200ms delay).
+ * ObjectiveTracker anchor — in document flow at bottom of levelLayout.
+ * Entrance animation matches the HUD bottom stagger (200ms delay).
  */
 .trackerWrap {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  flex-shrink: 0;
+  align-self: flex-start;
   z-index: 50;
   animation: trackerSlideUp 400ms ease-out 200ms both;
 }

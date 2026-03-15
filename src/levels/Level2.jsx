@@ -65,7 +65,7 @@ export default function Level2() {
   const [hoverUrl, setHoverUrl]         = useState(null)
 
   // ── Responsive scaling ──────────────────────────────────────────
-  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 80 })
+  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 80, marginBottom: 200 })
   const notifyArtifactReady = useArtifactReady()
 
   // Notify SharedLayout when artifact is ready for interaction.
@@ -209,36 +209,43 @@ export default function Level2() {
         />
       )}
 
-      {/* ── Browser (always visible — the artifact) ─────────────── */}
-      <div
-        className={styles.wrap}
-        style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
-      >
-        <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-          <BrowserChrome
-            currentUrl={displayUrl}
-            pageTitle={displayTitle}
-            canGoBack={canGoBack}
-            canGoForward={canGoForward}
-            onBack={goBack}
-            onForward={goForward}
-            statusText={statusText}
-          >
-            {renderPage()}
-          </BrowserChrome>
-        </div>
-      </div>
+      {/* ── Level layout: artifact above tracker, no overlap ─────── */}
+      <div className={styles.levelLayout}>
 
-      {/* ── ObjectiveTracker: fixed museum space, bottom-left ───── */}
-      {screen === 'playing' && (
-        <div className={styles.trackerWrap}>
-          <ObjectiveTracker
-            objectives={OBJECTIVES}
-            completedIndices={completedIndices}
-            onContinue={() => { completeLevel(2); setScreen('discovery') }}
-          />
+        {/* Artifact zone — centers the scaled browser chrome */}
+        <div className={styles.artifactZone}>
+          <div
+            className={styles.wrap}
+            style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
+          >
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+              <BrowserChrome
+                currentUrl={displayUrl}
+                pageTitle={displayTitle}
+                canGoBack={canGoBack}
+                canGoForward={canGoForward}
+                onBack={goBack}
+                onForward={goForward}
+                statusText={statusText}
+              >
+                {renderPage()}
+              </BrowserChrome>
+            </div>
+          </div>
         </div>
-      )}
+
+        {/* ObjectiveTracker: in flow below artifact */}
+        {screen === 'playing' && (
+          <div className={styles.trackerWrap}>
+            <ObjectiveTracker
+              objectives={OBJECTIVES}
+              completedIndices={completedIndices}
+              onContinue={() => { completeLevel(2); setScreen('discovery') }}
+            />
+          </div>
+        )}
+
+      </div>
     </>
   )
 }

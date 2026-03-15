@@ -27,7 +27,7 @@ const BEZEL_H = 547
 export default function Level1() {
   const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80 })
+  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80, marginBottom: 200 })
   const notifyArtifactReady = useArtifactReady()
 
   // Notify SharedLayout when the artifact is ready for interaction.
@@ -71,40 +71,45 @@ export default function Level1() {
         />
       )}
 
-      {/* ── Monitor ───────────────────────────────────────────────── */}
-      {/* Outer wrapper: occupies the scaled footprint in the layout  */}
-      {/* Inner scaler: native-size bezel, shrunk via CSS transform   */}
-      <div
-        className={styles.wrap}
-        style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
-      >
-        <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-          <MonitorBezel booting={screen === 'booting'}>
-            <div className={styles.inner}>
-              {showDesktop && (
-                <DesktopScene
-                  completeObjective={completeObjective}
-                  active={screen === 'playing'}
-                />
-              )}
-              {screen === 'booting' && (
-                <BootSequence onComplete={() => setScreen('playing')} />
-              )}
-            </div>
-          </MonitorBezel>
-        </div>
-      </div>
+      {/* ── Level layout: artifact above tracker, no overlap ─────── */}
+      <div className={styles.levelLayout}>
 
-      {/* ── ObjectiveTracker: fixed in museum space, bottom-left ───── */}
-      {screen === 'playing' && (
-        <div className={styles.trackerWrap}>
-          <ObjectiveTracker
-            objectives={OBJECTIVES}
-            completedIndices={completedIndices}
-            onContinue={() => { completeLevel(1); setScreen('discovery') }}
-          />
+        {/* Artifact zone — centers the scaled bezel */}
+        <div className={styles.artifactZone}>
+          <div
+            className={styles.wrap}
+            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
+          >
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+              <MonitorBezel booting={screen === 'booting'}>
+                <div className={styles.inner}>
+                  {showDesktop && (
+                    <DesktopScene
+                      completeObjective={completeObjective}
+                      active={screen === 'playing'}
+                    />
+                  )}
+                  {screen === 'booting' && (
+                    <BootSequence onComplete={() => setScreen('playing')} />
+                  )}
+                </div>
+              </MonitorBezel>
+            </div>
+          </div>
         </div>
-      )}
+
+        {/* ObjectiveTracker: in flow below artifact */}
+        {screen === 'playing' && (
+          <div className={styles.trackerWrap}>
+            <ObjectiveTracker
+              objectives={OBJECTIVES}
+              completedIndices={completedIndices}
+              onContinue={() => { completeLevel(1); setScreen('discovery') }}
+            />
+          </div>
+        )}
+
+      </div>
     </>
   )
 }
