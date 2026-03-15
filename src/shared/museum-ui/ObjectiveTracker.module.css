@@ -1,7 +1,7 @@
 /* src/shared/museum-ui/ObjectiveTracker.module.css */
 
 .tracker {
-  background: #111;
+  background: rgba(17, 17, 17, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 0;
