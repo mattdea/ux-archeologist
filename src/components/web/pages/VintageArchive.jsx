@@ -37,12 +37,12 @@ const MACHINES = [
 ]
 
 const READING = [
-  { label: 'Computer History Museum',    target: false },
-  { label: 'A Brief History of the Web', target: true  },
-  { label: 'The GUI Gallery',            target: false },
+  { label: 'Computer History Museum',    target: false, url: null },
+  { label: 'A Brief History of the Web', target: true,  url: 'http://www.w3.org/History.html' },
+  { label: 'The GUI Gallery',            target: false, url: null },
 ]
 
-export default function VintageArchive() {
+export default function VintageArchive({ completeObjective = () => {}, onLinkHover = () => {} }) {
   return (
     <div className={styles.page}>
 
@@ -79,9 +79,14 @@ export default function VintageArchive() {
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Recommended Reading</h3>
         <ul className={styles.readingList}>
-          {READING.map(({ label, target }) => (
+          {READING.map(({ label, target, url }) => (
             <li key={label} className={styles.readingItem}>
-              <span className={`${styles.link} ${target ? styles.linkTarget : ''}`}>
+              <span
+                className={`${styles.link} ${target ? styles.linkTarget : ''} ${target ? styles.linkTargetClickable : ''}`}
+                onClick={target ? () => completeObjective('findPaper') : undefined}
+                onMouseEnter={url ? () => onLinkHover(url) : undefined}
+                onMouseLeave={url ? () => onLinkHover(null) : undefined}
+              >
                 {target && <span className={styles.newBadge}>NEW!</span>}
                 {label}
               </span>

@@ -11,7 +11,9 @@ const SERVICES = [
 
 const NAV_ITEMS = ['Home', 'Services', 'Used Equipment', 'Contact Us']
 
-export default function ValleyComputer() {
+const ARCHIVE_URL = 'http://www.geocities.com/SiliconValley/4527/'
+
+export default function ValleyComputer({ onNavigate = () => {}, onLinkHover = () => {} }) {
   return (
     <div className={styles.page}>
       <div className={styles.layout}>
@@ -73,7 +75,12 @@ export default function ValleyComputer() {
             We also stock vintage machines for hobbyists and collectors — ask at the counter!
           </p>
           <p className={styles.body}>
-            <span className={styles.link}>
+            <span
+              className={`${styles.link} ${styles.linkClickable}`}
+              onClick={() => onNavigate('archive')}
+              onMouseEnter={() => onLinkHover(ARCHIVE_URL)}
+              onMouseLeave={() => onLinkHover(null)}
+            >
               Check out The Vintage Computer Archive for collector info!
             </span>
           </p>

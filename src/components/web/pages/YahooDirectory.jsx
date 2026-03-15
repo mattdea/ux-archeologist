@@ -3,27 +3,32 @@
 import styles from './YahooDirectory.module.css'
 
 const LEFT_CATEGORIES = [
-  { label: 'Arts & Humanities',      count: null,  highlight: false },
-  { label: 'Business & Economy',     count: null,  highlight: false },
-  { label: 'Computers & Internet',   count: '248', highlight: true  },
-  { label: 'Education',              count: null,  highlight: false },
-  { label: 'Entertainment',          count: '4,310', highlight: false },
+  { label: 'Arts & Humanities',    count: null,    highlight: false, navigateTo: null,              hoverUrl: null },
+  { label: 'Business & Economy',  count: null,    highlight: false, navigateTo: null,              hoverUrl: null },
+  { label: 'Computers & Internet', count: '248',   highlight: true,  navigateTo: 'yahoo-computers', hoverUrl: 'http://www.yahoo.com/Computers_and_Internet/' },
+  { label: 'Education',           count: null,    highlight: false, navigateTo: null,              hoverUrl: null },
+  { label: 'Entertainment',       count: '4,310', highlight: false, navigateTo: null,              hoverUrl: null },
 ]
 
 const RIGHT_CATEGORIES = [
-  { label: 'Government',             count: null, highlight: false },
-  { label: 'Health',                 count: null, highlight: false },
-  { label: 'News & Media',           count: null, highlight: false },
-  { label: 'Recreation & Sports',   count: null, highlight: false },
-  { label: 'Science',               count: null, highlight: false },
+  { label: 'Government',          count: null, highlight: false, navigateTo: null, hoverUrl: null },
+  { label: 'Health',              count: null, highlight: false, navigateTo: null, hoverUrl: null },
+  { label: 'News & Media',        count: null, highlight: false, navigateTo: null, hoverUrl: null },
+  { label: 'Recreation & Sports', count: null, highlight: false, navigateTo: null, hoverUrl: null },
+  { label: 'Science',             count: null, highlight: false, navigateTo: null, hoverUrl: null },
 ]
 
-function CategoryList({ items }) {
+function CategoryList({ items, onNavigate, onLinkHover }) {
   return (
     <ul className={styles.catList}>
-      {items.map(({ label, count, highlight }) => (
+      {items.map(({ label, count, highlight, navigateTo, hoverUrl }) => (
         <li key={label} className={styles.catItem}>
-          <span className={`${styles.catLink} ${highlight ? styles.catLinkHL : ''}`}>
+          <span
+            className={`${styles.catLink} ${highlight ? styles.catLinkHL : ''} ${navigateTo ? styles.catLinkClickable : ''}`}
+            onClick={navigateTo ? () => onNavigate(navigateTo) : undefined}
+            onMouseEnter={hoverUrl ? () => onLinkHover(hoverUrl) : undefined}
+            onMouseLeave={hoverUrl ? () => onLinkHover(null) : undefined}
+          >
             {label}
           </span>
           {count && <span className={styles.catCount}> ({count})</span>}
@@ -33,7 +38,7 @@ function CategoryList({ items }) {
   )
 }
 
-export default function YahooDirectory() {
+export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = () => {} }) {
   return (
     <div className={styles.page}>
 
@@ -75,10 +80,10 @@ export default function YahooDirectory() {
       {/* ── Category directory ────────────────────────────────── */}
       <div className={styles.categories}>
         <div className={styles.col}>
-          <CategoryList items={LEFT_CATEGORIES} />
+          <CategoryList items={LEFT_CATEGORIES} onNavigate={onNavigate} onLinkHover={onLinkHover} />
         </div>
         <div className={styles.col}>
-          <CategoryList items={RIGHT_CATEGORIES} />
+          <CategoryList items={RIGHT_CATEGORIES} onNavigate={onNavigate} onLinkHover={onLinkHover} />
         </div>
       </div>
 

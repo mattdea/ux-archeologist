@@ -139,6 +139,18 @@
   color: #0000cc;
 }
 
+/* Clickable category — pointer cursor, hover underline */
+.catLinkClickable {
+  cursor: pointer;
+}
+
+.catLinkClickable:hover {
+  text-decoration: none;
+  background: #000080;
+  color: #fff;
+  outline: 1px solid transparent;
+}
+
 .catCount {
   color: #000;
   text-decoration: none;

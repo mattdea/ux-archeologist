@@ -21,9 +21,12 @@ function WinButton({ symbol, variant }) {
 }
 
 /* ── Toolbar button (icon stacked above label) ───────────────────── */
-function ToolbarButton({ icon, label, disabled }) {
+function ToolbarButton({ icon, label, disabled, onClick }) {
   return (
-    <span className={`${styles.toolbarBtn} ${disabled ? styles.toolbarBtnDisabled : ''}`}>
+    <span
+      className={`${styles.toolbarBtn} ${disabled ? styles.toolbarBtnDisabled : ''}`}
+      onClick={!disabled && onClick ? onClick : undefined}
+    >
       <span className={styles.toolbarIcon}>{icon}</span>
       <span className={styles.toolbarLabel}>{label}</span>
     </span>
@@ -38,8 +41,13 @@ function ToolbarSep() {
 /* ── Main component ───────────────────────────────────────────────── */
 export default function BrowserChrome({
   children,
-  currentUrl  = 'about:blank',
-  pageTitle   = 'Microsoft Internet Explorer',
+  currentUrl   = 'about:blank',
+  pageTitle    = 'Microsoft Internet Explorer',
+  canGoBack    = false,
+  canGoForward = false,
+  onBack,
+  onForward,
+  statusText   = 'Done',
 }) {
   const titleBarText = pageTitle
     ? `${pageTitle} - Microsoft Internet Explorer`
@@ -70,8 +78,8 @@ export default function BrowserChrome({
 
       {/* ── Toolbar ─────────────────────────────────────────────── */}
       <div className={styles.toolbar}>
-        <ToolbarButton icon="◀" label="Back"    disabled />
-        <ToolbarButton icon="▶" label="Forward" disabled />
+        <ToolbarButton icon="◀" label="Back"    disabled={!canGoBack}    onClick={onBack} />
+        <ToolbarButton icon="▶" label="Forward" disabled={!canGoForward} onClick={onForward} />
         <ToolbarSep />
         <ToolbarButton icon="⊗" label="Stop" />
         <ToolbarButton icon="↺" label="Refresh" />
@@ -99,7 +107,7 @@ export default function BrowserChrome({
 
       {/* ── Status bar ──────────────────────────────────────────── */}
       <div className={styles.statusBar}>
-        <span className={styles.statusText}>Done</span>
+        <span className={styles.statusText}>{statusText}</span>
         <span className={styles.statusZone}>Internet zone</span>
       </div>
 

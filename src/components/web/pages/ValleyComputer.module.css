@@ -193,6 +193,14 @@
   cursor: default;
 }
 
+.linkClickable {
+  cursor: pointer;
+}
+
+.linkClickable:hover {
+  color: #0000cc;
+}
+
 /* ── Footer ───────────────────────────────────────────────────────── */
 .footer {
   display: flex;
