@@ -1,5 +1,5 @@
 // src/levels/Level2.jsx
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import styles from './Level2.module.css'
 import BrowserChrome from '../components/web/BrowserChrome'
 import YahooDirectory from '../components/web/pages/YahooDirectory'
@@ -11,6 +11,7 @@ import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import { useArtifactReady } from '../shared/SharedLayout'
 
 // ── Page metadata ───────────────────────────────────────────────────
 const PAGES = {
@@ -65,6 +66,14 @@ export default function Level2() {
 
   // ── Responsive scaling ──────────────────────────────────────────
   const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 80 })
+  const notifyArtifactReady = useArtifactReady()
+
+  // Notify SharedLayout when artifact is ready for interaction.
+  // Normal flow: fires when modem load sequence completes → screen='playing'.
+  // Replay flow: screen starts as 'playing', fires immediately on mount.
+  useEffect(() => {
+    if (screen === 'playing') notifyArtifactReady()
+  }, [screen, notifyArtifactReady])
 
   // ── Derived browser values ──────────────────────────────────────
   const currentPage  = history[historyIndex]

@@ -1,5 +1,5 @@
 // src/levels/Level1.jsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useBezelScale from '../hooks/useBezelScale'
@@ -9,6 +9,7 @@ import BootSequence from '../components/BootSequence'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import { useArtifactReady } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Find the document on this computer',
@@ -27,6 +28,14 @@ export default function Level1() {
   const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
   const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80 })
+  const notifyArtifactReady = useArtifactReady()
+
+  // Notify SharedLayout when the artifact is ready for interaction.
+  // Fires once when screen becomes 'playing' — covers both normal flow
+  // (after boot sequence) and replay (starts at 'playing' immediately).
+  useEffect(() => {
+    if (screen === 'playing') notifyArtifactReady()
+  }, [screen, notifyArtifactReady])
 
   const completeObjective = (key) => {
     const idx = OBJ_KEY_INDEX[key]

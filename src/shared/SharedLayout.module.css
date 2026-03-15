@@ -31,6 +31,9 @@
   position: absolute;
   display: flex;
   align-items: center;
+  /* opacity/transform controlled by inline style from SharedLayout.
+     transition is always active so state changes animate smoothly. */
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
 }
 
 .hudTopLeft {

@@ -5,11 +5,15 @@ import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
 
 // ── Fade-navigate context ──────────────────────────────────────────
-// Provides a navigate() that fades content out before switching
-// routes, then fades the new content back in.
-// Usage: const navigate = useFadeNavigate()
+// Provides a navigate() that fades content out before switching routes.
 export const FadeNavCtx = createContext(null)
 export function useFadeNavigate() { return useContext(FadeNavCtx) }
+
+// ── Artifact-ready context ─────────────────────────────────────────
+// Level components call notifyArtifactReady() once their loading
+// sequence finishes. SharedLayout listens and animates the HUD in.
+export const HudCtx = createContext(null)
+export function useArtifactReady() { return useContext(HudCtx) }
 
 // ── Level metadata ─────────────────────────────────────────────────
 const LEVEL_META = {
@@ -37,80 +41,121 @@ export default function SharedLayout() {
   const realNavigate        = useNavigate()
   const [fading, setFading] = useState(false)
   const pendingRef          = useRef(null)   // { to, options } waiting to fire
-  const showHUD             = !HUD_HIDDEN_PATHS.includes(pathname)
-  const meta                = LEVEL_META[pathname] || {}
-  const activeLevel         = meta.level ?? null
 
-  // Intercept all navigation: fade content out → navigate → fade in
+  // ── HUD visibility state ────────────────────────────────────────
+  // hudReady: artifact has finished loading, HUD should be visible
+  // hudFading: user is navigating away, HUD should fade out
+  const [hudReady,  setHudReady]  = useState(false)
+  const [hudFading, setHudFading] = useState(false)
+
+  const showHUD    = !HUD_HIDDEN_PATHS.includes(pathname)
+  const meta       = LEVEL_META[pathname] || {}
+  const activeLevel = meta.level ?? null
+
+  // ── Called by level components when their artifact is ready ─────
+  const notifyArtifactReady = useCallback(() => {
+    setHudReady(true)
+  }, [])
+
+  // ── Intercept navigation: fade HUD + content out, then navigate ─
   const fadeNavigate = useCallback((to, options) => {
-    // Skip if already on that route
     if (to === pathname && !options) return
+    setHudFading(true)   // start HUD fade-out (200ms)
+    setHudReady(false)   // mark not ready (visual driven by hudFading until nav completes)
     pendingRef.current = { to, options }
-    setFading(true)
+    setFading(true)      // start content fade-out (300ms)
   }, [pathname])
 
-  // Fires when the content div finishes a CSS opacity transition
+  // Fires when the content div finishes its CSS opacity transition
   const handleTransitionEnd = useCallback((e) => {
-    // Only respond to the content div's own opacity transition
     if (e.target !== e.currentTarget || e.propertyName !== 'opacity') return
-    // Only act when fading out with a pending destination
     if (!pendingRef.current) return
     const { to, options } = pendingRef.current
     pendingRef.current = null
-    // Navigate while content is invisible; new route renders at opacity 0
     realNavigate(to, options)
-    // Next tick: new content is committed — trigger the fade-in
-    setTimeout(() => setFading(false), 0)
+    setTimeout(() => {
+      setFading(false)
+      setHudFading(false)
+      // hudReady stays false — level's notifyArtifactReady will set it true
+    }, 0)
   }, [realNavigate])
+
+  // ── Inline style for each HUD element ──────────────────────────
+  // direction: 'down' (slides in from above) | 'up' (slides in from below)
+  // delayMs: entrance stagger delay
+  const hudStyle = (direction, delayMs) => {
+    const translate = direction === 'down' ? 'translateY(-20px)' : 'translateY(20px)'
+    if (hudFading) {
+      // Fade out on navigate — faster than entrance, no transform change
+      return {
+        opacity: 0,
+        transform: 'translateY(0)',
+        transitionDuration: '200ms',
+        transitionDelay: '0ms',
+      }
+    }
+    if (!hudReady) {
+      // Hidden initial state — no transition so it doesn't animate on mount
+      return { opacity: 0, transform: translate, transitionDelay: '0ms' }
+    }
+    // Animate in — CSS transition on the element handles the motion
+    return {
+      opacity: 1,
+      transform: 'translateY(0)',
+      transitionDelay: `${delayMs}ms`,
+    }
+  }
 
   return (
     <FadeNavCtx.Provider value={fadeNavigate}>
-      <div className={styles.room}>
+      <HudCtx.Provider value={notifyArtifactReady}>
+        <div className={styles.room}>
 
-        {showHUD && (
-          <>
-            {/* Top-left — era label + level title */}
-            <div className={styles.hudTopLeft}>
-              <span className={styles.eraLabel}>{meta.era}</span>
-              <span className={styles.levelTitle}>{meta.title}</span>
-            </div>
+          {showHUD && (
+            <>
+              {/* Top-left — era label + level title */}
+              <div className={styles.hudTopLeft} style={hudStyle('down', 0)}>
+                <span className={styles.eraLabel}>{meta.era}</span>
+                <span className={styles.levelTitle}>{meta.title}</span>
+              </div>
 
-            {/* Top-right — progress dots (driven by real state) */}
-            <div className={styles.hudTopRight}>
-              {LEVEL_NUMBERS.map(n => (
-                <span key={n} className={dotClass(n, activeLevel)} />
-              ))}
-            </div>
+              {/* Top-right — progress dots */}
+              <div className={styles.hudTopRight} style={hudStyle('down', 100)}>
+                {LEVEL_NUMBERS.map(n => (
+                  <span key={n} className={dotClass(n, activeLevel)} />
+                ))}
+              </div>
 
-            {/* Bottom-left — artifact counter (hidden for now) */}
-            {/* <div className={styles.hudBottomLeft}>
-              <span className={styles.artifactCounter}>0 of 12 artifacts collected</span>
-            </div> */}
+              {/* Bottom-left — artifact counter (hidden for now) */}
+              {/* <div className={styles.hudBottomLeft}>
+                <span className={styles.artifactCounter}>0 of 12 artifacts collected</span>
+              </div> */}
 
-            {/* Bottom-right — back to timeline (level routes only) */}
-            <div className={styles.hudBottomRight}>
-              {activeLevel !== null && (
-                <span
-                  className={styles.backLink}
-                  onClick={() => fadeNavigate('/timeline')}
-                >
-                  ← Back to timeline
-                </span>
-              )}
-            </div>
-          </>
-        )}
+              {/* Bottom-right — back to timeline */}
+              <div className={styles.hudBottomRight} style={hudStyle('up', 300)}>
+                {activeLevel !== null && (
+                  <span
+                    className={styles.backLink}
+                    onClick={() => fadeNavigate('/timeline')}
+                  >
+                    ← Back to timeline
+                  </span>
+                )}
+              </div>
+            </>
+          )}
 
-        {/* Level / page content — fades between routes */}
-        <div
-          className={styles.content}
-          style={{ opacity: fading ? 0 : 1 }}
-          onTransitionEnd={handleTransitionEnd}
-        >
-          <Outlet />
+          {/* Level / page content — fades between routes */}
+          <div
+            className={styles.content}
+            style={{ opacity: fading ? 0 : 1 }}
+            onTransitionEnd={handleTransitionEnd}
+          >
+            <Outlet />
+          </div>
+
         </div>
-
-      </div>
+      </HudCtx.Provider>
     </FadeNavCtx.Provider>
   )
 }

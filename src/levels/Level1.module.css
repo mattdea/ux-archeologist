@@ -38,10 +38,17 @@
  * ObjectiveTracker anchor — fixed to the museum viewport, bottom-left corner.
  * Lives in the dark room outside the artifact entirely.
  * z-index 50: above the bezel, below modals (z-index 100).
+ * Entrance animation matches the HUD bottom-left stagger (200ms delay).
  */
 .trackerWrap {
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: 50;
+  animation: trackerSlideUp 400ms ease-out 200ms both;
+}
+
+@keyframes trackerSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
