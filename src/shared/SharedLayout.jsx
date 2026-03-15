@@ -120,7 +120,7 @@ export default function SharedLayout() {
               </div>
 
               {/* Top-right — progress dots */}
-              <div className={styles.hudTopRight} style={hudStyle('down', 100)}>
+              <div className={styles.hudTopRight} style={hudStyle('down', 0)}>
                 {LEVEL_NUMBERS.map(n => (
                   <span key={n} className={dotClass(n, activeLevel)} />
                 ))}
@@ -132,7 +132,7 @@ export default function SharedLayout() {
               </div> */}
 
               {/* Bottom-right — back to timeline */}
-              <div className={styles.hudBottomRight} style={hudStyle('up', 300)}>
+              <div className={styles.hudBottomRight} style={hudStyle('up', 200)}>
                 {activeLevel !== null && (
                   <span
                     className={styles.backLink}
