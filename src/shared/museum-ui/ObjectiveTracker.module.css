@@ -7,14 +7,12 @@
   min-width: 230px;
 }
 
-/* 2px solid #222 accent line */
 .accentLine {
-  height: 2px;
-  background: #222;
+  height: 0;
 }
 
 .body {
-  padding: 28px 32px;
+  padding: 20px 24px;
 }
 
 /* "YOUR OBJECTIVES" section label */

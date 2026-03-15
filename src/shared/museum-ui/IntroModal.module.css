@@ -24,14 +24,12 @@
   box-shadow: none;
 }
 
-/* 2px solid #222 accent line */
 .accentLine {
-  height: 2px;
-  background: #222;
+  height: 0;
 }
 
 .body {
-  padding: 28px 32px 24px;
+  padding: 20px 24px;
 }
 
 /* Era label eyebrow — monospace, 11px, #999, uppercase */

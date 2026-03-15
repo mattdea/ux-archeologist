@@ -28,9 +28,9 @@ export default function Level1() {
     }
   }
 
-  // Desktop stays mounted during intro (dimmed by IntroModal scrim), booting,
-  // playing, and discovery (visible behind the DiscoveryCard overlay).
-  const showDesktop = screen === 'intro' || screen === 'booting' || screen === 'playing' || screen === 'discovery'
+  // During 'intro' the MonitorBezel renders with an empty (dark/off) screen.
+  // DesktopScene only mounts once the boot sequence starts.
+  const showDesktop = screen === 'booting' || screen === 'playing' || screen === 'discovery'
 
   return (
     <>
