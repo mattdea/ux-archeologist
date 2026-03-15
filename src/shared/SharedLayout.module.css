@@ -70,7 +70,7 @@
 .levelTitle {
   font-family: system-ui, sans-serif;
   font-size: 13px;
-  color: #555;
+  color: #999;
   letter-spacing: 0.01em;
   line-height: 1;
 }
@@ -112,13 +112,13 @@
 .backLink {
   font-family: system-ui, sans-serif;
   font-size: 13px;
-  color: #555;
+  color: #999;
   text-decoration: none;
   cursor: pointer;
   letter-spacing: 0.01em;
 }
 
 .backLink:hover {
-  color: #aaa;
+  color: #ccc;
   text-decoration: underline;
 }
