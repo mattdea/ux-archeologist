@@ -1,6 +1,7 @@
 // src/components/web/pages/YahooDirectory.jsx
 // 1996 Yahoo! directory homepage — era-authentic artifact content
-import yahooLogo from '../../../../assets/yahoo-logo.png'
+import yahooHeader from '../../../assets/yahoo-w-icons.png'
+import bannerAd    from '../../../assets/banner-ad.png'
 import styles from './YahooDirectory.module.css'
 
 // ── Categories (left column) ────────────────────────────────────────
@@ -83,14 +84,6 @@ const CATEGORIES_RIGHT = [
   },
 ]
 
-// ── Icon links below the logo ───────────────────────────────────────
-const ICON_LINKS = [
-  { symbol: '★', label: "What's New",    bg: '#cc3300' },
-  { symbol: '❄', label: "What's Cool",   bg: '#0055cc' },
-  { symbol: '◉', label: "Today's News",  bg: '#336600' },
-  { symbol: 'Y', label: 'More Yahoos!',  bg: '#770099' },
-]
-
 // ── Category list component ─────────────────────────────────────────
 function CategoryList({ items, onNavigate, onLinkHover }) {
   return (
@@ -119,28 +112,14 @@ export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = ()
   return (
     <div className={styles.page}>
 
-      {/* ── Logo ──────────────────────────────────────────────── */}
+      {/* ── Header (logo + icon links combined image) ─────────── */}
       <div className={styles.logoRow}>
-        <img src={yahooLogo} alt="Yahoo!" className={styles.logoImg} />
-      </div>
-
-      {/* ── Icon links ────────────────────────────────────────── */}
-      <div className={styles.iconRow}>
-        {ICON_LINKS.map(({ symbol, label, bg }) => (
-          <span key={label} className={styles.iconItem}>
-            <span className={styles.iconCircle} style={{ background: bg }}>{symbol}</span>
-            <span className={styles.iconLabel}>{label}</span>
-          </span>
-        ))}
+        <img src={yahooHeader} alt="Yahoo!" className={styles.logoImg} />
       </div>
 
       {/* ── Banner ad ─────────────────────────────────────────── */}
       <div className={styles.bannerRow}>
-        <div className={styles.bannerAd}>
-          <span className={styles.bannerText}>
-            ★ FREE TRIPS! Getaway Giveaway! ★ Click Here! →
-          </span>
-        </div>
+        <img src={bannerAd} alt="Advertisement" className={styles.bannerImg} />
       </div>
 
       <hr className={styles.divider} />
