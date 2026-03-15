@@ -2,25 +2,35 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import styles from './SharedLayout.module.css'
 
+// ── Level metadata ─────────────────────────────────────────────────
+const LEVEL_META = {
+  '/level/1': { era: '1984', title: 'The Desktop Arrives' },
+  '/level/2': { era: '1995', title: 'The Hypertext Web'   },
+  '/level/3': { era: '2007', title: 'Touch Arrives'       },
+  '/level/4': { era: '2015', title: 'The Infinite Feed'   },
+}
+
+// Routes where the HUD is hidden entirely
+const HUD_HIDDEN_PATHS = ['/', '/timeline']
+
+// ── Progress dots ──────────────────────────────────────────────────
 const DOTS = [
-  { key: 'l1', state: 'active' },   // Level 1 — current
-  { key: 'l2', state: 'empty' },
-  { key: 'l3', state: 'empty' },
-  { key: 'l4', state: 'empty' },
+  { key: 'l1', state: 'active' },
+  { key: 'l2', state: 'empty'  },
+  { key: 'l3', state: 'empty'  },
+  { key: 'l4', state: 'empty'  },
 ]
 
-function dotClass(state) {
+function dotClass(state, styles) {
   if (state === 'active') return `${styles.dot} ${styles.dotActive}`
   if (state === 'done')   return `${styles.dot} ${styles.dotDone}`
   return `${styles.dot} ${styles.dotEmpty}`
 }
 
-// Routes where the HUD is hidden (title screen and timeline act as their own nav)
-const HUD_HIDDEN_PATHS = ['/', '/timeline']
-
 export default function SharedLayout() {
   const { pathname } = useLocation()
   const showHUD = !HUD_HIDDEN_PATHS.includes(pathname)
+  const meta    = LEVEL_META[pathname] || {}
 
   return (
     <div className={styles.room}>
@@ -29,14 +39,14 @@ export default function SharedLayout() {
         <>
           {/* Top-left — era label + level title */}
           <div className={styles.hudTopLeft}>
-            <span className={styles.eraLabel}>1984</span>
-            <span className={styles.levelTitle}>The Desktop Arrives</span>
+            <span className={styles.eraLabel}>{meta.era}</span>
+            <span className={styles.levelTitle}>{meta.title}</span>
           </div>
 
           {/* Top-right — progress dots */}
           <div className={styles.hudTopRight}>
             {DOTS.map(d => (
-              <span key={d.key} className={dotClass(d.state)} />
+              <span key={d.key} className={dotClass(d.state, styles)} />
             ))}
           </div>
 
@@ -45,7 +55,7 @@ export default function SharedLayout() {
             <span className={styles.artifactCounter}>0 of 12 artifacts collected</span>
           </div>
 
-          {/* Bottom-right — hint area (populated by level later) */}
+          {/* Bottom-right — hint area (populated by levels) */}
           <div className={styles.hudBottomRight} />
         </>
       )}

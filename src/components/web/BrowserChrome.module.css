@@ -1,0 +1,359 @@
+/* src/components/web/BrowserChrome.module.css
+   Internet Explorer 4 / Windows 98 visual style.
+   Win98 system gray: #d4d0c8
+   Bevel light:       #ffffff / #dfdfdf
+   Bevel dark:        #808080 / #444444
+*/
+
+/* ── Outer browser window ─────────────────────────────────────────── */
+.browser {
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+  height: 520px;
+  background: #d4d0c8;
+
+  /* Win98-style raised outer border */
+  border: 2px solid;
+  border-top-color:    #dfdfdf;
+  border-left-color:   #dfdfdf;
+  border-right-color:  #444;
+  border-bottom-color: #444;
+
+  /* Outer black ring + room drop-shadow */
+  box-shadow:
+    0 0 0 1px #000,
+    0 24px 64px rgba(0, 0, 0, 0.65),
+    0 8px 24px  rgba(0, 0, 0, 0.4);
+
+  overflow: hidden;
+  font-family: Tahoma, 'MS Sans Serif', 'Arial', sans-serif;
+}
+
+/* ── Title bar ────────────────────────────────────────────────────── */
+.titleBar {
+  height: 22px;
+  flex-shrink: 0;
+  background: linear-gradient(to right, #0a246a 0%, #3a6ea5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 3px 2px 4px;
+  user-select: none;
+}
+
+.titleLeft {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.titleText {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+/* IE "e" logo ────────────────────────────────────────── */
+.ieLogo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #1660c0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ieLogo::after {
+  /* Gold orbital ring */
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 6px;
+  border: 1.5px solid #e8a800;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+
+.ieLogoE {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11px;
+  color: #fff;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* Window control buttons ─────────────────────────────── */
+.winBtns {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.winBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 14px;
+  background: #d4d0c8;
+  font-size: 9px;
+  font-family: 'Marlett', 'Arial', Tahoma, sans-serif;
+  color: #000;
+  cursor: default;
+
+  border: 1.5px solid;
+  border-top-color:    #fff;
+  border-left-color:   #fff;
+  border-right-color:  #444;
+  border-bottom-color: #444;
+}
+
+.winBtnClose {
+  /* Close button in Win98 is same gray, just close symbol */
+}
+
+/* ── Menu bar ─────────────────────────────────────────────────────── */
+.menuBar {
+  height: 20px;
+  flex-shrink: 0;
+  background: #d4d0c8;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  border-bottom: 1px solid #888;
+}
+
+.menuItem {
+  padding: 2px 8px;
+  font-size: 11px;
+  color: #000;
+  cursor: default;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.menuItem:hover {
+  background: #0a246a;
+  color: #fff;
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────── */
+.toolbar {
+  height: 46px;
+  flex-shrink: 0;
+  background: #d4d0c8;
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 1px;
+
+  border-bottom: 2px solid;
+  border-bottom-color: #888;
+  box-shadow: 0 1px 0 #dfdfdf; /* inner bottom highlight */
+}
+
+.toolbarBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  min-width: 46px;
+  height: 40px;
+  cursor: default;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+
+.toolbarBtn:hover {
+  border: 1px solid;
+  border-top-color:    #fff;
+  border-left-color:   #fff;
+  border-right-color:  #888;
+  border-bottom-color: #888;
+  background: #d4d0c8;
+}
+
+.toolbarBtnDisabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.toolbarIcon {
+  font-size: 18px;
+  line-height: 1;
+  color: #222;
+  margin-bottom: 1px;
+}
+
+.toolbarBtnDisabled .toolbarIcon {
+  color: #888;
+}
+
+.toolbarLabel {
+  font-size: 10px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.toolbarBtnDisabled .toolbarLabel {
+  color: #999;
+}
+
+/* Vertical separator between toolbar groups */
+.toolbarSep {
+  display: inline-block;
+  width: 1px;
+  height: 30px;
+  background: #888;
+  box-shadow: 1px 0 0 #dfdfdf;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.toolbarSpacer {
+  flex: 1;
+}
+
+/* Throbber (IE animated logo, top-right of toolbar) */
+.throbber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.throbber .ieLogo {
+  width: 22px;
+  height: 22px;
+}
+
+.throbber .ieLogoE {
+  font-size: 14px;
+}
+
+/* ── Address bar ──────────────────────────────────────────────────── */
+.addressBar {
+  height: 26px;
+  flex-shrink: 0;
+  background: #d4d0c8;
+  display: flex;
+  align-items: center;
+  padding: 3px 4px;
+  gap: 4px;
+  border-bottom: 2px solid;
+  border-bottom-color: #888;
+  box-shadow: 0 1px 0 #dfdfdf;
+}
+
+.addressLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  white-space: nowrap;
+  cursor: default;
+  padding: 0 2px;
+}
+
+.addressDrop {
+  font-size: 10px;
+  color: #000;
+  cursor: default;
+  margin-right: 2px;
+}
+
+.addressInput {
+  flex: 1;
+  height: 18px;
+  background: #fff;
+  padding: 0 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #000;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+
+  /* Win98 inset (sunken) border */
+  border: 1px solid;
+  border-top-color:    #888;
+  border-left-color:   #888;
+  border-right-color:  #dfdfdf;
+  border-bottom-color: #dfdfdf;
+}
+
+.goBtn {
+  padding: 1px 10px;
+  height: 18px;
+  background: #d4d0c8;
+  font-size: 11px;
+  color: #000;
+  white-space: nowrap;
+  cursor: default;
+  display: flex;
+  align-items: center;
+
+  border: 1.5px solid;
+  border-top-color:    #fff;
+  border-left-color:   #fff;
+  border-right-color:  #444;
+  border-bottom-color: #444;
+}
+
+/* ── Page content ─────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  background: #fff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Win98 inset border around the content viewport */
+  border-top: 2px solid;
+  border-top-color: #888;
+  box-shadow: inset 1px 1px 0 #444;
+}
+
+/* ── Status bar ───────────────────────────────────────────────────── */
+.statusBar {
+  height: 20px;
+  flex-shrink: 0;
+  background: #d4d0c8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  border-top: 1px solid #888;
+  box-shadow: 0 -1px 0 #dfdfdf;
+}
+
+.statusText {
+  font-size: 11px;
+  color: #000;
+  cursor: default;
+}
+
+.statusZone {
+  font-size: 11px;
+  color: #000;
+  cursor: default;
+  padding-left: 8px;
+  border-left: 1px solid #888;
+  box-shadow: -1px 0 0 #dfdfdf;
+}

@@ -1,0 +1,33 @@
+/* src/levels/Level2.module.css */
+
+/*
+ * Outer wrapper — explicit width/height set via inline style to the
+ * scaled browser footprint (BROWSER_W * scale × BROWSER_H * scale).
+ * overflow: visible so BrowserChrome's drop-shadow renders fully.
+ */
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+/*
+ * Inner scaler — holds native-size BrowserChrome, scaled via transform.
+ * flex-shrink: 0 prevents collapse; transform-origin: center anchors scale.
+ */
+.scaler {
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+
+/*
+ * ObjectiveTracker anchor — fixed to museum viewport, bottom-left.
+ * z-index 50: above browser, below modal overlays (z-index 100).
+ */
+.trackerWrap {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 50;
+}

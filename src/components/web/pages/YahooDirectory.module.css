@@ -1,0 +1,160 @@
+/* src/components/web/pages/YahooDirectory.module.css
+   1996 Yahoo! directory.
+   Artifact layer — Times New Roman body, Win98 gray background,
+   purple/blue link colors. Never mix with museum layer fonts.
+*/
+
+/* ── Page shell ───────────────────────────────────────────────────── */
+.page {
+  min-height: 100%;
+  background: #c0c0c0;
+  padding: 14px 20px 20px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  color: #000;
+  box-sizing: border-box;
+}
+
+/* ── Yahoo! logo ──────────────────────────────────────────────────── */
+.logoRow {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.logo {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: #600090;
+  margin: 0;
+  letter-spacing: -2px;
+  line-height: 1;
+  /* Slight drop shadow to match the era's bitmap logo feel */
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+}
+
+/* ── Top navigation links ─────────────────────────────────────────── */
+.topNav {
+  text-align: center;
+  font-size: 13px;
+  margin: 6px 0 4px;
+  color: #000;
+}
+
+.navLink {
+  color: #800080;          /* web-standard 90s purple */
+  text-decoration: underline;
+  cursor: default;         /* no interactions yet */
+}
+
+/* ── Horizontal rule ──────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid #888;
+  border-bottom: 1px solid #dfdfdf; /* Win98-style double rule */
+  margin: 8px 0;
+}
+
+/* ── Search bar ───────────────────────────────────────────────────── */
+.searchRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.searchInput {
+  width: 220px;
+  height: 22px;
+  background: #fff;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 13px;
+  padding: 0 4px;
+
+  /* Win98 inset (sunken) border */
+  border: 2px solid;
+  border-top-color:    #888;
+  border-left-color:   #888;
+  border-right-color:  #dfdfdf;
+  border-bottom-color: #dfdfdf;
+
+  outline: none;
+  cursor: default;
+}
+
+.searchBtn {
+  padding: 2px 14px;
+  height: 22px;
+  background: #d4d0c8;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 13px;
+  color: #000;
+  cursor: default;
+
+  border: 2px solid;
+  border-top-color:    #fff;
+  border-left-color:   #fff;
+  border-right-color:  #444;
+  border-bottom-color: #444;
+}
+
+.searchOptions {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+/* ── Category directory ───────────────────────────────────────────── */
+.categories {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.col {
+  min-width: 220px;
+}
+
+.catList {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.catItem {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #000;
+}
+
+.catLink {
+  color: #800080;
+  text-decoration: underline;
+  cursor: default;
+}
+
+/* "Computers & Internet" — visually a blue link (slightly different from purple) */
+.catLinkHL {
+  color: #0000cc;
+}
+
+.catCount {
+  color: #000;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 12px;
+  color: #444;
+  margin: 0;
+}
