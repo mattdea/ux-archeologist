@@ -81,42 +81,36 @@ export default function Level1() {
         />
       )}
 
-      {/* ── Level layout: artifact above tracker, no overlap ─────── */}
+      {/* ── Level layout — artifact centered in padded zone ─────── */}
       <div className={styles.levelLayout}>
-
-        {/* Artifact zone — anchors scaled bezel to bottom with 20px gap */}
-        <div className={styles.artifactZone}>
-          <div
-            className={styles.wrap}
-            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
-          >
-            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-              <MonitorBezel booting={screen === 'booting'}>
-                <div className={styles.inner}>
-                  {showDesktop && (
-                    <DesktopScene
-                      completeObjective={completeObjective}
-                      active={screen === 'playing'}
-                    />
-                  )}
-                  {screen === 'booting' && (
-                    <BootSequence onComplete={() => setScreen('playing')} />
-                  )}
-                </div>
-              </MonitorBezel>
-            </div>
+        <div
+          className={styles.wrap}
+          style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
+        >
+          <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+            <MonitorBezel booting={screen === 'booting'}>
+              <div className={styles.inner}>
+                {showDesktop && (
+                  <DesktopScene
+                    completeObjective={completeObjective}
+                    active={screen === 'playing'}
+                  />
+                )}
+                {screen === 'booting' && (
+                  <BootSequence onComplete={() => setScreen('playing')} />
+                )}
+              </div>
+            </MonitorBezel>
           </div>
         </div>
+      </div>
 
-        {/* ObjectiveTracker: always in layout (visibility:hidden before playing)
-            so the artifact position stays stable when the tracker appears. */}
-        <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
-          <ObjectiveTracker
-            objectives={OBJECTIVES}
-            completedIndices={completedIndices}
-          />
-        </div>
-
+      {/* ObjectiveTracker — fixed bottom-left, always rendered for stable layout */}
+      <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
+        <ObjectiveTracker
+          objectives={OBJECTIVES}
+          completedIndices={completedIndices}
+        />
       </div>
     </>
   )

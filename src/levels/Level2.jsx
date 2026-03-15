@@ -221,40 +221,34 @@ export default function Level2() {
         />
       )}
 
-      {/* ── Level layout: artifact above tracker, no overlap ─────── */}
+      {/* ── Level layout — artifact centered in padded zone ─────── */}
       <div className={styles.levelLayout}>
-
-        {/* Artifact zone — centers the scaled browser chrome */}
-        <div className={styles.artifactZone}>
-          <div
-            className={styles.wrap}
-            style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
-          >
-            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-              <BrowserChrome
-                currentUrl={displayUrl}
-                pageTitle={displayTitle}
-                canGoBack={canGoBack}
-                canGoForward={canGoForward}
-                onBack={goBack}
-                onForward={goForward}
-                statusText={statusText}
-              >
-                {renderPage()}
-              </BrowserChrome>
-            </div>
+        <div
+          className={styles.wrap}
+          style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
+        >
+          <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+            <BrowserChrome
+              currentUrl={displayUrl}
+              pageTitle={displayTitle}
+              canGoBack={canGoBack}
+              canGoForward={canGoForward}
+              onBack={goBack}
+              onForward={goForward}
+              statusText={statusText}
+            >
+              {renderPage()}
+            </BrowserChrome>
           </div>
         </div>
+      </div>
 
-        {/* ObjectiveTracker: always in layout (visibility:hidden before playing)
-            so the artifact position stays stable when the tracker appears. */}
-        <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
-          <ObjectiveTracker
-            objectives={OBJECTIVES}
-            completedIndices={completedIndices}
-          />
-        </div>
-
+      {/* ObjectiveTracker — fixed bottom-left, always rendered for stable layout */}
+      <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
+        <ObjectiveTracker
+          objectives={OBJECTIVES}
+          completedIndices={completedIndices}
+        />
       </div>
     </>
   )

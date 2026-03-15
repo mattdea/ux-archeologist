@@ -1,31 +1,21 @@
 /* src/levels/Level2.module.css */
 
 /*
- * Level layout — flex column filling the full content area.
- * padding-bottom: 20px matches the HUD's bottom: 20px anchor so the
- * tracker aligns with the bottom-right HUD elements.
+ * Level layout — centers the artifact in the visual zone between
+ * the top HUD (80px) and the bottom tracker zone (180px).
+ * padding-top + padding-bottom define that zone; flex centering places
+ * the artifact exactly in the middle of the remaining space.
+ * On tight viewports, useBezelScale shrinks the artifact to fit.
  */
 .levelLayout {
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 20px;
-}
-
-/*
- * Artifact zone — takes remaining space above the tracker.
- * Centered by default; useBezelScale limits artifact height so it never
- * overflows into HUD territory even on small viewports.
- */
-.artifactZone {
-  flex: 1;
-  width: 100%;
-  display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  padding-top: 80px;
+  padding-bottom: 180px;
+  box-sizing: border-box;
 }
 
 /*
@@ -42,7 +32,6 @@
 
 /*
  * Inner scaler — holds native-size BrowserChrome, scaled via transform.
- * flex-shrink: 0 prevents collapse; transform-origin: center anchors scale.
  */
 .scaler {
   flex-shrink: 0;
@@ -50,13 +39,15 @@
 }
 
 /*
- * ObjectiveTracker anchor — always in layout flow (visibility:hidden when
- * not playing) so the artifact position never shifts when the tracker appears.
+ * ObjectiveTracker — fixed to viewport bottom-left, matching HUD margins.
+ * Always rendered (visibility:hidden when not playing) so it never
+ * affects the artifact's layout or position.
  * Entrance animation plays only when .trackerWrapVisible is added.
  */
 .trackerWrap {
-  flex-shrink: 0;
-  align-self: flex-start;
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
   z-index: 50;
   visibility: hidden;
 }
