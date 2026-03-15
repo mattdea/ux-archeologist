@@ -25,7 +25,7 @@ const BEZEL_H = 547
 export default function Level1() {
   const [screen, setScreen] = useState('intro')
   const [completedIndices, setCompletedIndices] = useState([])
-  const scale = useBezelScale(BEZEL_W, BEZEL_H)
+  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80 })
 
   const completeObjective = (key) => {
     const idx = OBJ_KEY_INDEX[key]
