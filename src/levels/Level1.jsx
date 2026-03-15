@@ -9,9 +9,9 @@ import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
 
 const OBJECTIVES = [
-  'Open the Notes file',
-  'Drag the Projects folder to Trash',
-  'Use the File menu',
+  'Find the document on this computer',
+  'Delete the Projects folder',
+  'Discover what commands are available',
 ]
 
 // Maps DesktopScene's string keys → OBJECTIVES array indices
