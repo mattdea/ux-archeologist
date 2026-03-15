@@ -1,13 +1,31 @@
 /* src/levels/Level1.module.css */
 
-/* Outer wrapper — sizes to its content (the MonitorBezel) */
+/*
+ * Outer wrapper — explicit width/height set via inline style to the
+ * scaled bezel footprint (BEZEL_W * scale × BEZEL_H * scale).
+ * This is the "real" layout size surrounding elements use for positioning.
+ * overflow: visible so the bezel's drop-shadow can render beyond the box.
+ */
 .wrap {
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+/*
+ * Inner scaler — holds the native-size MonitorBezel and applies
+ * transform: scale(N) via inline style.  flex-shrink: 0 prevents
+ * the flex container from collapsing it; transform-origin: center
+ * ensures scaling anchors to the bezel's visual midpoint.
+ */
+.scaler {
+  flex-shrink: 0;
+  transform-origin: center center;
 }
 
 /*
  * Inner canvas — fills MonitorBezel's 620×415 screen area.
- * Replaces the old App.module.css .app class that Level1 was borrowing.
  */
 .inner {
   width: 100%;

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
+import useBezelScale from '../hooks/useBezelScale'
 import DesktopScene from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -17,9 +18,14 @@ const OBJECTIVES = [
 // Maps DesktopScene's string keys → OBJECTIVES array indices
 const OBJ_KEY_INDEX = { openFolder: 0, trashFile: 1, useMenu: 2 }
 
+// Bezel pixel dimensions: screen(620×415) + screenBezel pad(14×2) + monitor pad(52×2)
+const BEZEL_W = 752
+const BEZEL_H = 547
+
 export default function Level1() {
   const [screen, setScreen] = useState('intro')
   const [completedIndices, setCompletedIndices] = useState([])
+  const scale = useBezelScale(BEZEL_W, BEZEL_H)
 
   const completeObjective = (key) => {
     const idx = OBJ_KEY_INDEX[key]
@@ -56,20 +62,27 @@ export default function Level1() {
       )}
 
       {/* ── Monitor ───────────────────────────────────────────────── */}
-      <div className={styles.wrap}>
-        <MonitorBezel booting={screen === 'booting'}>
-          <div className={styles.inner}>
-            {showDesktop && (
-              <DesktopScene
-                completeObjective={completeObjective}
-                active={screen === 'playing'}
-              />
-            )}
-            {screen === 'booting' && (
-              <BootSequence onComplete={() => setScreen('playing')} />
-            )}
-          </div>
-        </MonitorBezel>
+      {/* Outer wrapper: occupies the scaled footprint in the layout  */}
+      {/* Inner scaler: native-size bezel, shrunk via CSS transform   */}
+      <div
+        className={styles.wrap}
+        style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
+      >
+        <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+          <MonitorBezel booting={screen === 'booting'}>
+            <div className={styles.inner}>
+              {showDesktop && (
+                <DesktopScene
+                  completeObjective={completeObjective}
+                  active={screen === 'playing'}
+                />
+              )}
+              {screen === 'booting' && (
+                <BootSequence onComplete={() => setScreen('playing')} />
+              )}
+            </div>
+          </MonitorBezel>
+        </div>
       </div>
 
       {/* ── ObjectiveTracker: fixed in museum space, bottom-left ───── */}
