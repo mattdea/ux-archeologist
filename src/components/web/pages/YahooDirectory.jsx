@@ -117,9 +117,19 @@ export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = ()
         <img src={yahooHeader} alt="Yahoo!" className={styles.logoImg} />
       </div>
 
-      {/* ── Banner ad ─────────────────────────────────────────── */}
+      {/* ── Banner ad — 3-column layout matching real site ───────── */}
       <div className={styles.bannerRow}>
+        <div className={styles.bannerSide}>
+          <span className={styles.bannerSideLink}>Find a Job</span>
+        </div>
         <img src={bannerAd} alt="Advertisement" className={styles.bannerImg} />
+        <div className={styles.bannerSide}>
+          <span className={styles.navLink}>NBA</span>
+          {' - '}
+          <span className={styles.navLink}>NHL</span>
+          <br />
+          Finals
+        </div>
       </div>
 
       <hr className={styles.divider} />
