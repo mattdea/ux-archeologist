@@ -1,0 +1,234 @@
+/* src/components/web/pages/VintageArchive.module.css
+   Hobbyist collection page, ~1997.
+   Dark background, cyan/green monospace headings, Times New Roman body.
+   Subtle dot-matrix CSS background texture — no images.
+*/
+
+/* ── Page shell ───────────────────────────────────────────────────── */
+.page {
+  min-height: 100%;
+  background-color: #000033;
+  /* Dot-matrix tiled texture: tiny cyan dots on dark navy */
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 80, 120, 0.45) 1px,
+    transparent 1px
+  );
+  background-size: 10px 10px;
+
+  padding: 16px 20px 20px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  color: #cccccc;
+  box-sizing: border-box;
+}
+
+/* ── Header ───────────────────────────────────────────────────────── */
+.header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #00ffcc;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+  text-shadow: 0 0 8px rgba(0, 255, 200, 0.5);
+}
+
+.subtitle {
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #88aaaa;
+  margin: 0 0 4px;
+}
+
+.lastUpdated {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #556677;
+  margin: 0;
+}
+
+/* ── Horizontal rule ──────────────────────────────────────────────── */
+.rule {
+  border: none;
+  border-top: 1px solid #00aaaa;
+  box-shadow: 0 1px 0 rgba(0, 80, 80, 0.5);
+  margin: 12px 0;
+}
+
+/* ── Machine entries ──────────────────────────────────────────────── */
+.entry {
+  margin-bottom: 20px;
+}
+
+.machineName {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #00dd88;
+  margin: 0 0 8px;
+  text-shadow: 0 0 6px rgba(0, 200, 100, 0.35);
+}
+
+.machineYear {
+  color: #557766;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.entryBody {
+  overflow: hidden; /* clearfix for floated imgBox */
+}
+
+/* Placeholder image box — mimics <img align="left"> */
+.imgBox {
+  float: left;
+  width: 130px;
+  height: 100px;
+  margin: 0 14px 8px 0;
+  background: #0a0a2a;
+  border: 2px solid;
+  border-top-color:    #003366;
+  border-left-color:   #003366;
+  border-right-color:  #001122;
+  border-bottom-color: #001122;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.imgLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #334455;
+  text-align: center;
+  padding: 0 4px;
+  line-height: 1.3;
+}
+
+.imgSubLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #222233;
+  font-style: italic;
+}
+
+.description {
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #bbbbcc;
+  margin: 0;
+}
+
+/* Clearfix after floated image */
+.entryClear {
+  clear: both;
+}
+
+/* ── Section heading ──────────────────────────────────────────────── */
+.section {
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: #00ccaa;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Recommended Reading list ─────────────────────────────────────── */
+.readingList {
+  list-style: disc;
+  padding-left: 22px;
+  margin: 0;
+}
+
+.readingItem {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.link {
+  color: #88aaff;
+  text-decoration: underline;
+  cursor: default;
+}
+
+/* "A Brief History of the Web" — the objective target link */
+.linkTarget {
+  color: #ffcc44;
+  font-weight: 700;
+}
+
+/* Blinking "NEW!" badge next to the target link */
+@keyframes blink {
+  0%, 49.9% { visibility: visible; }
+  50%,  100% { visibility: hidden;  }
+}
+
+.newBadge {
+  display: inline-block;
+  background: #cc0000;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  margin-right: 5px;
+  animation: blink 700ms step-end infinite;
+  vertical-align: middle;
+}
+
+/* ── Webring ──────────────────────────────────────────────────────── */
+.webring {
+  font-family: 'Times New Roman', serif;
+  font-size: 13px;
+  color: #778899;
+  text-align: center;
+  margin: 4px 0;
+}
+
+.webringLabel {
+  font-style: italic;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.construction {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffcc00;
+  text-align: center;
+  margin: 10px 0 6px;
+  letter-spacing: 0.08em;
+}
+
+.guestbook {
+  text-align: center;
+  font-size: 13px;
+  margin: 4px 0;
+  color: #778899;
+}
+
+.resolution {
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #334455;
+  margin: 8px 0 0;
+  font-style: italic;
+}

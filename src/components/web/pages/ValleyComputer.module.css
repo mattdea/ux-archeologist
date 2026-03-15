@@ -1,0 +1,221 @@
+/* src/components/web/pages/ValleyComputer.module.css
+   Small-business GeoCities site, ~1996.
+   Comic Sans heading, Times New Roman body, teal sidebar.
+*/
+
+/* ── Page shell ───────────────────────────────────────────────────── */
+.page {
+  background: #fff;
+  min-height: 100%;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  color: #000;
+  box-sizing: border-box;
+}
+
+/* ── Two-column table layout (sidebar + main) ─────────────────────── */
+.layout {
+  display: flex;
+  min-height: 100%;
+  align-items: flex-start;
+}
+
+/* ── Left sidebar ─────────────────────────────────────────────────── */
+.sidebar {
+  width: 118px;
+  flex-shrink: 0;
+  background: #005050;
+  min-height: 100%;
+  padding: 0;
+  border-right: 3px solid;
+  border-right-color: #008080;
+  box-shadow: inset -2px 0 0 #003838;
+}
+
+.sidebarTitle {
+  background: #003838;
+  color: #ffff66;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 4px;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #008080;
+}
+
+.sidebarLink {
+  display: block;
+  color: #ffff00;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 7px 10px;
+  cursor: default;
+  border-bottom: 1px solid #003838;
+}
+
+.sidebarLink:hover {
+  background: #007070;
+}
+
+.sidebarDivider {
+  height: 2px;
+  background: #008080;
+  margin: 8px 0;
+}
+
+.sidebarContact {
+  text-align: center;
+  padding: 4px 2px;
+}
+
+.sidebarContactLine {
+  color: #88ffff;
+  font-family: 'Times New Roman', serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ── Main content area ────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  padding: 12px 18px 18px;
+  overflow: hidden;
+}
+
+/* Big Comic Sans heading */
+.heading {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  font-size: 26px;
+  font-weight: 700;
+  color: #005500;
+  margin: 4px 0 2px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #444;
+  margin: 0 0 8px;
+}
+
+.rule {
+  border: none;
+  border-top: 2px solid #008080;
+  border-bottom: 1px solid #88cccc;
+  margin: 8px 0;
+}
+
+/* ── Blinking specials banner ─────────────────────────────────────── */
+.banner {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  font-size: 18px;
+  font-weight: 700;
+  color: #cc0000;
+  text-align: center;
+  margin: 6px 0;
+}
+
+@keyframes blink {
+  0%, 49.9% { visibility: visible; }
+  50%,  100% { visibility: hidden;  }
+}
+
+.blink {
+  animation: blink 800ms step-end infinite;
+}
+
+/* ── Price table ──────────────────────────────────────────────────── */
+.priceTable {
+  border-collapse: collapse;
+  width: 60%;
+  margin: 8px auto;
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+}
+
+.priceThService,
+.priceThPrice {
+  background: #005050;
+  color: #fff;
+  padding: 5px 12px;
+  text-align: left;
+  font-family: 'Times New Roman', serif;
+  border: 2px solid;
+  border-color: #008080 #003030 #003030 #008080;
+}
+
+.priceThPrice {
+  text-align: right;
+}
+
+.priceTd {
+  padding: 4px 12px;
+  border: 1px solid #aaa;
+  background: #f5f5f5;
+}
+
+/* Alternating row color */
+.priceTable tbody tr:nth-child(even) .priceTd {
+  background: #e8f4f4;
+}
+
+.priceTdPrice {
+  text-align: right;
+  font-weight: 700;
+  color: #005500;
+}
+
+/* ── Section headings ─────────────────────────────────────────────── */
+.sectionHead {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  font-size: 18px;
+  color: #005050;
+  margin: 10px 0 4px;
+  border-bottom: 1px dotted #008080;
+  padding-bottom: 2px;
+}
+
+.body {
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 6px 0;
+}
+
+.link {
+  color: #800080;
+  text-decoration: underline;
+  cursor: default;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-family: 'Times New Roman', serif;
+  font-size: 12px;
+}
+
+/* LED-style visitor counter */
+.counter {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  background: #111;
+  color: #00ee00;
+  padding: 2px 8px;
+  border: 2px inset #333;
+  letter-spacing: 0.05em;
+}
+
+.geocities {
+  font-size: 12px;
+  color: #555;
+}
