@@ -3,6 +3,7 @@ import { useState } from 'react'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useBezelScale from '../hooks/useBezelScale'
+import { completeLevel } from '../state/state'
 import DesktopScene from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -57,7 +58,7 @@ export default function Level1() {
           era="1984"
           artifactName="Direct Manipulation"
           description="Instead of typing abstract commands, users could act directly on visible objects: open folders, move files, and choose commands from menus. This made personal computing dramatically more legible to ordinary people."
-          nextUrl="/level/2"
+          nextUrl="/timeline"
         />
       )}
 
@@ -91,7 +92,7 @@ export default function Level1() {
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}
-            onContinue={() => setScreen('discovery')}
+            onContinue={() => { completeLevel(1); setScreen('discovery') }}
           />
         </div>
       )}

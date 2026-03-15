@@ -7,6 +7,7 @@ import Level2 from './levels/Level2'
 import Level3 from './levels/Level3'
 import Level4 from './levels/Level4'
 import Collection from './pages/Collection'
+import Timeline from './pages/Timeline'
 import TestMuseumUI from './pages/TestMuseumUI'
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
       <Routes>
         <Route element={<SharedLayout />}>
           <Route path="/" element={<TitleScreen />} />
+          <Route path="/timeline" element={<Timeline />} />
           <Route path="/level/1" element={<Level1 />} />
           <Route path="/level/2" element={<Level2 />} />
           <Route path="/level/3" element={<Level3 />} />
