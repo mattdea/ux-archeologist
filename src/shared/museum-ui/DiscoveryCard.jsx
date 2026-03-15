@@ -17,7 +17,7 @@ export default function DiscoveryCard({ era, artifactName, description, nextUrl 
           <p className={styles.description}>{description}</p>
         </div>
         <button className={styles.nextBtn} onClick={() => navigate(nextUrl)}>
-          Next excavation →
+          Continue
         </button>
       </div>
     </div>

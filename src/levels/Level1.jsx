@@ -50,7 +50,7 @@ export default function Level1() {
         <DiscoveryCard
           era="1984"
           artifactName="Direct Manipulation"
-          description="Instead of typing abstract commands, users could act directly on visible objects: open folders, move files, and choose commands from menus. The Macintosh proved that interfaces could mirror physical intuition. You just did it yourself."
+          description="Instead of typing abstract commands, users could act directly on visible objects: open folders, move files, and choose commands from menus. This made personal computing dramatically more legible to ordinary people."
           nextUrl="/level/2"
         />
       )}
