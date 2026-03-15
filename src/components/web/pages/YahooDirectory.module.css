@@ -1,58 +1,105 @@
 /* src/components/web/pages/YahooDirectory.module.css
    1996 Yahoo! directory.
-   Artifact layer — Times New Roman body, Win98 gray background,
-   purple/blue link colors. Never mix with museum layer fonts.
+   Artifact layer — white background, Times New Roman body,
+   purple/blue link colors, dense text-heavy layout.
+   Never mix with museum layer fonts.
 */
 
 /* ── Page shell ───────────────────────────────────────────────────── */
 .page {
   min-height: 100%;
-  background: #c0c0c0;
-  padding: 14px 20px 20px;
+  background: #fff;
+  padding: 8px 16px 16px;
   font-family: 'Times New Roman', Times, serif;
-  font-size: 14px;
+  font-size: 13px;
   color: #000;
   box-sizing: border-box;
 }
 
-/* ── Yahoo! logo ──────────────────────────────────────────────────── */
+/* ── Yahoo! logo image ────────────────────────────────────────────── */
 .logoRow {
   text-align: center;
   margin-bottom: 4px;
 }
 
-.logo {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 52px;
-  font-weight: 700;
-  color: #600090;
-  margin: 0;
-  letter-spacing: -2px;
-  line-height: 1;
-  /* Slight drop shadow to match the era's bitmap logo feel */
-  text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+.logoImg {
+  height: 52px;
+  width: auto;
+  display: inline-block;
 }
 
-/* ── Top navigation links ─────────────────────────────────────────── */
-.topNav {
-  text-align: center;
+/* ── Icon links row ───────────────────────────────────────────────── */
+.iconRow {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 6px 0 8px;
+}
+
+.iconItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: default;
+}
+
+.iconCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #fff;
   font-size: 13px;
-  margin: 6px 0 4px;
-  color: #000;
+  font-weight: 700;
+  font-family: 'Times New Roman', Times, serif;
+  flex-shrink: 0;
 }
 
-.navLink {
-  color: #800080;          /* web-standard 90s purple */
+.iconLabel {
+  font-size: 11px;
+  color: #800080;
   text-decoration: underline;
-  cursor: default;         /* no interactions yet */
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── Banner ad ────────────────────────────────────────────────────── */
+.bannerRow {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 8px;
+}
+
+.bannerAd {
+  width: 468px;
+  height: 56px;
+  background: linear-gradient(135deg, #ff6600 0%, #ffcc00 40%, #ff3300 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cc4400;
+  overflow: hidden;
+}
+
+.bannerText {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  letter-spacing: 0.02em;
+  padding: 0 12px;
+  text-align: center;
 }
 
 /* ── Horizontal rule ──────────────────────────────────────────────── */
 .divider {
   border: none;
-  border-top: 1px solid #888;
-  border-bottom: 1px solid #dfdfdf; /* Win98-style double rule */
-  margin: 8px 0;
+  border-top: 1px solid #aaa;
+  margin: 6px 0;
 }
 
 /* ── Search bar ───────────────────────────────────────────────────── */
@@ -61,37 +108,29 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin: 8px 0;
+  margin: 6px 0 4px;
 }
 
 .searchInput {
   width: 220px;
-  height: 22px;
+  height: 20px;
   background: #fff;
   font-family: 'Times New Roman', Times, serif;
   font-size: 13px;
   padding: 0 4px;
-
-  /* Win98 inset (sunken) border */
-  border: 2px solid;
-  border-top-color:    #888;
-  border-left-color:   #888;
-  border-right-color:  #dfdfdf;
-  border-bottom-color: #dfdfdf;
-
+  border: 1px solid #888;
   outline: none;
   cursor: default;
 }
 
 .searchBtn {
-  padding: 2px 14px;
-  height: 22px;
+  padding: 1px 10px;
+  height: 20px;
   background: #d4d0c8;
   font-family: 'Times New Roman', Times, serif;
   font-size: 13px;
   color: #000;
   cursor: default;
-
   border: 2px solid;
   border-top-color:    #fff;
   border-left-color:   #fff;
@@ -104,69 +143,124 @@
   margin-left: 4px;
 }
 
-/* ── Category directory ───────────────────────────────────────────── */
-.categories {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  margin: 12px 0;
-}
-
-.col {
-  min-width: 220px;
-}
-
-.catList {
-  list-style: disc;
-  padding-left: 20px;
-  margin: 0;
-}
-
-.catItem {
-  margin-bottom: 6px;
-  font-size: 14px;
+/* ── Utility nav row (Yellow Pages, People Search, etc.) ─────────── */
+.utilNav {
+  text-align: center;
+  font-size: 12px;
+  margin: 4px 0 2px;
   color: #000;
 }
 
-.catLink {
+.utilSep {
+  color: #000;
+}
+
+/* ── Shared link style ────────────────────────────────────────────── */
+.navLink {
   color: #800080;
   text-decoration: underline;
   cursor: default;
 }
 
-/* "Computers & Internet" — visually a blue link (slightly different from purple) */
+/* ── Category directory ───────────────────────────────────────────── */
+.categories {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0;
+}
+
+.col {
+  flex: 1;
+  min-width: 0;
+}
+
+.catList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.catItem {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* Bold underlined category heading */
+.catLink {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #800080;
+  text-decoration: underline;
+  cursor: default;
+}
+
+/* "Computers and Internet" gets blue highlight */
 .catLinkHL {
   color: #0000cc;
 }
 
-/* Clickable category — pointer cursor, hover underline */
+/* Clickable category */
 .catLinkClickable {
   cursor: pointer;
 }
 
 .catLinkClickable:hover {
-  text-decoration: none;
-  background: #000080;
-  color: #fff;
-  outline: 1px solid transparent;
+  color: #0000ff;
+  background: #ffffcc;
 }
 
-.catCount {
-  color: #000;
-  text-decoration: none;
-  font-size: 13px;
+/* [Xtra!] badge */
+.xtra {
+  font-size: 11px;
+  font-weight: 700;
+  color: #cc0000;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: normal;
 }
 
-/* ── Footer ───────────────────────────────────────────────────────── */
-.footer {
+/* Subcategory text below each heading */
+.catSubs {
+  font-size: 11px;
+  color: #555;
+  font-weight: 400;
+  font-style: italic;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* ── Footer link rows ─────────────────────────────────────────────── */
+.footerLinks {
   text-align: center;
-  font-size: 13px;
-  margin-bottom: 4px;
+  font-size: 12px;
+  margin: 4px 0;
+  color: #000;
+  line-height: 1.7;
+}
+
+.footerRow {
+  font-size: 12px;
+  margin: 3px 0;
+  text-align: center;
+}
+
+.footerLabel {
+  font-weight: 700;
+  font-size: 12px;
+  color: #000;
+}
+
+/* ── Bottom links + copyright ─────────────────────────────────────── */
+.bottomLinks {
+  text-align: center;
+  font-size: 12px;
+  margin: 4px 0 2px;
 }
 
 .copyright {
   text-align: center;
-  font-size: 12px;
-  color: #444;
-  margin: 0;
+  font-size: 11px;
+  color: #666;
+  margin: 2px 0 0;
 }

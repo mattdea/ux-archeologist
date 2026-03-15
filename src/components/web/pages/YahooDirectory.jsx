@@ -1,27 +1,101 @@
 // src/components/web/pages/YahooDirectory.jsx
 // 1996 Yahoo! directory homepage — era-authentic artifact content
+import yahooLogo from '../../../../assets/yahoo-logo.png'
 import styles from './YahooDirectory.module.css'
 
-const LEFT_CATEGORIES = [
-  { label: 'Arts & Humanities',    count: null,    highlight: false, navigateTo: null,              hoverUrl: null },
-  { label: 'Business & Economy',  count: null,    highlight: false, navigateTo: null,              hoverUrl: null },
-  { label: 'Computers & Internet', count: '248',   highlight: true,  navigateTo: 'yahoo-computers', hoverUrl: 'http://www.yahoo.com/Computers_and_Internet/' },
-  { label: 'Education',           count: null,    highlight: false, navigateTo: null,              hoverUrl: null },
-  { label: 'Entertainment',       count: '4,310', highlight: false, navigateTo: null,              hoverUrl: null },
+// ── Categories (left column) ────────────────────────────────────────
+const CATEGORIES_LEFT = [
+  {
+    label: 'Arts and Humanities',
+    subs: 'Photography, Architecture, Literature...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Business and Economy',
+    subs: 'Companies, Finance, Employment...',
+    highlight: false, xtra: true, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Computers and Internet',
+    subs: 'Internet, WWW, Software, Multimedia...',
+    highlight: true, xtra: false,
+    navigateTo: 'yahoo-computers',
+    hoverUrl: 'http://www.yahoo.com/Computers_and_Internet/',
+  },
+  {
+    label: 'Education',
+    subs: 'Universities, K-12, College Entrance...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Entertainment',
+    subs: 'Cool Links, Movies, Music, Television...',
+    highlight: false, xtra: true, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Government',
+    subs: 'Law, Military, Politics, Agencies...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Health',
+    subs: 'Medicine, Drugs, Diseases, Fitness...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
 ]
 
-const RIGHT_CATEGORIES = [
-  { label: 'Government',          count: null, highlight: false, navigateTo: null, hoverUrl: null },
-  { label: 'Health',              count: null, highlight: false, navigateTo: null, hoverUrl: null },
-  { label: 'News & Media',        count: null, highlight: false, navigateTo: null, hoverUrl: null },
-  { label: 'Recreation & Sports', count: null, highlight: false, navigateTo: null, hoverUrl: null },
-  { label: 'Science',             count: null, highlight: false, navigateTo: null, hoverUrl: null },
+// ── Categories (right column) ───────────────────────────────────────
+const CATEGORIES_RIGHT = [
+  {
+    label: 'News and Media',
+    subs: 'Current Events, Magazines, TV, Newspapers...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Recreation and Sports',
+    subs: 'Sports, Games, Travel, Autos, Outdoors...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Reference',
+    subs: 'Libraries, Dictionaries, Phone Numbers...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Regional',
+    subs: 'Countries, Regions, U.S. States...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Science',
+    subs: 'CS, Biology, Astronomy, Engineering...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Social Science',
+    subs: 'Anthropology, Economics, Psychology...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
+  {
+    label: 'Society and Culture',
+    subs: 'People, Environment, Religion, Diversity...',
+    highlight: false, xtra: false, navigateTo: null, hoverUrl: null,
+  },
 ]
 
+// ── Icon links below the logo ───────────────────────────────────────
+const ICON_LINKS = [
+  { symbol: '★', label: "What's New",    bg: '#cc3300' },
+  { symbol: '❄', label: "What's Cool",   bg: '#0055cc' },
+  { symbol: '◉', label: "Today's News",  bg: '#336600' },
+  { symbol: 'Y', label: 'More Yahoos!',  bg: '#770099' },
+]
+
+// ── Category list component ─────────────────────────────────────────
 function CategoryList({ items, onNavigate, onLinkHover }) {
   return (
     <ul className={styles.catList}>
-      {items.map(({ label, count, highlight, navigateTo, hoverUrl }) => (
+      {items.map(({ label, subs, highlight, xtra, navigateTo, hoverUrl }) => (
         <li key={label} className={styles.catItem}>
           <span
             className={`${styles.catLink} ${highlight ? styles.catLinkHL : ''} ${navigateTo ? styles.catLinkClickable : ''}`}
@@ -31,32 +105,43 @@ function CategoryList({ items, onNavigate, onLinkHover }) {
           >
             {label}
           </span>
-          {count && <span className={styles.catCount}> ({count})</span>}
+          {xtra && <span className={styles.xtra}> [Xtra!]</span>}
+          <br />
+          <span className={styles.catSubs}>{subs}</span>
         </li>
       ))}
     </ul>
   )
 }
 
+// ── Main component ──────────────────────────────────────────────────
 export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = () => {} }) {
   return (
     <div className={styles.page}>
 
       {/* ── Logo ──────────────────────────────────────────────── */}
       <div className={styles.logoRow}>
-        <h1 className={styles.logo}>Yahoo!</h1>
+        <img src={yahooLogo} alt="Yahoo!" className={styles.logoImg} />
       </div>
 
-      {/* ── Top nav links ─────────────────────────────────────── */}
-      <p className={styles.topNav}>
-        <span className={styles.navLink}>What's New</span>
-        {' | '}
-        <span className={styles.navLink}>What's Cool</span>
-        {' | '}
-        <span className={styles.navLink}>Today's News</span>
-        {' | '}
-        <span className={styles.navLink}>More Yahoos!</span>
-      </p>
+      {/* ── Icon links ────────────────────────────────────────── */}
+      <div className={styles.iconRow}>
+        {ICON_LINKS.map(({ symbol, label, bg }) => (
+          <span key={label} className={styles.iconItem}>
+            <span className={styles.iconCircle} style={{ background: bg }}>{symbol}</span>
+            <span className={styles.iconLabel}>{label}</span>
+          </span>
+        ))}
+      </div>
+
+      {/* ── Banner ad ─────────────────────────────────────────── */}
+      <div className={styles.bannerRow}>
+        <div className={styles.bannerAd}>
+          <span className={styles.bannerText}>
+            ★ FREE TRIPS! Getaway Giveaway! ★ Click Here! →
+          </span>
+        </div>
+      </div>
 
       <hr className={styles.divider} />
 
@@ -75,29 +160,82 @@ export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = ()
         </span>
       </div>
 
+      {/* ── Utility nav row ───────────────────────────────────── */}
+      <p className={styles.utilNav}>
+        {[
+          'Yellow Pages', 'People Search', 'Maps',
+          'Classifieds', 'News', 'Stock Quotes', 'Sports Scores',
+        ].map((item, i, arr) => (
+          <span key={item}>
+            <span className={styles.navLink}>{item}</span>
+            {i < arr.length - 1 && <span className={styles.utilSep}> - </span>}
+          </span>
+        ))}
+      </p>
+
       <hr className={styles.divider} />
 
       {/* ── Category directory ────────────────────────────────── */}
       <div className={styles.categories}>
         <div className={styles.col}>
-          <CategoryList items={LEFT_CATEGORIES} onNavigate={onNavigate} onLinkHover={onLinkHover} />
+          <CategoryList items={CATEGORIES_LEFT}  onNavigate={onNavigate} onLinkHover={onLinkHover} />
         </div>
         <div className={styles.col}>
-          <CategoryList items={RIGHT_CATEGORIES} onNavigate={onNavigate} onLinkHover={onLinkHover} />
+          <CategoryList items={CATEGORIES_RIGHT} onNavigate={onNavigate} onLinkHover={onLinkHover} />
         </div>
       </div>
 
       <hr className={styles.divider} />
 
-      {/* ── Footer ────────────────────────────────────────────── */}
-      <p className={styles.footer}>
-        <span className={styles.navLink}>Write Us</span>
-        {' - '}
-        <span className={styles.navLink}>Add URL</span>
-        {' - '}
-        <span className={styles.navLink}>Info</span>
-        {' - '}
-        <span className={styles.navLink}>Company</span>
+      {/* ── Yahoo services row ────────────────────────────────── */}
+      <p className={styles.footerLinks}>
+        {[
+          'My Yahoo!', 'Yahooligans! for Kids', 'Yahoo! Internet Life',
+          'Weekly Picks', "Today's Web Events", 'Chat',
+          'Weather Forecasts', 'Random Yahoo! Link', 'Yahoo! Shop',
+        ].map((item, i, arr) => (
+          <span key={item}>
+            <span className={styles.navLink}>{item}</span>
+            {i < arr.length - 1 && ' - '}
+          </span>
+        ))}
+      </p>
+
+      {/* ── National Yahoos ───────────────────────────────────── */}
+      <p className={styles.footerRow}>
+        <strong className={styles.footerLabel}>National Yahoos: </strong>
+        {['Canada', 'France', 'Germany', 'Japan', 'U.K. & Ireland'].map((c, i, arr) => (
+          <span key={c}>
+            <span className={styles.navLink}>{c}</span>
+            {i < arr.length - 1 && ' - '}
+          </span>
+        ))}
+      </p>
+
+      {/* ── Yahoo! Metros ─────────────────────────────────────── */}
+      <p className={styles.footerRow}>
+        <strong className={styles.footerLabel}>Yahoo! Metros: </strong>
+        {['Atlanta', 'Austin', 'Boston', 'Chicago', 'Los Angeles', 'New York', 'S.F. Bay', 'Seattle'].map((c, i, arr) => (
+          <span key={c}>
+            <span className={styles.navLink}>{c}</span>
+            {i < arr.length - 1 && ' - '}
+          </span>
+        ))}
+      </p>
+
+      <hr className={styles.divider} />
+
+      {/* ── Bottom links ──────────────────────────────────────── */}
+      <p className={styles.bottomLinks}>
+        {[
+          'How to Include Your Site', 'Company Information',
+          'Contributors', 'Yahoo! to Go',
+        ].map((item, i, arr) => (
+          <span key={item}>
+            <span className={styles.navLink}>{item}</span>
+            {i < arr.length - 1 && ' - '}
+          </span>
+        ))}
       </p>
       <p className={styles.copyright}>
         Copyright &copy; 1996 Yahoo! Inc. All Rights Reserved
