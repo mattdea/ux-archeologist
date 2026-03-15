@@ -120,13 +120,14 @@
 }
 
 .siteLink {
-  color: #800080;
+  color: #0000cc;
   text-decoration: underline;
   cursor: pointer;
 }
 
 .siteLink:hover {
   color: #0000ff;
+  background: #ffffcc;
 }
 
 .siteDesc {
