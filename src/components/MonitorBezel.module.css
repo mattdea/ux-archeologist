@@ -1,16 +1,5 @@
 /* src/components/MonitorBezel.module.css */
 
-/* Full-viewport dark room that centers the monitor */
-.viewport {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #1b1b1f;
-  overflow: hidden;
-}
-
 /* Outer plastic casing — uniform bezel all around */
 .monitor {
   position: relative;

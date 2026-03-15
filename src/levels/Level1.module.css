@@ -1,0 +1,35 @@
+/* src/levels/Level1.module.css */
+
+/*
+ * Outer wrapper — gives us a positioned ancestor for the ObjectiveTracker.
+ * Sizes to its content (the MonitorBezel) inside SharedLayout's flex container.
+ */
+.wrap {
+  position: relative;
+}
+
+/*
+ * Inner canvas — fills MonitorBezel's 620×415 screen area.
+ * Replaces the old App.module.css .app class that Level1 was borrowing.
+ */
+.inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/*
+ * ObjectiveTracker anchor — museum-layer card, overlapping the bottom-left
+ * of the Mac screen area.
+ *
+ * Monitor geometry:
+ *   52px outer padding + 14px screenBezel padding = 66px to each screen edge.
+ *   Add 16px inner breathing room → 82px from wrap bottom/left.
+ */
+.trackerWrap {
+  position: absolute;
+  bottom: 82px;
+  left: 82px;
+  z-index: 50;
+}

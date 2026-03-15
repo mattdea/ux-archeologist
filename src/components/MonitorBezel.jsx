@@ -16,17 +16,15 @@ function AppleLogo() {
 
 export default function MonitorBezel({ children, booting = false }) {
   return (
-    <div className={styles.viewport}>
-      <div className={styles.monitor}>
-        <div className={styles.screenBezel}>
-          <div className={styles.screen}>
-            {children}
-          </div>
+    <div className={styles.monitor}>
+      <div className={styles.screenBezel}>
+        <div className={styles.screen}>
+          {children}
         </div>
-        <div className={styles.decorRow}>
-          <AppleLogo />
-          <span className={`${styles.led} ${booting ? styles.ledBooting : ''}`} />
-        </div>
+      </div>
+      <div className={styles.decorRow}>
+        <AppleLogo />
+        <span className={`${styles.led} ${booting ? styles.ledBooting : ''}`} />
       </div>
     </div>
   )

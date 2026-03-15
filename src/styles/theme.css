@@ -38,7 +38,7 @@ body {
   font-family: var(--font-geneva);
   font-size: 12px;
   overflow: hidden;
-  background: var(--mac-bg);
+  background: #111;
   user-select: none;
   -webkit-user-select: none;
 }

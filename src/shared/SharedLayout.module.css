@@ -1,0 +1,106 @@
+/* src/shared/SharedLayout.module.css */
+
+/* ─── Dark museum room ───────────────────────────────────────────── */
+
+.room {
+  width: 100vw;
+  height: 100vh;
+  background: #111;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ─── Level content (centered) ───────────────────────────────────── */
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── HUD corners ────────────────────────────────────────────────── */
+
+.hudTopLeft,
+.hudTopRight,
+.hudBottomLeft,
+.hudBottomRight {
+  position: absolute;
+  display: flex;
+  align-items: center;
+}
+
+.hudTopLeft {
+  top: 20px;
+  left: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.hudTopRight {
+  top: 24px;
+  right: 24px;
+  gap: 8px;
+}
+
+.hudBottomLeft {
+  bottom: 20px;
+  left: 24px;
+}
+
+.hudBottomRight {
+  bottom: 20px;
+  right: 24px;
+}
+
+/* ─── HUD typography ─────────────────────────────────────────────── */
+
+.eraLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #999;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.levelTitle {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.artifactCounter {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 0.01em;
+}
+
+/* ─── Progress dots ──────────────────────────────────────────────── */
+
+.dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #444;
+}
+
+.dotDone {
+  background: #666;
+  border-color: #666;
+}
+
+.dotActive {
+  background: #fff;
+  border-color: #fff;
+}
+
+.dotEmpty {
+  background: transparent;
+}

@@ -1,0 +1,98 @@
+/* src/shared/museum-ui/ObjectiveTracker.module.css */
+
+.tracker {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 2px;
+  overflow: hidden;
+  min-width: 210px;
+}
+
+/* 1.5px accent line across top */
+.accentLine {
+  height: 1.5px;
+  background: #444;
+}
+
+.body {
+  padding: 14px 16px 16px;
+}
+
+/* "OBJECTIVES" — 10px, uppercase, muted */
+.label {
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+/* Unchecked — light text */
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+/* Checked — strikethrough + muted */
+.itemDone .itemText {
+  text-decoration: line-through;
+  color: #444;
+}
+
+/* Checkbox square */
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #555;
+  border-radius: 2px;
+  margin-top: 1px;
+  font-size: 9px;
+  color: #ccc;
+}
+
+.checkDone {
+  background: #555;
+  border-color: #555;
+  color: #fff;
+}
+
+/* "Continue" button — appears only when all objectives done */
+.continueBtn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  background: #fff;
+  color: #111;
+  border: none;
+  border-radius: 1px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-align: center;
+  transition: background 150ms ease;
+}
+
+.continueBtn:hover {
+  background: #f0f0f0;
+}

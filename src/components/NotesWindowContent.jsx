@@ -2,27 +2,21 @@
 import { useRef, useEffect } from 'react'
 import styles from './NotesWindowContent.module.css'
 
-const NOTES_TEXT = `The 1984 Macintosh: A Revolution in Human-Computer Interaction
+const NOTES_TEXT = `Jan 25, 1984
 
-When Apple introduced the Macintosh on January 24, 1984, it did not just launch a computer — it launched a paradigm. The Mac was the first mass-market personal computer to successfully commercialize the graphical user interface (GUI), transforming computing from a technical discipline into a human activity.
+Finally got the Macintosh set up on my desk today. Susan from accounting helped me carry the box up from the loading dock — it's heavier than it looks.
 
-The roots of this revolution trace to Xerox PARC in the 1970s, where researchers developed the Alto computer with windows, icons, menus, and a pointing device. Douglas Engelbart's 1968 "Mother of All Demos" had shown the world what was possible. But it was the Macintosh that made these ideas accessible to everyone.
+Spent about an hour just figuring out how to plug everything in. The manual is pretty clear though. When the little face came up on the screen and smiled at me, I laughed out loud. A computer that smiles at you. What a world.
 
-Key UX innovations the Mac introduced to mainstream computing:
+The mouse is strange. I keep wanting to type commands like I do on the Apple II, but there's nothing to type into. You just... point at things and click. Took me twenty minutes to figure out how to open a folder. Double-click, not single-click. Nobody told me that.
 
-• The Desktop Metaphor — Files, folders, and a trash can mapped digital work to familiar physical objects. Users could understand the system without reading a manual.
+Once I got it, though — I moved a document from one folder to another just by dragging it. My hand moved it. I didn't have to remember a single command. It just made sense.
 
-• Direct Manipulation — Instead of typing commands, users could drag objects, resize windows, and see immediate visual feedback. This was WYSIWYG before the acronym was common.
+The screen is small. Everything is black and white. But there's something about the way it works that feels different from every other computer I've used. Like it was made by someone who actually thought about me.
 
-• Consistent Interface Standards — The Human Interface Guidelines (1984) established that all Mac applications should work the same way. A user who learned one app could use any app.
+$2,495 is a lot of money. I hope the partners agree it was worth it.
 
-• The Mouse as Primary Input — The single-button mouse made pointing natural. Fitts's Law was being practiced: large targets at screen edges, a persistent menu bar always in reach.
-
-• The Menu Bar — A persistent location for all commands, shared across every application. Users never had to hunt for functions.
-
-The Mac's success proved that good design was a competitive advantage. Companies like Microsoft, Sun, and later everyone building for iOS and Android followed its model.
-
-This machine ran on a 7.8336 MHz Motorola 68000 processor with 128KB of RAM and a 3.5-inch floppy disk. It cost $2,495 — roughly $7,500 in today's dollars. Despite its limitations, it changed everything.`
+— R.H.`
 
 const THUMB_HEIGHT = 24
 const ARROW_STEP = 36

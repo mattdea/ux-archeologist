@@ -4,9 +4,7 @@ import styles from './DesktopScene.module.css'
 import MenuBar from './MenuBar'
 import DesktopIcon from './DesktopIcon'
 import DraggableWindow from './DraggableWindow'
-import ObjectiveTracker from './ObjectiveTracker'
-
-export default function DesktopScene({ objectives, completeObjective, active, onContinue }) {
+export default function DesktopScene({ completeObjective, active }) {
   // windows: [{ id: string, type: 'projects'|'notes'|'trash', pos: {x,y}, z: number }]
   const [windows, setWindows] = useState([])
   const [trashContents, setTrashContents] = useState([])  // [] | ['projects']
@@ -383,7 +381,6 @@ export default function DesktopScene({ objectives, completeObjective, active, on
         />
       ))}
 
-      <ObjectiveTracker objectives={objectives} onContinue={onContinue} />
     </div>
   )
 }

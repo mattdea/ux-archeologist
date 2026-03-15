@@ -1,0 +1,22 @@
+/* src/shared/museum-ui/HintPill.module.css */
+
+.pill {
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  font-style: italic;
+  color: #999;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 300ms ease-in-out;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}

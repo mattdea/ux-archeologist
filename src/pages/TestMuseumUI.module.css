@@ -1,0 +1,71 @@
+/* src/pages/TestMuseumUI.module.css */
+
+.page {
+  padding: 40px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #ccc;
+  margin-bottom: 28px;
+  letter-spacing: 0.01em;
+}
+
+/* ── Controls ─────────────────────────────────────────────────────── */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+
+.btn {
+  padding: 7px 14px;
+  background: #1e1e1e;
+  color: #aaa;
+  border: 1px solid #333;
+  border-radius: 2px;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.btn:hover {
+  background: #2a2a2a;
+  color: #ccc;
+}
+
+.btnActive {
+  background: #2a2a2a;
+  color: #fff;
+  border-color: #555;
+}
+
+/* ── Inline component grid ────────────────────────────────────────── */
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cellLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #444;
+}
