@@ -9,7 +9,7 @@ import BootSequence from '../components/BootSequence'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
-import { useArtifactReady } from '../shared/SharedLayout'
+import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Find the document on this computer',
@@ -27,15 +27,25 @@ const BEZEL_H = 547
 export default function Level1() {
   const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80, marginBottom: 200 })
+  // marginBottom = tracker height (~140px) + artifact→tracker gap (20px) + levelLayout padding (20px)
+  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80, marginBottom: 180 })
   const notifyArtifactReady = useArtifactReady()
+  const setContinue = useSetContinue()
 
   // Notify SharedLayout when the artifact is ready for interaction.
-  // Fires once when screen becomes 'playing' — covers both normal flow
-  // (after boot sequence) and replay (starts at 'playing' immediately).
   useEffect(() => {
     if (screen === 'playing') notifyArtifactReady()
   }, [screen, notifyArtifactReady])
+
+  // Wire / unwire the HUD Continue button based on play state + completion.
+  const allComplete = completedIndices.length === OBJECTIVES.length
+  useEffect(() => {
+    if (screen === 'playing' && allComplete) {
+      setContinue(() => () => { completeLevel(1); setScreen('discovery') })
+    } else {
+      setContinue(null)
+    }
+  }, [screen, allComplete, setContinue])
 
   const completeObjective = (key) => {
     const idx = OBJ_KEY_INDEX[key]
@@ -74,7 +84,7 @@ export default function Level1() {
       {/* ── Level layout: artifact above tracker, no overlap ─────── */}
       <div className={styles.levelLayout}>
 
-        {/* Artifact zone — centers the scaled bezel */}
+        {/* Artifact zone — anchors scaled bezel to bottom with 20px gap */}
         <div className={styles.artifactZone}>
           <div
             className={styles.wrap}
@@ -98,16 +108,14 @@ export default function Level1() {
           </div>
         </div>
 
-        {/* ObjectiveTracker: in flow below artifact */}
-        {screen === 'playing' && (
-          <div className={styles.trackerWrap}>
-            <ObjectiveTracker
-              objectives={OBJECTIVES}
-              completedIndices={completedIndices}
-              onContinue={() => { completeLevel(1); setScreen('discovery') }}
-            />
-          </div>
-        )}
+        {/* ObjectiveTracker: always in layout (visibility:hidden before playing)
+            so the artifact position stays stable when the tracker appears. */}
+        <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
+          <ObjectiveTracker
+            objectives={OBJECTIVES}
+            completedIndices={completedIndices}
+          />
+        </div>
 
       </div>
     </>

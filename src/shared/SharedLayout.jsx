@@ -15,6 +15,13 @@ export function useFadeNavigate() { return useContext(FadeNavCtx) }
 export const HudCtx = createContext(null)
 export function useArtifactReady() { return useContext(HudCtx) }
 
+// ── Continue-button context ────────────────────────────────────────
+// Level components call setContinue(fn) when all objectives are done.
+// SharedLayout renders the Continue button in the HUD bottom-right.
+// Pass null to hide the button (on navigation or screen change).
+export const ContinueCtx = createContext(null)
+export function useSetContinue() { return useContext(ContinueCtx) }
+
 // ── Level metadata ─────────────────────────────────────────────────
 const LEVEL_META = {
   '/level/1': { era: '1984', title: 'The Desktop Arrives', level: 1 },
@@ -48,6 +55,10 @@ export default function SharedLayout() {
   const [hudReady,  setHudReady]  = useState(false)
   const [hudFading, setHudFading] = useState(false)
 
+  // ── Continue button action ──────────────────────────────────────
+  // null = hidden; fn = shown and wired to that callback
+  const [continueAction, setContinueAction] = useState(null)
+
   const showHUD    = !HUD_HIDDEN_PATHS.includes(pathname)
   const meta       = LEVEL_META[pathname] || {}
   const activeLevel = meta.level ?? null
@@ -60,10 +71,11 @@ export default function SharedLayout() {
   // ── Intercept navigation: fade HUD + content out, then navigate ─
   const fadeNavigate = useCallback((to, options) => {
     if (to === pathname && !options) return
-    setHudFading(true)   // start HUD fade-out (200ms)
-    setHudReady(false)   // mark not ready (visual driven by hudFading until nav completes)
+    setContinueAction(null)  // clear Continue button on navigate
+    setHudFading(true)       // start HUD fade-out (200ms)
+    setHudReady(false)       // mark not ready (visual driven by hudFading until nav completes)
     pendingRef.current = { to, options }
-    setFading(true)      // start content fade-out (300ms)
+    setFading(true)          // start content fade-out (300ms)
   }, [pathname])
 
   // Fires when the content div finishes its CSS opacity transition
@@ -109,52 +121,54 @@ export default function SharedLayout() {
   return (
     <FadeNavCtx.Provider value={fadeNavigate}>
       <HudCtx.Provider value={notifyArtifactReady}>
-        <div className={styles.room}>
+        <ContinueCtx.Provider value={setContinueAction}>
+          <div className={styles.room}>
 
-          {showHUD && (
-            <>
-              {/* Top-left — era label + level title */}
-              <div className={styles.hudTopLeft} style={hudStyle('down', 0)}>
-                <span className={styles.eraLabel}>{meta.era}</span>
-                <span className={styles.levelTitle}>{meta.title}</span>
-              </div>
+            {showHUD && (
+              <>
+                {/* Top-left — era label + level title */}
+                <div className={styles.hudTopLeft} style={hudStyle('down', 0)}>
+                  <span className={styles.eraLabel}>{meta.era}</span>
+                  <span className={styles.levelTitle}>{meta.title}</span>
+                </div>
 
-              {/* Top-right — progress dots */}
-              <div className={styles.hudTopRight} style={hudStyle('down', 0)}>
-                {LEVEL_NUMBERS.map(n => (
-                  <span key={n} className={dotClass(n, activeLevel)} />
-                ))}
-              </div>
+                {/* Top-right — progress dots */}
+                <div className={styles.hudTopRight} style={hudStyle('down', 0)}>
+                  {LEVEL_NUMBERS.map(n => (
+                    <span key={n} className={dotClass(n, activeLevel)} />
+                  ))}
+                </div>
 
-              {/* Bottom-left — artifact counter (hidden for now) */}
-              {/* <div className={styles.hudBottomLeft}>
-                <span className={styles.artifactCounter}>0 of 12 artifacts collected</span>
-              </div> */}
+                {/* Bottom-right — Continue (when objectives done) + back to timeline */}
+                <div className={styles.hudBottomRight} style={hudStyle('up', 200)}>
+                  <div className={`${styles.hudContinueBtnWrap} ${continueAction ? styles.hudContinueBtnWrapVisible : ''}`}>
+                    <button className={styles.hudContinueBtn} onClick={continueAction ?? undefined}>
+                      Continue
+                    </button>
+                  </div>
+                  {activeLevel !== null && (
+                    <span
+                      className={styles.backLink}
+                      onClick={() => fadeNavigate('/timeline')}
+                    >
+                      ← Back to timeline
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
 
-              {/* Bottom-right — back to timeline */}
-              <div className={styles.hudBottomRight} style={hudStyle('up', 200)}>
-                {activeLevel !== null && (
-                  <span
-                    className={styles.backLink}
-                    onClick={() => fadeNavigate('/timeline')}
-                  >
-                    ← Back to timeline
-                  </span>
-                )}
-              </div>
-            </>
-          )}
+            {/* Level / page content — fades between routes */}
+            <div
+              className={styles.content}
+              style={{ opacity: fading ? 0 : 1 }}
+              onTransitionEnd={handleTransitionEnd}
+            >
+              <Outlet />
+            </div>
 
-          {/* Level / page content — fades between routes */}
-          <div
-            className={styles.content}
-            style={{ opacity: fading ? 0 : 1 }}
-            onTransitionEnd={handleTransitionEnd}
-          >
-            <Outlet />
           </div>
-
-        </div>
+        </ContinueCtx.Provider>
       </HudCtx.Provider>
     </FadeNavCtx.Provider>
   )

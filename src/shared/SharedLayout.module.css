@@ -60,6 +60,9 @@
 .hudBottomRight {
   bottom: 20px;
   right: 24px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 
 /* ─── HUD typography ─────────────────────────────────────────────── */
@@ -110,6 +113,37 @@
 
 .dotEmpty {
   background: transparent;
+}
+
+/* ─── Continue button (appears when all objectives complete) ─────── */
+
+.hudContinueBtnWrap {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.hudContinueBtnWrapVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hudContinueBtn {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: #ccc;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.hudContinueBtn:hover {
+  border-color: #fff;
+  color: #fff;
 }
 
 /* ─── Back to timeline link ──────────────────────────────────────── */

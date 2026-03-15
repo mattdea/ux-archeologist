@@ -1,9 +1,7 @@
 // src/shared/museum-ui/ObjectiveTracker.jsx
 import styles from './ObjectiveTracker.module.css'
 
-export default function ObjectiveTracker({ objectives, completedIndices = [], onContinue }) {
-  const allComplete = objectives.length > 0 && completedIndices.length === objectives.length
-
+export default function ObjectiveTracker({ objectives, completedIndices = [] }) {
   return (
     <div className={styles.tracker}>
       <div className={styles.accentLine} />
@@ -22,11 +20,6 @@ export default function ObjectiveTracker({ objectives, completedIndices = [], on
             )
           })}
         </ul>
-        <div className={`${styles.continueBtnWrap} ${allComplete ? styles.continueBtnWrapVisible : ''}`}>
-          <button className={styles.continueBtn} onClick={onContinue}>
-            Continue
-          </button>
-        </div>
       </div>
     </div>
   )

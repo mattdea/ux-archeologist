@@ -11,7 +11,7 @@ import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
-import { useArtifactReady } from '../shared/SharedLayout'
+import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 // ── Page metadata ───────────────────────────────────────────────────
 const PAGES = {
@@ -65,8 +65,10 @@ export default function Level2() {
   const [hoverUrl, setHoverUrl]         = useState(null)
 
   // ── Responsive scaling ──────────────────────────────────────────
-  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 80, marginBottom: 200 })
+  // marginBottom = tracker height (~140px) + artifact→tracker gap (20px) + levelLayout padding (20px)
+  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 80, marginBottom: 180 })
   const notifyArtifactReady = useArtifactReady()
+  const setContinue = useSetContinue()
 
   // Notify SharedLayout when artifact is ready for interaction.
   // Normal flow: fires when modem load sequence completes → screen='playing'.
@@ -74,6 +76,16 @@ export default function Level2() {
   useEffect(() => {
     if (screen === 'playing') notifyArtifactReady()
   }, [screen, notifyArtifactReady])
+
+  // Wire / unwire the HUD Continue button based on play state + completion.
+  const allComplete = completedIndices.length === OBJECTIVES.length
+  useEffect(() => {
+    if (screen === 'playing' && allComplete) {
+      setContinue(() => () => { completeLevel(2); setScreen('discovery') })
+    } else {
+      setContinue(null)
+    }
+  }, [screen, allComplete, setContinue])
 
   // ── Derived browser values ──────────────────────────────────────
   const currentPage  = history[historyIndex]
@@ -234,16 +246,14 @@ export default function Level2() {
           </div>
         </div>
 
-        {/* ObjectiveTracker: in flow below artifact */}
-        {screen === 'playing' && (
-          <div className={styles.trackerWrap}>
-            <ObjectiveTracker
-              objectives={OBJECTIVES}
-              completedIndices={completedIndices}
-              onContinue={() => { completeLevel(2); setScreen('discovery') }}
-            />
-          </div>
-        )}
+        {/* ObjectiveTracker: always in layout (visibility:hidden before playing)
+            so the artifact position stays stable when the tracker appears. */}
+        <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
+          <ObjectiveTracker
+            objectives={OBJECTIVES}
+            completedIndices={completedIndices}
+          />
+        </div>
 
       </div>
     </>
