@@ -1,9 +1,9 @@
 // src/shared/museum-ui/DiscoveryCard.jsx
-import { useNavigate } from 'react-router-dom'
 import styles from './DiscoveryCard.module.css'
+import { useFadeNavigate } from '../SharedLayout'
 
 export default function DiscoveryCard({ era, artifactName, description, nextUrl }) {
-  const navigate = useNavigate()
+  const navigate = useFadeNavigate()
 
   return (
     <div className={styles.scrim}>

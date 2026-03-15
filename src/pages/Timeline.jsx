@@ -1,7 +1,7 @@
 // src/pages/Timeline.jsx
-import { useNavigate } from 'react-router-dom'
 import styles from './Timeline.module.css'
 import { getCurrentLevel, isLevelComplete, resetAll } from '../state/state'
+import { useFadeNavigate } from '../shared/SharedLayout'
 
 const ENTRIES = [
   { level: 1, year: '1984', title: 'The Desktop Arrives',  artifact: 'Direct Manipulation',            path: '/level/1' },
@@ -11,7 +11,7 @@ const ENTRIES = [
 ]
 
 export default function Timeline() {
-  const navigate    = useNavigate()
+  const navigate    = useFadeNavigate()
   const currentLvl  = getCurrentLevel()
 
   return (

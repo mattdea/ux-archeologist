@@ -1,9 +1,9 @@
 // src/pages/TitleScreen.jsx
-import { useNavigate } from 'react-router-dom'
 import styles from './TitleScreen.module.css'
+import { useFadeNavigate } from '../shared/SharedLayout'
 
 export default function TitleScreen() {
-  const navigate = useNavigate()
+  const navigate = useFadeNavigate()
 
   return (
     <>
