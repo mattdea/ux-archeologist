@@ -82,10 +82,10 @@ export default function SharedLayout() {
               ))}
             </div>
 
-            {/* Bottom-left — artifact counter */}
-            <div className={styles.hudBottomLeft}>
+            {/* Bottom-left — artifact counter (hidden for now) */}
+            {/* <div className={styles.hudBottomLeft}>
               <span className={styles.artifactCounter}>0 of 12 artifacts collected</span>
-            </div>
+            </div> */}
 
             {/* Bottom-right — back to timeline (level routes only) */}
             <div className={styles.hudBottomRight}>

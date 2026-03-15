@@ -1,7 +1,7 @@
 /* src/shared/museum-ui/ObjectiveTracker.module.css */
 
 .tracker {
-  background: rgba(0, 0, 0, 0.7);
+  background: transparent;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 0;
@@ -26,6 +26,7 @@
   letter-spacing: 0.08em;
   color: #aaa;
   margin-bottom: 14px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 .list {
@@ -45,6 +46,7 @@
   font-weight: 400;
   color: #fff;
   line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* Completed item text */
