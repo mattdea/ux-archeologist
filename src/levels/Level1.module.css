@@ -1,9 +1,6 @@
 /* src/levels/Level1.module.css */
 
-/*
- * Outer wrapper — gives us a positioned ancestor for the ObjectiveTracker.
- * Sizes to its content (the MonitorBezel) inside SharedLayout's flex container.
- */
+/* Outer wrapper — sizes to its content (the MonitorBezel) */
 .wrap {
   position: relative;
 }
@@ -20,16 +17,13 @@
 }
 
 /*
- * ObjectiveTracker anchor — museum-layer card, overlapping the bottom-left
- * of the Mac screen area.
- *
- * Monitor geometry:
- *   52px outer padding + 14px screenBezel padding = 66px to each screen edge.
- *   Add 16px inner breathing room → 82px from wrap bottom/left.
+ * ObjectiveTracker anchor — fixed to the museum viewport, bottom-left corner.
+ * Lives in the dark room outside the artifact entirely.
+ * z-index 50: above the bezel, below modals (z-index 100).
  */
 .trackerWrap {
-  position: absolute;
-  bottom: 82px;
-  left: 82px;
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
   z-index: 50;
 }

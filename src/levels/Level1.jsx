@@ -55,7 +55,7 @@ export default function Level1() {
         />
       )}
 
-      {/* ── Monitor + ObjectiveTracker ─────────────────────────────── */}
+      {/* ── Monitor ───────────────────────────────────────────────── */}
       <div className={styles.wrap}>
         <MonitorBezel booting={screen === 'booting'}>
           <div className={styles.inner}>
@@ -70,18 +70,18 @@ export default function Level1() {
             )}
           </div>
         </MonitorBezel>
-
-        {/* ObjectiveTracker: museum-layer card anchored to bottom-left of Mac screen */}
-        {screen === 'playing' && (
-          <div className={styles.trackerWrap}>
-            <ObjectiveTracker
-              objectives={OBJECTIVES}
-              completedIndices={completedIndices}
-              onContinue={() => setScreen('discovery')}
-            />
-          </div>
-        )}
       </div>
+
+      {/* ── ObjectiveTracker: fixed in museum space, bottom-left ───── */}
+      {screen === 'playing' && (
+        <div className={styles.trackerWrap}>
+          <ObjectiveTracker
+            objectives={OBJECTIVES}
+            completedIndices={completedIndices}
+            onContinue={() => setScreen('discovery')}
+          />
+        </div>
+      )}
     </>
   )
 }
