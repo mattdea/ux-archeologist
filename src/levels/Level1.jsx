@@ -28,7 +28,7 @@ export default function Level1() {
   const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
   // marginBottom = tracker height (~140px) + artifact→tracker gap (20px) + levelLayout padding (20px)
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80, marginBottom: 180 })
+  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 64, marginBottom: 195 })
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 

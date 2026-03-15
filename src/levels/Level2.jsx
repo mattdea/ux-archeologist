@@ -66,7 +66,7 @@ export default function Level2() {
 
   // ── Responsive scaling ──────────────────────────────────────────
   // marginBottom = tracker height (~140px) + artifact→tracker gap (20px) + levelLayout padding (20px)
-  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 80, marginBottom: 180 })
+  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 64, marginBottom: 195 })
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
