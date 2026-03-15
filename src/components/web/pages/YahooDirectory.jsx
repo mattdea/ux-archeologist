@@ -108,127 +108,146 @@ function CategoryList({ items, onNavigate, onLinkHover }) {
 }
 
 // ── Main component ──────────────────────────────────────────────────
-export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = () => {} }) {
+// loadPhase: controls progressive reveal during boot-time load sequence.
+//   Infinity (default) = fully loaded, show everything.
+//   1 = white page background only (empty)
+//   2 = logo placeholder (broken image effect)
+//   3 = logo image loaded
+//   4 = banner ad loaded
+//   5+ = all remaining content
+export default function YahooDirectory({ onNavigate = () => {}, onLinkHover = () => {}, loadPhase = Infinity }) {
   return (
     <div className={styles.page}>
 
-      {/* ── Header (logo + icon links combined image) ─────────── */}
-      <div className={styles.logoRow}>
-        <img src={yahooHeader} alt="Yahoo!" className={styles.logoImg} />
-      </div>
-
-      {/* ── Banner ad — 3-column layout matching real site ───────── */}
-      <div className={styles.bannerRow}>
-        <div className={styles.bannerSide}>
-          <span className={styles.bannerSideLink}>Find a Job</span>
+      {/* ── Header: logo placeholder → logo image ─────────────── */}
+      {loadPhase >= 2 && (
+        <div className={styles.logoRow}>
+          {loadPhase < 3
+            ? <div className={styles.logoPlaceholder}>Yahoo!</div>
+            : <img src={yahooHeader} alt="Yahoo!" className={styles.logoImg} />
+          }
         </div>
-        <img src={bannerAd} alt="Advertisement" className={styles.bannerImg} />
-        <div className={styles.bannerSide}>
-          <span className={styles.navLink}>NBA</span>
-          {' - '}
-          <span className={styles.navLink}>NHL</span>
-          <br />
-          Finals
+      )}
+
+      {/* ── Banner ad (loads after logo image) ───────────────────── */}
+      {loadPhase >= 4 && (
+        <div className={styles.bannerRow}>
+          <div className={styles.bannerSide}>
+            <span className={styles.bannerSideLink}>Find a Job</span>
+          </div>
+          <img src={bannerAd} alt="Advertisement" className={styles.bannerImg} />
+          <div className={styles.bannerSide}>
+            <span className={styles.navLink}>NBA</span>
+            {' - '}
+            <span className={styles.navLink}>NHL</span>
+            <br />
+            Finals
+          </div>
         </div>
-      </div>
+      )}
 
-      <hr className={styles.divider} />
+      {/* ── Rest of page (loads last — text + categories + footer) ── */}
+      {loadPhase >= 5 && (
+        <>
+          <hr className={styles.divider} />
 
-      {/* ── Search ────────────────────────────────────────────── */}
-      <div className={styles.searchRow}>
-        <input
-          type="text"
-          className={styles.searchInput}
-          readOnly
-          tabIndex={-1}
-          placeholder=""
-        />
-        <button className={styles.searchBtn} tabIndex={-1}>Search</button>
-        <span className={styles.searchOptions}>
-          <span className={styles.navLink}>options</span>
-        </span>
-      </div>
+          {/* ── Search ──────────────────────────────────────────── */}
+          <div className={styles.searchRow}>
+            <input
+              type="text"
+              className={styles.searchInput}
+              readOnly
+              tabIndex={-1}
+              placeholder=""
+            />
+            <button className={styles.searchBtn} tabIndex={-1}>Search</button>
+            <span className={styles.searchOptions}>
+              <span className={styles.navLink}>options</span>
+            </span>
+          </div>
 
-      {/* ── Utility nav row ───────────────────────────────────── */}
-      <p className={styles.utilNav}>
-        {[
-          'Yellow Pages', 'People Search', 'Maps',
-          'Classifieds', 'News', 'Stock Quotes', 'Sports Scores',
-        ].map((item, i, arr) => (
-          <span key={item}>
-            <span className={styles.navLink}>{item}</span>
-            {i < arr.length - 1 && <span className={styles.utilSep}> - </span>}
-          </span>
-        ))}
-      </p>
+          {/* ── Utility nav row ─────────────────────────────────── */}
+          <p className={styles.utilNav}>
+            {[
+              'Yellow Pages', 'People Search', 'Maps',
+              'Classifieds', 'News', 'Stock Quotes', 'Sports Scores',
+            ].map((item, i, arr) => (
+              <span key={item}>
+                <span className={styles.navLink}>{item}</span>
+                {i < arr.length - 1 && <span className={styles.utilSep}> - </span>}
+              </span>
+            ))}
+          </p>
 
-      <hr className={styles.divider} />
+          <hr className={styles.divider} />
 
-      {/* ── Category directory ────────────────────────────────── */}
-      <div className={styles.categories}>
-        <div className={styles.col}>
-          <CategoryList items={CATEGORIES_LEFT}  onNavigate={onNavigate} onLinkHover={onLinkHover} />
-        </div>
-        <div className={styles.col}>
-          <CategoryList items={CATEGORIES_RIGHT} onNavigate={onNavigate} onLinkHover={onLinkHover} />
-        </div>
-      </div>
+          {/* ── Category directory ───────────────────────────────── */}
+          <div className={styles.categories}>
+            <div className={styles.col}>
+              <CategoryList items={CATEGORIES_LEFT}  onNavigate={onNavigate} onLinkHover={onLinkHover} />
+            </div>
+            <div className={styles.col}>
+              <CategoryList items={CATEGORIES_RIGHT} onNavigate={onNavigate} onLinkHover={onLinkHover} />
+            </div>
+          </div>
 
-      <hr className={styles.divider} />
+          <hr className={styles.divider} />
 
-      {/* ── Yahoo services row ────────────────────────────────── */}
-      <p className={styles.footerLinks}>
-        {[
-          'My Yahoo!', 'Yahooligans! for Kids', 'Yahoo! Internet Life',
-          'Weekly Picks', "Today's Web Events", 'Chat',
-          'Weather Forecasts', 'Random Yahoo! Link', 'Yahoo! Shop',
-        ].map((item, i, arr) => (
-          <span key={item}>
-            <span className={styles.navLink}>{item}</span>
-            {i < arr.length - 1 && ' - '}
-          </span>
-        ))}
-      </p>
+          {/* ── Yahoo services row ───────────────────────────────── */}
+          <p className={styles.footerLinks}>
+            {[
+              'My Yahoo!', 'Yahooligans! for Kids', 'Yahoo! Internet Life',
+              'Weekly Picks', "Today's Web Events", 'Chat',
+              'Weather Forecasts', 'Random Yahoo! Link', 'Yahoo! Shop',
+            ].map((item, i, arr) => (
+              <span key={item}>
+                <span className={styles.navLink}>{item}</span>
+                {i < arr.length - 1 && ' - '}
+              </span>
+            ))}
+          </p>
 
-      {/* ── National Yahoos ───────────────────────────────────── */}
-      <p className={styles.footerRow}>
-        <strong className={styles.footerLabel}>National Yahoos: </strong>
-        {['Canada', 'France', 'Germany', 'Japan', 'U.K. & Ireland'].map((c, i, arr) => (
-          <span key={c}>
-            <span className={styles.navLink}>{c}</span>
-            {i < arr.length - 1 && ' - '}
-          </span>
-        ))}
-      </p>
+          {/* ── National Yahoos ──────────────────────────────────── */}
+          <p className={styles.footerRow}>
+            <strong className={styles.footerLabel}>National Yahoos: </strong>
+            {['Canada', 'France', 'Germany', 'Japan', 'U.K. & Ireland'].map((c, i, arr) => (
+              <span key={c}>
+                <span className={styles.navLink}>{c}</span>
+                {i < arr.length - 1 && ' - '}
+              </span>
+            ))}
+          </p>
 
-      {/* ── Yahoo! Metros ─────────────────────────────────────── */}
-      <p className={styles.footerRow}>
-        <strong className={styles.footerLabel}>Yahoo! Metros: </strong>
-        {['Atlanta', 'Austin', 'Boston', 'Chicago', 'Los Angeles', 'New York', 'S.F. Bay', 'Seattle'].map((c, i, arr) => (
-          <span key={c}>
-            <span className={styles.navLink}>{c}</span>
-            {i < arr.length - 1 && ' - '}
-          </span>
-        ))}
-      </p>
+          {/* ── Yahoo! Metros ────────────────────────────────────── */}
+          <p className={styles.footerRow}>
+            <strong className={styles.footerLabel}>Yahoo! Metros: </strong>
+            {['Atlanta', 'Austin', 'Boston', 'Chicago', 'Los Angeles', 'New York', 'S.F. Bay', 'Seattle'].map((c, i, arr) => (
+              <span key={c}>
+                <span className={styles.navLink}>{c}</span>
+                {i < arr.length - 1 && ' - '}
+              </span>
+            ))}
+          </p>
 
-      <hr className={styles.divider} />
+          <hr className={styles.divider} />
 
-      {/* ── Bottom links ──────────────────────────────────────── */}
-      <p className={styles.bottomLinks}>
-        {[
-          'How to Include Your Site', 'Company Information',
-          'Contributors', 'Yahoo! to Go',
-        ].map((item, i, arr) => (
-          <span key={item}>
-            <span className={styles.navLink}>{item}</span>
-            {i < arr.length - 1 && ' - '}
-          </span>
-        ))}
-      </p>
-      <p className={styles.copyright}>
-        Copyright &copy; 1996 Yahoo! Inc. All Rights Reserved
-      </p>
+          {/* ── Bottom links ─────────────────────────────────────── */}
+          <p className={styles.bottomLinks}>
+            {[
+              'How to Include Your Site', 'Company Information',
+              'Contributors', 'Yahoo! to Go',
+            ].map((item, i, arr) => (
+              <span key={item}>
+                <span className={styles.navLink}>{item}</span>
+                {i < arr.length - 1 && ' - '}
+              </span>
+            ))}
+          </p>
+          <p className={styles.copyright}>
+            Copyright &copy; 1996 Yahoo! Inc. All Rights Reserved
+          </p>
+        </>
+      )}
 
     </div>
   )

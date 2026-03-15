@@ -34,12 +34,25 @@ const OBJ_KEY_INDEX = { navigate: 0, goBack: 1, findPaper: 2 }
 const BROWSER_W = 700
 const BROWSER_H = 520
 
-// Loading delay (ms) — mimics mid-90s dial-up latency
+// Loading delay (ms) — mimics mid-90s dial-up latency (page navigation)
 const LOAD_DELAY = 500
 
 export default function Level2() {
   // ── Museum screen state ─────────────────────────────────────────
+  // intro → loading → playing → discovery
   const [screen, setScreen] = useState(() => isLevelComplete(2) ? 'playing' : 'intro')
+
+  // ── Boot-time page load sequence phase (0–6) ────────────────────
+  // Only plays on first visit. Replays skip straight to 'playing'.
+  // Phase meaning:
+  //   0  → status bar shows "Opening page...", address bar shows URL
+  //   1  → white page background appears (YahooDirectory mounts, empty)
+  //   2  → Yahoo logo placeholder (broken image) appears
+  //   3  → Yahoo logo image loads
+  //   4  → Banner ad image loads
+  //   5  → Rest of page content (search, nav, categories, footer)
+  //   6  → Status bar "Done", screen transitions to 'playing'
+  const [loadPhase, setLoadPhase] = useState(-1)
 
   // ── Completed objectives ────────────────────────────────────────
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(2) ? [0, 1, 2] : [])
@@ -47,7 +60,7 @@ export default function Level2() {
   // ── Browser navigation state ────────────────────────────────────
   const [history, setHistory]           = useState(['yahoo'])
   const [historyIndex, setHistoryIndex] = useState(0)
-  const [isLoading, setIsLoading]       = useState(false)
+  const [isNavLoading, setIsNavLoading] = useState(false)
   const [hoverUrl, setHoverUrl]         = useState(null)
 
   // ── Responsive scaling ──────────────────────────────────────────
@@ -57,9 +70,22 @@ export default function Level2() {
   const currentPage  = history[historyIndex]
   const canGoBack    = historyIndex > 0
   const canGoForward = historyIndex < history.length - 1
-  const statusText   = hoverUrl ?? (isLoading ? 'Loading...' : 'Done')
   const currentUrl   = PAGES[currentPage].url
   const pageTitle    = PAGES[currentPage].title
+
+  // During intro: show 'about:blank' until page starts loading
+  const displayUrl   = screen === 'intro' ? 'about:blank' : currentUrl
+  // During intro: blank title bar (no page loaded)
+  const displayTitle = screen === 'intro' ? '' : pageTitle
+
+  // Status bar text varies by state
+  const statusText = (() => {
+    if (screen === 'loading') {
+      if (loadPhase <= 0) return `Opening page ${PAGES.yahoo.url}...`
+      return 'Transferring data from www.yahoo.com...'
+    }
+    return hoverUrl ?? (isNavLoading ? 'Loading...' : 'Done')
+  })()
 
   // ── Objective completion ────────────────────────────────────────
   const completeObjective = useCallback((key) => {
@@ -69,21 +95,30 @@ export default function Level2() {
     }
   }, [])
 
-  // ── Loading simulation ──────────────────────────────────────────
-  const simulateLoad = () => {
-    setIsLoading(true)
-    setTimeout(() => setIsLoading(false), LOAD_DELAY)
+  // ── Per-page navigation loading simulation ──────────────────────
+  const simulateNavLoad = () => {
+    setIsNavLoading(true)
+    setTimeout(() => setIsNavLoading(false), LOAD_DELAY)
   }
+
+  // ── Boot-time 28.8k modem load sequence ────────────────────────
+  // Fires once when "Begin excavation" is clicked on a fresh visit.
+  const startLoadSequence = useCallback(() => {
+    setLoadPhase(0)
+    setTimeout(() => setLoadPhase(1), 500)
+    setTimeout(() => setLoadPhase(2), 1000)
+    setTimeout(() => setLoadPhase(3), 1500)
+    setTimeout(() => setLoadPhase(4), 2000)
+    setTimeout(() => setLoadPhase(5), 2500)
+    setTimeout(() => { setLoadPhase(6); setScreen('playing') }, 3000)
+  }, [])
 
   // ── Navigate forward to a new page ─────────────────────────────
   const navigate = useCallback((pageKey) => {
-    // Complete obj1 on first navigation (idempotent)
     completeObjective('navigate')
-
-    // Truncate any forward history, push new page
     setHistory(prev => [...prev.slice(0, historyIndex + 1), pageKey])
     setHistoryIndex(prev => prev + 1)
-    simulateLoad()
+    simulateNavLoad()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyIndex, completeObjective])
 
@@ -92,7 +127,7 @@ export default function Level2() {
     if (!canGoBack) return
     completeObjective('goBack')
     setHistoryIndex(prev => prev - 1)
-    simulateLoad()
+    simulateNavLoad()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canGoBack, completeObjective])
 
@@ -100,44 +135,40 @@ export default function Level2() {
   const goForward = useCallback(() => {
     if (!canGoForward) return
     setHistoryIndex(prev => prev + 1)
-    simulateLoad()
+    simulateNavLoad()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canGoForward])
 
   // ── Page renderer ───────────────────────────────────────────────
   const renderPage = () => {
-    // Show blank white content area during load
-    if (isLoading) return null
+    // Intro: blank white content area (browser chrome visible, no page loaded)
+    if (screen === 'intro') return null
 
+    // Navigation loading: blank while page is "downloading" between pages
+    if (isNavLoading) return null
+
+    // Boot load sequence: progressively reveal YahooDirectory
+    if (screen === 'loading') {
+      if (loadPhase < 1) return null  // phase 0: blank, page background not yet visible
+      return (
+        <YahooDirectory
+          onNavigate={() => {}}
+          onLinkHover={() => {}}
+          loadPhase={loadPhase}
+        />
+      )
+    }
+
+    // Fully playing or discovery: render whichever page is current
     switch (currentPage) {
       case 'yahoo':
-        return (
-          <YahooDirectory
-            onNavigate={navigate}
-            onLinkHover={setHoverUrl}
-          />
-        )
+        return <YahooDirectory onNavigate={navigate} onLinkHover={setHoverUrl} />
       case 'yahoo-computers':
-        return (
-          <YahooComputers
-            onNavigate={navigate}
-            onLinkHover={setHoverUrl}
-          />
-        )
+        return <YahooComputers onNavigate={navigate} onLinkHover={setHoverUrl} />
       case 'valley':
-        return (
-          <ValleyComputer
-            onNavigate={navigate}
-            onLinkHover={setHoverUrl}
-          />
-        )
+        return <ValleyComputer onNavigate={navigate} onLinkHover={setHoverUrl} />
       case 'archive':
-        return (
-          <VintageArchive
-            completeObjective={completeObjective}
-            onLinkHover={setHoverUrl}
-          />
-        )
+        return <VintageArchive completeObjective={completeObjective} onLinkHover={setHoverUrl} />
       default:
         return null
     }
@@ -153,7 +184,10 @@ export default function Level2() {
           title="The Hypertext Web"
           description="Information wasn't something you searched for. It was something you followed, one link at a time."
           objectives={OBJECTIVES}
-          onBegin={() => setScreen('playing')}
+          onBegin={() => {
+            setScreen('loading')
+            startLoadSequence()
+          }}
         />
       )}
 
@@ -173,8 +207,8 @@ export default function Level2() {
       >
         <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
           <BrowserChrome
-            currentUrl={currentUrl}
-            pageTitle={pageTitle}
+            currentUrl={displayUrl}
+            pageTitle={displayTitle}
             canGoBack={canGoBack}
             canGoForward={canGoForward}
             onBack={goBack}

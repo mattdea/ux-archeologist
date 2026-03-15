@@ -29,6 +29,23 @@
   height: auto;
 }
 
+/* ── Broken image placeholder ─────────────────────────────────────── */
+/* Shown while logo image is "downloading" — simulates 90s browser    */
+/* broken-image icon with alt text before the src resolves.           */
+.logoPlaceholder {
+  display: inline-block;
+  background: #c8c8c8;
+  border: 1px solid #808080;
+  padding: 6px 10px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 11px;
+  color: #333;
+  min-width: 80px;
+  height: 36px;
+  line-height: 24px;
+  vertical-align: middle;
+}
+
 /* ── Banner row — "Find a Job" | banner image | "NBA-NHL Finals" ──── */
 .bannerRow {
   display: flex;
