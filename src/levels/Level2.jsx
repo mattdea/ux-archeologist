@@ -7,7 +7,7 @@ import YahooComputers from '../components/web/pages/YahooComputers'
 import ValleyComputer from '../components/web/pages/ValleyComputer'
 import VintageArchive from '../components/web/pages/VintageArchive'
 import useBezelScale from '../hooks/useBezelScale'
-import { completeLevel } from '../state/state'
+import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
@@ -39,10 +39,10 @@ const LOAD_DELAY = 500
 
 export default function Level2() {
   // ── Museum screen state ─────────────────────────────────────────
-  const [screen, setScreen] = useState('intro')
+  const [screen, setScreen] = useState(() => isLevelComplete(2) ? 'playing' : 'intro')
 
   // ── Completed objectives ────────────────────────────────────────
-  const [completedIndices, setCompletedIndices] = useState([])
+  const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(2) ? [0, 1, 2] : [])
 
   // ── Browser navigation state ────────────────────────────────────
   const [history, setHistory]           = useState(['yahoo'])

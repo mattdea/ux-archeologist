@@ -3,7 +3,7 @@ import { useState } from 'react'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useBezelScale from '../hooks/useBezelScale'
-import { completeLevel } from '../state/state'
+import { completeLevel, isLevelComplete } from '../state/state'
 import DesktopScene from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -24,8 +24,8 @@ const BEZEL_W = 752
 const BEZEL_H = 547
 
 export default function Level1() {
-  const [screen, setScreen] = useState('intro')
-  const [completedIndices, setCompletedIndices] = useState([])
+  const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
+  const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
   const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 80 })
 
   const completeObjective = (key) => {
