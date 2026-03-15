@@ -1,27 +1,41 @@
 /* src/levels/Level2.module.css */
 
 /*
- * Level layout — centers the artifact in the visual zone between
- * the top HUD (80px) and the bottom tracker zone (180px).
- * padding-top + padding-bottom define that zone; flex centering places
- * the artifact exactly in the middle of the remaining space.
- * On tight viewports, useBezelScale shrinks the artifact to fit.
+ * Full-viewport flex column — three equal zones.
+ * --bottom-zone-height must match the natural height of .bottomZone
+ * (tracker content + padding). topSpacer mirrors it so the artifact
+ * centers perfectly between the top and bottom of the viewport.
  */
-.levelLayout {
-  width: 100%;
-  height: 100%;
+.levelPage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  --bottom-zone-height: 180px;
+}
+
+/* Zone 1 — empty mirror of Zone 3; ensures vertical centering */
+.topSpacer {
+  flex: 0 0 auto;
+  height: var(--bottom-zone-height);
+  min-height: 80px; /* never less than HUD height */
+}
+
+/* Zone 2 — expands to fill remaining height; centers artifact */
+.artifactZone {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 64px;
-  padding-bottom: 195px;
-  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
 }
 
 /*
  * Outer wrapper — explicit width/height set via inline style to the
- * scaled browser footprint (BROWSER_W * scale × BROWSER_H * scale).
- * overflow: visible so BrowserChrome's drop-shadow renders fully.
+ * scaled browser footprint. overflow: visible so BrowserChrome's
+ * drop-shadow renders fully.
  */
 .wrap {
   display: flex;
@@ -30,29 +44,27 @@
   overflow: visible;
 }
 
-/*
- * Inner scaler — holds native-size BrowserChrome, scaled via transform.
- */
+/* Inner scaler — holds native-size BrowserChrome, scaled via transform. */
 .scaler {
   flex-shrink: 0;
   transform-origin: center center;
 }
 
 /*
- * ObjectiveTracker — fixed to viewport bottom-left, matching HUD margins.
- * Always rendered (visibility:hidden when not playing) so it never
- * affects the artifact's layout or position.
- * Entrance animation plays only when .trackerWrapVisible is added.
+ * Zone 3 — ObjectiveTracker with outer spacing.
+ * align-self: flex-start anchors it to the left edge so padding-left
+ * sets the tracker's exact distance from the viewport edge.
+ * Always rendered (visibility:hidden) so Zone 1/2 are never reflowed.
+ * Entrance animation plays only when .bottomZoneVisible is added.
  */
-.trackerWrap {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  z-index: 50;
+.bottomZone {
+  flex: 0 0 auto;
+  padding: 16px 24px 24px;
+  align-self: flex-start;
   visibility: hidden;
 }
 
-.trackerWrapVisible {
+.bottomZoneVisible {
   visibility: visible;
   animation: trackerSlideUp 400ms ease-out 200ms both;
 }

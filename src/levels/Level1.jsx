@@ -24,11 +24,14 @@ const OBJ_KEY_INDEX = { openFolder: 0, trashFile: 1, useMenu: 2 }
 const BEZEL_W = 752
 const BEZEL_H = 547
 
+// Matches --bottom-zone-height in Level1.module.css
+const BOTTOM_ZONE_H = 180
+
 export default function Level1() {
   const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
-  // marginBottom = tracker height (~140px) + artifact→tracker gap (20px) + levelLayout padding (20px)
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: 64, marginBottom: 195 })
+  // Symmetric margins match the equal topSpacer / bottomZone heights
+  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -60,7 +63,7 @@ export default function Level1() {
 
   return (
     <>
-      {/* ── Museum overlays (position: fixed, cover the full viewport) ── */}
+      {/* ── Museum overlays (position: fixed, centered in full viewport) ── */}
 
       {screen === 'intro' && (
         <IntroModal
@@ -81,36 +84,44 @@ export default function Level1() {
         />
       )}
 
-      {/* ── Level layout — artifact centered in padded zone ─────── */}
-      <div className={styles.levelLayout}>
-        <div
-          className={styles.wrap}
-          style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
-        >
-          <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-            <MonitorBezel booting={screen === 'booting'}>
-              <div className={styles.inner}>
-                {showDesktop && (
-                  <DesktopScene
-                    completeObjective={completeObjective}
-                    active={screen === 'playing'}
-                  />
-                )}
-                {screen === 'booting' && (
-                  <BootSequence onComplete={() => setScreen('playing')} />
-                )}
-              </div>
-            </MonitorBezel>
+      {/* ── Three-zone layout ─────────────────────────────────────── */}
+      <div className={styles.levelPage}>
+
+        {/* Zone 1 — mirrors Zone 3 height so artifact centers vertically */}
+        <div className={styles.topSpacer} />
+
+        {/* Zone 2 — artifact, fills remaining height */}
+        <div className={styles.artifactZone}>
+          <div
+            className={styles.wrap}
+            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
+          >
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+              <MonitorBezel booting={screen === 'booting'}>
+                <div className={styles.inner}>
+                  {showDesktop && (
+                    <DesktopScene
+                      completeObjective={completeObjective}
+                      active={screen === 'playing'}
+                    />
+                  )}
+                  {screen === 'booting' && (
+                    <BootSequence onComplete={() => setScreen('playing')} />
+                  )}
+                </div>
+              </MonitorBezel>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ObjectiveTracker — fixed bottom-left, always rendered for stable layout */}
-      <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
-        <ObjectiveTracker
-          objectives={OBJECTIVES}
-          completedIndices={completedIndices}
-        />
+        {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+          <ObjectiveTracker
+            objectives={OBJECTIVES}
+            completedIndices={completedIndices}
+          />
+        </div>
+
       </div>
     </>
   )

@@ -38,6 +38,9 @@ const BROWSER_H = 520
 // Loading delay (ms) — mimics mid-90s dial-up latency (page navigation)
 const LOAD_DELAY = 500
 
+// Matches --bottom-zone-height in Level2.module.css
+const BOTTOM_ZONE_H = 180
+
 export default function Level2() {
   // ── Museum screen state ─────────────────────────────────────────
   // intro → loading → playing → discovery
@@ -65,8 +68,8 @@ export default function Level2() {
   const [hoverUrl, setHoverUrl]         = useState(null)
 
   // ── Responsive scaling ──────────────────────────────────────────
-  // marginBottom = tracker height (~140px) + artifact→tracker gap (20px) + levelLayout padding (20px)
-  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: 64, marginBottom: 195 })
+  // Symmetric margins match the equal topSpacer / bottomZone heights
+  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -197,7 +200,7 @@ export default function Level2() {
 
   return (
     <>
-      {/* ── Museum overlays (position: fixed) ───────────────────── */}
+      {/* ── Museum overlays (position: fixed, centered in full viewport) ── */}
 
       {screen === 'intro' && (
         <IntroModal
@@ -221,34 +224,42 @@ export default function Level2() {
         />
       )}
 
-      {/* ── Level layout — artifact centered in padded zone ─────── */}
-      <div className={styles.levelLayout}>
-        <div
-          className={styles.wrap}
-          style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
-        >
-          <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-            <BrowserChrome
-              currentUrl={displayUrl}
-              pageTitle={displayTitle}
-              canGoBack={canGoBack}
-              canGoForward={canGoForward}
-              onBack={goBack}
-              onForward={goForward}
-              statusText={statusText}
-            >
-              {renderPage()}
-            </BrowserChrome>
+      {/* ── Three-zone layout ─────────────────────────────────────── */}
+      <div className={styles.levelPage}>
+
+        {/* Zone 1 — mirrors Zone 3 height so artifact centers vertically */}
+        <div className={styles.topSpacer} />
+
+        {/* Zone 2 — artifact, fills remaining height */}
+        <div className={styles.artifactZone}>
+          <div
+            className={styles.wrap}
+            style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
+          >
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+              <BrowserChrome
+                currentUrl={displayUrl}
+                pageTitle={displayTitle}
+                canGoBack={canGoBack}
+                canGoForward={canGoForward}
+                onBack={goBack}
+                onForward={goForward}
+                statusText={statusText}
+              >
+                {renderPage()}
+              </BrowserChrome>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ObjectiveTracker — fixed bottom-left, always rendered for stable layout */}
-      <div className={`${styles.trackerWrap} ${screen === 'playing' ? styles.trackerWrapVisible : ''}`}>
-        <ObjectiveTracker
-          objectives={OBJECTIVES}
-          completedIndices={completedIndices}
-        />
+        {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+          <ObjectiveTracker
+            objectives={OBJECTIVES}
+            completedIndices={completedIndices}
+          />
+        </div>
+
       </div>
     </>
   )
