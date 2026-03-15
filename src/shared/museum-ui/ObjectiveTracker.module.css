@@ -2,6 +2,8 @@
 
 .tracker {
   background: #111;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 0;
   overflow: hidden;
   min-width: 230px;
