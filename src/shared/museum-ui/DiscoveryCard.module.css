@@ -22,9 +22,6 @@
   width: 380px;
   overflow: hidden;
   box-shadow: none;
-  /* Stable layout: body fills top, button always anchored at bottom */
-  display: flex;
-  flex-direction: column;
 }
 
 .accentLine {
@@ -32,7 +29,6 @@
 }
 
 .body {
-  flex: 1;
   padding: 20px 24px;
 }
 
@@ -64,11 +60,11 @@
   margin: 0 0 20px;
 }
 
-/* Artifact name — 18px, weight 600, system-ui (original) */
+/* Artifact name — 18px, weight 500, system-ui (original) */
 .artifactName {
   font-family: system-ui, sans-serif;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: #111;
   line-height: 1.3;
   margin-bottom: 12px;
@@ -83,10 +79,11 @@
   line-height: 1.7;
 }
 
-/* "Next excavation →" button */
+/* "Continue" button */
 .nextBtn {
   display: block;
   width: 100%;
+  margin-top: 20px;
   padding: 16px;
   background: #111;
   color: #fff;

@@ -15,10 +15,10 @@ export default function DiscoveryCard({ era, artifactName, description, nextUrl 
           <hr className={styles.divider} />
           <h2 className={styles.artifactName}>{artifactName}</h2>
           <p className={styles.description}>{description}</p>
+          <button className={styles.nextBtn} onClick={() => navigate(nextUrl)}>
+            Continue
+          </button>
         </div>
-        <button className={styles.nextBtn} onClick={() => navigate(nextUrl)}>
-          Continue
-        </button>
       </div>
     </div>
   )

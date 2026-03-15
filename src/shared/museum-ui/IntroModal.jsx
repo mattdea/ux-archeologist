@@ -20,10 +20,10 @@ export default function IntroModal({ era, title, description, objectives, onBegi
               </li>
             ))}
           </ul>
+          <button className={styles.beginBtn} onClick={onBegin}>
+            Begin excavation
+          </button>
         </div>
-        <button className={styles.beginBtn} onClick={onBegin}>
-          Begin excavation
-        </button>
       </div>
     </div>
   )
