@@ -57,7 +57,7 @@ export default function Level1() {
         <DiscoveryCard
           era="1984"
           artifactName="Direct Manipulation"
-          description="Instead of typing abstract commands, users could act directly on visible objects: open folders, move files, and choose commands from menus. This made personal computing dramatically more legible to ordinary people."
+          description="Before 1984, using a computer meant typing commands into a blank screen. The Macintosh let you point at things, drag them around, and open them with a click. You didn't need to learn the computer's language. It learned yours."
           nextUrl="/timeline"
         />
       )}
