@@ -161,7 +161,7 @@ export default function Level2() {
         <DiscoveryCard
           era="1995"
           artifactName="Hyperlink Navigation"
-          description="Instead of searching for information or requesting it from a system, users followed connections between documents. A directory led to a shop. The shop led to a collector's page. The collector led to history. Every page was someone's door, and every link was an invitation to walk through it."
+          description="The early web wasn't searched. It was browsed. Every page linked to other pages, and finding what you needed meant following a trail of connections that other people had made."
           nextUrl="/timeline"
         />
       )}
