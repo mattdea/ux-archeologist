@@ -73,6 +73,17 @@
   color: #fff;
 }
 
+/* Wrapper that animates open to reveal the Continue button */
+.continueBtnWrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms ease-in-out;
+}
+
+.continueBtnWrapVisible {
+  max-height: 72px; /* margin-top(20) + padding(28) + text(~16) + buffer */
+}
+
 /* "Continue" button — full-width, #111 bg, white text */
 .continueBtn {
   display: block;
@@ -89,7 +100,12 @@
   letter-spacing: 0.03em;
   cursor: pointer;
   text-align: center;
-  transition: background 150ms ease;
+  opacity: 0;
+  transition: background 150ms ease, opacity 200ms ease 200ms;
+}
+
+.continueBtnWrapVisible .continueBtn {
+  opacity: 1;
 }
 
 .continueBtn:hover {

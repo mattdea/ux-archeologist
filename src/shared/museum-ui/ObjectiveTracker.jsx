@@ -22,11 +22,11 @@ export default function ObjectiveTracker({ objectives, completedIndices = [], on
             )
           })}
         </ul>
-        {allComplete && (
+        <div className={`${styles.continueBtnWrap} ${allComplete ? styles.continueBtnWrapVisible : ''}`}>
           <button className={styles.continueBtn} onClick={onContinue}>
             Continue
           </button>
-        )}
+        </div>
       </div>
     </div>
   )
