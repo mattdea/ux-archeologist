@@ -1,5 +1,6 @@
 // src/components/terminal/TerminalBezel.jsx
 import styles from './TerminalBezel.module.css'
+import badgeSrc from '../../../assets/badge.svg'
 
 export default function TerminalBezel({ children }) {
   return (
@@ -16,16 +17,13 @@ export default function TerminalBezel({ children }) {
 
       {/* Right panel — cream bezel plastic, badge + LED */}
       <div className={styles.rightPanel}>
-        <div className={styles.badge} aria-label="DEC VT100">
-          <span className={styles.badgeDigital}>digital</span>
-          <div className={styles.badgeTiles}>
-            <span className={styles.tile}>V</span>
-            <span className={styles.tile}>T</span>
-            <span className={styles.tile}>1</span>
-            <span className={styles.tile}>0</span>
-            <span className={styles.tile}>0</span>
-          </div>
-        </div>
+        <img
+          src={badgeSrc}
+          alt="digital VT100"
+          className={styles.badge}
+          width="126"
+          height="28"
+        />
         <span className={styles.led} aria-hidden="true" />
       </div>
 
