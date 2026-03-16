@@ -7,7 +7,7 @@ import TrashWindowContent from './TrashWindowContent'
 
 export default function DraggableWindow({
   title, type, initialPos, zIndex, onClose, onFocus,
-  trashContents, onRestoreNotes,
+  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd,
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
   const dragging = useRef(false)
@@ -200,6 +200,8 @@ export default function DraggableWindow({
           <TrashWindowContent
             contents={trashContents}
             onRestoreNotes={onRestoreNotes}
+            onItemDragStart={onItemDragStart}
+            onItemDragEnd={onItemDragEnd}
           />
         )}
       </div>

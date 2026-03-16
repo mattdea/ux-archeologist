@@ -161,6 +161,7 @@ export default function DesktopScene({ completeObjective, active }) {
 
   const handleTrashDragOver = (e) => {
     e.preventDefault()
+    if (draggingIcon.current === 'trash') return  // don't highlight when repositioning trash itself
     setTrashHighlighted(true)
   }
 
@@ -172,6 +173,7 @@ export default function DesktopScene({ completeObjective, active }) {
     e.preventDefault()
     setTrashHighlighted(false)
     const item = e.dataTransfer.getData('text/plain')
+    if (item === 'trash') return  // self-drop — dragend handles repositioning
     if (item === 'projects') {
       dragResult.current = 'trashed'
       stopDragOutline()
@@ -381,12 +383,14 @@ export default function DesktopScene({ completeObjective, active }) {
     e.preventDefault()
     const item = e.dataTransfer.getData('text/plain')
     if (item === 'projects-restore') {
+      stopDragOutline()
       setTrashContents(prev => prev.filter(x => x !== 'projects'))
       const rect = desktopRef.current.getBoundingClientRect()
       const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
       const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
       setIconPositions(prev => ({ ...prev, projects: { x, y } }))
     } else if (item === 'notes-restore') {
+      stopDragOutline()
       setTrashContents(prev => prev.filter(x => x !== 'notes'))
       const rect = desktopRef.current.getBoundingClientRect()
       const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
@@ -459,6 +463,9 @@ export default function DesktopScene({ completeObjective, active }) {
         isSelected={selectedIcon === 'trash'}
         onClick={() => setSelectedIcon('trash')}
         onDoubleClick={handleTrashDoubleClick}
+        draggable={true}
+        onDragStart={(e) => handleIconDragStart('trash', e)}
+        onDragEnd={(e) => handleIconDragEnd('trash', e)}
         onDragOver={handleTrashDragOver}
         onDragLeave={handleTrashDragLeave}
         onDrop={handleTrashDrop}
@@ -474,6 +481,8 @@ export default function DesktopScene({ completeObjective, active }) {
           onClose={() => setWindows(prev => prev.filter(w => w.id !== win.id))}
           trashContents={win.type === 'trash' ? trashContents : undefined}
           onRestoreNotes={win.type === 'trash' ? handleRestoreProjects : undefined}
+          onItemDragStart={win.type === 'trash' ? startDragOutline : undefined}
+          onItemDragEnd={win.type === 'trash' ? stopDragOutline : undefined}
           onFocus={() => {
             const z = nextZ
             setNextZ(n => n + 1)

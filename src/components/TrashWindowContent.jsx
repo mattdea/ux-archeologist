@@ -33,7 +33,7 @@ function NotesIconSmall({ onDragStart, onDragEnd }) {
   )
 }
 
-export default function TrashWindowContent({ contents = [], onRestoreNotes }) {
+export default function TrashWindowContent({ contents = [], onRestoreNotes, onItemDragStart, onItemDragEnd }) {
   const count = contents.length
   const hasProjects = contents.includes('projects')
   const hasNotes    = contents.includes('notes')
@@ -45,10 +45,11 @@ export default function TrashWindowContent({ contents = [], onRestoreNotes }) {
     document.body.appendChild(ghost)
     e.dataTransfer.setDragImage(ghost, 0, 0)
     setTimeout(() => document.body.removeChild(ghost), 0)
+    onItemDragStart?.(e.clientX, e.clientY)
   }
 
   const handleProjectsDragEnd = () => {
-    // restore is handled by the desktop drop handler
+    onItemDragEnd?.()
   }
 
   const handleNotesDragStart = (e) => {
@@ -58,10 +59,11 @@ export default function TrashWindowContent({ contents = [], onRestoreNotes }) {
     document.body.appendChild(ghost)
     e.dataTransfer.setDragImage(ghost, 0, 0)
     setTimeout(() => document.body.removeChild(ghost), 0)
+    onItemDragStart?.(e.clientX, e.clientY)
   }
 
   const handleNotesDragEnd = () => {
-    // restore is handled by the desktop drop handler
+    onItemDragEnd?.()
   }
 
   return (
