@@ -13,12 +13,17 @@
 }
 
 .termCursor {
+  display: inline-block;
+  width: 0.58em;          /* ~one character wide in VT323 */
+  height: 1.05em;
+  background: currentColor;
+  vertical-align: text-bottom;
   animation: cursorBlink 530ms step-end infinite alternate;
 }
 
 /* ── Utility: raw terminal output line ───────────────────────────── */
 .terminalText {
   font-family: 'VT323', 'Courier New', monospace;
-  color: #33ff00;
+  color: #62d4f5;
   line-height: 1.4;
 }

@@ -88,7 +88,7 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
         <div>
           {promptPrefix(phase)}
           {visibleInput(phase, currentInput)}
-          <span className="termCursor">_</span>
+          <span className="termCursor">{'\u00A0'}</span>
         </div>
 
       </div>
