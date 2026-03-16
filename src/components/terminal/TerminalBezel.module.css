@@ -2,9 +2,11 @@
  *
  * Asymmetric VT100 layout — total footprint: 780 × 460px
  *
- * Left dark surround : 77% = ~601px wide, full height — dominant visual mass
- * Right cream panel  : 23% = ~179px wide — narrow strip with badge + LED
- * Screen area        : 384 × 294px explicit, flex-centered inside dark surround
+ * Left cream strip   : 20px — thin beige margin left of dark surround
+ * Dark surround      : 450 × 390px, top-flush — extends to case top edge
+ * Right cream panel  : 310px — wider badge area
+ * Screen area        : 384 × 294px explicit, bottom-aligned in dark surround
+ * Bottom cream strip : ~70px — beige plastic below dark surround
  */
 
 /* ── Outer housing ────────────────────────────────────────────────── */
@@ -14,6 +16,7 @@
   height: 460px;
   background: #d4cdb8;
   border-radius: 10px;
+  overflow: hidden;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.35),
     0 1px 3px rgba(0, 0, 0, 0.2),
@@ -22,18 +25,20 @@
   border-bottom: 2px solid #c2bba6;
 }
 
-/* ── Dark surround — left 77%, full height to top edge ───────────── */
+/* ── Dark surround — thin frame around screen, extends to case top ── */
 .darkSurround {
   position: absolute;
   top: 0;
-  left: 0;
-  bottom: 0;
-  width: 77%;
+  left: 20px;
+  width: 450px;
+  height: 390px;      /* leaves ~70px cream strip at bottom */
   background: #2a2a2a;
-  border-radius: 10px 0 0 10px;
+  border-radius: 0 0 6px 6px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding-bottom: 24px;
   /* Inset shadows create the molded recess — light from upper-left */
   box-shadow:
     inset 3px 3px 6px rgba(0, 0, 0, 0.7),
@@ -72,7 +77,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 23%;
+  width: 310px;    /* 780 - 20(left cream) - 450(dark) = 310 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -127,7 +132,7 @@
 
 /* ── Power LED — green, subtle pulse ─────────────────────────────── */
 .led {
-  display: block;
+  display: none;
   width: 7px;
   height: 7px;
   border-radius: 50%;
