@@ -1,7 +1,7 @@
 /* src/components/terminal/TerminalScreen.module.css */
 
 /* ── Phosphor CRT display ─────────────────────────────────────────── */
-.display {
+.screen {
   position: relative;
   width: 100%;
   height: 100%;
@@ -11,39 +11,106 @@
   font-family: 'VT323', 'Courier New', monospace;
   font-size: 16px;
   line-height: 1.4;
-  text-shadow: 0 0 8px rgba(51, 255, 0, 0.55);
   padding: 20px 24px;
   overflow: hidden;
 }
 
-/* ── CRT vignette (dark edges) ────────────────────────────────────── */
-.display::before {
+/* ── Scanlines — fine horizontal bands, z-index: 3 ───────────────── */
+.screen::after {
   content: '';
   position: absolute;
   inset: 0;
-  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ── Scanlines overlay ────────────────────────────────────────────── */
-.display::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     to bottom,
-    transparent 0px,
-    transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
+    rgba(255, 255, 255, 0)    0%,
+    rgba(255, 255, 255, 0)   50%,
+    rgba(0, 0, 0, 0.18)      70%,
+    rgba(0, 0, 0, 0.45)
   );
+  background-size: 100% 3px;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
 }
 
-/* ── Content — sits above both pseudo-elements ───────────────────── */
+/* ── CRT vignette — dark edges, z-index: 4 (above scanlines) ─────── */
+.screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ── Content — text layer, sits above pseudo-elements ────────────── */
 .content {
   position: relative;
   z-index: 2;
+  /* Dual text-shadow: diffuse bloom + tight phosphor core */
+  text-shadow:
+    0 0 8px rgba(51, 255, 0, 0.5),
+    0 0 2px rgba(51, 255, 0, 0.3);
+}
+
+/* ── Flicker — irregular brightness variation, z-index: 5 ───────── */
+.flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 16, 16, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  animation: flicker 0.12s infinite;
+}
+
+@keyframes flicker {
+  0%   { opacity: 0.45; }
+  5%   { opacity: 0.39; }
+  10%  { opacity: 0.48; }
+  15%  { opacity: 0.55; }
+  20%  { opacity: 0.52; }
+  25%  { opacity: 0.16; }
+  30%  { opacity: 0.58; }
+  35%  { opacity: 0.10; }
+  40%  { opacity: 0.44; }
+  45%  { opacity: 0.40; }
+  50%  { opacity: 0.60; }
+  55%  { opacity: 0.38; }
+  60%  { opacity: 0.14; }
+  65%  { opacity: 0.10; }
+  70%  { opacity: 0.18; }
+  75%  { opacity: 0.48; }
+  80%  { opacity: 0.58; }
+  85%  { opacity: 0.10; }
+  90%  { opacity: 0.30; }
+  95%  { opacity: 0.20; }
+  100% { opacity: 0.30; }
+}
+
+/* ── Noise — pseudo-random grain, z-index: 6 (final composite) ───── */
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0.035;
+  background:
+    repeating-radial-gradient(#000 0 0.0001%, #fff 0 0.0002%) 50% 0    / 2500px 2500px,
+    repeating-conic-gradient( #000 0 0.0001%, #fff 0 0.0002%) 50% 50%  / 2500px 2500px;
+  background-blend-mode: difference;
+  animation: noise 0.2s infinite alternate;
+}
+
+@keyframes noise {
+  100% { background-position: 50% 0, 50% 60%; }
+}
+
+/* ── Reduced motion — disable animated effects only ──────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .flicker,
+  .noise {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  /* Scanlines are static — no change needed */
 }
