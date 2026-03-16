@@ -16,10 +16,11 @@ export default function Timeline() {
 
   return (
     <div className={styles.timeline}>
-      {ENTRIES.map((entry) => {
+      {ENTRIES.map((entry, i) => {
         const complete = isLevelComplete(entry.level)
         const active   = !complete && entry.level === currentLvl
         const locked   = !complete && !active
+        const delay    = `${i * 150}ms`
 
         return (
           <div
@@ -31,6 +32,7 @@ export default function Timeline() {
               locked   ? styles.entryLocked   : '',
             ].join(' ')}
             onClick={(active || complete) ? () => navigate(entry.path) : undefined}
+            style={{ '--entry-delay': delay, animationDelay: delay }}
           >
             <span
               className={[
@@ -59,6 +61,7 @@ export default function Timeline() {
       <button
         className={styles.resetBtn}
         onClick={() => { resetAll(); navigate('/') }}
+        style={{ animationDelay: '850ms' }}
       >
         Reset progress
       </button>
