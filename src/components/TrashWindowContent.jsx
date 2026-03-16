@@ -1,21 +1,19 @@
 // src/components/TrashWindowContent.jsx
 import styles from './DraggableWindow.module.css'
-import notesStyles from './DesktopIcon.module.css'
+import iconStyles from './DesktopIcon.module.css'
+import { FolderIcon, NotesIcon } from './DesktopIcon'
 
 function ProjectsIconSmall({ onDragStart, onDragEnd }) {
   return (
     <div
-      className={notesStyles.icon}
+      className={iconStyles.icon}
       draggable={true}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
     >
-      <div className={notesStyles.folderWrap}>
-        <div className={notesStyles.folderTab} />
-        <div className={notesStyles.folderBody} />
-      </div>
-      <span className={notesStyles.label}>Projects</span>
+      <FolderIcon />
+      <span className={iconStyles.label}>Projects</span>
     </div>
   )
 }
@@ -23,20 +21,14 @@ function ProjectsIconSmall({ onDragStart, onDragEnd }) {
 function NotesIconSmall({ onDragStart, onDragEnd }) {
   return (
     <div
-      className={notesStyles.icon}
+      className={iconStyles.icon}
       draggable={true}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
     >
-      <div className={notesStyles.notesWrap}>
-        <div className={notesStyles.notesPage}>
-          <div className={notesStyles.notesLine} />
-          <div className={notesStyles.notesLine} />
-          <div className={notesStyles.notesLine} />
-        </div>
-      </div>
-      <span className={notesStyles.label}>Notes</span>
+      <NotesIcon />
+      <span className={iconStyles.label}>Notes</span>
     </div>
   )
 }
