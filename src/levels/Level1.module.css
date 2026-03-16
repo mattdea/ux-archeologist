@@ -13,6 +13,7 @@
   flex-direction: column;
   align-items: center;
   --bottom-zone-height: 180px;
+  pointer-events: none; /* layout shell — children opt back in individually */
 }
 
 /* Zone 1 — empty mirror of Zone 3; ensures vertical centering */
@@ -42,6 +43,7 @@
   align-items: center;
   justify-content: center;
   overflow: visible;
+  pointer-events: auto; /* artifact is interactive */
 }
 
 /* Inner scaler — holds native-size MonitorBezel, scaled via transform. */
@@ -71,6 +73,7 @@
   align-self: flex-start;
   background: transparent;
   visibility: hidden;
+  pointer-events: auto; /* tracker area is interactive */
 }
 
 .bottomZoneVisible {
