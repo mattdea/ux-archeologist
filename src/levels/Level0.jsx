@@ -101,7 +101,7 @@ export default function Level0() {
           era="1971"
           artifactName="Command-Response Interaction"
           description={DISCOVERY_DESCRIPTION}
-          nextUrl="/level/1"
+          nextUrl="/timeline"
         />
       )}
 
