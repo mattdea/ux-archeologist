@@ -87,15 +87,15 @@
   gap: 4px;
 }
 
-/* ── Year — same sans-serif for all states ────────────────────────── */
+/* ── Year — monospace for all states ─────────────────────────────── */
 .year {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Courier New', monospace;
   font-size: 12px;
   line-height: 1;
+  letter-spacing: 0.12em;
 }
 
 .entryComplete .year {
-  letter-spacing: 0.08em;
   color: #666;
 }
 
