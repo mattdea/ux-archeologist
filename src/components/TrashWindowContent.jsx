@@ -20,9 +20,28 @@ function ProjectsIconSmall({ onDragStart, onDragEnd }) {
   )
 }
 
+function NotesIconSmall() {
+  return (
+    <div
+      className={notesStyles.icon}
+      style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <div className={notesStyles.notesWrap}>
+        <div className={notesStyles.notesPage}>
+          <div className={notesStyles.notesLine} />
+          <div className={notesStyles.notesLine} />
+          <div className={notesStyles.notesLine} />
+        </div>
+      </div>
+      <span className={notesStyles.label}>Notes</span>
+    </div>
+  )
+}
+
 export default function TrashWindowContent({ contents = [], onRestoreNotes }) {
   const count = contents.length
   const hasProjects = contents.includes('projects')
+  const hasNotes    = contents.includes('notes')
 
   const handleProjectsDragStart = (e) => {
     e.dataTransfer.setData('text/plain', 'projects-restore')
@@ -49,7 +68,10 @@ export default function TrashWindowContent({ contents = [], onRestoreNotes }) {
             onDragEnd={handleProjectsDragEnd}
           />
         )}
-        {!hasProjects && (
+        {hasNotes && (
+          <NotesIconSmall />
+        )}
+        {count === 0 && (
           <span className={styles.emptyMsg}>Trash is empty.</span>
         )}
       </div>
