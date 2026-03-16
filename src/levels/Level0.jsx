@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import styles from './Level0.module.css'
 import TerminalBezel from '../components/terminal/TerminalBezel'
 import TerminalScreen from '../components/terminal/TerminalScreen'
+import useTerminal from '../components/terminal/useTerminal'
 import useBezelScale from '../hooks/useBezelScale'
 import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -21,7 +22,8 @@ export default function Level0() {
   // Start at 'playing' until IntroModal is implemented (Prompt 3+).
   // When intro is added: isLevelComplete(0) ? 'playing' : 'intro'
   const [screen, setScreen] = useState('playing')
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
+  const scale    = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
+  const terminal = useTerminal()
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -53,10 +55,13 @@ export default function Level0() {
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <TerminalBezel>
-                <TerminalScreen>
-                  <div>UNIX (pdp-11/45)</div>
-                  <div>login: <span className="termCursor">_</span></div>
-                </TerminalScreen>
+                <TerminalScreen
+                  phase={terminal.phase}
+                  history={terminal.history}
+                  currentInput={terminal.currentInput}
+                  responding={terminal.responding}
+                  onKeyDown={terminal.onKeyDown}
+                />
               </TerminalBezel>
             </div>
           </div>
