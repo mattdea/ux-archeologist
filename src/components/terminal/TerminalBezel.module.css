@@ -3,9 +3,9 @@
  * Asymmetric VT100 layout — total footprint: 780 × 460px
  *
  * Left cream strip   : 20px — thin beige margin left of dark surround
- * Dark surround      : 450 × 390px, top-flush — extends to case top edge
- * Right cream panel  : 310px — wider badge area
- * Screen area        : 384 × 294px explicit, bottom-aligned in dark surround
+ * Dark surround      : 490 × 390px, top-flush — extends to case top edge
+ * Right cream panel  : 270px — wider badge area
+ * Screen area        : 420 × 294px explicit, bottom-aligned in dark surround
  * Bottom cream strip : ~70px — beige plastic below dark surround
  */
 
@@ -30,20 +30,20 @@
   position: absolute;
   top: 0;
   left: 20px;
-  width: 450px;
+  width: 490px;
   height: 390px;      /* leaves ~70px cream strip at bottom */
   background: #2a2a2a;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 14px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   padding-bottom: 24px;
-  /* Inset shadows create the molded recess — light from upper-left */
+  /* Subtle ambient shadow on sides/bottom only — no top shadow (top is flush with case) */
   box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.7),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.05),
-    inset 0 0 12px rgba(0, 0, 0, 0.5);
+    inset 2px 0 6px rgba(0, 0, 0, 0.4),
+    inset -2px 0 6px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* ── Screen recess — recessed channel inside dark surround ───────── */
@@ -56,9 +56,9 @@
     inset 0 0 2px rgba(0, 0, 0, 0.9);
 }
 
-/* ── Screen area — CRT glass, 384 × 294px ────────────────────────── */
+/* ── Screen area — CRT glass, 420 × 294px ────────────────────────── */
 .screen {
-  width: 384px;
+  width: 420px;
   height: 294px;
   background: #050505;
   border-radius: 14px;
@@ -77,7 +77,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 310px;    /* 780 - 20(left cream) - 450(dark) = 310 */
+  width: 270px;    /* 780 - 20(left cream) - 490(dark) = 270 */
   display: flex;
   flex-direction: column;
   align-items: center;
