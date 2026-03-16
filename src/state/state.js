@@ -31,12 +31,12 @@ export function isLevelComplete(level) {
 }
 
 /**
- * Returns the next level number the player should play (1–4).
- * Returns 5 if all four levels are complete.
+ * Returns the next level number the player should play (0–4).
+ * Returns 5 if all five levels are complete.
  */
 export function getCurrentLevel() {
   const { completedLevels } = load()
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 0; i <= 4; i++) {
     if (!completedLevels.includes(i)) return i
   }
   return 5

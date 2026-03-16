@@ -4,6 +4,7 @@ import { getCurrentLevel, isLevelComplete, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 
 const ENTRIES = [
+  { level: 0, year: '1971', title: 'The Unix Terminal',    artifact: 'Command-Response Interaction',    path: '/level/0' },
   { level: 1, year: '1984', title: 'The Desktop Arrives',  artifact: 'Direct Manipulation',            path: '/level/1' },
   { level: 2, year: '1995', title: 'The Hypertext Web',    artifact: 'Hyperlink Navigation',            path: '/level/2' },
   { level: 3, year: '2007', title: 'Touch Arrives',        artifact: 'Direct Touch Interaction',        path: '/level/3' },

@@ -24,6 +24,7 @@ export function useSetContinue() { return useContext(ContinueCtx) }
 
 // ── Level metadata ─────────────────────────────────────────────────
 const LEVEL_META = {
+  '/level/0': { era: '1971', title: 'The Unix Terminal',   level: 0 },
   '/level/1': { era: '1984', title: 'The Desktop Arrives', level: 1 },
   '/level/2': { era: '1995', title: 'The Hypertext Web',   level: 2 },
   '/level/3': { era: '2007', title: 'Touch Arrives',       level: 3 },
@@ -34,7 +35,7 @@ const LEVEL_META = {
 const HUD_HIDDEN_PATHS = ['/', '/timeline']
 
 // Level numbers for dot rendering
-const LEVEL_NUMBERS = [1, 2, 3, 4]
+const LEVEL_NUMBERS = [0, 1, 2, 3, 4]
 
 // Dot class: active (currently playing) > done (completed) > empty (locked)
 function dotClass(dotLevel, activeLevel) {
