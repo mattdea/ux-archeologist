@@ -1,0 +1,94 @@
+/* src/components/terminal/TerminalBezel.module.css
+ *
+ * VT100-inspired hardware container — total footprint: 780 × 540px
+ *
+ * Dimension breakdown (all implicit from content, no explicit w/h on .monitor):
+ *   topStripe  :  36px tall
+ *   screenArea :  16px (top pad) + 12px (bezel pad) + 420px (screen)
+ *                + 12px (bezel pad) +  8px (bottom pad) = 468px
+ *   bottomStrip:  36px tall
+ *   Total H    :  36 + 468 + 36 = 540px ✓
+ *
+ *   screenBezel content-width : 700px
+ *   screenBezel outer-width   : 700 + 12 + 12 = 724px
+ *   screenArea total-width    : 28 + 724 + 28 = 780px ✓
+ */
+
+/* ── Outer plastic casing ─────────────────────────────────────────── */
+.monitor {
+  position: relative;
+  display: inline-block;
+  background: #d4cdb8;
+  border-radius: 8px;
+  box-shadow:
+    0 28px 72px rgba(0, 0, 0, 0.75),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15),
+    inset 2px 0 0 rgba(255, 255, 255, 0.25),
+    inset -2px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+/* ── Brand stripe across top ──────────────────────────────────────── */
+.topStripe {
+  height: 36px;
+  background: #b8b09e;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.brandLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #7a7263;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* ── Screen surround — provides padding around screenBezel ───────── */
+.screenArea {
+  padding: 16px 28px 8px;
+}
+
+/* ── Recessed dark border around the screen ──────────────────────── */
+.screenBezel {
+  display: block;
+  background: #1a1a1a;
+  border-radius: 4px;
+  padding: 12px;
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.95),
+    inset 0 0 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Screen area — 700 × 420px, holds TerminalScreen ─────────────── */
+.screen {
+  width: 700px;
+  height: 420px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Bottom strip — LED only ─────────────────────────────────────── */
+.bottomStrip {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+}
+
+/* Power LED — green #00ff41, faint glow */
+.led {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ff41;
+  box-shadow:
+    0 0 5px #00ff41,
+    0 0 10px rgba(0, 255, 65, 0.4);
+}

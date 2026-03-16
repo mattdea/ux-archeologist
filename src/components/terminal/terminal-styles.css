@@ -1,0 +1,24 @@
+/* src/components/terminal/terminal-styles.css
+ * Shared styles for terminal-layer components.
+ * Imported by TerminalScreen so these are available globally whenever
+ * a terminal screen is rendered.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+/* ── Cursor blink ─────────────────────────────────────────────────── */
+@keyframes cursorBlink {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.termCursor {
+  animation: cursorBlink 530ms step-end infinite alternate;
+}
+
+/* ── Utility: raw terminal output line ───────────────────────────── */
+.terminalText {
+  font-family: 'VT323', 'Courier New', monospace;
+  color: #33ff00;
+  line-height: 1.4;
+}

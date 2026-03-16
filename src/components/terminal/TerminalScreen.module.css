@@ -1,0 +1,49 @@
+/* src/components/terminal/TerminalScreen.module.css */
+
+/* ── Phosphor CRT display ─────────────────────────────────────────── */
+.display {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: #050505;
+  color: #33ff00;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.4;
+  text-shadow: 0 0 8px rgba(51, 255, 0, 0.55);
+  padding: 20px 24px;
+  overflow: hidden;
+}
+
+/* ── CRT vignette (dark edges) ────────────────────────────────────── */
+.display::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Scanlines overlay ────────────────────────────────────────────── */
+.display::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Content — sits above both pseudo-elements ───────────────────── */
+.content {
+  position: relative;
+  z-index: 2;
+}

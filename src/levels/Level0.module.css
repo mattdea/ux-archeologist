@@ -1,15 +1,70 @@
-/* src/levels/Level0.module.css */
+/* src/levels/Level0.module.css
+ *
+ * Three-zone layout — mirrors Level1.module.css exactly.
+ * --bottom-zone-height must match BOTTOM_ZONE_H constant in Level0.jsx.
+ */
 
-.stub {
+.levelPage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  --bottom-zone-height: 180px;
+  pointer-events: none; /* layout shell — children opt back in individually */
+}
+
+/* Zone 1 — empty mirror of Zone 3; ensures vertical centering */
+.topSpacer {
+  flex: 0 0 auto;
+  height: var(--bottom-zone-height);
+  min-height: 80px;
+}
+
+/* Zone 2 — expands to fill remaining height; centers artifact */
+.artifactZone {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
   width: 100%;
-  height: 100%;
-  min-height: 400px;
-  background: #000;
-  color: #fff;
-  font-family: 'Courier New', monospace;
-  font-size: 16px;
-  letter-spacing: 0.08em;
+}
+
+/* Outer wrapper — explicit width/height set via inline style to the
+   scaled bezel footprint. overflow: visible so box-shadow renders fully. */
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+/* Inner scaler — holds native-size TerminalBezel, scaled via transform. */
+.scaler {
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+
+/* Zone 3 — ObjectiveTracker placeholder (populated in Prompt 4).
+   Always rendered for stable layout; visibility:hidden avoids reflow. */
+.bottomZone {
+  flex: 0 0 auto;
+  height: var(--bottom-zone-height);
+  padding: 16px 24px 24px;
+  align-self: flex-start;
+  background: transparent;
+  visibility: hidden;
+  pointer-events: auto;
+}
+
+.bottomZoneVisible {
+  visibility: visible;
+  animation: trackerSlideUp 400ms ease-out 200ms both;
+}
+
+@keyframes trackerSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
