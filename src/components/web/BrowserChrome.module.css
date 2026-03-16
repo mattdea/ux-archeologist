@@ -318,16 +318,100 @@
   border-bottom-color: #444;
 }
 
-/* ── Page content ─────────────────────────────────────────────────── */
-.content {
+/* ── Page content area (viewport + scrollbar row) ─────────────────── */
+.contentArea {
   flex: 1;
-  background: #fff;
-  overflow-y: auto;
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
   /* Win98 inset border around the content viewport */
   border-top: 2px solid;
   border-top-color: #888;
   box-shadow: inset 1px 1px 0 #444;
+}
+
+/* The actual scrollable page — native scrollbar hidden */
+.contentViewport {
+  flex: 1;
+  background: #fff;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+
+.contentViewport::-webkit-scrollbar {
+  display: none; /* Chrome / Safari / Edge */
+}
+
+/* ── Win98 custom scrollbar ───────────────────────────────────────── */
+.scrollbar {
+  width: 16px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #d4d0c8;
+  /* thin separator between content and scrollbar */
+  border-left: 1px solid #808080;
+}
+
+/* Up / Down arrow buttons */
+.scrollBtn {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  line-height: 1;
+  color: #000;
+  cursor: default;
+  user-select: none;
+  background: #d4d0c8;
+
+  border: 2px solid;
+  border-top-color:    #fff;
+  border-left-color:   #fff;
+  border-right-color:  #444;
+  border-bottom-color: #444;
+  box-sizing: border-box;
+}
+
+.scrollBtn:active {
+  border-top-color:    #444;
+  border-left-color:   #444;
+  border-right-color:  #fff;
+  border-bottom-color: #fff;
+  background: #b8b4ac;
+}
+
+/* Scrollbar track — Win98 stippled checkerboard pattern */
+.scrollTrack {
+  flex: 1;
+  position: relative;
+  cursor: default;
+  background-color: #808080;
+  background-image:
+    linear-gradient(45deg, #c0c0c0 25%, transparent 25%, transparent 75%, #c0c0c0 75%),
+    linear-gradient(45deg, #c0c0c0 25%, transparent 25%, transparent 75%, #c0c0c0 75%);
+  background-size: 2px 2px;
+  background-position: 0 0, 1px 1px;
+}
+
+/* Scroll thumb — raised bevel, proportional to content */
+.scrollThumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #d4d0c8;
+  cursor: default;
+  box-sizing: border-box;
+
+  border: 2px solid;
+  border-top-color:    #fff;
+  border-left-color:   #fff;
+  border-right-color:  #444;
+  border-bottom-color: #444;
 }
 
 /* ── Status bar ───────────────────────────────────────────────────── */
