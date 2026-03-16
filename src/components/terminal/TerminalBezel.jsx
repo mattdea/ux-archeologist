@@ -23,6 +23,7 @@ export default function TerminalBezel({ children }) {
           className={styles.badge}
           width="126"
           height="28"
+          draggable="false"
         />
         <span className={styles.led} aria-hidden="true" />
       </div>
