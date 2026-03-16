@@ -42,6 +42,22 @@ export function getCurrentLevel() {
   return 5
 }
 
+/** Add a collected artifact. Idempotent by artifact name. */
+export function addArtifact(artifact) {
+  const data = load()
+  if (!data.artifacts) data.artifacts = []
+  if (!data.artifacts.some(a => a.name === artifact.name)) {
+    data.artifacts.push(artifact)
+    save(data)
+  }
+}
+
+/** Returns all collected artifacts. */
+export function getArtifacts() {
+  const data = load()
+  return data.artifacts ?? []
+}
+
 /** Wipe all progress. Useful for development / testing. */
 export function resetAll() {
   try { localStorage.removeItem(KEY) } catch { /* quota/private mode */ }

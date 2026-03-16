@@ -11,6 +11,7 @@ import './terminal-styles.css'  // VT323 font + .termCursor global
 
 // Build the prompt prefix for each phase.
 function promptPrefix(phase) {
+  if (phase === 'booting')  return ''
   if (phase === 'login')    return 'login: '
   if (phase === 'password') return 'Password: '
   return '$ '
@@ -34,16 +35,16 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
     inputRef.current?.focus()
   }, [])
 
-  // Re-focus when entering shell phase (after login sequence completes).
+  // Re-focus whenever the terminal becomes interactive (any phase after booting).
   useEffect(() => {
-    if (phase === 'shell') inputRef.current?.focus()
+    if (phase !== 'booting') inputRef.current?.focus()
   }, [phase])
 
   // Document-level keydown listener: re-focus if the input has lost focus
-  // while in shell phase (e.g. player clicked the ObjectiveTracker).
+  // while the terminal is interactive (login, password, or shell).
   useEffect(() => {
     const recapture = () => {
-      if (phase === 'shell' && document.activeElement !== inputRef.current) {
+      if (phase !== 'booting' && document.activeElement !== inputRef.current) {
         inputRef.current?.focus()
       }
     }
@@ -93,14 +94,14 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
           <div>
             {streamingLine}<span className="termCursor">{'\u00A0'}</span>
           </div>
-        ) : (
+        ) : phase !== 'booting' ? (
           // Idle or waiting — show the prompt (cursor blinks while "thinking").
           <div>
             {promptPrefix(phase)}
             {visibleInput(phase, currentInput)}
             <span className="termCursor">{'\u00A0'}</span>
           </div>
-        )}
+        ) : null}
 
       </div>
 

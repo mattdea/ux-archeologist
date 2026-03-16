@@ -1,5 +1,6 @@
 // src/levels/Level1.jsx
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useBezelScale from '../hooks/useBezelScale'
@@ -28,6 +29,15 @@ const BEZEL_H = 547
 const BOTTOM_ZONE_H = 180
 
 export default function Level1() {
+  const navigate = useNavigate()
+
+  // Guard: Level 0 must be complete before playing Level 1.
+  useEffect(() => {
+    if (!isLevelComplete(0)) {
+      navigate('/level/0')
+    }
+  }, [])
+
   const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
   // Symmetric margins match the equal topSpacer / bottomZone heights

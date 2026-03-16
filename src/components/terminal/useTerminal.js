@@ -2,6 +2,8 @@
 //
 // Owns all terminal state and logic for Level 0 (1971 Unix terminal).
 // Returns { phase, history, currentInput, responding, streamingLine, onKeyDown }
+//
+// Phase progression: 'booting' → 'login' → 'password' → 'shell'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 
@@ -83,18 +85,54 @@ const COMMANDS = {
   help:   ['help: command not found', 'Hint: try  ls,  cat,  man,  mail'],
 }
 
-const BOOT_LINES = [
-  { type: 'output', text: 'UNIX (pdp-11/45)' },
-  { type: 'blank',  text: '' },
+// ── Boot sequence ─────────────────────────────────────────────────────────────
+// Two groups separated by a pause simulate hardware POST then OS load.
+const BOOT_GROUP_1 = [
+  'PDP-11/45 UNIX',
+  'Mem = 256K',
+  'Boot: /unix',
+  '',
+]
+
+const BOOT_GROUP_2 = [
+  'UNIX Time-Sharing System v3',
+  'Bell Telephone Laboratories',
+  '',
+  '(login as kerry)',
+]
+
+// ── Welcome message shown after successful login ───────────────────────────────
+const WELCOME_LINES = [
+  '',
+  'Last login: Tue Nov  2 09:14:51 1971',
+  'You have mail.',
+  '',
+  'Welcome to the UNIX system.',
+  '',
+  'Your home directory contains:',
+  '  notes.txt  mail  readme',
+  '',
+  'Useful commands:',
+  '  ls',
+  '    -> list files',
+  '  cat [file]',
+  '    -> read a file',
+  '  mail',
+  '    -> read messages',
+  '  man [cmd]',
+  '    -> look up a manual page',
+  '',
 ]
 
 // ms between each character during streaming — ~500 chars/sec, feels like fast baud
 const CHAR_DELAY = 2
 
 // ── Hook ──────────────────────────────────────────────────────────────────────
-export default function useTerminal() {
-  const [phase,          setPhase]          = useState('login')
-  const [history,        setHistory]        = useState(BOOT_LINES)
+export default function useTerminal({ onObjectiveComplete, completedIndices } = {}) {
+  // Start in 'booting' — keypresses are blocked and no prompt is shown
+  // until the boot sequence finishes and phase transitions to 'login'.
+  const [phase,          setPhase]          = useState('booting')
+  const [history,        setHistory]        = useState([])
   const [currentInput,   setCurrentInput]   = useState('')
   const [commandHistory, setCommandHistory] = useState([])
   const [historyIndex,   setHistoryIndex]   = useState(-1)
@@ -102,8 +140,25 @@ export default function useTerminal() {
   // The character being streamed on the current output line (null when idle).
   const [streamingLine,  setStreamingLine]  = useState(null)
 
-  const respondingRef = useRef(false)
-  const timeoutRef    = useRef(null)
+  const respondingRef    = useRef(false)  // matches initial responding state
+  const timeoutRef       = useRef(null)
+  // Refs so objective logic always reads the latest values without stale closures.
+  const onObjRef         = useRef(onObjectiveComplete)
+  const completedRef     = useRef(completedIndices ?? [])
+
+  useEffect(() => { onObjRef.current = onObjectiveComplete }, [onObjectiveComplete])
+  useEffect(() => { completedRef.current = completedIndices ?? [] }, [completedIndices])
+
+  // Fire objective[idx] if prerequisites are met and it hasn't fired yet.
+  // Sequential gate: idx 1 requires idx 0 done; idx 2 requires idx 1 done.
+  function tryFireObjective(idx) {
+    const cb   = onObjRef.current
+    const done = completedRef.current
+    if (!cb || done.includes(idx)) return
+    if (idx === 1 && !done.includes(0)) return
+    if (idx === 2 && !done.includes(1)) return
+    cb(idx)
+  }
 
   useEffect(() => () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }, [])
 
@@ -157,6 +212,19 @@ export default function useTerminal() {
     )
   }
 
+  // ── Boot sequence (triggered on demand by Level0) ────────────────────────
+  // Called by Level0.jsx when the player dismisses the IntroModal.
+  // Group 1: hardware diagnostics. Group 2: OS banner + login hint.
+  // A 1200ms pause between groups mimics kernel load time.
+  function startBoot(onComplete) {
+    startStream(BOOT_GROUP_1, 1000, () => {
+      startStream(BOOT_GROUP_2, 1200, () => {
+        setPhase('login')
+        if (onComplete) onComplete()
+      })
+    })
+  }
+
   // ── Keyboard handler ──────────────────────────────────────────────────────
   const onKeyDown = useCallback((e) => {
     if (respondingRef.current) { e.preventDefault(); return }
@@ -187,12 +255,8 @@ export default function useTerminal() {
       if (phase === 'password') {
         setHistory(h => [...h, { type: 'input', text: 'Password: ****' }])
         setCurrentInput('')
-        // Stream the welcome message; transition to shell when streaming finishes.
-        startStream(
-          ['', 'Last login: Tue Nov  2 09:14:51 1971', 'You have mail.', ''],
-          800,
-          () => setPhase('shell')
-        )
+        // Stream the expanded welcome; transition to shell when done.
+        startStream(WELCOME_LINES, 800, () => setPhase('shell'))
         return
       }
 
@@ -211,7 +275,14 @@ export default function useTerminal() {
         }
 
         const output = COMMANDS[cmd] ?? [cmd + ': not found']
-        startStream(output, 400)
+
+        // Determine which objective (if any) this command should complete.
+        let onDone = null
+        if (cmd === 'cat notes.txt')      onDone = () => tryFireObjective(0)
+        else if (cmd === 'mail')           onDone = () => tryFireObjective(1)
+        else if (cmd.startsWith('man '))   onDone = () => tryFireObjective(2)
+
+        startStream(output, 400, onDone)
         return
       }
       return
@@ -251,5 +322,5 @@ export default function useTerminal() {
     }
   }, [phase, currentInput, commandHistory, historyIndex])
 
-  return { phase, history, currentInput, responding, streamingLine, onKeyDown }
+  return { phase, history, currentInput, responding, streamingLine, onKeyDown, startBoot }
 }
