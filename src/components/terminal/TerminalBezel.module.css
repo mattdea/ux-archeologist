@@ -1,94 +1,132 @@
 /* src/components/terminal/TerminalBezel.module.css
  *
- * VT100-inspired hardware container — total footprint: 780 × 540px
+ * Asymmetric VT100 layout — total footprint: 780 × 460px
  *
- * Dimension breakdown (all implicit from content, no explicit w/h on .monitor):
- *   topStripe  :  36px tall
- *   screenArea :  16px (top pad) + 12px (bezel pad) + 420px (screen)
- *                + 12px (bezel pad) +  8px (bottom pad) = 468px
- *   bottomStrip:  36px tall
- *   Total H    :  36 + 468 + 36 = 540px ✓
- *
- *   screenBezel content-width : 700px
- *   screenBezel outer-width   : 700 + 12 + 12 = 724px
- *   screenArea total-width    : 28 + 724 + 28 = 780px ✓
+ * Left dark surround : 74% = ~577px wide, full height — the dominant visual mass
+ * Right cream panel  : 26% = ~203px wide — badge + LED on clean plastic
+ * Screen area        : 384 × 294px explicit, flex-centered inside dark surround
+ *   Screen recess outer : 384 + (2 × 16) = 416px wide, 294 + (2 × 16) = 326px tall
+ *   Flex margins in dark surround ≈ 80px horizontal, 67px vertical
  */
 
-/* ── Outer plastic casing ─────────────────────────────────────────── */
+/* ── Outer housing ────────────────────────────────────────────────── */
 .monitor {
   position: relative;
-  display: inline-block;
+  width: 780px;
+  height: 460px;
   background: #d4cdb8;
-  border-radius: 8px;
+  border-radius: 10px;
+  /* Flat fill — depth from shadow only, no gradients */
   box-shadow:
-    0 28px 72px rgba(0, 0, 0, 0.75),
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.15),
-    inset 2px 0 0 rgba(255, 255, 255, 0.25),
-    inset -2px 0 0 rgba(0, 0, 0, 0.1);
+    2px 3px 8px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid #c2bba6;
 }
 
-/* ── Brand stripe across top ──────────────────────────────────────── */
-.topStripe {
-  height: 36px;
-  background: #b8b09e;
-  border-radius: 8px 8px 0 0;
+/* ── Dark surround — left panel, extends to very top edge ────────── */
+.darkSurround {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 74%;
+  background: #2a2a2a;
+  border-radius: 10px 0 0 10px; /* matches housing's left corners */
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  justify-content: center;
 }
 
-.brandLabel {
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: #7a7263;
-  text-transform: uppercase;
-  user-select: none;
-}
-
-/* ── Screen surround — provides padding around screenBezel ───────── */
-.screenArea {
-  padding: 16px 28px 8px;
-}
-
-/* ── Recessed dark border around the screen ──────────────────────── */
-.screenBezel {
-  display: block;
+/* ── Screen recess — recessed channel, sits below dark surround surface */
+.screenRecess {
   background: #1a1a1a;
-  border-radius: 4px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 16px;
   box-shadow:
-    inset 0 2px 12px rgba(0, 0, 0, 0.95),
-    inset 0 0 32px rgba(0, 0, 0, 0.6);
+    inset 0 2px 8px rgba(0, 0, 0, 0.8),
+    inset 0 0 2px rgba(0, 0, 0, 0.9);
 }
 
-/* ── Screen area — 700 × 420px, holds TerminalScreen ─────────────── */
+/* ── Screen area — CRT glass, 384 × 294px ────────────────────────── */
 .screen {
-  width: 700px;
-  height: 420px;
-  position: relative;
+  width: 384px;
+  height: 294px;
+  background: #050505;
+  border-radius: 10px;   /* generously rounded — VT100 CRT has soft corners */
   overflow: hidden;
 }
 
-/* ── Bottom strip — LED only ─────────────────────────────────────── */
-.bottomStrip {
-  height: 36px;
+/* ── Right panel — cream plastic, badge + LED ────────────────────── */
+.rightPanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 26%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 20px;
+  padding-bottom: 68px;
+  gap: 10px;
 }
 
-/* Power LED — green #00ff41, faint glow */
+/* ── Badge plate — small dark rectangle, understated detail ──────── */
+.badge {
+  background: #3a3a3a;
+  border-radius: 2px;
+  padding: 5px 7px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* "digital" — thin light text above the tiles */
+.badgeDigital {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 8px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: #b0a898;
+  text-transform: lowercase;
+  user-select: none;
+  line-height: 1;
+}
+
+/* VT100 letter tiles container */
+.badgeTiles {
+  display: flex;
+  gap: 1px;
+}
+
+/* Individual embossed character tiles — V T 1 0 0 */
+.tile {
+  display: inline-block;
+  background: #eee8dc;
+  border: 0.5px solid #ccc5b5;
+  border-radius: 1px;
+  padding: 1px 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 7px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Power LED — green, subtle pulse ─────────────────────────────── */
 .led {
   display: block;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #00ff41;
-  box-shadow:
-    0 0 5px #00ff41,
-    0 0 10px rgba(0, 255, 65, 0.4);
+  box-shadow: 0 0 4px rgba(0, 255, 65, 0.4);
+  animation: ledPulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes ledPulse {
+  from { opacity: 1;   }
+  to   { opacity: 0.5; }
 }
