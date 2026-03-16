@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Back window (35% opacity) -->
+  <rect x="20" y="20" width="52" height="42" rx="3" fill="none" stroke="#2A2A28" stroke-width="2.5" opacity="0.35"/>
+  <!-- Middle window (60% opacity) -->
+  <rect x="36" y="36" width="52" height="42" rx="3" fill="none" stroke="#2A2A28" stroke-width="2.5" opacity="0.6"/>
+  <!-- Front window (solid) -->
+  <rect x="52" y="52" width="52" height="42" rx="3" fill="#FFFFFF" stroke="#2A2A28" stroke-width="2.5"/>
+  <!-- Text line 1 (muted) -->
+  <rect x="60" y="64" width="22" height="3" rx="1" fill="#2A2A28" opacity="0.3"/>
+  <!-- Text line 2 (muted) -->
+  <rect x="60" y="72" width="16" height="3" rx="1" fill="#2A2A28" opacity="0.3"/>
+  <!-- Text line 3 (amber discovery) -->
+  <rect x="60" y="80" width="20" height="3" rx="1" fill="#BA7517"/>
+</svg>
