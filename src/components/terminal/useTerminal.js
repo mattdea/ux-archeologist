@@ -1,15 +1,11 @@
 // src/components/terminal/useTerminal.js
 //
 // Owns all terminal state and logic for Level 0 (1971 Unix terminal).
-// Returns { phase, history, currentInput, responding, onKeyDown }
-// — everything TerminalScreen needs to render and respond to input.
+// Returns { phase, history, currentInput, responding, streamingLine, onKeyDown }
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 
 // ── Command registry ──────────────────────────────────────────────────────────
-// Keys are the exact trimmed string the user must type.
-// Values are arrays of output lines; '' becomes a blank line in history.
-
 const COMMANDS = {
   ls: [
     'notes.txt    mail    readme',
@@ -42,8 +38,8 @@ const COMMANDS = {
     "Type 'mail' to read messages.",
   ],
 
-  // 'cat mail' is intentionally absent — mail is a program, not a file.
-  // Attempting it will hit the "not found" fallback, which is the discovery.
+  // 'cat mail' intentionally absent — mail is a program, not a file.
+  // Attempting it reveals the distinction (the discovery).
 
   mail: [
     'Mail version 1.0',
@@ -87,18 +83,13 @@ const COMMANDS = {
   help:   ['help: command not found', 'Hint: try  ls,  cat,  man,  mail'],
 }
 
-// Lines shown before the login prompt on first mount.
 const BOOT_LINES = [
   { type: 'output', text: 'UNIX (pdp-11/45)' },
   { type: 'blank',  text: '' },
 ]
 
-// ── Helper — convert a string array to history entries ───────────────────────
-function linesToEntries(lines) {
-  return lines.map(text =>
-    text === '' ? { type: 'blank', text: '' } : { type: 'output', text }
-  )
-}
+// ms between each character during streaming — ~500 chars/sec, feels like fast baud
+const CHAR_DELAY = 2
 
 // ── Hook ──────────────────────────────────────────────────────────────────────
 export default function useTerminal() {
@@ -108,36 +99,68 @@ export default function useTerminal() {
   const [commandHistory, setCommandHistory] = useState([])
   const [historyIndex,   setHistoryIndex]   = useState(-1)
   const [responding,     setResponding]     = useState(false)
+  // The character being streamed on the current output line (null when idle).
+  const [streamingLine,  setStreamingLine]  = useState(null)
 
-  // Ref mirrors `responding` so event handlers always see the current value
-  // without needing it in their dependency arrays.
   const respondingRef = useRef(false)
   const timeoutRef    = useRef(null)
 
-  // Cancel any pending response on unmount.
-  useEffect(() => {
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }
-  }, [])
+  useEffect(() => () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }, [])
 
-  // ── Scheduled output helper ────────────────────────────────────────────────
-  // Pushes `lines` after `delay` ms, then clears the responding flag.
-  // Does NOT set phase — callers that need a phase change must do it themselves.
-  const scheduleOutput = useCallback((lines, delay) => {
-    setResponding(true)
-    respondingRef.current = true
-    timeoutRef.current = setTimeout(() => {
-      setHistory(h => [...h, ...linesToEntries(lines)])
+  // ── Streaming engine ──────────────────────────────────────────────────────
+  //
+  // Recursively advances through `lines`, typing each character with CHAR_DELAY.
+  // Blank lines commit instantly (no character loop).
+  // When all lines are done, calls optional `onDone` callback then clears flags.
+  //
+  // All values used here are either stable (useState setters) or passed as
+  // explicit arguments, so stale-closure issues don't apply.
+  function beginStreaming(lines, lineIdx, charIdx, onDone) {
+    if (lineIdx >= lines.length) {
+      setStreamingLine(null)
       setResponding(false)
       respondingRef.current = false
-    }, delay)
-  }, [])
+      if (onDone) onDone()
+      return
+    }
 
-  // ── Keyboard handler (returned to TerminalScreen) ──────────────────────────
+    const line = lines[lineIdx]
+
+    // Blank line or current line fully typed — commit to history, move on.
+    if (line === '' || charIdx >= line.length) {
+      const entry = line === ''
+        ? { type: 'blank',  text: '' }
+        : { type: 'output', text: line }
+      setHistory(h => [...h, entry])
+      setStreamingLine(null)
+      // 0 ms between lines — yield to event loop but don't add perceptible pause.
+      timeoutRef.current = setTimeout(
+        () => beginStreaming(lines, lineIdx + 1, 0, onDone), 0
+      )
+      return
+    }
+
+    // Type the next character.
+    setStreamingLine(line.slice(0, charIdx + 1))
+    timeoutRef.current = setTimeout(
+      () => beginStreaming(lines, lineIdx, charIdx + 1, onDone), CHAR_DELAY
+    )
+  }
+
+  // Waits `delay` ms then streams `lines` character by character.
+  // `onDone` fires after the last character is committed to history.
+  function startStream(lines, delay, onDone) {
+    setResponding(true)
+    respondingRef.current = true
+    timeoutRef.current = setTimeout(
+      () => beginStreaming(lines, 0, 0, onDone), delay
+    )
+  }
+
+  // ── Keyboard handler ──────────────────────────────────────────────────────
   const onKeyDown = useCallback((e) => {
-    // Hard block during simulated latency — no buffering, no queuing.
     if (respondingRef.current) { e.preventDefault(); return }
 
-    // ── Ctrl+C — interrupt, show ^C, clear input ───────────────────────────
     if (e.ctrlKey && e.key === 'c') {
       e.preventDefault()
       setHistory(h => [...h, { type: 'output', text: '^C' }])
@@ -145,14 +168,12 @@ export default function useTerminal() {
       return
     }
 
-    // ── Ctrl+L — clear screen ──────────────────────────────────────────────
     if (e.ctrlKey && e.key === 'l') {
       e.preventDefault()
       setHistory([])
       return
     }
 
-    // ── Enter ──────────────────────────────────────────────────────────────
     if (e.key === 'Enter') {
       e.preventDefault()
 
@@ -164,64 +185,44 @@ export default function useTerminal() {
       }
 
       if (phase === 'password') {
-        // Commit masked line; delay welcome + shell transition by 800ms.
         setHistory(h => [...h, { type: 'input', text: 'Password: ****' }])
         setCurrentInput('')
-        setResponding(true)
-        respondingRef.current = true
-        timeoutRef.current = setTimeout(() => {
-          setHistory(h => [
-            ...h,
-            { type: 'blank',  text: '' },
-            { type: 'output', text: 'Last login: Tue Nov  2 09:14:51 1971' },
-            { type: 'output', text: 'You have mail.' },
-            { type: 'blank',  text: '' },
-          ])
-          setPhase('shell')
-          setResponding(false)
-          respondingRef.current = false
-        }, 800)
+        // Stream the welcome message; transition to shell when streaming finishes.
+        startStream(
+          ['', 'Last login: Tue Nov  2 09:14:51 1971', 'You have mail.', ''],
+          800,
+          () => setPhase('shell')
+        )
         return
       }
 
       if (phase === 'shell') {
         const cmd = currentInput.trim()
-
-        // Commit the input line regardless.
         setHistory(h => [...h, { type: 'input', text: '$ ' + currentInput }])
-
-        // Record non-empty commands in history for up-arrow cycling.
         if (cmd) setCommandHistory(ch => [...ch, cmd])
         setHistoryIndex(-1)
         setCurrentInput('')
 
-        if (!cmd) return  // empty Enter — just show blank prompt, no delay
+        if (!cmd) return
 
-        // `clear` is immediate and produces no output.
         if (cmd === 'clear') {
           setHistory([])
           return
         }
 
-        // Everything else goes through the 400ms response latency.
-        if (COMMANDS[cmd]) {
-          scheduleOutput(COMMANDS[cmd], 400)
-        } else {
-          scheduleOutput([cmd + ': not found'], 400)
-        }
+        const output = COMMANDS[cmd] ?? [cmd + ': not found']
+        startStream(output, 400)
         return
       }
       return
     }
 
-    // ── Backspace ──────────────────────────────────────────────────────────
     if (e.key === 'Backspace') {
       e.preventDefault()
       setCurrentInput(s => s.slice(0, -1))
       return
     }
 
-    // ── Arrow Up — cycle backward through command history ──────────────────
     if (e.key === 'ArrowUp' && phase === 'shell') {
       e.preventDefault()
       if (commandHistory.length === 0) return
@@ -231,7 +232,6 @@ export default function useTerminal() {
       return
     }
 
-    // ── Arrow Down — cycle forward, restore empty at end ──────────────────
     if (e.key === 'ArrowDown' && phase === 'shell') {
       e.preventDefault()
       const newIdx = historyIndex - 1
@@ -245,12 +245,11 @@ export default function useTerminal() {
       return
     }
 
-    // ── Printable characters ───────────────────────────────────────────────
     if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault()
       setCurrentInput(s => s + e.key)
     }
-  }, [phase, currentInput, commandHistory, historyIndex, scheduleOutput])
+  }, [phase, currentInput, commandHistory, historyIndex])
 
-  return { phase, history, currentInput, responding, onKeyDown }
+  return { phase, history, currentInput, responding, streamingLine, onKeyDown }
 }

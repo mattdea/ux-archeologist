@@ -23,7 +23,7 @@ function visibleInput(phase, currentInput) {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function TerminalScreen({ phase, history, currentInput, responding, onKeyDown }) {
+export default function TerminalScreen({ phase, history, currentInput, responding, streamingLine, onKeyDown }) {
   const inputRef  = useRef(null)
   const scrollRef = useRef(null)
 
@@ -56,7 +56,7 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
-  }, [history])
+  }, [history, streamingLine])
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -84,12 +84,23 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
           </div>
         ))}
 
-        {/* Active prompt line — always below history */}
-        <div>
-          {promptPrefix(phase)}
-          {visibleInput(phase, currentInput)}
-          <span className="termCursor">{'\u00A0'}</span>
-        </div>
+        {/*
+          Bottom line — either the streaming output (with cursor tracking it)
+          or the normal input prompt. Never both at the same time.
+        */}
+        {streamingLine !== null ? (
+          // Output is being typed — cursor follows the last character.
+          <div>
+            {streamingLine}<span className="termCursor">{'\u00A0'}</span>
+          </div>
+        ) : (
+          // Idle or waiting — show the prompt (cursor blinks while "thinking").
+          <div>
+            {promptPrefix(phase)}
+            {visibleInput(phase, currentInput)}
+            <span className="termCursor">{'\u00A0'}</span>
+          </div>
+        )}
 
       </div>
 

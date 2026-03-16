@@ -8,8 +8,8 @@
 
 /* ── Cursor blink ─────────────────────────────────────────────────── */
 @keyframes cursorBlink {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  0%,    50%  { opacity: 1; }
+  50.1%, 100% { opacity: 0; }
 }
 
 .termCursor {
@@ -18,7 +18,11 @@
   height: 1.05em;
   background: currentColor;
   vertical-align: text-bottom;
-  animation: cursorBlink 530ms step-end infinite alternate;
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .termCursor { animation: none; opacity: 1; }
 }
 
 /* ── Utility: raw terminal output line ───────────────────────────── */

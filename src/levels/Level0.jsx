@@ -60,6 +60,7 @@ export default function Level0() {
                   history={terminal.history}
                   currentInput={terminal.currentInput}
                   responding={terminal.responding}
+                  streamingLine={terminal.streamingLine}
                   onKeyDown={terminal.onKeyDown}
                 />
               </TerminalBezel>
