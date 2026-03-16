@@ -386,6 +386,12 @@ export default function DesktopScene({ completeObjective, active }) {
       const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
       const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
       setIconPositions(prev => ({ ...prev, projects: { x, y } }))
+    } else if (item === 'notes-restore') {
+      setTrashContents(prev => prev.filter(x => x !== 'notes'))
+      const rect = desktopRef.current.getBoundingClientRect()
+      const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
+      const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
+      setIconPositions(prev => ({ ...prev, notes: { x, y } }))
     }
   }
 
