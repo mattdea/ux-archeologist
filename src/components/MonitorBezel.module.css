@@ -48,26 +48,11 @@
   width: 692px;
   height: 514px;
   border-radius: 25px;
-  /* Conic gradients: top-center darker (shadow), bottom-center lighter (highlight) */
   background:
-    conic-gradient(from 90deg at 50% 0%,
-      rgba(137, 128, 101, 0) 25.481%,
-      rgba(152, 144, 118, 0.5) 30.313%,
-      rgb(137, 128, 101) 35.146%,
-      rgb(137, 128, 101) 64.281%,
-      rgba(152, 144, 118, 0.5) 69.16%,
-      rgba(137, 128, 101, 0) 74.038%
-    ),
-    conic-gradient(from 90deg at 50% 100%,
-      rgba(197, 191, 167, 0) 25.481%,
-      rgba(207, 201, 179, 0.5) 30.313%,
-      rgb(216, 210, 191) 35.146%,
-      rgb(216, 210, 191) 64.281%,
-      rgba(207, 201, 179, 0.5) 69.16%,
-      rgba(197, 191, 167, 0) 74.038%
-    ),
-    #b7b092;
-  box-shadow: 0 0 9.8px rgba(250, 247, 238, 0.28);
+    conic-gradient(from 0deg at 50% 73.81%, rgba(197, 191, 167, 0.00) 91.73076510429382deg, #D8D2BF 126.52635455131531deg, #D8D2BF 231.41193866729736deg, rgba(197, 191, 167, 0.00) 266.53846979141235deg),
+    conic-gradient(from 180deg at 50% 24.52%, rgba(197, 191, 167, 0.00) 91.73076510429382deg, #898065 126.52635455131531deg, #898065 231.41193866729736deg, rgba(184, 177, 147, 0.00) 266.53846979141235deg),
+    #B7B092;
+  box-shadow: 0 0 9.8px 0 rgba(250, 247, 238, 0.28);
   pointer-events: none;
   z-index: 0;
 }
