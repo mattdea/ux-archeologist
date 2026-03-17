@@ -9,20 +9,19 @@ function CrtOverlay() {
       width="620"
       height="415"
       viewBox="0 0 620 415"
+      overflow="visible"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <g clipPath="url(#clip0_14_1707)">
-        <g filter="url(#filter0_f_14_1707)">
-          <path d="M20.9331 -16.0204L212.511 -48.1347V288.511L20.9331 320.625V-16.0204Z" fill="white" fillOpacity="0.32"/>
-        </g>
-        <g filter="url(#filter1_f_14_1707)">
-          <ellipse cx="310" cy="446.168" rx="310" ry="97.6678" fill="#B7B7B7" fillOpacity="0.28"/>
-        </g>
-        <g filter="url(#filter2_f_14_1707)">
-          <ellipse cx="690.375" cy="228.125" rx="310" ry="97.6678" transform="rotate(-90 690.375 228.125)" fill="white" fillOpacity="0.37"/>
-        </g>
+      <g filter="url(#filter0_f_14_1707)">
+        <path d="M20.9331 -16.0204L212.511 -48.1347V288.511L20.9331 320.625V-16.0204Z" fill="white" fillOpacity="0.32"/>
+      </g>
+      <g filter="url(#filter1_f_14_1707)">
+        <ellipse cx="310" cy="446.168" rx="310" ry="97.6678" fill="#B7B7B7" fillOpacity="0.28"/>
+      </g>
+      <g filter="url(#filter2_f_14_1707)">
+        <ellipse cx="690.375" cy="228.125" rx="310" ry="97.6678" transform="rotate(-90 690.375 228.125)" fill="white" fillOpacity="0.37"/>
       </g>
       <defs>
         <filter id="filter0_f_14_1707" x="-29.0669" y="-98.1346" width="291.578" height="468.76" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
@@ -40,9 +39,6 @@ function CrtOverlay() {
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
           <feGaussianBlur stdDeviation="20" result="effect1_foregroundBlur_14_1707"/>
         </filter>
-        <clipPath id="clip0_14_1707">
-          <rect width="620" height="415" fill="white"/>
-        </clipPath>
       </defs>
     </svg>
   )
