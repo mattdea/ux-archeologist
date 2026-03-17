@@ -1,6 +1,7 @@
 // src/components/MonitorBezel.jsx
 import styles from './MonitorBezel.module.css'
 import appleBadge from '../../assets/new-apple-badge.svg'
+import floppySvg from '../../assets/floppydisk.svg'
 
 function AppleBadge() {
   return (
@@ -93,6 +94,14 @@ function CrtRight() {
 export default function MonitorBezel({ children, booting = false }) {
   return (
     <div className={styles.monitor}>
+
+      {/* 12:868 — plastic housing body (beige gradient shell) */}
+      <div className={styles.housing} aria-hidden="true" />
+
+      {/* 12:869 — recessed screen surround (3D tunnel) */}
+      <div className={styles.screenSurround} aria-hidden="true" />
+
+      {/* 10:27 / 10:28 — dark CRT bezel frame + screen */}
       <div className={styles.screenBezel}>
         <div className={styles.screen}>
           {children}
@@ -101,16 +110,22 @@ export default function MonitorBezel({ children, booting = false }) {
           <CrtRight />
         </div>
       </div>
-      <div className={styles.decorRow}>
-        <AppleBadge />
-        <div className={styles.rightDecor}>
-          <div className={styles.floppyDrive}>
-            <div className={styles.floppySlot} />
-            <div className={styles.floppyButton} />
-          </div>
-          <span className={`${styles.led} ${booting ? styles.ledBooting : ''}`} />
-        </div>
-      </div>
+
+      {/* 13:879 — Apple badge button */}
+      <AppleBadge />
+
+      {/* 13:890 — floppy disk drive */}
+      <img
+        src={floppySvg}
+        className={styles.floppy}
+        draggable="false"
+        aria-hidden="true"
+        alt=""
+      />
+
+      {/* Power LED — functional for boot animation */}
+      <span className={`${styles.led} ${booting ? styles.ledBooting : ''}`} />
+
     </div>
   )
 }

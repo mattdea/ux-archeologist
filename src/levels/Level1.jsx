@@ -21,9 +21,10 @@ const OBJECTIVES = [
 // Maps DesktopScene's string keys → OBJECTIVES array indices
 const OBJ_KEY_INDEX = { openFolder: 0, trashFile: 1, useMenu: 2 }
 
-// Bezel pixel dimensions: screen(620×415) + screenBezel pad(14×2) + monitor pad(52×2)
-const BEZEL_W = 752
-const BEZEL_H = 547
+// Bezel pixel dimensions: screen(620×415) + screenBezel pad(14×2) + monitor pad(66/135/177)
+// Matches Figma node 10:26 (MonitorBezel 780×755)
+const BEZEL_W = 780
+const BEZEL_H = 755
 
 // Matches --bottom-zone-height in Level1.module.css
 const BOTTOM_ZONE_H = 180

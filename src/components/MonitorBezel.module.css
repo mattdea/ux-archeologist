@@ -1,47 +1,101 @@
-/* src/components/MonitorBezel.module.css */
+/* src/components/MonitorBezel.module.css
+ *
+ * All pixel values derived from Figma node 10:26 (MonitorBezel, 780×755).
+ *
+ * Sizing proof:
+ *   width:  padding-left(66) + screenBezel(648) + padding-right(66) = 780
+ *   height: padding-top(135) + screenBezel(443) + padding-bottom(177) = 755
+ *
+ *   BEZEL_W = 780 / BEZEL_H = 755  (update Level1.jsx to match)
+ */
 
-/* ── Outer plastic casing ─────────────────────────────────────────────── */
-/* Total width:  52 + 14 + 620 + 14 + 52 = 752px  (BEZEL_W in Level1.jsx) */
-/* Total height: 52 + 14 + 415 + 14 + 52 = 547px  (BEZEL_H in Level1.jsx) */
+/* ── Outer frame — transparent shell, sized to 780×755 ────────────────── */
 .monitor {
   position: relative;
   display: inline-block;
+  /* Asymmetric padding mirrors Figma proportions: tall forehead + chin */
+  padding: 135px 66px 177px;
+  background: transparent;
+}
+
+/* ── 12:868 — plastic housing body ───────────────────────────────────── */
+/* Figma: x:17 y:30 w:746 h:711, border-radius:18px, gradient, overflow:clip */
+.housing {
+  position: absolute;
+  top: 30px;
+  left: 17px;
+  right: 17px;   /* 780 - 17 - 17 = 746 */
+  bottom: 14px;  /* 755 - 30 - 14 = 711 */
   background: linear-gradient(180deg, #c9c1a4 0%, #c7be9d 100%);
   border-radius: 18px;
-  padding: 52px;
+  overflow: hidden;
+  /* Drop shadow lives here so it follows the housing shape */
   box-shadow:
-    0 28px 72px rgba(0, 0, 0, 0.75),
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.15),
-    inset 2px 0 0 rgba(255, 255, 255, 0.25),
-    inset -2px 0 0 rgba(0, 0, 0, 0.1);
+    0 40px 100px rgba(0, 0, 0, 0.8),
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.14),
+    inset 3px 0 0 rgba(255, 255, 255, 0.25),
+    inset -3px 0 0 rgba(0, 0, 0, 0.1);
 }
 
-/* ── Recessed screen surround — warm plastic tunnel ───────────────────── */
+/* ── 12:869 — recessed screen surround (3D plastic tunnel) ───────────── */
+/* Figma: x:44 y:99.5 w:692 h:514, border-radius:25px */
+.screenSurround {
+  position: absolute;
+  top: 99px;
+  left: 44px;
+  width: 692px;
+  height: 514px;
+  border-radius: 25px;
+  /* Conic gradients: top-center darker (shadow), bottom-center lighter (highlight) */
+  background:
+    conic-gradient(from 90deg at 50% 0%,
+      rgba(137, 128, 101, 0) 25.481%,
+      rgba(152, 144, 118, 0.5) 30.313%,
+      rgb(137, 128, 101) 35.146%,
+      rgb(137, 128, 101) 64.281%,
+      rgba(152, 144, 118, 0.5) 69.16%,
+      rgba(137, 128, 101, 0) 74.038%
+    ),
+    conic-gradient(from 90deg at 50% 100%,
+      rgba(197, 191, 167, 0) 25.481%,
+      rgba(207, 201, 179, 0.5) 30.313%,
+      rgb(216, 210, 191) 35.146%,
+      rgb(216, 210, 191) 64.281%,
+      rgba(207, 201, 179, 0.5) 69.16%,
+      rgba(197, 191, 167, 0) 74.038%
+    ),
+    #b7b092;
+  box-shadow: 0 0 9.8px rgba(250, 247, 238, 0.28);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 10:27 — dark CRT bezel frame ────────────────────────────────────── */
+/* Figma: x:66 y:135 w:648 h:443 — positioned via .monitor padding */
 .screenBezel {
-  background: linear-gradient(180deg, #a8a192 0%, #bcb59c 50%, #b3ac93 100%);
-  border-radius: 22px;
+  position: relative;
+  z-index: 1;
+  background: #111111;
+  border-radius: 14px;
   padding: 14px;
   box-shadow:
-    0 0 9.8px rgba(250, 247, 238, 0.28),
-    inset 0 10px 28px rgba(50, 44, 30, 0.52),
-    inset 0 -5px 14px rgba(225, 218, 195, 0.38),
-    inset 8px 0 20px rgba(50, 44, 30, 0.22),
-    inset -8px 0 20px rgba(50, 44, 30, 0.16);
+    inset 0 2px 10px rgba(0, 0, 0, 0.95),
+    inset 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
-/* ── CRT screen ───────────────────────────────────────────────────────── */
+/* ── 10:28 — screen content area ─────────────────────────────────────── */
+/* Figma: x:14 y:14 w:620 h:415 (within 10:27) */
 .screen {
   width: 620px;
   height: 415px;
   position: relative;
   overflow: hidden;
-  /* Dark ring fills the 14px padding gap — creates the CRT bezel frame */
-  box-shadow: 0 0 0 14px rgba(8, 8, 8, 0.93);
+  border-radius: 4px;
 }
 
-/* ── CRT glass overlays (pointer-events: none, render above desktop UI) ─ */
+/* ── CRT glass overlays ───────────────────────────────────────────────── */
 .crtGlint {
   position: absolute;
   top: 0;
@@ -66,33 +120,28 @@
   z-index: 2;
 }
 
-/* ── Bottom decor row — Apple badge left, floppy + LED right ─────────── */
-.decorRow {
-  position: absolute;
-  bottom: 0;
-  left: 52px;
-  right: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Rainbow Apple badge — embossed plastic square */
+/* ── 13:879 — Apple badge ─────────────────────────────────────────────── */
+/* Figma: x:66 y:653 w:52 h:52  →  left:66  bottom:755-653-52=50 */
 .appleBadge {
+  position: absolute;
+  left: 66px;
+  bottom: 50px;
   width: 52px;
   height: 52px;
   background: #c7be9e;
   border-radius: 7px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
   box-shadow:
     2px 2px 2.4px rgba(255, 255, 255, 0.17),
     -2px -2px 2.4px rgba(255, 255, 255, 0.17),
     inset -2px -2px 2px rgba(113, 108, 87, 0.32),
     inset 2px 2px 2px rgba(113, 108, 87, 0.32),
     inset 2px 0 2px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
 }
 
 .appleBadgeImg {
@@ -102,65 +151,33 @@
   object-fit: contain;
 }
 
-/* Right side — floppy drive + LED */
-.rightDecor {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ── 13:890 — floppy disk drive SVG ─────────────────────────────────── */
+/* Figma: x:385 (66+319.455) y:641 (653-12.016)  →  bottom:755-641-77=37 */
+.floppy {
+  position: absolute;
+  left: 385px;
+  bottom: 37px;
+  width: 329px;
+  height: 77px;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
 }
 
-/* Floppy disk drive housing */
-.floppyDrive {
-  position: relative;
-  width: 220px;
-  height: 34px;
-  background: linear-gradient(180deg, #cdc6aa 0%, #b9b39b 100%);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  gap: 8px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 1px 3px rgba(0, 0, 0, 0.22);
-}
-
-/* Disk insertion slot */
-.floppySlot {
-  flex: 1;
-  height: 5px;
-  background: #111111;
-  border-radius: 3px;
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.95),
-    0 1px 0 rgba(255, 255, 255, 0.14);
-}
-
-/* Eject button */
-.floppyButton {
-  width: 30px;
-  height: 26px;
-  flex-shrink: 0;
-  background: #b3ad8d;
-  border-radius: 5px;
-  box-shadow:
-    inset 0 1px 0.3px rgba(0, 0, 0, 0.28),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-}
-
-/* Power LED — green glow */
+/* ── Power LED (functional, not in Figma) ─────────────────────────────── */
 .led {
+  position: absolute;
+  right: 30px;
+  bottom: 72px;
   display: block;
   width: 8px;
   height: 8px;
-  flex-shrink: 0;
   border-radius: 50%;
   background: #2ed45a;
   box-shadow: 0 0 5px #2ed45a, 0 0 10px rgba(46, 212, 90, 0.5);
+  z-index: 1;
 }
 
-/* LED pulses during boot */
 @keyframes ledBlink {
   0%, 45%  { opacity: 1; }
   50%, 95% { opacity: 0.08; }
