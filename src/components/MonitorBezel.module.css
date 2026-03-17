@@ -1,86 +1,50 @@
 /* src/components/MonitorBezel.module.css
  *
- * All pixel values derived from Figma node 10:26 (MonitorBezel, 780×755).
+ * SVG-backed bezel. MonitorBezel.svg is 780×755 and is the entire device.
+ * The interactive screen is overlaid at the exact screen-hole position:
+ *   left: (780 - 620) / 2 = 80px
+ *   top:  149px  (specified by design)
+ *   size: 620 × 415
  *
- * Sizing proof:
- *   width:  padding-left(66) + screenBezel(648) + padding-right(66) = 780
- *   height: padding-top(135) + screenBezel(443) + padding-bottom(177) = 755
- *
- *   BEZEL_W = 780 / BEZEL_H = 755  (update Level1.jsx to match)
+ * BEZEL_W = 780 / BEZEL_H = 755  (Level1.jsx)
  */
 
-/* ── Outer frame — transparent shell, sized to 780×755 ────────────────── */
+/* ── Outer shell — sized to match the SVG ────────────────────────────── */
 .monitor {
   position: relative;
   display: inline-block;
-  /* Asymmetric padding mirrors Figma proportions: tall forehead + chin */
-  padding: 135px 66px 177px;
-  background: transparent;
+  width: 780px;
+  height: 755px;
+  filter:
+    drop-shadow(0 28px 60px rgba(0, 0, 0, 0.8))
+    drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
 }
 
-/* ── 12:868 — plastic housing body ───────────────────────────────────── */
-/* Figma: x:17 y:30 w:746 h:711, border-radius:18px, gradient, overflow:clip */
-.housing {
+/* ── Full-device SVG — decorative, no interaction ────────────────────── */
+.bezelImg {
   position: absolute;
-  top: 30px;
-  left: 17px;
-  right: 17px;   /* 780 - 17 - 17 = 746 */
-  bottom: 14px;  /* 755 - 30 - 14 = 711 */
-  background: linear-gradient(180deg, #c9c1a4 0%, #c7be9d 100%);
-  border-radius: 18px;
-  overflow: hidden;
-  /* Drop shadow lives here so it follows the housing shape */
-  box-shadow:
-    0 40px 100px rgba(0, 0, 0, 0.8),
-    0 12px 32px rgba(0, 0, 0, 0.5),
-    inset 0 2px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.14),
-    inset 3px 0 0 rgba(255, 255, 255, 0.25),
-    inset -3px 0 0 rgba(0, 0, 0, 0.1);
-}
-
-/* ── 12:869 — recessed screen surround (3D plastic tunnel) ───────────── */
-/* Figma: x:44 y:99.5 w:692 h:514, border-radius:25px */
-.screenSurround {
-  position: absolute;
-  top: 99px;
-  left: 44px;
-  width: 692px;
-  height: 514px;
-  border-radius: 25px;
-  background:
-    conic-gradient(from 0deg at 50% 73.81%, rgba(197, 191, 167, 0.00) 91.73076510429382deg, #D8D2BF 126.52635455131531deg, #D8D2BF 231.41193866729736deg, rgba(197, 191, 167, 0.00) 266.53846979141235deg),
-    conic-gradient(from 180deg at 50% 24.52%, rgba(197, 191, 167, 0.00) 91.73076510429382deg, #898065 126.52635455131531deg, #898065 231.41193866729736deg, rgba(184, 177, 147, 0.00) 266.53846979141235deg),
-    #B7B092;
-  box-shadow: 0 0 9.8px 0 rgba(250, 247, 238, 0.28);
+  top: 0;
+  left: 0;
+  width: 780px;
+  height: 755px;
+  display: block;
   pointer-events: none;
   z-index: 0;
 }
 
-/* ── 10:27 — dark CRT bezel frame ────────────────────────────────────── */
-/* Figma: x:66 y:135 w:648 h:443 — positioned via .monitor padding */
-.screenBezel {
-  position: relative;
-  z-index: 1;
-  background: #111111;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow:
-    inset 0 2px 10px rgba(0, 0, 0, 0.95),
-    inset 0 0 40px rgba(0, 0, 0, 0.5);
-}
-
-/* ── 10:28 — screen content area ─────────────────────────────────────── */
-/* Figma: x:14 y:14 w:620 h:415 (within 10:27) */
+/* ── Interactive screen — overlaid on the SVG screen hole ────────────── */
 .screen {
+  position: absolute;
+  top: 149px;
+  left: 80px;   /* (780 - 620) / 2 */
   width: 620px;
   height: 415px;
-  position: relative;
   overflow: hidden;
   border-radius: 4px;
+  z-index: 1;
 }
 
-/* ── CRT glass overlays ───────────────────────────────────────────────── */
+/* ── CRT glass overlays (pointer-events: none, above desktop content) ── */
 .crtGlint {
   position: absolute;
   top: 0;
@@ -105,62 +69,19 @@
   z-index: 2;
 }
 
-/* ── 13:879 — Apple badge ─────────────────────────────────────────────── */
-/* Figma: x:66 y:653 w:52 h:52  →  left:66  bottom:755-653-52=50 */
-.appleBadge {
-  position: absolute;
-  left: 66px;
-  bottom: 50px;
-  width: 52px;
-  height: 52px;
-  background: #c7be9e;
-  border-radius: 7px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  box-shadow:
-    2px 2px 2.4px rgba(255, 255, 255, 0.17),
-    -2px -2px 2.4px rgba(255, 255, 255, 0.17),
-    inset -2px -2px 2px rgba(113, 108, 87, 0.32),
-    inset 2px 2px 2px rgba(113, 108, 87, 0.32),
-    inset 2px 0 2px rgba(0, 0, 0, 0.12);
-  pointer-events: none;
-}
-
-.appleBadgeImg {
-  display: block;
-  width: 33px;
-  height: 39px;
-  object-fit: contain;
-}
-
-/* ── 13:890 — floppy disk drive SVG ─────────────────────────────────── */
-/* Figma: x:385 (66+319.455) y:641 (653-12.016)  →  bottom:755-641-77=37 */
-.floppy {
-  position: absolute;
-  left: 385px;
-  bottom: 37px;
-  width: 329px;
-  height: 77px;
-  display: block;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* ── Power LED (functional, not in Figma) ─────────────────────────────── */
+/* ── Power LED — functional for boot animation ───────────────────────── */
 .led {
   position: absolute;
-  right: 30px;
-  bottom: 72px;
+  right: 22px;
+  bottom: 66px;
   display: block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #2ed45a;
   box-shadow: 0 0 5px #2ed45a, 0 0 10px rgba(46, 212, 90, 0.5);
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
 }
 
 @keyframes ledBlink {
