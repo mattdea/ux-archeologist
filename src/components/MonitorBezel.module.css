@@ -1,11 +1,13 @@
 /* src/components/MonitorBezel.module.css */
 
-/* Outer plastic casing — uniform bezel all around */
+/* ── Outer plastic casing ─────────────────────────────────────────────── */
+/* Total width:  52 + 14 + 620 + 14 + 52 = 752px  (BEZEL_W in Level1.jsx) */
+/* Total height: 52 + 14 + 415 + 14 + 52 = 547px  (BEZEL_H in Level1.jsx) */
 .monitor {
   position: relative;
   display: inline-block;
-  background: #DED2BA;
-  border-radius: 14px;
+  background: linear-gradient(180deg, #c9c1a4 0%, #c7be9d 100%);
+  border-radius: 18px;
   padding: 52px;
   box-shadow:
     0 28px 72px rgba(0, 0, 0, 0.75),
@@ -16,25 +18,55 @@
     inset -2px 0 0 rgba(0, 0, 0, 0.1);
 }
 
-/* Black recessed screen surround */
+/* ── Recessed screen surround — warm plastic tunnel ───────────────────── */
 .screenBezel {
-  background: #111111;
-  border-radius: 3px;
+  background: linear-gradient(180deg, #a8a192 0%, #bcb59c 50%, #b3ac93 100%);
+  border-radius: 22px;
   padding: 14px;
   box-shadow:
-    inset 0 2px 12px rgba(0, 0, 0, 0.95),
-    inset 0 0 32px rgba(0, 0, 0, 0.6);
+    0 0 9.8px rgba(250, 247, 238, 0.28),
+    inset 0 10px 28px rgba(50, 44, 30, 0.52),
+    inset 0 -5px 14px rgba(225, 218, 195, 0.38),
+    inset 8px 0 20px rgba(50, 44, 30, 0.22),
+    inset -8px 0 20px rgba(50, 44, 30, 0.16);
 }
 
-/* The actual game screen — fixed Mac-ish aspect ratio */
+/* ── CRT screen ───────────────────────────────────────────────────────── */
 .screen {
   width: 620px;
   height: 415px;
   position: relative;
   overflow: hidden;
+  /* Dark ring fills the 14px padding gap — creates the CRT bezel frame */
+  box-shadow: 0 0 0 14px rgba(8, 8, 8, 0.93);
 }
 
-/* Apple logo + LED — floated into the bottom padding area */
+/* ── CRT glass overlays (pointer-events: none, render above desktop UI) ─ */
+.crtGlint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.crtBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.crtRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Bottom decor row — Apple badge left, floppy + LED right ─────────── */
 .decorRow {
   position: absolute;
   bottom: 0;
@@ -46,8 +78,75 @@
   justify-content: space-between;
 }
 
-.appleSvg {
+/* Rainbow Apple badge — embossed plastic square */
+.appleBadge {
+  width: 52px;
+  height: 52px;
+  background: #c7be9e;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    2px 2px 2.4px rgba(255, 255, 255, 0.17),
+    -2px -2px 2.4px rgba(255, 255, 255, 0.17),
+    inset -2px -2px 2px rgba(113, 108, 87, 0.32),
+    inset 2px 2px 2px rgba(113, 108, 87, 0.32),
+    inset 2px 0 2px rgba(0, 0, 0, 0.12);
+}
+
+.appleBadgeImg {
   display: block;
+  width: 33px;
+  height: 39px;
+  object-fit: contain;
+}
+
+/* Right side — floppy drive + LED */
+.rightDecor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Floppy disk drive housing */
+.floppyDrive {
+  position: relative;
+  width: 220px;
+  height: 34px;
+  background: linear-gradient(180deg, #cdc6aa 0%, #b9b39b 100%);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+/* Disk insertion slot */
+.floppySlot {
+  flex: 1;
+  height: 5px;
+  background: #111111;
+  border-radius: 3px;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Eject button */
+.floppyButton {
+  width: 30px;
+  height: 26px;
+  flex-shrink: 0;
+  background: #b3ad8d;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 1px 0.3px rgba(0, 0, 0, 0.28),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Power LED — green glow */
@@ -55,6 +154,7 @@
   display: block;
   width: 8px;
   height: 8px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: #2ed45a;
   box-shadow: 0 0 5px #2ed45a, 0 0 10px rgba(46, 212, 90, 0.5);
