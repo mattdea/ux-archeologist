@@ -3,13 +3,12 @@
  * SVG-backed bezel. MonitorBezel.svg is 780×755 and is the entire device.
  * The interactive screen is overlaid at the exact screen-hole position:
  *   left: (780 - 620) / 2 = 80px
- *   top:  149px  (specified by design)
+ *   top:  149px
  *   size: 620 × 415
  *
  * BEZEL_W = 780 / BEZEL_H = 755  (Level1.jsx)
  */
 
-/* ── Outer shell — sized to match the SVG ────────────────────────────── */
 .monitor {
   position: relative;
   display: inline-block;
@@ -20,7 +19,6 @@
     drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
 }
 
-/* ── Full-device SVG — decorative, no interaction ────────────────────── */
 .bezelImg {
   position: absolute;
   top: 0;
@@ -32,11 +30,10 @@
   z-index: 0;
 }
 
-/* ── Interactive screen — overlaid on the SVG screen hole ────────────── */
 .screen {
   position: absolute;
   top: 149px;
-  left: 80px;   /* (780 - 620) / 2 */
+  left: 80px;
   width: 620px;
   height: 415px;
   overflow: hidden;
@@ -44,52 +41,12 @@
   z-index: 1;
 }
 
-/* ── CRT glass overlays (pointer-events: none, above desktop content) ── */
-.crtGlint {
+.crtOverlay {
   position: absolute;
   top: 0;
   left: 0;
+  width: 620px;
+  height: 415px;
   pointer-events: none;
   z-index: 2;
-}
-
-.crtBottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.crtRight {
-  position: absolute;
-  top: 0;
-  right: 0;
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* ── Power LED — functional for boot animation ───────────────────────── */
-.led {
-  position: absolute;
-  right: 22px;
-  bottom: 66px;
-  display: block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #2ed45a;
-  box-shadow: 0 0 5px #2ed45a, 0 0 10px rgba(46, 212, 90, 0.5);
-  z-index: 2;
-  pointer-events: none;
-}
-
-@keyframes ledBlink {
-  0%, 45%  { opacity: 1; }
-  50%, 95% { opacity: 0.08; }
-  100%     { opacity: 1; }
-}
-
-.ledBooting {
-  animation: ledBlink 700ms ease-in-out infinite;
 }

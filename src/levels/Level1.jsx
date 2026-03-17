@@ -108,7 +108,7 @@ export default function Level1() {
             style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-              <MonitorBezel booting={screen === 'booting'}>
+              <MonitorBezel>
                 <div className={styles.inner}>
                   {showDesktop && (
                     <DesktopScene
