@@ -40,39 +40,43 @@ export default function AppIcon({ id, name, iconSrc, isFolder, onTap, showReflec
       onPointerLeave={handlePointerLeave}
       aria-label={name}
     >
-      <div
-        ref={imgRef}
-        className={`${styles.iconImage} ${isFolder ? styles.folderIcon : ''}`}
-      >
-        {iconSrc ? (
-          <img src={iconSrc} alt="" className={styles.iconImg} draggable={false} />
-        ) : isFolder ? (
-          <div className={styles.folderGrid}>
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className={styles.miniIcon} />
-            ))}
-          </div>
-        ) : null}
+      {/* iconWrap: positions the reflection absolutely below the icon image,
+          behind the label which sits in normal flow above it */}
+      <div className={styles.iconWrap}>
+        <div
+          ref={imgRef}
+          className={`${styles.iconImage} ${isFolder ? styles.folderIcon : ''}`}
+        >
+          {iconSrc ? (
+            <img src={iconSrc} alt="" className={styles.iconImg} draggable={false} />
+          ) : isFolder ? (
+            <div className={styles.folderGrid}>
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className={styles.miniIcon} />
+              ))}
+            </div>
+          ) : null}
 
-        {/* Gloss highlight — semi-transparent ellipse overlay */}
-        {!isFolder && <div className={styles.gloss} />}
+          {/* Gloss highlight — semi-transparent ellipse overlay */}
+          {!isFolder && <div className={styles.gloss} />}
 
-        {/* Inner shadow ring */}
-        <div className={isFolder ? styles.folderInnerShadow : styles.innerShadow} />
+          {/* Inner shadow ring */}
+          <div className={isFolder ? styles.folderInnerShadow : styles.innerShadow} />
+        </div>
+
+        {/* Dock reflection — absolutely below icon, behind label */}
+        {showReflection && iconSrc && (
+          <img
+            src={iconSrc}
+            alt=""
+            className={styles.reflection}
+            draggable={false}
+            aria-hidden="true"
+          />
+        )}
       </div>
 
       <span className={styles.label}>{name}</span>
-
-      {/* Dock reflection — flipped copy of the icon, fading downward */}
-      {showReflection && iconSrc && (
-        <img
-          src={iconSrc}
-          alt=""
-          className={styles.reflection}
-          draggable={false}
-          aria-hidden="true"
-        />
-      )}
     </button>
   )
 }

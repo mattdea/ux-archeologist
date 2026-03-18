@@ -122,11 +122,24 @@
   pointer-events: none;
 }
 
+/* ── Icon wrap ───────────────────────────────────────────────────── */
+/* Positioning context for the reflection. Height = iconImage height
+   so top:100% on the reflection lands exactly below the icon. */
+
+.iconWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 /* ── Dock reflection ────────────────────────────────────────────── */
-/* Flipped duplicate of the icon, fading from subtle at top to
-   transparent at bottom. Overflows the dock div into the glass area. */
+/* Absolutely positioned below the icon image (top: 100% of iconWrap),
+   so it starts right at the icon's bottom edge regardless of where
+   the label sits. The label renders above it via z-index. */
 
 .reflection {
+  position: absolute;
+  top: 100%;                   /* flush with bottom of icon image */
+  left: 0;
   display: block;
   width: 57px;
   height: 24px;
@@ -140,7 +153,6 @@
   -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
   mask-image:         linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
   pointer-events: none;
-  flex-shrink: 0;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -150,6 +162,8 @@
 
 .label {
   display: block;
+  position: relative;
+  z-index: 1;                   /* above the absolutely-positioned reflection */
   width: 100%;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
