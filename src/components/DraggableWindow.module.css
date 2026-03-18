@@ -67,13 +67,27 @@
   padding: 6px 8px;
 }
 
+/* Full-width info row — negative margins escape .body's 6px/8px padding
+   so both borders run edge-to-edge like the real Mac System 1 header.
+   Title bar's border-bottom = line 1; this border-bottom = line 2. */
 .fileListHeader {
+  display: flex;
+  align-items: center;
   font-family: var(--font-chicago);
   font-size: 12px;
-  color: var(--mac-gray);
+  color: var(--mac-black);
+  margin: -6px -8px 0;
+  padding: 4px 8px;
   border-bottom: var(--border);
-  padding-bottom: 4px;
-  margin-bottom: 6px;
+}
+
+/* Center slot — used by Trash for "Trash is empty" etc. */
+.fileInfoText {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  color: var(--mac-black);
 }
 
 .fileList {

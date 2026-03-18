@@ -70,6 +70,7 @@ export default function TrashWindowContent({ contents = [], onRestoreNotes, onIt
     <>
       <div className={styles.fileListHeader}>
         <span>{count === 0 ? '0 items' : `${count} item${count > 1 ? 's' : ''}`}</span>
+        {count === 0 && <span className={styles.fileInfoText}>Trash is empty</span>}
       </div>
       <div className={styles.trashBody}>
         {hasProjects && (
@@ -83,9 +84,6 @@ export default function TrashWindowContent({ contents = [], onRestoreNotes, onIt
             onDragStart={handleNotesDragStart}
             onDragEnd={handleNotesDragEnd}
           />
-        )}
-        {count === 0 && (
-          <span className={styles.emptyMsg}>Trash is empty.</span>
         )}
       </div>
     </>
