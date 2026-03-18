@@ -149,14 +149,12 @@ export default function useTerminal({ onObjectiveComplete, completedIndices } = 
   useEffect(() => { onObjRef.current = onObjectiveComplete }, [onObjectiveComplete])
   useEffect(() => { completedRef.current = completedIndices ?? [] }, [completedIndices])
 
-  // Fire objective[idx] if prerequisites are met and it hasn't fired yet.
-  // Sequential gate: idx 1 requires idx 0 done; idx 2 requires idx 1 done.
+  // Fire objective[idx] if it hasn't fired yet. No ordering requirement —
+  // all three objectives can be completed in any order.
   function tryFireObjective(idx) {
     const cb   = onObjRef.current
     const done = completedRef.current
     if (!cb || done.includes(idx)) return
-    if (idx === 1 && !done.includes(0)) return
-    if (idx === 2 && !done.includes(1)) return
     cb(idx)
   }
 
