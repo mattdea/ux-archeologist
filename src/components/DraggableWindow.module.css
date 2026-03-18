@@ -11,13 +11,18 @@
 .titleBar {
   position: relative;
   height: 22px;
-  background: repeating-linear-gradient(
+  /* Solid white base; stripes rendered as a 10px block (5 × 2px) centered */
+  background-color: var(--mac-white);
+  background-image: repeating-linear-gradient(
     to bottom,
     var(--mac-black) 0px,
     var(--mac-black) 1px,
     var(--mac-white) 1px,
     var(--mac-white) 2px
   );
+  background-size: 100% 10px;
+  background-repeat: no-repeat;
+  background-position: 0 50%;
   border-bottom: var(--border);
   display: flex;
   align-items: center;
