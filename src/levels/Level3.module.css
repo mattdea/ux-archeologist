@@ -90,11 +90,11 @@
 }
 
 @keyframes appGrow {
-  from { transform: scale(0.1); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
+  from { transform: scale(0.02); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
 @keyframes appShrink {
-  from { transform: scale(1);   opacity: 1; }
-  to   { transform: scale(0.1); opacity: 0; }
+  from { transform: scale(1);    opacity: 1; }
+  to   { transform: scale(0.02); opacity: 0; }
 }
