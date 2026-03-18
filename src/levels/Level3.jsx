@@ -1,13 +1,15 @@
-// src/levels/Level3.jsx — Stub (Prompt 2)
+// src/levels/Level3.jsx — Prompt 3
 //
-// Adds phoneScreen state: 'lock' | 'home'
+// Adds HomeScreen with swipeable icon pages and dock.
+// phoneScreen state: 'lock' | 'home'
 // Museum layer integration (IntroModal, ObjectiveTracker, DiscoveryCard)
-// and HomeScreen/NotesApp are added in later prompts.
+// and NotesApp are added in later prompts.
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import styles from './Level3.module.css'
 import PhoneFrame from '../components/phone/PhoneFrame'
 import LockScreen from '../components/phone/LockScreen'
+import HomeScreen from '../components/phone/HomeScreen'
 import useBezelScale from '../hooks/useBezelScale'
 import '../components/phone/phone-theme.css'
 
@@ -28,8 +30,24 @@ export default function Level3() {
   })
 
   const [phoneScreen, setPhoneScreen] = useState('lock') // 'lock' | 'home'
+  const [currentPage, setCurrentPage] = useState(0)      // home screen page index
 
   const handleUnlock = () => setPhoneScreen('home')
+
+  const handleHomePress = useCallback(() => {
+    if (phoneScreen === 'home') {
+      // Return to page 0 if on another page
+      setCurrentPage(0)
+    }
+  }, [phoneScreen])
+
+  const handleAppOpen = useCallback((appId) => {
+    console.log('open', appId)
+  }, [])
+
+  const handleSwipePage = useCallback((pageNum) => {
+    setCurrentPage(pageNum)
+  }, [])
 
   return (
     <div className={styles.levelPage}>
@@ -44,28 +62,18 @@ export default function Level3() {
           style={{ width: BEZEL_W * scale * PHONE_SCALE, height: BEZEL_H * scale * PHONE_SCALE }}
         >
           <div className={styles.scaler} style={{ transform: `scale(${scale * PHONE_SCALE})` }}>
-            <PhoneFrame onHomePress={() => console.log('Home pressed')}>
+            <PhoneFrame onHomePress={handleHomePress}>
 
               {phoneScreen === 'lock' && (
                 <LockScreen onUnlock={handleUnlock} />
               )}
 
               {phoneScreen === 'home' && (
-                /* Placeholder — replaced by HomeScreen in Prompt 3 */
-                <div style={{
-                  width: '100%',
-                  height: '100%',
-                  background: 'var(--phone-wallpaper)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'rgba(255,255,255,0.6)',
-                  fontFamily: 'var(--phone-font)',
-                  fontSize: 16,
-                  letterSpacing: '0.5px',
-                }}>
-                  Home Screen
-                </div>
+                <HomeScreen
+                  onAppOpen={handleAppOpen}
+                  onSwipePage={handleSwipePage}
+                  currentPage={currentPage}
+                />
               )}
 
             </PhoneFrame>
