@@ -3,34 +3,24 @@
  * Layout for the iPhone home screen. Matches Figma node 25:843 at 1×.
  * Screen slot: 320×480px. Zones top-to-bottom:
  *   StatusBar (20px) → gridViewport (flex:1) → pageDots (16px) → dock (80px)
+ *
+ * Background is solid black (#000) — wallpaper is only on the lock screen.
+ * Entrance animation classes (.hidden, .dockEnter, .iconsEnter, .dotsEnter)
+ * are applied during the unlock transition and removed afterwards.
  */
 
 .homeScreen {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-/* ── Wallpaper ────────────────────────────────────────────────────── */
-
-.wallpaper {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
+  background: #000;
+  z-index: 0;                     /* below LockScreen (z:5) during transition */
 }
 
 /* ── Swipeable grid viewport ──────────────────────────────────────── */
-/* Clips to screen width. Contains the swipe container with two pages. */
 
 .gridViewport {
   position: relative;
@@ -39,7 +29,6 @@
   z-index: 1;
 }
 
-/* Holds both pages side-by-side. Width = 200% of viewport. */
 .swipeContainer {
   display: flex;
   width: 200%;
@@ -47,7 +36,6 @@
   will-change: transform;
 }
 
-/* Each page is 50% of swipeContainer = 100% of viewport. */
 .page {
   width: 50%;
   height: 100%;
@@ -57,10 +45,9 @@
   padding-top: 14px;
 }
 
-/* 4-column icon grid inside each page.
- * Figma column spacing: ~76px center-to-center (at 1×).
- * With 70px icon containers: ~6px gap.
- * Row spacing: ~88px center-to-center → 88 - 74 (container height) = 14px gap. */
+/* 4-column icon grid.
+ * Figma column spacing: ~76px center-to-center → 70px containers + 6px gap.
+ * Row spacing: ~88px center-to-center → 74px containers + 14px gap. */
 .iconGrid {
   display: grid;
   grid-template-columns: repeat(4, 70px);
@@ -69,7 +56,6 @@
 }
 
 /* ── Page indicator dots ──────────────────────────────────────────── */
-/* Figma node 25:869: 4 dots at 2× (we use 2), 12px tall → 6px at 1×. */
 
 .pageDots {
   position: relative;
@@ -95,17 +81,13 @@
 }
 
 /* ── Dock SVG background ──────────────────────────────────────────── */
-/* Figma node 25:846 — SVG at 640×310 (2×) → 320×155 at 1×.
- * The SVG's drop-shadow filter creates the dark vignette above the shelf.
- * Positioned absolutely at the bottom of .homeScreen so the shadow
- * bleeds upward over the grid and page dots. */
 
 .dockBg {
   position: absolute;
   left: 0;
   bottom: 0;
   width: 320px;
-  height: 155px;             /* 310 / 2 */
+  height: 155px;
   z-index: 1;
   pointer-events: none;
   user-select: none;
@@ -113,8 +95,6 @@
 }
 
 /* ── Dock icons ──────────────────────────────────────────────────── */
-/* Same 4-column grid as .iconGrid so spacing and left/right padding
- * are identical. Sits above the SVG shelf. */
 
 .dock {
   position: relative;
@@ -130,7 +110,105 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, 70px);
-  gap: 0 6px;               /* same column gap as .iconGrid; no row gap needed */
+  gap: 0 6px;
   justify-content: center;
   z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * UNLOCK ENTRANCE ANIMATION
+ *
+ * Applied via classes from the `entering`/`showDock`/`showIcons` props.
+ * .hidden        — element starts invisible (opacity 0)
+ * .dockEnter     — dock fades in (Phase 3, 150ms ease-out)
+ * .iconsEnter    — icons fly in from four corners (Phase 4, 250ms ease-out)
+ * .dotsEnter     — page dots fade in with icons (Phase 4)
+ *
+ * When entering=false (normal state), no animation classes are applied
+ * and everything renders at full opacity immediately.
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Phase 3 — dock fades in (150ms) */
+.dockEnter {
+  animation: fadeIn 150ms ease-out forwards;
+}
+
+/* Phase 4 — page dots fade in (250ms) */
+.dotsEnter {
+  animation: fadeIn 250ms ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Phase 4 — icon quadrant fly-in.
+ * Grid is 4 columns × 4 rows = 16 icons (1-indexed nth-child).
+ * Each quadrant starts offset toward its nearest corner.
+ *
+ *   TL (cols 1-2, rows 1-2): items 1, 2, 5, 6
+ *   TR (cols 3-4, rows 1-2): items 3, 4, 7, 8
+ *   BL (cols 1-2, rows 3-4): items 9, 10, 13, 14
+ *   BR (cols 3-4, rows 3-4): items 11, 12, 15, 16
+ *
+ * Stagger: TL 0ms, TR 30ms, BL 50ms, BR 80ms.
+ * Duration: 250ms ease-out each. */
+
+/* All icons start hidden during enter */
+.iconsEnter > * {
+  opacity: 0;
+}
+
+/* ── Top-Left quadrant ────── */
+.iconsEnter > *:nth-child(4n+1):nth-child(-n+8),
+.iconsEnter > *:nth-child(4n+2):nth-child(-n+8) {
+  animation: flyFromTL 250ms ease-out forwards;
+  animation-delay: 0ms;
+}
+
+/* ── Top-Right quadrant ───── */
+.iconsEnter > *:nth-child(4n+3):nth-child(-n+8),
+.iconsEnter > *:nth-child(4n):nth-child(-n+8) {
+  animation: flyFromTR 250ms ease-out forwards;
+  animation-delay: 30ms;
+}
+
+/* ── Bottom-Left quadrant ─── */
+.iconsEnter > *:nth-child(4n+1):nth-child(n+9),
+.iconsEnter > *:nth-child(4n+2):nth-child(n+9) {
+  animation: flyFromBL 250ms ease-out forwards;
+  animation-delay: 50ms;
+}
+
+/* ── Bottom-Right quadrant ── */
+.iconsEnter > *:nth-child(4n+3):nth-child(n+9),
+.iconsEnter > *:nth-child(4n):nth-child(n+9) {
+  animation: flyFromBR 250ms ease-out forwards;
+  animation-delay: 80ms;
+}
+
+@keyframes flyFromTL {
+  from { transform: translate(-30px, -30px); opacity: 0; }
+  to   { transform: translate(0, 0);         opacity: 1; }
+}
+
+@keyframes flyFromTR {
+  from { transform: translate(30px, -30px);  opacity: 0; }
+  to   { transform: translate(0, 0);         opacity: 1; }
+}
+
+@keyframes flyFromBL {
+  from { transform: translate(-30px, 30px);  opacity: 0; }
+  to   { transform: translate(0, 0);         opacity: 1; }
+}
+
+@keyframes flyFromBR {
+  from { transform: translate(30px, 30px);   opacity: 0; }
+  to   { transform: translate(0, 0);         opacity: 1; }
 }

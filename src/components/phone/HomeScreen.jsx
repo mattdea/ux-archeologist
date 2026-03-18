@@ -7,12 +7,14 @@
 //   onAppOpen    — called with (appId) when an icon is tapped
 //   onSwipePage  — called with (pageNum) when swipe commits
 //   currentPage  — controlled page index (0 or 1)
+//   entering     — true during unlock entrance animation (disables interaction)
+//   showDock     — during entering, true once dock should fade in (Phase 3)
+//   showIcons    — during entering, true once icons should fly in (Phase 4)
 
 import { useRef, useEffect, useCallback } from 'react'
 import styles from './HomeScreen.module.css'
 import StatusBar from './StatusBar'
 import AppIcon from './AppIcon'
-import wallpaperSrc from '../../../assets/ios-rain-wallpaper.jpg'
 import dockSvg from '../../../assets/iphone-dock.svg'
 
 // ── Icon data ───────────────────────────────────────────────────────────────
@@ -57,7 +59,14 @@ const TOTAL_PAGES = 2
 const SWIPE_TAP_THRESHOLD = 8   // px — below this, treat as tap not swipe
 const SWIPE_COMMIT_RATIO = 0.3  // 30% of viewport width to commit page change
 
-export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
+export default function HomeScreen({
+  onAppOpen,
+  onSwipePage,
+  currentPage,
+  entering = false,
+  showDock = true,
+  showIcons = true,
+}) {
   const viewportRef  = useRef(null)
   const containerRef = useRef(null)
 
@@ -70,6 +79,10 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
 
   const onAppOpenRef = useRef(onAppOpen)
   useEffect(() => { onAppOpenRef.current = onAppOpen }, [onAppOpen])
+
+  // Ref to disable interaction during entering animation
+  const enteringRef = useRef(entering)
+  useEffect(() => { enteringRef.current = entering }, [entering])
 
   // Sync container position when currentPage changes externally
   useEffect(() => {
@@ -95,8 +108,8 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
     if (!viewport || !container) return
 
     const onMouseDown = (e) => {
-      // Only primary button
       if (e.button !== 0) return
+      if (enteringRef.current) return          // disabled during animation
 
       const startX = e.clientX
       let isSwiping = false
@@ -176,6 +189,7 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
     let delta = 0
 
     const onTouchStart = (e) => {
+      if (enteringRef.current) return          // disabled during animation
       startX = e.touches[0].clientX
       isSwiping = false
       delta = 0
@@ -183,6 +197,7 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
     }
 
     const onTouchMove = (e) => {
+      if (enteringRef.current) return
       const dx = (e.touches[0].clientX - startX) * getScaleX()
 
       if (!isSwiping && Math.abs(dx) > SWIPE_TAP_THRESHOLD) {
@@ -240,13 +255,20 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
 
   // ── Icon tap handler ───────────────────────────────────────────────────
   const handleIconTap = useCallback((appId) => {
+    if (enteringRef.current) return            // disabled during animation
     onAppOpenRef.current?.(appId)
   }, [])
+
+  // ── Compute animation CSS classes ──────────────────────────────────────
+  // When not entering, no animation classes — everything visible immediately.
+  const dockCls  = entering ? (showDock  ? styles.dockEnter  : styles.hidden) : ''
+  const iconsCls = entering ? (showIcons ? styles.iconsEnter : styles.hidden) : ''
+  const dotsCls  = entering ? (showIcons ? styles.dotsEnter  : styles.hidden) : ''
 
   // ── Render icon grid for a page ────────────────────────────────────────
   const renderPage = (icons, pageIndex) => (
     <div key={pageIndex} className={styles.page}>
-      <div className={styles.iconGrid}>
+      <div className={`${styles.iconGrid} ${iconsCls}`}>
         {icons.map((icon) => (
           <AppIcon
             key={icon.id}
@@ -263,15 +285,6 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
 
   return (
     <div className={styles.homeScreen}>
-      {/* Wallpaper — full-bleed behind everything */}
-      <img
-        src={wallpaperSrc}
-        className={styles.wallpaper}
-        alt=""
-        draggable={false}
-        aria-hidden="true"
-      />
-
       {/* Status bar */}
       <StatusBar variant="dark" />
 
@@ -284,7 +297,7 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
       </div>
 
       {/* Page indicator dots */}
-      <div className={styles.pageDots}>
+      <div className={`${styles.pageDots} ${dotsCls}`}>
         {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
           <div
             key={i}
@@ -296,7 +309,7 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
       {/* Dock SVG background — positioned at bottom, shadow bleeds upward */}
       <img
         src={dockSvg}
-        className={styles.dockBg}
+        className={`${styles.dockBg} ${dockCls}`}
         alt=""
         draggable={false}
         aria-hidden="true"
@@ -304,7 +317,7 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
 
       {/* Dock icons — NOT part of the swipe area.
        * Uses the same 4-column grid as the icon pages for identical spacing. */}
-      <div className={styles.dock}>
+      <div className={`${styles.dock} ${dockCls}`}>
         <div className={styles.dockIcons}>
           {DOCK_ICONS.map((icon) => (
             <AppIcon
