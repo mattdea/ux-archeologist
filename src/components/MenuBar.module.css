@@ -62,9 +62,9 @@
   border: var(--border);
   box-shadow: var(--window-shadow);
   list-style: none;
-  min-width: 200px;
   z-index: 200;
   padding: 2px 0;
+  width: max-content;
 }
 
 .dropdownItem {
