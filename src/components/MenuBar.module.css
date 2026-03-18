@@ -21,6 +21,15 @@
   align-items: center;
   cursor: default;
   height: var(--menu-bar-height);
+  background: transparent;
+  border: none;
+  color: var(--mac-black);
+}
+
+.apple:hover,
+.appleActive {
+  background: var(--mac-black);
+  color: var(--mac-white);
 }
 
 .menuItem {
@@ -85,6 +94,12 @@
   height: 1px;
   background: var(--mac-black);
   margin: 2px 0;
+}
+
+.dropdownDotSeparator {
+  padding: 4px 0;
+  border-top: 1px dotted var(--mac-black);
+  pointer-events: none;
 }
 
 .checkCol {
