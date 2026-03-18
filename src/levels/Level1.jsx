@@ -39,8 +39,20 @@ export default function Level1() {
     }
   }, [])
 
-  const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
-  const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(1) ? [0, 1, 2] : [])
+  // Boot always plays on every mount/refresh.
+  // Skip intro only if it was already dismissed this browser session.
+  const [screen, setScreen] = useState(() => {
+    const introSeen = sessionStorage.getItem('l1_intro_seen') === '1'
+    return (isLevelComplete(1) || introSeen) ? 'booting' : 'intro'
+  })
+  // Restore objectives from this session, or all-complete if level is done.
+  const [completedIndices, setCompletedIndices] = useState(() => {
+    if (isLevelComplete(1)) return [0, 1, 2]
+    try {
+      const saved = sessionStorage.getItem('l1_completed')
+      return saved ? JSON.parse(saved) : []
+    } catch { return [] }
+  })
   // Symmetric margins match the equal topSpacer / bottomZone heights
   const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
   const notifyArtifactReady = useArtifactReady()
@@ -64,7 +76,12 @@ export default function Level1() {
   const completeObjective = (key) => {
     const idx = OBJ_KEY_INDEX[key]
     if (idx !== undefined) {
-      setCompletedIndices(prev => prev.includes(idx) ? prev : [...prev, idx])
+      setCompletedIndices(prev => {
+        if (prev.includes(idx)) return prev
+        const next = [...prev, idx]
+        sessionStorage.setItem('l1_completed', JSON.stringify(next))
+        return next
+      })
     }
   }
 
@@ -82,7 +99,7 @@ export default function Level1() {
           title="The Desktop Arrives"
           description="You're looking at the original Macintosh desktop from 1984. Explore the interface and complete the objectives to discover what made it revolutionary."
           objectives={OBJECTIVES}
-          onBegin={() => setScreen('booting')}
+          onBegin={() => { sessionStorage.setItem('l1_intro_seen', '1'); setScreen('booting') }}
         />
       )}
 
