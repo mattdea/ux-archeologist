@@ -133,6 +133,23 @@
   overflow: hidden;
 }
 
+/* ── Text wipe overlay ─────────────────────────────────────────────────────────
+ * Covers the shimmer text as the knob slides over it.
+ * Matches the track background so the text appears to be "erased."
+ * Initial width = knob right edge at rest: 4px left + 68px width = 72px.
+ * z-index 1 sits above the shimmer text (also z:1, but DOM order wins). */
+.textWipe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 72px;
+  background: linear-gradient(180deg, #000000 0%, #1b1b1b 100%);
+  border-radius: 12px 0 0 12px;
+  z-index: 1;
+  pointer-events: none;
+}
+
 /* ── Knob ─────────────────────────────────────────────────────────────────────
  * Figma 640px: px:36→18px py:20→10px, border-radius 17→8px
  * Gradient: #FEFEFE 0% → #DEDEDE 47.917% hard-stop #D1D1D1 47.927% → #AAAAAA 100%

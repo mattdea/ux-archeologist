@@ -15,6 +15,7 @@ import wallpaperSrc from '../../../assets/ios-rain-wallpaper.jpg'
 export default function LockScreen({ onUnlock }) {
   const trackRef = useRef(null)
   const knobRef  = useRef(null)
+  const wipeRef  = useRef(null)  // text wipe overlay — covers shimmer text behind knob
 
   // All drag state in refs — zero re-renders while dragging
   const dragging      = useRef(false)
@@ -45,12 +46,18 @@ export default function LockScreen({ onUnlock }) {
   // ── Spring-back animation ───────────────────────────────────────────────────
   const springBack = () => {
     const knob = knobRef.current
+    const wipe = wipeRef.current
     if (!knob) return
     knob.style.transition = 'transform 0.3s ease'
     knob.style.transform  = 'translateX(0px)'
+    if (wipe) {
+      wipe.style.transition = 'width 0.3s ease'
+      wipe.style.width = '72px'
+    }
     currentDelta.current  = 0
     setTimeout(() => {
       if (knobRef.current) knobRef.current.style.transition = ''
+      if (wipeRef.current) wipeRef.current.style.transition = ''
     }, 300)
   }
 
@@ -67,6 +74,7 @@ export default function LockScreen({ onUnlock }) {
       const delta = Math.max(0, Math.min(maxTravel, (e.clientX - startClientX.current) * scaleX))
       currentDelta.current = delta
       if (knobRef.current) knobRef.current.style.transform = `translateX(${delta}px)`
+      if (wipeRef.current) wipeRef.current.style.width = `${72 + delta}px`
     }
 
     const onUp = () => {
@@ -104,6 +112,7 @@ export default function LockScreen({ onUnlock }) {
       ))
       currentDelta.current = delta
       if (knobRef.current) knobRef.current.style.transform = `translateX(${delta}px)`
+      if (wipeRef.current) wipeRef.current.style.width = `${72 + delta}px`
     }
 
     const onTouchEnd = () => {
@@ -152,6 +161,11 @@ export default function LockScreen({ onUnlock }) {
 
           {/* Shimmer text — offset right so the knob doesn't cover it */}
           <span className={styles.shimmerText}>slide to unlock</span>
+
+          {/* Text wipe — matches track background, extends from left to knob's
+           *  right edge. Covers shimmer text that the knob has passed over.
+           *  Width updated imperatively during drag (same as knob transform). */}
+          <div ref={wipeRef} className={styles.textWipe} />
 
           {/* Draggable knob */}
           <div
