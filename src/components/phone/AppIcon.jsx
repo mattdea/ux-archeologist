@@ -10,11 +10,23 @@
 //   isFolder — renders the dark folder icon with mini 3×3 grid inside
 //   onTap    — called with (id) on click (if not swiping)
 
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import styles from './AppIcon.module.css'
+
+// Computed once per mount — date won't change meaningfully during a session
+function useCalendarDate() {
+  return useMemo(() => {
+    const d = new Date()
+    return {
+      dayName: d.toLocaleDateString('en-US', { weekday: 'long' }),
+      dayNum: d.getDate(),
+    }
+  }, [])
+}
 
 export default function AppIcon({ id, name, iconSrc, isFolder, onTap, showReflection = false }) {
   const imgRef = useRef(null)
+  const { dayName, dayNum } = useCalendarDate()
 
   const handleClick = () => {
     if (onTap) onTap(id)
@@ -47,7 +59,12 @@ export default function AppIcon({ id, name, iconSrc, isFolder, onTap, showReflec
           ref={imgRef}
           className={`${styles.iconImage} ${isFolder ? styles.folderIcon : ''}`}
         >
-          {iconSrc ? (
+          {id === 'calendar' ? (
+            <div className={styles.calendarBody}>
+              <div className={styles.calendarHeader}>{dayName}</div>
+              <div className={styles.calendarDay}>{dayNum}</div>
+            </div>
+          ) : iconSrc ? (
             <img src={iconSrc} alt="" className={styles.iconImg} draggable={false} />
           ) : isFolder ? (
             <div className={styles.folderGrid}>

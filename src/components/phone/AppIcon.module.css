@@ -131,6 +131,46 @@
   flex-shrink: 0;
 }
 
+/* ── Dynamic Calendar icon ──────────────────────────────────────── */
+/* Mimics the real iOS Calendar icon: white body, red header strip,
+   day name above, day number large below. */
+
+.calendarBody {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.calendarHeader {
+  height: 18px;                 /* ~31% of 57px icon height */
+  background: linear-gradient(180deg, #e8382c 0%, #c0271b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.calendarDay {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 300;
+  color: #1c1c1e;
+  line-height: 1;
+}
+
 /* ── Dock reflection ────────────────────────────────────────────── */
 /* Absolutely positioned below the icon image (top: 100% of iconWrap),
    so it starts right at the icon's bottom edge regardless of where
