@@ -132,7 +132,7 @@ export default function NotesWindowContent() {
         <pre className={styles.pre}>{NOTES_TEXT}</pre>
       </div>
       <div className={styles.scrollbarTrack}>
-        <button className={styles.scrollArrow} onMouseDown={handleArrowUp}>▲</button>
+        <button className={styles.scrollArrow} onMouseDown={handleArrowUp}>△</button>
         <div
           ref={thumbAreaRef}
           className={styles.scrollThumbArea}
@@ -144,7 +144,7 @@ export default function NotesWindowContent() {
             onMouseDown={handleThumbMouseDown}
           />
         </div>
-        <button className={styles.scrollArrow} onMouseDown={handleArrowDown}>▼</button>
+        <button className={styles.scrollArrow} onMouseDown={handleArrowDown}>▽</button>
       </div>
     </div>
   )

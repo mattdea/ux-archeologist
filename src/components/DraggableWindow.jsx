@@ -189,7 +189,7 @@ export default function DraggableWindow({
         onTouchStart={handleTitleTouchStart}
         onTouchEnd={handleTitleTouchEnd}
       >
-        <button className={styles.closeBtn} onClick={onClose} title="Close">×</button>
+        <button className={styles.closeBtn} onClick={onClose} title="Close" />
         <span className={styles.titleText}>{title}</span>
       </div>
 

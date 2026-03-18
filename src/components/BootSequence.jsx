@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import styles from './BootSequence.module.css'
 import DesktopIcon from './DesktopIcon'
+import bootupIconUrl from '../../assets/mac-bootup-icon.png'
 
 // Phases
 const P = {
@@ -99,6 +100,7 @@ export default function BootSequence({ onComplete }) {
       {phase === P.WELCOME && (
         <div className={styles.welcomeCenter}>
           <div className={styles.welcomeWindow}>
+            <img src={bootupIconUrl} className={styles.welcomeIcon} alt="" draggable="false" />
             <span className={styles.welcomeText}>Welcome to Macintosh.</span>
           </div>
         </div>

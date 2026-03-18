@@ -9,7 +9,8 @@
 }
 
 .titleBar {
-  height: 26px;
+  position: relative;
+  height: 22px;
   background: repeating-linear-gradient(
     to bottom,
     var(--mac-black) 0px,
@@ -20,35 +21,37 @@
   border-bottom: var(--border);
   display: flex;
   align-items: center;
-  padding: 0 4px;
   cursor: default;
   touch-action: none;
 }
 
+/* Empty square — no × content, just a white box with black border */
 .closeBtn {
-  width: 16px;
-  height: 16px;
+  position: relative;
+  z-index: 1;
+  margin-left: 4px;
+  width: 13px;
+  height: 13px;
   background: var(--mac-white);
   border: var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  line-height: 1;
-  cursor: default;
   flex-shrink: 0;
+  cursor: default;
+  padding: 0;
 }
 
+/* Absolutely centered so pinstripes show on both left and right sides */
 .titleText {
-  flex: 1;
-  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: var(--font-chicago);
   font-size: 13px;
   color: var(--mac-black);
   background: var(--mac-white);
-  padding: 0 8px;
+  padding: 1px 8px;
   pointer-events: none;
   white-space: nowrap;
+  z-index: 1;
 }
 
 .body {
