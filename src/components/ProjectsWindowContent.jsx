@@ -1,11 +1,9 @@
 // src/components/ProjectsWindowContent.jsx
 import styles from './DraggableWindow.module.css'
+import iconStyles from './DesktopIcon.module.css'
+import { NotesIcon } from './DesktopIcon'
 
-const FILES = [
-  { name: 'Budget.txt', icon: '▤' },
-  { name: 'Letter.doc', icon: '▤' },
-  { name: 'Sketch.bmp', icon: '▣' },
-]
+const FILES = ['Budget', 'Letter', 'Sketch']
 
 export default function ProjectsWindowContent() {
   return (
@@ -13,14 +11,18 @@ export default function ProjectsWindowContent() {
       <div className={styles.fileListHeader}>
         <span>{FILES.length} items</span>
       </div>
-      <ul className={styles.fileList}>
-        {FILES.map(file => (
-          <li key={file.name} className={styles.fileItem}>
-            <span className={styles.fileIcon}>{file.icon}</span>
-            <span>{file.name}</span>
-          </li>
+      <div className={styles.trashBody}>
+        {FILES.map(name => (
+          <div
+            key={name}
+            className={iconStyles.icon}
+            style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <NotesIcon />
+            <span className={iconStyles.label}>{name}</span>
+          </div>
         ))}
-      </ul>
+      </div>
     </>
   )
 }
