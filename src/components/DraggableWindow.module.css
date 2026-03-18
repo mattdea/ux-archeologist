@@ -11,7 +11,8 @@
 .titleBar {
   position: relative;
   height: 22px;
-  /* Solid white base; stripes rendered as a 10px block (5 × 2px) centered */
+  /* Solid white base; stripes rendered as a 12px block (6 × 2px) centered,
+     inset 2px from each horizontal edge so stripes never touch the border */
   background-color: var(--mac-white);
   background-image: repeating-linear-gradient(
     to bottom,
@@ -20,9 +21,9 @@
     var(--mac-white) 1px,
     var(--mac-white) 2px
   );
-  background-size: 100% 10px;
+  background-size: calc(100% - 4px) 12px;
   background-repeat: no-repeat;
-  background-position: 0 50%;
+  background-position: 2px 50%;
   border-bottom: var(--border);
   display: flex;
   align-items: center;
@@ -30,7 +31,8 @@
   touch-action: none;
 }
 
-/* Empty square — no × content, just a white box with black border */
+/* Empty square — no × content, just a white box with black border.
+   box-shadow creates a 2px white halo so stripes don't butt up against the box. */
 .closeBtn {
   position: relative;
   z-index: 1;
@@ -39,6 +41,7 @@
   height: 13px;
   background: var(--mac-white);
   border: var(--border);
+  box-shadow: 0 0 0 2px var(--mac-white);
   flex-shrink: 0;
   cursor: default;
   padding: 0;
