@@ -118,14 +118,18 @@
 /* ═══════════════════════════════════════════════════════════════════════
  * UNLOCK ENTRANCE ANIMATION
  *
- * Applied via classes from the `entering`/`showDock`/`showIcons` props.
  * .hidden        — element starts invisible (opacity 0)
  * .dockEnter     — dock fades in (Phase 3, 150ms ease-out)
- * .iconsEnter    — icons fly in from four corners (Phase 4, 250ms ease-out)
- * .dotsEnter     — page dots fade in with icons (Phase 4)
+ * .dotsEnter     — page dots fade in with center icons (Phase 4)
  *
- * When entering=false (normal state), no animation classes are applied
- * and everything renders at full opacity immediately.
+ * Icon fly-in is driven by per-icon inline styles (computed in JS from
+ * grid position). Each icon's delay = Manhattan distance from its
+ * quadrant's center-facing corner × 50ms.  3 stagger tiers:
+ *   Tier 0 (0ms):   4 center icons
+ *   Tier 1 (50ms):  8 edge icons
+ *   Tier 2 (100ms): 4 corner icons
+ *
+ * When entering=false, no classes/styles are applied — everything visible.
  * ═══════════════════════════════════════════════════════════════════════ */
 
 .hidden {
@@ -138,77 +142,12 @@
   animation: fadeIn 150ms ease-out forwards;
 }
 
-/* Phase 4 — page dots fade in (250ms) */
+/* Phase 4 — page dots fade in (200ms, same timing as center icons) */
 .dotsEnter {
-  animation: fadeIn 250ms ease-out forwards;
+  animation: fadeIn 200ms ease-out forwards;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
-}
-
-/* Phase 4 — icon quadrant fly-in.
- * Grid is 4 columns × 4 rows = 16 icons (1-indexed nth-child).
- * Each quadrant starts offset toward its nearest corner.
- *
- *   TL (cols 1-2, rows 1-2): items 1, 2, 5, 6
- *   TR (cols 3-4, rows 1-2): items 3, 4, 7, 8
- *   BL (cols 1-2, rows 3-4): items 9, 10, 13, 14
- *   BR (cols 3-4, rows 3-4): items 11, 12, 15, 16
- *
- * Stagger: TL 0ms, TR 30ms, BL 50ms, BR 80ms.
- * Duration: 250ms ease-out each. */
-
-/* All icons start hidden during enter */
-.iconsEnter > * {
-  opacity: 0;
-}
-
-/* ── Top-Left quadrant ────── */
-.iconsEnter > *:nth-child(4n+1):nth-child(-n+8),
-.iconsEnter > *:nth-child(4n+2):nth-child(-n+8) {
-  animation: flyFromTL 250ms ease-out forwards;
-  animation-delay: 0ms;
-}
-
-/* ── Top-Right quadrant ───── */
-.iconsEnter > *:nth-child(4n+3):nth-child(-n+8),
-.iconsEnter > *:nth-child(4n):nth-child(-n+8) {
-  animation: flyFromTR 250ms ease-out forwards;
-  animation-delay: 30ms;
-}
-
-/* ── Bottom-Left quadrant ─── */
-.iconsEnter > *:nth-child(4n+1):nth-child(n+9),
-.iconsEnter > *:nth-child(4n+2):nth-child(n+9) {
-  animation: flyFromBL 250ms ease-out forwards;
-  animation-delay: 50ms;
-}
-
-/* ── Bottom-Right quadrant ── */
-.iconsEnter > *:nth-child(4n+3):nth-child(n+9),
-.iconsEnter > *:nth-child(4n):nth-child(n+9) {
-  animation: flyFromBR 250ms ease-out forwards;
-  animation-delay: 80ms;
-}
-
-@keyframes flyFromTL {
-  from { transform: translate(-30px, -30px); opacity: 0; }
-  to   { transform: translate(0, 0);         opacity: 1; }
-}
-
-@keyframes flyFromTR {
-  from { transform: translate(30px, -30px);  opacity: 0; }
-  to   { transform: translate(0, 0);         opacity: 1; }
-}
-
-@keyframes flyFromBL {
-  from { transform: translate(-30px, 30px);  opacity: 0; }
-  to   { transform: translate(0, 0);         opacity: 1; }
-}
-
-@keyframes flyFromBR {
-  from { transform: translate(30px, 30px);   opacity: 0; }
-  to   { transform: translate(0, 0);         opacity: 1; }
 }

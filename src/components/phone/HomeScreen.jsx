@@ -261,23 +261,55 @@ export default function HomeScreen({
 
   // ── Compute animation CSS classes ──────────────────────────────────────
   // When not entering, no animation classes — everything visible immediately.
-  const dockCls  = entering ? (showDock  ? styles.dockEnter  : styles.hidden) : ''
-  const iconsCls = entering ? (showIcons ? styles.iconsEnter : styles.hidden) : ''
-  const dotsCls  = entering ? (showIcons ? styles.dotsEnter  : styles.hidden) : ''
+  const dockCls = entering ? (showDock  ? styles.dockEnter : styles.hidden) : ''
+  const dotsCls = entering ? (showIcons ? styles.dotsEnter : styles.hidden) : ''
+
+  // ── Per-icon fly-in animation ──────────────────────────────────────────
+  // Each icon's delay = Manhattan distance from its quadrant's center-facing
+  // corner × 50ms.  Direction = toward the icon's nearest screen corner.
+  //
+  //   Tier 0 (delay 0ms):    4 center icons  — (1,1),(2,1),(1,2),(2,2)
+  //   Tier 1 (delay 50ms):   8 edge icons    — diagonally adjacent to center
+  //   Tier 2 (delay 100ms):  4 corner icons  — (0,0),(3,0),(0,3),(3,3)
+
+  const getIconStyle = (idx) => {
+    if (!entering) return undefined  // normal state — no inline animation
+    const col = idx % 4
+    const row = Math.floor(idx / 4)
+    const offsetX = col < 2 ? -30 : 30
+    const offsetY = row < 2 ? -30 : 30
+
+    if (!showIcons) {
+      // Hidden: offset toward nearest corner, invisible (no transition yet)
+      return { opacity: 0, transform: `translate(${offsetX}px, ${offsetY}px)` }
+    }
+
+    // Revealed: animate from offset to final position.
+    // Delay = Manhattan distance from quadrant's center-facing corner.
+    const cornerCol = col < 2 ? 1 : 2
+    const cornerRow = row < 2 ? 1 : 2
+    const delay = (Math.abs(col - cornerCol) + Math.abs(row - cornerRow)) * 50
+    return {
+      opacity: 1,
+      transform: 'none',
+      transition: `opacity 200ms ease-out ${delay}ms, transform 200ms ease-out ${delay}ms`,
+    }
+  }
 
   // ── Render icon grid for a page ────────────────────────────────────────
   const renderPage = (icons, pageIndex) => (
     <div key={pageIndex} className={styles.page}>
-      <div className={`${styles.iconGrid} ${iconsCls}`}>
-        {icons.map((icon) => (
-          <AppIcon
-            key={icon.id}
-            id={icon.id}
-            name={icon.name}
-            iconSrc={icon.iconSrc}
-            isFolder={icon.isFolder}
-            onTap={icon.id === 'notes' ? handleIconTap : undefined}
-          />
+      <div className={styles.iconGrid}>
+        {icons.map((icon, idx) => (
+          <div key={icon.id} style={getIconStyle(idx)}>
+            <AppIcon
+              id={icon.id}
+              name={icon.name}
+              iconSrc={icon.iconSrc}
+              isFolder={icon.isFolder}
+              onTap={icon.id === 'notes' ? handleIconTap : undefined}
+            />
+          </div>
         ))}
       </div>
     </div>
