@@ -17,42 +17,63 @@ import StatusBar from './StatusBar'
 import AppIcon from './AppIcon'
 import dockSvg from '../../../assets/iphone-dock.svg'
 
+// ── Icon PNG imports ─────────────────────────────────────────────────────────
+import iconMessages   from '../../../assets/iphone-icons/Messages.png'
+import iconCalendar   from '../../../assets/iphone-icons/Calendar.png'
+import iconPhotos     from '../../../assets/iphone-icons/Photos.png'
+import iconCamera     from '../../../assets/iphone-icons/Camera.png'
+import iconYouTube    from '../../../assets/iphone-icons/YouTube.png'
+import iconStocks     from '../../../assets/iphone-icons/Stocks.png'
+import iconMaps       from '../../../assets/iphone-icons/Maps.png'
+import iconWeather    from '../../../assets/iphone-icons/Weather.png'
+import iconClock      from '../../../assets/iphone-icons/Clock.png'
+import iconCalculator from '../../../assets/iphone-icons/Calculator.png'
+import iconNotes      from '../../../assets/iphone-icons/Notes.png'
+import iconSettings   from '../../../assets/iphone-icons/Settings.png'
+import iconContacts   from '../../../assets/iphone-icons/Contacts.png'
+import iconAppStore   from '../../../assets/iphone-icons/App-Store.png'
+import iconITunes     from '../../../assets/iphone-icons/iTunes-Store.png'
+import iconPhone      from '../../../assets/iphone-icons/Phone.png'
+import iconMail       from '../../../assets/iphone-icons/Mail.png'
+import iconSafari     from '../../../assets/iphone-icons/Safari.png'
+import iconIPod       from '../../../assets/iphone-icons/Apple-Music.png'
+
 // ── Icon data ───────────────────────────────────────────────────────────────
-// Each entry: { id, name, iconSrc?, isFolder? }
-// iconSrc is optional — omit for placeholder gradient icons.
-// Swap in real PNGs later by adding iconSrc to each entry.
+// Each entry: { id, name, iconSrc }
+// Page 0: 4×4 grid with 13 icons — row 4 has only Contacts in col 0.
+// CSS grid naturally leaves the 3 trailing cells of row 4 empty.
 
-const PAGE_0_ICONS = [
-  { id: 'messages',  name: 'Messages' },
-  { id: 'calendar',  name: 'Calendar' },
-  { id: 'photos',    name: 'Photos' },
-  { id: 'camera',    name: 'Camera' },
-  { id: 'video',     name: 'Video' },
-  { id: 'maps',      name: 'Maps' },
-  { id: 'weather',   name: 'Weather' },
-  { id: 'passbook',  name: 'Passbook' },
-  { id: 'notes',     name: 'Notes' },
-  { id: 'reminders', name: 'Reminders' },
-  { id: 'clock',     name: 'Clock' },
-  { id: 'stocks',    name: 'Stocks' },
-  { id: 'newsstand', name: 'Newsstand' },
-  { id: 'itunes',    name: 'iTunes' },
-  { id: 'appstore',  name: 'App Store' },
-  { id: 'folder',    name: 'Folder', isFolder: true },
+const PAGE_0_GRID = [
+  // Row 1
+  { id: 'messages',   name: 'Messages',   iconSrc: iconMessages },
+  { id: 'calendar',   name: 'Calendar',   iconSrc: iconCalendar },
+  { id: 'photos',     name: 'Photos',     iconSrc: iconPhotos },
+  { id: 'camera',     name: 'Camera',     iconSrc: iconCamera },
+  // Row 2
+  { id: 'youtube',    name: 'YouTube',    iconSrc: iconYouTube },
+  { id: 'stocks',     name: 'Stocks',     iconSrc: iconStocks },
+  { id: 'maps',       name: 'Maps',       iconSrc: iconMaps },
+  { id: 'weather',    name: 'Weather',    iconSrc: iconWeather },
+  // Row 3
+  { id: 'clock',      name: 'Clock',      iconSrc: iconClock },
+  { id: 'calculator', name: 'Calculator', iconSrc: iconCalculator },
+  { id: 'notes',      name: 'Notes',      iconSrc: iconNotes },
+  { id: 'settings',   name: 'Settings',   iconSrc: iconSettings },
+  // Row 4 (partial — only col 0)
+  { id: 'contacts',   name: 'Contacts',   iconSrc: iconContacts },
 ]
 
-const PAGE_1_ICONS = [
-  { id: 'youtube',    name: 'YouTube' },
-  { id: 'settings',   name: 'Settings' },
-  { id: 'calculator', name: 'Calculator' },
-  { id: 'compass',    name: 'Compass' },
+// Page 1: 2 icons in top-left, rest of grid empty.
+const PAGE_1_GRID = [
+  { id: 'appstore', name: 'App Store', iconSrc: iconAppStore },
+  { id: 'itunes',   name: 'iTunes',    iconSrc: iconITunes },
 ]
 
-const DOCK_ICONS = [
-  { id: 'phone',  name: 'Phone' },
-  { id: 'mail',   name: 'Mail' },
-  { id: 'safari', name: 'Safari' },
-  { id: 'music',  name: 'Music' },
+const DOCK = [
+  { id: 'phone',  name: 'Phone',  iconSrc: iconPhone },
+  { id: 'mail',   name: 'Mail',   iconSrc: iconMail },
+  { id: 'safari', name: 'Safari', iconSrc: iconSafari },
+  { id: 'ipod',   name: 'iPod',   iconSrc: iconIPod },
 ]
 
 const TOTAL_PAGES = 2
@@ -323,8 +344,8 @@ export default function HomeScreen({
       {/* Swipeable icon grid viewport — swipe listeners attach here */}
       <div ref={viewportRef} className={styles.gridViewport}>
         <div ref={containerRef} className={styles.swipeContainer}>
-          {renderPage(PAGE_0_ICONS, 0)}
-          {renderPage(PAGE_1_ICONS, 1)}
+          {renderPage(PAGE_0_GRID, 0)}
+          {renderPage(PAGE_1_GRID, 1)}
         </div>
       </div>
 
@@ -351,7 +372,7 @@ export default function HomeScreen({
        * Uses the same 4-column grid as the icon pages for identical spacing. */}
       <div className={`${styles.dock} ${dockCls}`}>
         <div className={styles.dockIcons}>
-          {DOCK_ICONS.map((icon) => (
+          {DOCK.map((icon) => (
             <AppIcon
               key={icon.id}
               id={icon.id}

@@ -5,7 +5,7 @@
  *
  *   SVG screen rect: x=4.988 y=20.072 w=49.055 h=73.536 (mm)
  *   At 385×735 px:
- *     left  = 4.988/59.032 × 385 ≈  32 px
+ *     left  = 19.5815/224 × 385   ≈  33 px
  *     top   = 20.072/112.67 × 735 ≈ 131 px
  *     width = 49.055/59.032 × 385 ≈ 320 px
  *     height= 73.536/112.67 × 735 ≈ 480 px
@@ -21,6 +21,7 @@
   position: relative;
   width: 385px;
   height: 735px;
+  cursor: none;
 }
 
 .bezelImg {
@@ -42,13 +43,21 @@
 .screen {
   position: absolute;
   top: 131px;
-  left: 32px;
+  left: 33px;
   width: 320px;
   height: 480px;
   overflow: hidden;
   border-radius: 2px;
   cursor: none;
   z-index: 1;
+}
+
+/* Force cursor:none on every descendant inside the frame — covers the screen slot,
+   home button, and any other children so no element can show the system cursor. */
+.frame *,
+.frame *::before,
+.frame *::after {
+  cursor: none !important;
 }
 
 /* Invisible tap target over the physical home button.
@@ -63,7 +72,7 @@
   background: transparent;
   border: none;
   padding: 0;
-  cursor: pointer;
+  cursor: none;
   z-index: 2;
   pointer-events: auto;
 }

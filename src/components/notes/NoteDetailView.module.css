@@ -1,0 +1,319 @@
+/* src/components/notes/NoteDetailView.module.css
+ *
+ * All 1× values (Figma 2× ÷ 2).
+ * Screen: 320×480 | StatusBar: 20px | NavBar: 44px | Wrapper: top 64px
+ */
+
+/* ── Root ───────────────────────────────────────────────────────────────── */
+.view {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+/* ── Navigation Bar ─────────────────────────────────────────────────────── */
+.navBar {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background-image: var(--notes-navbar-url);
+  background-size: 76.8px 76.8px;
+  background-position: top left;
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.navGloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+}
+
+.navInner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.05);
+}
+
+.navTitle {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Left "Notes" back button — tappable button wrapping a plain image */
+.navBackBtn {
+  position: absolute;
+  top: 7px;
+  left: 5px;
+  height: 29px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: block;
+}
+
+.navBackBtn img {
+  height: 29px;
+  width: auto;
+  display: block;
+}
+
+/* Right "+" button — visible, non-functional */
+.navRightBtn {
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  height: 29px;
+  min-width: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+  border-radius: 3px;
+  cursor: default;
+  box-shadow:
+    0 0.5px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 1px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0.5px rgba(0, 0, 0, 0.4),
+    inset 0 0 5px rgba(0, 0, 0, 0.4);
+}
+
+.navPlusImg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.4));
+}
+
+/* ── Paper wrapper ───────────────────────────────────────────────────────── */
+.wrapper {
+  position: absolute;
+  inset: 64px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  background-image: var(--notes-paper-url);
+  background-size: 153.6px 153.6px;
+  background-position: top left;
+  isolation: isolate;
+}
+
+/* Top stitching edge — same as list, but with 2 hole pairs */
+.topEdge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: var(--notes-paper-url);
+  background-size: 76.8px 76.8px;
+  background-position: top left;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.4);
+  z-index: 7;
+}
+
+.topEdge::before,
+.topEdge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #aa5830;
+}
+.topEdge::before { left: 19px; }
+.topEdge::after  { left: 21px; }
+
+/* Bottom stitching edge */
+.bottomEdge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background-image: var(--notes-paper-url);
+  background-size: 76.8px 76.8px;
+  background-position: top left;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.15);
+  z-index: 6;
+}
+
+/* Red margin lines — 2 vertical lines at ~21px and ~23px from left
+   z-index 8: above contentArea (5), gloss (6), bottomEdge (6), toolbar (4) */
+.marginLine1 {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 21px;
+  width: 1px;
+  background: #aa5830;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.marginLine2 {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 23px;
+  width: 1px;
+  background: #aa5830;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* Gloss — white fade at top of paper.
+   z-index 4: above wrapper paper background (base), below contentArea (5).
+   contentArea has no paper background so gloss shows through its transparent
+   ruled-line gaps, but text (painted inside contentArea stacking context) sits on top. */
+.gloss {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ── Scrollable content area ─────────────────────────────────────────────── */
+/* flex-1 so toolbar stays pinned at bottom */
+.contentArea {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  z-index: 5;
+
+  /* No background — wrapper paper + gloss show through the transparent contentArea. */
+}
+
+/* Content inner layout — text sits on top of ruled-line background */
+.contentInner {
+  position: relative;
+  padding: 8px 8px 8px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100%;
+  will-change: transform;
+  user-select: none;
+}
+
+/* Ruled lines on a separate layer so we can mask out the header zone.
+   background-position: 0 4px → lines at 27px, 51px, 75px… (same alignment
+   the user approved — 2px below each text baseline).
+   mask hides 0–31px so the line at 27px (within the header) is invisible;
+   lines at 51px onward remain fully visible on the note text. */
+.contentInner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 23px,
+    rgba(56, 84, 135, 0.3) 23px,
+    rgba(56, 84, 135, 0.3) 24px
+  );
+  background-size: auto;
+  background-position: 0 4px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, transparent 31px, black 32px);
+  mask-image: linear-gradient(to bottom, transparent 0px, transparent 31px, black 32px);
+}
+
+/* ── Header row ──────────────────────────────────────────────────────────── */
+/* "Today   Jul 2  9:41 AM" — brown, Helvetica Neue, two columns.
+   line-height: 24px matches the ruled-line grid so header sits on its own ruled line. */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  color: #aa5830;
+  flex-shrink: 0;
+}
+
+.headerLabel {
+  font-weight: bold;
+  flex: 1;
+}
+
+.headerDate {
+  font-weight: normal;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+/* ── Note body text ──────────────────────────────────────────────────────── */
+/* Noteworthy Bold in black, 18px with 24px line-height (aligns to ruled lines) */
+.noteText {
+  font-family: 'Noteworthy', 'Marker Felt', 'Bradley Hand', cursive;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 24px;
+  color: #000;
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex-shrink: 0;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────────────── */
+/* 4 icons centered between the margin lines and right edge */
+.toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 40px 12px;
+  position: relative;
+  z-index: 4;
+}
+
+.toolbarIcon {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  flex-shrink: 0;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbarIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* First icon (prev) is disabled */
+.toolbarIconDisabled {
+  opacity: 0.4;
+}

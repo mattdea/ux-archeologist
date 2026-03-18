@@ -1,0 +1,23 @@
+/* src/components/notes/NotesApp.module.css
+ *
+ * Container for the Notes app — manages the slide transition between
+ * the list view and the note detail view.
+ */
+
+/* Clips both absolutely-positioned screens */
+.container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/* Each screen slides on its own transform.
+   200ms ease-out matches the iOS Notes slide transition. */
+.screen {
+  position: absolute;
+  inset: 0;
+  transition: transform 200ms ease-out;
+  will-change: transform;
+  backface-visibility: hidden;
+}

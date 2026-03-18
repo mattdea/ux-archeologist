@@ -15,6 +15,7 @@ import styles from './Level3.module.css'
 import PhoneFrame from '../components/phone/PhoneFrame'
 import LockScreen from '../components/phone/LockScreen'
 import HomeScreen from '../components/phone/HomeScreen'
+import NotesApp from '../components/notes/NotesApp'
 import useBezelScale from '../hooks/useBezelScale'
 import '../components/phone/phone-theme.css'
 
@@ -35,7 +36,7 @@ export default function Level3() {
   })
 
   // ── Phone screen state ──────────────────────────────────────────────────
-  const [phoneScreen, setPhoneScreen] = useState('lock')  // 'lock' | 'unlocking' | 'home'
+  const [phoneScreen, setPhoneScreen] = useState('lock')  // 'lock' | 'unlocking' | 'home' | 'notes'
   const [unlockPhase, setUnlockPhase] = useState(0)       // 0-5
   const [currentPage, setCurrentPage] = useState(0)       // home screen page index
 
@@ -73,11 +74,16 @@ export default function Level3() {
   const handleHomePress = useCallback(() => {
     if (phoneScreen === 'home') {
       setCurrentPage(0)
+    } else if (phoneScreen === 'notes') {
+      // Home button exits the Notes app back to the home screen
+      setPhoneScreen('home')
     }
   }, [phoneScreen])
 
   const handleAppOpen = useCallback((appId) => {
-    console.log('open', appId)
+    if (appId === 'notes') {
+      setPhoneScreen('notes')
+    }
   }, [])
 
   const handleSwipePage = useCallback((pageNum) => {
@@ -87,8 +93,9 @@ export default function Level3() {
   // ── Determine which screens to mount ───────────────────────────────────
   // During 'unlocking': both mounted and absolutely stacked (LockScreen on top via z-index).
   // LockScreen unmounts at Phase 3 (400ms) — by then its exit is visually complete.
-  const showLock = phoneScreen === 'lock' || (phoneScreen === 'unlocking' && unlockPhase < 3)
-  const showHome = phoneScreen === 'unlocking' || phoneScreen === 'home'
+  const showLock  = phoneScreen === 'lock' || (phoneScreen === 'unlocking' && unlockPhase < 3)
+  const showHome  = phoneScreen === 'unlocking' || phoneScreen === 'home'
+  const showNotes = phoneScreen === 'notes'
 
   return (
     <div className={styles.levelPage}>
@@ -125,6 +132,11 @@ export default function Level3() {
                   exiting={phoneScreen === 'unlocking'}
                 />
               )}
+
+              {/* NotesApp — shown when an app icon opens Notes.
+               * Manages its own list ↔ detail navigation internally.
+               * Home button (handleHomePress) returns to 'home'. */}
+              {showNotes && <NotesApp />}
 
             </PhoneFrame>
           </div>

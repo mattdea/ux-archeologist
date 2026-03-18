@@ -14,10 +14,10 @@ import TouchCursor from './TouchCursor'
 import iPhoneSvg from '../../../assets/iphone.svg'
 
 export default function PhoneFrame({ children, onHomePress }) {
-  const screenRef = useRef(null)
+  const frameRef = useRef(null)
 
   return (
-    <div className={styles.frame}>
+    <div ref={frameRef} className={styles.frame}>
 
       {/* Bezel image — purely decorative, renders phone chrome below screen content */}
       <img
@@ -29,8 +29,7 @@ export default function PhoneFrame({ children, onHomePress }) {
       />
 
       {/* Screen slot — where all iPhone UI renders */}
-      <div ref={screenRef} className={styles.screen}>
-        <TouchCursor containerRef={screenRef} />
+      <div className={styles.screen}>
         {children}
       </div>
 
@@ -40,6 +39,10 @@ export default function PhoneFrame({ children, onHomePress }) {
         onClick={onHomePress}
         aria-label="Home"
       />
+
+      {/* Touch cursor tracks the entire frame so it covers both the screen
+          slot and the home button without flickering at the boundary */}
+      <TouchCursor containerRef={frameRef} />
 
     </div>
   )

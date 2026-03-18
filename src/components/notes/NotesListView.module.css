@@ -1,0 +1,260 @@
+/* src/components/notes/NotesListView.module.css
+ *
+ * All 1× values (Figma 2× ÷ 2).
+ * Screen slot: 320×480px
+ * StatusBar: 20px  NavBar: 44px  Wrapper: top 64px → bottom 0
+ */
+
+/* ── Root ───────────────────────────────────────────────────────────────── */
+.view {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+/* ── Navigation Bar ─────────────────────────────────────────────────────── */
+/* 44px dark leather bar below the 20px status bar */
+.navBar {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background-image: var(--notes-navbar-url);
+  background-size: 76.8px 76.8px;
+  background-position: top left;
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Gradient gloss over nav bar */
+.navGloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+}
+
+/* Inner highlight lines */
+.navInner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Centered title */
+.navTitle {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Left "Accounts" back button — plain image, non-tappable */
+.navBackBtn {
+  position: absolute;
+  top: 7px;
+  left: 5px;
+  height: 29px;
+  width: auto;
+  display: block;
+}
+
+/* Right nav button ("+") — non-functional */
+.navRightBtn {
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  height: 29px;
+  min-width: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+  border-radius: 3px;
+  cursor: default;
+  box-shadow:
+    0 0.5px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 1px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0.5px rgba(0, 0, 0, 0.4),
+    inset 0 0 5px rgba(0, 0, 0, 0.4);
+}
+
+.navPlusImg {
+  width: 14px;
+  height: 14px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.4));
+}
+
+/* ── Paper wrapper ───────────────────────────────────────────────────────── */
+/* Yellow paper area: fills below the nav bar */
+.wrapper {
+  position: absolute;
+  inset: 64px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  background-image: var(--notes-paper-url);
+  background-size: 153.6px 153.6px;
+  background-position: top left;
+  isolation: isolate;
+}
+
+/* Top stitching edge */
+.topEdge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: var(--notes-paper-url);
+  background-size: 76.8px 76.8px;
+  background-position: top left;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.4);
+  z-index: 7;
+}
+
+/* Stitching hole pairs — simulated via pseudo-elements */
+.topEdge::before,
+.topEdge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #aa5830;
+}
+.topEdge::before { left: 19px; }
+.topEdge::after  { left: 21px; }
+
+/* Bottom stitching edge */
+.bottomEdge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background-image: var(--notes-paper-url);
+  background-size: 76.8px 76.8px;
+  background-position: top left;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.15);
+  z-index: 6;
+}
+
+/* Gloss — white fade at top of paper, behind the rows */
+.gloss {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── List (scrollable) ────────────────────────────────────────────────────── */
+.list {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.listContent {
+  position: relative;
+  overflow-x: hidden;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  user-select: none;
+}
+
+/* ── Note row ─────────────────────────────────────────────────────────────── */
+.row {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  width: 100%;
+  border-bottom: 1px solid rgba(56, 84, 135, 0.3);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.row:active {
+  background: rgba(56, 84, 135, 0.08);
+}
+
+.rowLeading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  height: 100%;
+}
+
+.rowTitle {
+  font-family: 'Noteworthy', 'Marker Felt', 'Bradley Hand', cursive;
+  font-weight: bold;
+  font-size: 18px;
+  color: #aa5830;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  line-height: normal;
+}
+
+.rowTrailing {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-right: 10px;
+  flex-shrink: 0;
+}
+
+.rowDate {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #385487;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.drillIn {
+  width: 9px;
+  height: 14px;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Empty row (ruled line placeholder) ─────────────────────────────────── */
+.emptyRow {
+  height: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  width: 100%;
+  border-bottom: 1px solid rgba(56, 84, 135, 0.3);
+}
