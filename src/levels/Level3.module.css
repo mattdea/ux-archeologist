@@ -48,9 +48,11 @@
 }
 
 /* Zone 3 — ObjectiveTracker; always rendered for stable layout.
+   min-height matches topSpacer so the artifact stays truly centered.
    visibility:hidden avoids reflowing. Entrance animation on .bottomZoneVisible. */
 .bottomZone {
   flex: 0 0 auto;
+  min-height: var(--bottom-zone-height);
   padding: 16px 24px 24px;
   align-self: flex-start;
   background: transparent;
