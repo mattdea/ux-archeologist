@@ -58,14 +58,20 @@
 /* ── Page indicator dots ──────────────────────────────────────────── */
 
 .pageDots {
-  position: relative;
+  position: absolute;
+  /* Centered between last icon row bottom (~108px from bottom)
+     and dock top (80px from bottom): (108+80)/2 = 94px center,
+     dots are 16px tall → bottom edge at 86px */
+  bottom: 86px;
+  left: 0;
+  right: 0;
   z-index: 2;
   height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .dot {
