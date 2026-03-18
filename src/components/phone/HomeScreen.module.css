@@ -94,9 +94,27 @@
   background: rgba(255, 255, 255, 0.9);
 }
 
-/* ── Dock ─────────────────────────────────────────────────────────── */
-/* Figma: glass background bar 90px at 2× → 45px at 1×.
- * Dock icons sit on top of the glass bar. Total dock zone ~80px. */
+/* ── Dock SVG background ──────────────────────────────────────────── */
+/* Figma node 25:846 — SVG at 640×310 (2×) → 320×155 at 1×.
+ * The SVG's drop-shadow filter creates the dark vignette above the shelf.
+ * Positioned absolutely at the bottom of .homeScreen so the shadow
+ * bleeds upward over the grid and page dots. */
+
+.dockBg {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  height: 155px;             /* 310 / 2 */
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ── Dock icons ──────────────────────────────────────────────────── */
+/* Same 4-column grid as .iconGrid so spacing and left/right padding
+ * are identical. Sits above the SVG shelf. */
 
 .dock {
   position: relative;
@@ -108,32 +126,11 @@
   justify-content: center;
 }
 
-/* Dark glass background strip */
-.dockBg {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 48px;
-
-  /* Glass effect: dark semi-transparent with top highlight */
-  background: linear-gradient(
-    180deg,
-    rgba(100, 100, 100, 0.35) 0%,
-    rgba(30, 30, 30, 0.65) 50%,
-    rgba(10, 10, 10, 0.7) 100%
-  );
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-
-  /* Subtle inner highlight at top */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-/* Dock icons — evenly spaced row */
 .dockIcons {
   position: relative;
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(4, 70px);
+  gap: 0 6px;               /* same column gap as .iconGrid; no row gap needed */
+  justify-content: center;
   z-index: 1;
 }

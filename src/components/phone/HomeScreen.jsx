@@ -13,6 +13,7 @@ import styles from './HomeScreen.module.css'
 import StatusBar from './StatusBar'
 import AppIcon from './AppIcon'
 import wallpaperSrc from '../../../assets/ios-rain-wallpaper.jpg'
+import dockSvg from '../../../assets/iphone-dock.svg'
 
 // ── Icon data ───────────────────────────────────────────────────────────────
 // Each entry: { id, name, iconSrc?, isFolder? }
@@ -292,9 +293,18 @@ export default function HomeScreen({ onAppOpen, onSwipePage, currentPage }) {
         ))}
       </div>
 
-      {/* Dock — NOT part of the swipe area */}
+      {/* Dock SVG background — positioned at bottom, shadow bleeds upward */}
+      <img
+        src={dockSvg}
+        className={styles.dockBg}
+        alt=""
+        draggable={false}
+        aria-hidden="true"
+      />
+
+      {/* Dock icons — NOT part of the swipe area.
+       * Uses the same 4-column grid as the icon pages for identical spacing. */}
       <div className={styles.dock}>
-        <div className={styles.dockBg} aria-hidden="true" />
         <div className={styles.dockIcons}>
           {DOCK_ICONS.map((icon) => (
             <AppIcon
