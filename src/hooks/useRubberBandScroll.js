@@ -22,7 +22,6 @@ import { useCallback, useEffect, useRef } from 'react'
 const RUBBER_FACTOR = 0.3
 const SNAP_DURATION = 300 // ms
 const SNAP_EASING   = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-const WHEEL_DEBOUNCE = 80 // ms
 
 export function useRubberBandScroll(containerRef, contentRef) {
   // Mutable state kept in a single ref to avoid stale closures in event handlers.
@@ -33,7 +32,6 @@ export function useRubberBandScroll(containerRef, contentRef) {
     startPos:    0,    // pos at drag start
     didMove:     false,
     snapping:    false,
-    wheelTimer:  null,
   })
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -180,28 +178,14 @@ export function useRubberBandScroll(containerRef, contentRef) {
     }
   }, [containerRef, contentRef])
 
-  // ── Wheel handler ─────────────────────────────────────────────────────────
-
+  // Block wheel scrolling — drag only.
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
-
-    function onWheel(e) {
-      e.preventDefault()
-      if (contentRef.current) contentRef.current.style.transition = 'none'
-
-      const max     = maxScroll()
-      const newPos  = clamp(s.current.pos + e.deltaY, 0, max)
-      s.current.pos = newPos
-      applyPos(newPos)
-
-      clearTimeout(s.current.wheelTimer)
-      s.current.wheelTimer = setTimeout(snapIfNeeded, WHEEL_DEBOUNCE)
-    }
-
+    function onWheel(e) { e.preventDefault() }
     container.addEventListener('wheel', onWheel, { passive: false })
     return () => container.removeEventListener('wheel', onWheel)
-  }, [containerRef, contentRef])
+  }, [containerRef])
 
   return { onMouseDown }
 }
