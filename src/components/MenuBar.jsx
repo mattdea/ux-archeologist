@@ -24,11 +24,18 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
       id: 'file',
       label: 'File',
       items: [
-        { label: 'New Folder' },
-        { label: 'Open',  action: 'open',  disabled: !canOpen },
-        { label: 'Close', action: 'close', disabled: !canClose },
-        { separator: true },
-        { label: 'About This System' },
+        { label: 'New Folder',     shortcut: '⌘N' },
+        { label: 'Open',           action: 'open',  disabled: !canOpen },
+        { label: 'Print',          disabled: true },
+        { label: 'Close',          action: 'close', disabled: !canClose },
+        { dotSeparator: true },
+        { label: 'Get Info',       shortcut: '⌘I' },
+        { label: 'Duplicate',      shortcut: '⌘D',  disabled: true },
+        { dotSeparator: true },
+        { label: 'Page Setup',     disabled: true },
+        { label: 'Print Catalog',  disabled: true },
+        { dotSeparator: true },
+        { label: 'Eject',          shortcut: '⌘E' },
       ],
     },
     {
@@ -148,6 +155,8 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
               {menu.items.map((item, i) =>
                 item.separator ? (
                   <li key={i} className={styles.dropdownSeparator} />
+                ) : item.dotSeparator ? (
+                  <li key={i} className={styles.dropdownDotSeparator} />
                 ) : (
                   <li key={item.label}>
                     <button
