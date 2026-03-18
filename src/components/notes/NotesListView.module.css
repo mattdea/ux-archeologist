@@ -16,7 +16,7 @@
 /* 44px dark leather bar below the 20px status bar */
 .navBar {
   position: absolute;
-  top: 20px;
+  top: 0;
   left: 0;
   right: 0;
   height: 44px;
@@ -107,7 +107,7 @@
 /* Yellow paper area: fills below the nav bar */
 .wrapper {
   position: absolute;
-  inset: 64px 0 0 0;
+  inset: 44px 0 0 0;
   display: flex;
   flex-direction: column;
   background-image: var(--notes-paper-url);

@@ -11,6 +11,7 @@ import { useState, useCallback } from 'react'
 import styles from './NotesApp.module.css'
 import NotesListView from './NotesListView'
 import NoteDetailView from './NoteDetailView'
+import StatusBar from '../phone/StatusBar'
 
 // ── Note content ─────────────────────────────────────────────────────────────
 export const NOTES = [
@@ -95,21 +96,27 @@ export default function NotesApp() {
   const selectedNote = NOTES.find((n) => n.id === selectedNoteId) ?? NOTES[0]
 
   return (
-    <div className={styles.container}>
-      {/* List screen — at x:0 when visible, x:-100% when detail is showing */}
-      <div
-        className={styles.screen}
-        style={{ transform: onList ? 'translateX(0)' : 'translateX(-100%)' }}
-      >
-        <NotesListView notes={NOTES} onNoteSelect={handleNoteSelect} />
-      </div>
+    <div className={styles.notesApp}>
+      {/* Status bar — fixed above the transition layer, never animates */}
+      <StatusBar variant="dark" />
 
-      {/* Detail screen — at x:100% when hidden, x:0 when visible */}
-      <div
-        className={styles.screen}
-        style={{ transform: onList ? 'translateX(100%)' : 'translateX(0)' }}
-      >
-        <NoteDetailView note={selectedNote} onBack={handleBack} />
+      {/* Transition container — screens slide within this */}
+      <div className={styles.transitionContainer}>
+        {/* List screen — at x:0 when visible, x:-100% when detail is showing */}
+        <div
+          className={styles.screen}
+          style={{ transform: onList ? 'translateX(0)' : 'translateX(-100%)' }}
+        >
+          <NotesListView notes={NOTES} onNoteSelect={handleNoteSelect} />
+        </div>
+
+        {/* Detail screen — at x:100% when hidden, x:0 when visible */}
+        <div
+          className={styles.screen}
+          style={{ transform: onList ? 'translateX(100%)' : 'translateX(0)' }}
+        >
+          <NoteDetailView note={selectedNote} onBack={handleBack} />
+        </div>
       </div>
     </div>
   )

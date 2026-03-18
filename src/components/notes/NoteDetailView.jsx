@@ -8,7 +8,6 @@
 //   onBack — called when "Notes" back button is tapped
 
 import { useRef } from 'react'
-import StatusBar from '../phone/StatusBar'
 import styles from './NoteDetailView.module.css'
 import { useRubberBandScroll } from '../../hooks/useRubberBandScroll'
 
@@ -38,9 +37,6 @@ export default function NoteDetailView({ note, onBack }) {
 
   return (
     <div className={styles.view} style={cssVars}>
-
-      {/* Status bar */}
-      <StatusBar variant="dark" />
 
       {/* ── Navigation bar ─────────────────────────────────────────────── */}
       <div className={styles.navBar}>

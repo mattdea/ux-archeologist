@@ -1,15 +1,21 @@
-/* src/components/notes/NotesApp.module.css
- *
- * Container for the Notes app — manages the slide transition between
- * the list view and the note detail view.
- */
+/* src/components/notes/NotesApp.module.css */
 
-/* Clips both absolutely-positioned screens */
-.container {
+/* Full screen slot — flex column so status bar + transition stack vertically */
+.notesApp {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background: #000;
+  /* StatusBar sits above transitionContainer with higher z-index */
+  isolation: isolate;
+}
+
+/* Fills all remaining height below the 20px status bar */
+.transitionContainer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Each screen slides on its own transform.

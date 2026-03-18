@@ -8,7 +8,6 @@
 //   onNoteSelect — called with note.id when a row is tapped
 
 import { useRef } from 'react'
-import StatusBar from '../phone/StatusBar'
 import styles from './NotesListView.module.css'
 import { useRubberBandScroll } from '../../hooks/useRubberBandScroll'
 
@@ -35,9 +34,6 @@ export default function NotesListView({ notes, onNoteSelect }) {
 
   return (
     <div className={styles.view} style={cssVars}>
-
-      {/* Status bar — 20px, white text on translucent bg */}
-      <StatusBar variant="dark" />
 
       {/* ── Navigation bar ─────────────────────────────────────────────── */}
       <div className={styles.navBar}>
