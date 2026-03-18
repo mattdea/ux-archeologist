@@ -142,16 +142,18 @@
   left: 0;
   display: block;
   width: 57px;
-  height: 24px;
+  height: 57px;                /* full icon height — necessary for a true 1:1 mirror */
   border-radius: 10px;
   object-fit: cover;
-  object-position: top;        /* shows the top portion of the icon (visually bottom after flip) */
-  transform: scaleY(-1);
+  object-position: top;
+  transform: scaleY(-1);       /* flip content: icon bottom row → reflection top row */
   opacity: 0.3;
-  /* mask runs in element local space (before transform):
-     to top = opaque at CSS-bottom (visual top) → transparent at CSS-top (visual bottom) */
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
-  mask-image:         linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
+  /* Mask runs in element-local space (before transform).
+     scaleY(-1) maps element-bottom → visual-top.
+     "to top" here = opaque at element-bottom (visual top) → transparent at element-top (visual bottom).
+     Result: reflection is visible near the icon, fades out downward. */
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+  mask-image:         linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
