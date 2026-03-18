@@ -393,6 +393,7 @@ export default function HomeScreen({
               id={icon.id}
               name={icon.name}
               iconSrc={icon.iconSrc}
+              showReflection
             />
           ))}
         </div>

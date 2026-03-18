@@ -122,6 +122,29 @@
   pointer-events: none;
 }
 
+/* ── Dock reflection ────────────────────────────────────────────── */
+/* Flipped duplicate of the icon, fading from subtle at top to
+   transparent at bottom. Overflows the dock div into the glass area. */
+
+.reflection {
+  display: block;
+  width: 57px;
+  height: 24px;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: top;        /* shows the top portion of the icon (visually bottom after flip) */
+  transform: scaleY(-1);
+  opacity: 0.3;
+  /* mask runs in element local space (before transform):
+     to top = opaque at CSS-bottom (visual top) → transparent at CSS-top (visual bottom) */
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
+  mask-image:         linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
+  pointer-events: none;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 /* ── Label ──────────────────────────────────────────────────────── */
 /* Figma: Helvetica Bold 22px at 2× → 11px at 1× */
 

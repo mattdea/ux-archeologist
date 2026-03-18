@@ -13,7 +13,7 @@
 import { useRef } from 'react'
 import styles from './AppIcon.module.css'
 
-export default function AppIcon({ id, name, iconSrc, isFolder, onTap }) {
+export default function AppIcon({ id, name, iconSrc, isFolder, onTap, showReflection = false }) {
   const imgRef = useRef(null)
 
   const handleClick = () => {
@@ -62,6 +62,17 @@ export default function AppIcon({ id, name, iconSrc, isFolder, onTap }) {
       </div>
 
       <span className={styles.label}>{name}</span>
+
+      {/* Dock reflection — flipped copy of the icon, fading downward */}
+      {showReflection && iconSrc && (
+        <img
+          src={iconSrc}
+          alt=""
+          className={styles.reflection}
+          draggable={false}
+          aria-hidden="true"
+        />
+      )}
     </button>
   )
 }
