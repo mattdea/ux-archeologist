@@ -11,8 +11,10 @@ import { useEffect, useRef } from 'react'
 import styles from './LockScreen.module.css'
 import StatusBar from './StatusBar'
 import wallpaperSrc from '../../../assets/ios-rain-wallpaper.jpg'
+import { useCurrentTime, formatLockTime, formatLockDate } from '../../hooks/useCurrentTime'
 
 export default function LockScreen({ onUnlock, exiting = false }) {
+  const now = useCurrentTime()
   const trackRef = useRef(null)
   const knobRef  = useRef(null)
   const wipeRef  = useRef(null)  // text wipe overlay — covers shimmer text behind knob
@@ -148,8 +150,8 @@ export default function LockScreen({ onUnlock, exiting = false }) {
 
       {/* ── Clock band ──────────────────────────────────────────────────── */}
       <div className={styles.clockBand}>
-        <div className={styles.clockTime}>9:41</div>
-        <div className={styles.clockDate}>Sunday, January 30</div>
+        <div className={styles.clockTime}>{formatLockTime(now)}</div>
+        <div className={styles.clockDate}>{formatLockDate(now)}</div>
       </div>
 
       {/* ── Middle spacer ────────────────────────────────────────────────── */}

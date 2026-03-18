@@ -7,6 +7,7 @@
 //   variant — 'dark' (default, rgba(0,0,0,0.6) bg) | 'transparent'
 
 import styles from './StatusBar.module.css'
+import { useCurrentTime, formatStatusTime } from '../../hooks/useCurrentTime'
 
 // ── Signal bars (5 bars, bottom-aligned) ────────────────────────────────────
 // Figma 640px positions halved to 320px:
@@ -75,6 +76,7 @@ function BatteryIcon() {
 }
 
 export default function StatusBar({ variant = 'dark' }) {
+  const now = useCurrentTime()
   return (
     <div className={`${styles.bar} ${variant === 'transparent' ? styles.barTransparent : ''}`}>
 
@@ -88,7 +90,7 @@ export default function StatusBar({ variant = 'dark' }) {
       </div>
 
       {/* Center: time — absolutely positioned */}
-      <span className={styles.timeLabel}>9:41 AM</span>
+      <span className={styles.timeLabel}>{formatStatusTime(now)}</span>
 
       {/* Right: percentage + battery */}
       <div className={styles.right}>
