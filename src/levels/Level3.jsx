@@ -36,15 +36,24 @@ export default function Level3() {
   })
 
   // ── Phone screen state ──────────────────────────────────────────────────
-  const [phoneScreen, setPhoneScreen] = useState('lock')  // 'lock' | 'unlocking' | 'home' | 'notes'
+  // 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
+  const [phoneScreen, setPhoneScreen] = useState('lock')
   const [unlockPhase, setUnlockPhase] = useState(0)       // 0-5
   const [currentPage, setCurrentPage] = useState(0)       // home screen page index
+  const [transitioning, setTransitioning] = useState(false)
+  // Close animation: controls when dock/icons fly back in
+  const [closeShowDock, setCloseShowDock] = useState(false)
+  const [closeShowIcons, setCloseShowIcons] = useState(false)
 
   // Timer refs for cleanup
   const unlockTimers = useRef([])
+  const appTimers    = useRef([])
 
   useEffect(() => {
-    return () => unlockTimers.current.forEach(clearTimeout)
+    return () => {
+      unlockTimers.current.forEach(clearTimeout)
+      appTimers.current.forEach(clearTimeout)
+    }
   }, [])
 
   // ── Unlock handler — triggers the 5-phase choreography ─────────────────
@@ -69,33 +78,66 @@ export default function Level3() {
   }, [])
 
   // ── Derived animation props for HomeScreen ─────────────────────────────
-  const isEntering = phoneScreen === 'unlocking'
+  const isEntering = phoneScreen === 'unlocking' || phoneScreen === 'closing'
+  const isExiting  = phoneScreen === 'opening'
+
+  const homeShowDock  = phoneScreen === 'unlocking' ? unlockPhase >= 3
+                      : phoneScreen === 'closing'   ? closeShowDock
+                      : true
+  const homeShowIcons = phoneScreen === 'unlocking' ? unlockPhase >= 4
+                      : phoneScreen === 'closing'   ? closeShowIcons
+                      : true
 
   const handleHomePress = useCallback(() => {
+    if (transitioning) return
     if (phoneScreen === 'home') {
       setCurrentPage(0)
-    } else if (phoneScreen === 'notes') {
-      // Home button exits the Notes app back to the home screen
-      setPhoneScreen('home')
+    } else if (phoneScreen === 'app') {
+      // Close animation: app shrinks, home flies back in
+      setTransitioning(true)
+      setCloseShowDock(false)
+      setCloseShowIcons(false)
+      setPhoneScreen('closing')
+
+      // After 100ms: dock and icons fly back in
+      appTimers.current.push(setTimeout(() => {
+        setCloseShowDock(true)
+        setCloseShowIcons(true)
+      }, 100))
+
+      // After 400ms: fully on home screen
+      appTimers.current.push(setTimeout(() => {
+        setPhoneScreen('home')
+        setTransitioning(false)
+      }, 400))
     }
-  }, [phoneScreen])
+  }, [phoneScreen, transitioning])
 
   const handleAppOpen = useCallback((appId) => {
-    if (appId === 'notes') {
-      setPhoneScreen('notes')
-    }
-  }, [])
+    if (transitioning || appId !== 'notes') return
+    setTransitioning(true)
+    setPhoneScreen('opening')  // HomeScreen exiting, app entering
+
+    // After 350ms: animation complete — remove home screen, show app
+    appTimers.current.push(setTimeout(() => {
+      setPhoneScreen('app')
+      setTransitioning(false)
+    }, 350))
+  }, [transitioning])
 
   const handleSwipePage = useCallback((pageNum) => {
     setCurrentPage(pageNum)
   }, [])
 
   // ── Determine which screens to mount ───────────────────────────────────
-  // During 'unlocking': both mounted and absolutely stacked (LockScreen on top via z-index).
-  // LockScreen unmounts at Phase 3 (400ms) — by then its exit is visually complete.
   const showLock  = phoneScreen === 'lock' || (phoneScreen === 'unlocking' && unlockPhase < 3)
   const showHome  = phoneScreen === 'unlocking' || phoneScreen === 'home'
-  const showNotes = phoneScreen === 'notes'
+                 || phoneScreen === 'opening'   || phoneScreen === 'closing'
+  const showApp   = phoneScreen === 'opening' || phoneScreen === 'app' || phoneScreen === 'closing'
+
+  const appAnimCls = phoneScreen === 'opening' ? styles.appEnter
+                   : phoneScreen === 'closing' ? styles.appExit
+                   : ''
 
   return (
     <div className={styles.levelPage}>
@@ -119,8 +161,9 @@ export default function Level3() {
                   onSwipePage={handleSwipePage}
                   currentPage={currentPage}
                   entering={isEntering}
-                  showDock={unlockPhase >= 3}
-                  showIcons={unlockPhase >= 4}
+                  exiting={isExiting}
+                  showDock={homeShowDock}
+                  showIcons={homeShowIcons}
                 />
               )}
 
@@ -133,10 +176,12 @@ export default function Level3() {
                 />
               )}
 
-              {/* NotesApp — shown when an app icon opens Notes.
-               * Manages its own list ↔ detail navigation internally.
-               * Home button (handleHomePress) returns to 'home'. */}
-              {showNotes && <NotesApp />}
+              {/* App — wrapped in an animation div for scale-in/scale-out */}
+              {showApp && (
+                <div className={`${styles.appWrapper} ${appAnimCls}`}>
+                  <NotesApp />
+                </div>
+              )}
 
             </PhoneFrame>
           </div>

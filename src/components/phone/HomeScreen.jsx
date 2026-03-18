@@ -85,6 +85,7 @@ export default function HomeScreen({
   onSwipePage,
   currentPage,
   entering = false,
+  exiting = false,
   showDock = true,
   showIcons = true,
 }) {
@@ -101,9 +102,9 @@ export default function HomeScreen({
   const onAppOpenRef = useRef(onAppOpen)
   useEffect(() => { onAppOpenRef.current = onAppOpen }, [onAppOpen])
 
-  // Ref to disable interaction during entering animation
-  const enteringRef = useRef(entering)
-  useEffect(() => { enteringRef.current = entering }, [entering])
+  // Ref to disable interaction during entering OR exiting animation
+  const enteringRef = useRef(entering || exiting)
+  useEffect(() => { enteringRef.current = entering || exiting }, [entering, exiting])
 
   // Sync container position when currentPage changes externally
   useEffect(() => {
@@ -281,9 +282,12 @@ export default function HomeScreen({
   }, [])
 
   // ── Compute animation CSS classes ──────────────────────────────────────
-  // When not entering, no animation classes — everything visible immediately.
-  const dockCls = entering ? (showDock  ? styles.dockEnter : styles.hidden) : ''
-  const dotsCls = entering ? (showIcons ? styles.dotsEnter : styles.hidden) : ''
+  const dockCls = exiting  ? styles.dockExit
+                : entering ? (showDock  ? styles.dockEnter : styles.hidden)
+                : ''
+  const dotsCls = exiting  ? styles.dotsExit
+                : entering ? (showIcons ? styles.dotsEnter : styles.hidden)
+                : ''
 
   // ── Per-icon fly-in animation ──────────────────────────────────────────
   // Each icon's delay = Manhattan distance from its quadrant's center-facing
@@ -294,22 +298,33 @@ export default function HomeScreen({
   //   Tier 2 (delay 100ms):  4 corner icons  — (0,0),(3,0),(0,3),(3,3)
 
   const getIconStyle = (idx) => {
-    if (!entering) return undefined  // normal state — no inline animation
     const col = idx % 4
     const row = Math.floor(idx / 4)
     const offsetX = col < 2 ? -30 : 30
     const offsetY = row < 2 ? -30 : 30
+    const cornerCol = col < 2 ? 1 : 2
+    const cornerRow = row < 2 ? 1 : 2
+    const dist = Math.abs(col - cornerCol) + Math.abs(row - cornerRow)
+
+    if (exiting) {
+      // Scatter outward — corner icons first (delay 0ms), center icons last (delay 60ms)
+      const delay = (2 - dist) * 30
+      return {
+        opacity: 0,
+        transform: `translate(${offsetX}px, ${offsetY}px)`,
+        transition: `opacity 200ms ease-in ${delay}ms, transform 200ms ease-in ${delay}ms`,
+      }
+    }
+
+    if (!entering) return undefined  // normal state — no inline animation
 
     if (!showIcons) {
       // Hidden: offset toward nearest corner, invisible (no transition yet)
       return { opacity: 0, transform: `translate(${offsetX}px, ${offsetY}px)` }
     }
 
-    // Revealed: animate from offset to final position.
-    // Delay = Manhattan distance from quadrant's center-facing corner.
-    const cornerCol = col < 2 ? 1 : 2
-    const cornerRow = row < 2 ? 1 : 2
-    const delay = (Math.abs(col - cornerCol) + Math.abs(row - cornerRow)) * 50
+    // Fly in — center icons first (delay 0ms), corner icons last (delay 100ms)
+    const delay = dist * 50
     return {
       opacity: 1,
       transform: 'none',

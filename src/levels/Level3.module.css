@@ -69,3 +69,32 @@
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ── App open / close scale animation ───────────────────────────────── */
+
+/* Wrapper sits in the same screen slot as HomeScreen */
+.appWrapper {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+}
+
+/* App grows from a tiny dot in the center */
+.appEnter {
+  animation: appGrow 300ms ease-out forwards;
+}
+
+/* App shrinks back to a dot in the center */
+.appExit {
+  animation: appShrink 250ms ease-in forwards;
+}
+
+@keyframes appGrow {
+  from { transform: scale(0.1); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes appShrink {
+  from { transform: scale(1);   opacity: 1; }
+  to   { transform: scale(0.1); opacity: 0; }
+}
