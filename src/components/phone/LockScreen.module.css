@@ -1,0 +1,214 @@
+/* src/components/phone/LockScreen.module.css
+ *
+ * All measurements are 1× (half of the 640px Figma design: node 25:975).
+ * Layout (top → bottom):
+ *   StatusBar (20px, handled by component)
+ *   .clockBand  (96px, gradient band)
+ *   .spacer     (flex:1)
+ *   .sliderBand (border-top + gradient, padded)
+ */
+
+/* ── Root ──────────────────────────────────────────────────────────────────── */
+.lockScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Full-bleed wallpaper behind everything */
+.bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.bgBlack {
+  position: absolute;
+  inset: 0;
+  background: black;
+}
+.bgWallpaper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* All direct children stack above the bg */
+.lockScreen > :not(.bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Clock band ─────────────────────────────────────────────────────────────
+ * Figma 640px h:192 → 96px at 320px.
+ * Gradient: rgba(0,0,0,0.35) 51.042% hard-stop rgba(0,0,0,0.5) 51.052%
+ * (simulates a sharp inner shadow at the midpoint)
+ */
+.clockBand {
+  height: 96px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.35) 51%,
+    rgba(0, 0, 0, 0.5)  51%
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  /* Inner bottom highlight */
+  box-shadow: inset 0px -1px 1px 0px rgba(255, 255, 255, 0.25);
+}
+
+.clockTime {
+  /* Figma: 136px / -4.08px / -2px shadow — halved for our 320px screen */
+  color: #FFF;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.50);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 68px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 90%;
+  letter-spacing: -2.04px;
+  width: 100%;
+}
+
+.clockDate {
+  font-size: 17px;
+  font-weight: 400;
+  color: white;
+  letter-spacing: 0.17px;
+  text-align: center;
+  width: 100%;
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Middle spacer ──────────────────────────────────────────────────────────── */
+.spacer {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Slider band ─────────────────────────────────────────────────────────────
+ * Figma 640px: border-top 2px rgba(0,0,0,0.5), gradient rgba(0,0,0,0.3) hard-stop rgba(0,0,0,0.6)
+ * Padding: 44→22px top/bottom, 40→20px left/right
+ */
+.sliderBand {
+  flex-shrink: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 49.4%,
+    rgba(0, 0, 0, 0.6) 49.5%
+  );
+  padding: 22px 20px;
+}
+
+/* ── Slider track ────────────────────────────────────────────────────────────
+ * Figma 640px: h:102 → 51px, border-radius 24→12px,
+ * padding 7→4px, border 2px rgba(255,255,255,0.1)→1px,
+ * gradient black → #1b1b1b
+ */
+.track {
+  position: relative;
+  height: 51px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #000000 0%, #1b1b1b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  overflow: hidden;
+}
+
+/* ── Knob ─────────────────────────────────────────────────────────────────────
+ * Figma 640px: px:36→18px py:20→10px, border-radius 17→8px
+ * Gradient: #FEFEFE 0% → #DEDEDE 47.917% hard-stop #D1D1D1 47.927% → #AAAAAA 100%
+ */
+.knob {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  height: calc(100% - 8px);        /* fills track minus 4px top+bottom inset */
+  width: 68px;
+  border-radius: 8px;
+  background: linear-gradient(
+    180deg,
+    #fefefe 0%,
+    #dedede 47.917%,
+    #d1d1d1 47.927%,
+    #aaaaaa 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  flex-shrink: 0;
+  z-index: 2;
+  /* Subtle depth */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.knob:active {
+  cursor: grabbing;
+}
+
+.knobArrow {
+  width: 32px;
+  height: 23px;
+  display: block;
+  flex-shrink: 0;
+  /* object-fit covers slight size mismatch from the downloaded asset */
+  object-fit: contain;
+}
+
+/* ── Shimmer "slide to unlock" ───────────────────────────────────────────────
+ * Offset left so the knob (68px + 4px inset + ~6px gap = 78px) never covers it.
+ * Text is centered within the remaining right-hand space.
+ */
+.shimmerText {
+  position: absolute;
+  left: 78px;
+  right: 4px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 400;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
+  /* Gradient text — bright band sweeps across */
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.2) 15%,
+    rgba(255, 255, 255, 0.9) 35%,
+    rgba(255, 255, 255, 0.2) 55%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2.5s linear infinite;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+@keyframes shimmer {
+  from { background-position: 120% center; }
+  to   { background-position: -80% center; }
+}

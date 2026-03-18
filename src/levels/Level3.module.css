@@ -1,0 +1,69 @@
+/* src/levels/Level3.module.css
+ *
+ * Three-zone layout — mirrors Level0/Level1 exactly.
+ * --bottom-zone-height must match BOTTOM_ZONE_H constant in Level3.jsx.
+ */
+
+.levelPage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  --bottom-zone-height: 180px;
+  pointer-events: none; /* layout shell — children opt back in individually */
+}
+
+/* Zone 1 — empty mirror of Zone 3; ensures vertical centering */
+.topSpacer {
+  flex: 0 0 auto;
+  height: var(--bottom-zone-height);
+  min-height: 80px;
+}
+
+/* Zone 2 — expands to fill remaining height; centers artifact */
+.artifactZone {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  width: 100%;
+}
+
+/* Outer wrapper — explicit width/height set via inline style to the
+   scaled bezel footprint. overflow:visible so drop-shadow renders fully. */
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+/* Inner scaler — holds native-size PhoneFrame, scaled via transform. */
+.scaler {
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+
+/* Zone 3 — ObjectiveTracker; always rendered for stable layout.
+   visibility:hidden avoids reflowing. Entrance animation on .bottomZoneVisible. */
+.bottomZone {
+  flex: 0 0 auto;
+  padding: 16px 24px 24px;
+  align-self: flex-start;
+  background: transparent;
+  visibility: hidden;
+  pointer-events: auto;
+}
+
+.bottomZoneVisible {
+  visibility: visible;
+  animation: trackerSlideUp 400ms ease-out 200ms both;
+}
+
+@keyframes trackerSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

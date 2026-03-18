@@ -1,0 +1,74 @@
+/* src/components/phone/PhoneFrame.module.css
+ *
+ * SVG-backed iPhone bezel. iphone.svg viewBox: 0 0 59.032 112.67 (mm).
+ * Rendered at 385 × 735 px. Screen slot derived from SVG measurements:
+ *
+ *   SVG screen rect: x=4.988 y=20.072 w=49.055 h=73.536 (mm)
+ *   At 385×735 px:
+ *     left  = 4.988/59.032 × 385 ≈  32 px
+ *     top   = 20.072/112.67 × 735 ≈ 131 px
+ *     width = 49.055/59.032 × 385 ≈ 320 px
+ *     height= 73.536/112.67 × 735 ≈ 480 px
+ *
+ *   Home button center:
+ *     cx = (16.557+13.159)/59.032 × 385 ≈ 194 px (≈ 50%)
+ *     cy = 101.936/112.67 × 735       ≈ 665 px
+ *
+ * BEZEL_W = 385 / BEZEL_H = 735  (Level3.jsx)
+ */
+
+.frame {
+  position: relative;
+  width: 385px;
+  height: 735px;
+  filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.35));
+}
+
+.bezelImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 385px;
+  height: 735px;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  z-index: 0;
+}
+
+/* Screen slot — overlaid on the SVG screen region.
+   overflow:hidden clips all child content to screen bounds.
+   cursor:none — the TouchCursor replaces the system cursor here. */
+.screen {
+  position: absolute;
+  top: 131px;
+  left: 32px;
+  width: 320px;
+  height: 480px;
+  overflow: hidden;
+  border-radius: 2px;
+  cursor: none;
+  z-index: 1;
+}
+
+/* Invisible tap target over the physical home button.
+   :active provides a faint inset shadow so CSS is ready for future polish. */
+.homeBtn {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  top: 643px;          /* center at 665px: 665 - 22 */
+  left: calc(50% - 22px); /* center horizontally */
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.homeBtn:active {
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35);
+}

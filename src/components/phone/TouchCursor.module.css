@@ -1,0 +1,72 @@
+/* src/components/phone/TouchCursor.module.css
+ *
+ * Simulated finger touch indicator for the phone screen.
+ * All elements use pointer-events: none — never blocks clicks.
+ */
+
+/* Full-screen overlay anchored to the screen slot */
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+/* Positioning element — transform: translate(x, y) set via JS */
+.pos {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  /* opacity toggled via JS on mouse enter/leave */
+}
+
+/* Touch circle — always-visible indicator while inside screen */
+.circle {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  top: -22px;
+  left: -22px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.3);
+  pointer-events: none;
+  /* Scale transition for press state */
+  transition: transform 80ms ease-out;
+  transform: scale(1);
+  will-change: transform;
+}
+
+/* Pressed state — finger down */
+.circlePressed {
+  transform: scale(1.15);
+}
+
+/* Ripple ring — expanding circle on release */
+.ripple {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  top: -22px;
+  left: -22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rippleActive {
+  animation: rippleOut 300ms ease-out forwards;
+}
+
+@keyframes rippleOut {
+  from {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}

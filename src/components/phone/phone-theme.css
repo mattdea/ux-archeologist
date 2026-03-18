@@ -1,0 +1,19 @@
+/* src/components/phone/phone-theme.css
+ *
+ * Artifact-layer design tokens for the 2007 iPhone era.
+ * Import ONLY in phone artifact components and level files.
+ * Never import in museum-layer components.
+ */
+
+:root {
+  --phone-font: -apple-system, 'Helvetica Neue', Helvetica, sans-serif;
+  --phone-text: #ffffff;
+  --phone-text-secondary: rgba(255, 255, 255, 0.6);
+  --phone-status-height: 20px;
+  --phone-nav-height: 44px;
+  --phone-icon-size: 52px;
+  --phone-icon-radius: 11px;
+  --phone-dock-bg: rgba(0, 0, 0, 0.4);
+  /* Fallback wallpaper — the real image is used in later prompts */
+  --phone-wallpaper: linear-gradient(180deg, #1a3a5c 0%, #0a1628 100%);
+}

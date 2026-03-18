@@ -1,0 +1,95 @@
+/* src/components/phone/StatusBar.module.css
+ *
+ * All measurements are 1× (half of the 640px Figma design).
+ * Figma node: 25:986 / 25:987
+ */
+
+.bar {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  padding: 0 3px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: white;
+  flex-shrink: 0;
+  z-index: 10;
+  /* Figma: bg rgba(0,0,0,0.6), border-b 2px rgba(0,0,0,0.3), shadow 0 6px 6px rgba(0,0,0,0.1) */
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Variant: no background (for use over light content) */
+.barTransparent {
+  background: transparent;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+/* ── Left section: signal + carrier + wifi ──────────────────────── */
+.left {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.7;
+  /* Figma: shadow-[0px_-2px_0px_0px_rgba(0,0,0,0.5)] */
+  filter: drop-shadow(0px -1px 0px rgba(0, 0, 0, 0.5));
+}
+
+.signalAndCarrier {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Signal bars SVG sits here */
+
+.carrier {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24px;
+  white-space: nowrap;
+}
+
+/* Wifi icon */
+.wifiIcon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Center: time ───────────────────────────────────────────────── */
+.timeLabel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+  opacity: 0.7;
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* ── Right section: percentage + battery ───────────────────────── */
+.right {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  opacity: 0.7;
+  filter: drop-shadow(0px -1px 0px rgba(0, 0, 0, 0.5));
+}
+
+.batteryPct {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24px;
+  white-space: nowrap;
+}
