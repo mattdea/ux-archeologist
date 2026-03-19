@@ -113,11 +113,14 @@ export default function Level3() {
   // LockScreen's bootPhase prop drives the CSS animation.
   const handleBeginExcavation = useCallback(() => {
     setMuseumScreen('booting')
-    setPhonePower('booting')
+    // ~1s pause before boot animation starts, then 450ms for the animation itself
     bootTimers.current.push(setTimeout(() => {
-      setMuseumScreen('playing')
-      setPhonePower('on')
-    }, 450))
+      setPhonePower('booting')
+      bootTimers.current.push(setTimeout(() => {
+        setMuseumScreen('playing')
+        setPhonePower('on')
+      }, 450))
+    }, 1000))
   }, [])
 
   // Notify SharedLayout when the artifact is ready for interaction.
