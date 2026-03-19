@@ -24,12 +24,12 @@ export function useSetContinue() { return useContext(ContinueCtx) }
 
 // ── Level metadata ─────────────────────────────────────────────────
 const LEVEL_META = {
-  '/level/0': { era: '1971', title: 'The Unix Terminal',              level: 0 },
-  '/level/1': { era: '1984', title: 'The Desktop Arrives',            level: 1 },
-  '/level/2': { era: '1995', title: 'The Hypertext Web',              level: 2 },
-  '/level/3': { era: '2007', title: 'Touch Arrives',                  level: 3 },
-  '/level/4': { era: '2015', title: 'The Infinite Feed',              level: 4 },
-  '/level/5': { era: '2023', title: 'The Conversational Interface',   level: 5 },
+  '/level/0': { era: '1971', title: 'The Command Line',   level: 0 },
+  '/level/1': { era: '1984', title: 'The Desktop',        level: 1 },
+  '/level/2': { era: '1995', title: 'The Hyperlink',      level: 2 },
+  '/level/3': { era: '2007', title: 'The Touchscreen',    level: 3 },
+  '/level/4': { era: '2015', title: 'The Feed',           level: 4 },
+  '/level/5': { era: '2023', title: 'The Conversation',   level: 5 },
 }
 
 // Routes where the HUD is hidden entirely

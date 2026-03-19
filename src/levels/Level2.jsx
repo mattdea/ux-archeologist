@@ -205,7 +205,7 @@ export default function Level2() {
       {screen === 'intro' && (
         <IntroModal
           era="1995"
-          title="The Hypertext Web"
+          title="The Hyperlink"
           description="Information wasn't something you searched for. It was something you followed, one link at a time."
           objectives={OBJECTIVES}
           onBegin={() => {

@@ -156,7 +156,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 ---
 
-### Level 0: 1971 — The Terminal Arrives
+### Level 0: 1971 — The Command Line
 **Status: Complete**
 
 **Artifact:** Unix terminal session
@@ -166,7 +166,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **IntroModal:**
 - Era: `1971`
-- Title: `The Terminal Arrives`
+- Title: `The Command Line`
 - Description: "Before icons, windows, or the web, there was a conversation. A researcher sat down at a terminal, typed a command, and waited. The machine replied. This was computing at its most direct — and its most demanding."
 
 **Visual Palette:**
@@ -185,7 +185,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 ---
 
-### Level 1: 1984 — The Desktop Arrives
+### Level 1: 1984 — The Desktop
 **Status: Complete**
 
 **Artifact:** Macintosh System 1 desktop
@@ -195,7 +195,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **IntroModal:**
 - Era: `1984`
-- Title: `The Desktop Arrives`
+- Title: `The Desktop`
 - Description: "You're looking at the original Macintosh desktop from 1984. Explore the interface and complete the objectives to discover what made it revolutionary."
 
 **Visual Palette:**
@@ -223,7 +223,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 ---
 
-### Level 2: 1995 — The Hypertext Web
+### Level 2: 1995 — The Hyperlink
 **Status: Complete**
 
 **Artifact:** Academic homepage viewed in Netscape Navigator
@@ -233,7 +233,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **IntroModal:**
 - Era: `1995`
-- Title: `The Hypertext Web`
+- Title: `The Hyperlink`
 - Description: "Information wasn't something you searched for. It was something you followed, one link at a time."
 
 **Visual Palette:**
@@ -265,7 +265,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 ---
 
-### Level 3: 2007 — Touch Arrives
+### Level 3: 2007 — The Touchscreen
 **Status: Complete**
 
 **Artifact:** Original iPhone interface
@@ -275,7 +275,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **IntroModal:**
 - Era: `2007`
-- Title: `Touch Arrives`
+- Title: `The Touchscreen`
 - Description: "For thirty years, a layer of abstraction stood between people and their computers — a mouse, a cursor, a keyboard. Then the glass became the interface."
 
 **Visual Palette:**
@@ -321,7 +321,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 ---
 
-### Level 4: 2015 — The Infinite Feed
+### Level 4: 2015 — The Feed
 **Status: Stub (not yet implemented)**
 
 **Artifact:** Social media feed app (Instagram-like)
@@ -331,7 +331,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 **IntroModal (planned):**
 - Era: `2015`
-- Title: `The Infinite Feed`
+- Title: `The Feed`
 - Description: "The interface stopped waiting for you. It started optimizing for your attention."
 
 **Visual Palette:**
@@ -362,7 +362,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 ---
 
-### Level 5: 2023 — The Conversational Interface
+### Level 5: 2023 — The Conversation
 **Status: Not yet implemented**
 
 **Artifact:** AI chat interface (Claude-inspired, curator persona)
@@ -376,7 +376,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 **IntroModal:**
 - Era: `2023`
-- Title: `The Conversational Interface`
+- Title: `The Conversation`
 - Description: "In late 2022, OpenAI released ChatGPT and 100 million people started talking to a machine within two months. Every previous interface required learning something new: commands, clicks, gestures, swipes. This one worked because you already knew how to type a sentence."
 
 **Visual Palette:**

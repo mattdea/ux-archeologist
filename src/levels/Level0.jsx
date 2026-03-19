@@ -89,7 +89,7 @@ export default function Level0() {
       {screen === 'intro' && (
         <IntroModal
           era="1971"
-          title="The Terminal Arrives"
+          title="The Command Line"
           description="Before icons, windows, or the web, there was a conversation. A researcher sat down at a terminal, typed a command, and waited. The machine replied. This was computing at its most direct — and its most demanding."
           objectives={OBJECTIVES}
           onBegin={() => setScreen('booting')}

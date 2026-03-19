@@ -1,6 +1,6 @@
 // src/levels/Level3.jsx
 //
-// Level 3 — 2007 iPhone / "Touch Arrives"
+// Level 3 — 2007 iPhone / "The Touchscreen"
 // Museum layer: IntroModal → boot animation → playing → DiscoveryCard
 //
 // Phone screen state machine:
@@ -276,7 +276,7 @@ export default function Level3() {
       {museumScreen === 'intro' && (
         <IntroModal
           era="2007"
-          title="Touch Arrives"
+          title="The Touchscreen"
           description="For thirty years, a layer of abstraction stood between people and their computers — a mouse, a cursor, a keyboard. Then the glass became the interface."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}

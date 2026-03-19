@@ -1,6 +1,6 @@
 // src/levels/Level5.jsx
 //
-// Level 5 — 2023 AI Interface / "The Conversational Interface"
+// Level 5 — 2023 AI Interface / "The Conversation"
 // Museum state machine: 'intro' → 'booting' → 'playing' → 'discovery'
 //
 // Container: full-width chat panel — no device, no bezel, no chrome.
@@ -106,7 +106,7 @@ export default function Level5() {
       {screen === 'intro' && (
         <IntroModal
           era="2023"
-          title="The Conversational Interface"
+          title="The Conversation"
           description="In late 2022, OpenAI released ChatGPT and 100 million people started talking to a machine within two months. Every previous interface required learning something new: commands, clicks, gestures, swipes. This one worked because you already knew how to type a sentence."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}

@@ -92,7 +92,7 @@ export default function Level1() {
       {screen === 'intro' && (
         <IntroModal
           era="1984"
-          title="The Desktop Arrives"
+          title="The Desktop"
           description="You're looking at the original Macintosh desktop from 1984. Explore the interface and complete the objectives to discover what made it revolutionary."
           objectives={OBJECTIVES}
           onBegin={() => { sessionStorage.setItem('l1_intro_seen', '1'); setScreen('booting') }}

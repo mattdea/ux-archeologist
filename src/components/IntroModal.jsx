@@ -12,7 +12,7 @@ export default function IntroModal({ onBegin }) {
     <div className={styles.overlay}>
       <div className={styles.card}>
         <div className={styles.year}>1984</div>
-        <h1 className={styles.title}>The Desktop Arrives</h1>
+        <h1 className={styles.title}>The Desktop</h1>
         <p className={styles.body}>
           For the first time, computers began to feel less like machines to
           command and more like spaces to navigate.
