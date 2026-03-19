@@ -60,19 +60,18 @@ export default function useCuratorChat() {
     cancelStream()
 
     const userMsg = { id: makeId(), role: 'user', content: text.trim(), streaming: false }
-    const thinkingId = makeId()
-    const thinkingMsg = { id: thinkingId, role: 'assistant', content: null, streaming: true }
+    const assistantId = makeId()
+    const thinkingMsg = { id: assistantId, role: 'assistant', content: null, streaming: true }
 
     setMessages(prev => [...prev, userMsg, thinkingMsg])
     setIsStreaming(true)
 
     const responseText = getFallbackResponse(text)
-    const assistantId = makeId()
 
     thinkingTimerRef.current = setTimeout(() => {
       setMessages(prev => prev.map(msg =>
-        msg.id === thinkingId
-          ? { ...msg, id: assistantId, content: '', streaming: true }
+        msg.id === assistantId
+          ? { ...msg, content: '', streaming: true }
           : msg
       ))
       simulateStream(responseText, assistantId, setMessages, streamIntervalRef, () => {

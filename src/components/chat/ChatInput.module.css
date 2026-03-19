@@ -1,19 +1,20 @@
 /* src/components/chat/ChatInput.module.css */
 
-/* Boot animation: slides up from below */
+/* Boot animation: slides up from below, slow and elegant */
 .inputBar {
   display: flex;
   align-items: center;
   gap: 10px;
   background: #2a2a2a;
+  border: 1px solid #333;
   border-radius: 20px;
   padding: 10px 12px 10px 18px;
-  animation: inputSlideUp 300ms ease-out both;
+  animation: inputSlideUp 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes inputSlideUp {
-  from { transform: translateY(100px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(28px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
 .inputField {
