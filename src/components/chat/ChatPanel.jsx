@@ -16,12 +16,12 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
   const [toastVisible, setToastVisible] = useState(false)
   const [toastKey, setToastKey] = useState(0)
 
-  // Re-pin when user scrolls back near the bottom
+  // Unpin on any meaningful scroll up; never re-pin via scroll (only on send)
   const handleScroll = useCallback(() => {
     const el = messageAreaRef.current
     if (!el) return
     const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-    pinnedRef.current = distFromBottom < 80
+    if (distFromBottom > 5) pinnedRef.current = false
   }, [])
 
   // Auto-scroll only when pinned to bottom
