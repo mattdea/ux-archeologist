@@ -55,12 +55,8 @@ export default function Level3() {
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
-  // Guard: Level 2 must be complete before playing Level 3.
-  useEffect(() => {
-    if (!isLevelComplete(2)) {
-      navigate('/level/2')
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Guard disabled until all levels are implemented.
+  // useEffect(() => { if (!isLevelComplete(2)) navigate('/level/2') }, [])
 
   // ── Museum screen state ──────────────────────────────────────────────────
   const [museumScreen, setMuseumScreen] = useState('intro')

@@ -32,12 +32,8 @@ const BOTTOM_ZONE_H = 180
 export default function Level1() {
   const navigate = useNavigate()
 
-  // Guard: Level 0 must be complete before playing Level 1.
-  useEffect(() => {
-    if (!isLevelComplete(0)) {
-      navigate('/level/0')
-    }
-  }, [])
+  // Guard disabled until all levels are implemented.
+  // useEffect(() => { if (!isLevelComplete(0)) navigate('/level/0') }, [])
 
   // Boot always plays on every mount/refresh.
   // Skip intro only if it was already dismissed this browser session.

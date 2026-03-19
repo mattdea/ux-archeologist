@@ -56,6 +56,13 @@ export default function Level5() {
   const bootTimers = useRef([])
   useEffect(() => () => bootTimers.current.forEach(clearTimeout), [])
 
+  // Replay: if we skipped the intro (level already complete), auto-advance to playing
+  useEffect(() => {
+    if (screen === 'booting') {
+      bootTimers.current.push(setTimeout(() => setScreen('playing'), 1000))
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Notify SharedLayout when artifact is ready
   useEffect(() => {
     if (screen === 'playing') notifyArtifactReady()
