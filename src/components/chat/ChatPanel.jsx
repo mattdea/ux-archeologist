@@ -11,23 +11,31 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
   const bottomRef = useRef(null)
   const messageAreaRef = useRef(null)
   const toastTimerRef = useRef(null)
-  const pinnedRef = useRef(true) // true = auto-scroll; false = user scrolled up
+  const pinnedRef = useRef(true)      // true = auto-scroll; false = user scrolled up
+  const lastScrollTopRef = useRef(0)  // detect user-initiated upward scroll
 
   const [toastVisible, setToastVisible] = useState(false)
   const [toastKey, setToastKey] = useState(0)
 
-  // Unpin on any meaningful scroll up; never re-pin via scroll (only on send)
+  // Only unpin when the user actively scrolls UP — programmatic downward
+  // scroll events (from auto-scroll) never trigger unpin.
   const handleScroll = useCallback(() => {
     const el = messageAreaRef.current
     if (!el) return
-    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-    if (distFromBottom > 5) pinnedRef.current = false
+    const scrollTop = el.scrollTop
+    const scrolledUp = scrollTop < lastScrollTopRef.current
+    lastScrollTopRef.current = scrollTop
+    if (scrolledUp && el.scrollHeight - scrollTop - el.clientHeight > 5) {
+      pinnedRef.current = false
+    }
   }, [])
 
-  // Auto-scroll only when pinned to bottom
+  // Auto-scroll: instant assignment so scroll events show distFromBottom≈0
+  // and never accidentally unpin. Smooth feel comes from per-character updates.
   useEffect(() => {
     if (pinnedRef.current) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+      const el = messageAreaRef.current
+      if (el) el.scrollTop = el.scrollHeight
     }
   }, [messages])
 
