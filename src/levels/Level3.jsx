@@ -238,7 +238,7 @@ export default function Level3() {
     setUnlockPhase(0)
     setCurrentPage(0)
     setTransitioning(false)
-  }, [museumScreen])
+  }, [museumScreen, phonePower])
 
   const handleWake = useCallback(() => {
     setPhonePower('booting')
