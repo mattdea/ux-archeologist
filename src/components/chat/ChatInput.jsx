@@ -11,7 +11,7 @@ function SendIcon() {
   )
 }
 
-export default function ChatInput({ autoFocus = false, onSend, disabled = false }) {
+export default function ChatInput({ autoFocus = false, animated = true, onSend, disabled = false }) {
   const inputRef = useRef(null)
   const [value, setValue] = useState('')
 
@@ -36,7 +36,7 @@ export default function ChatInput({ autoFocus = false, onSend, disabled = false 
   }
 
   return (
-    <div className={styles.inputBar}>
+    <div className={`${styles.inputBar} ${animated ? '' : styles.inputBarStatic}`}>
       <input
         ref={inputRef}
         className={styles.inputField}

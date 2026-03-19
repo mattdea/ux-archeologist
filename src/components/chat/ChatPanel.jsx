@@ -6,7 +6,7 @@ import ChatInput from './ChatInput'
 import SuggestionChips, { getChipsForTurn } from './SuggestionChips'
 import useCuratorChat from './useCuratorChat'
 
-export default function ChatPanel({ playing = false, autoFocus, onCompleteObjective }) {
+export default function ChatPanel({ playing = false, autoFocus, animated = true, onCompleteObjective }) {
   const { messages, sendMessage, regenerateLastResponse, isStreaming, turnCount } = useCuratorChat()
   const bottomRef = useRef(null)
   const messageAreaRef = useRef(null)
@@ -70,7 +70,7 @@ export default function ChatPanel({ playing = false, autoFocus, onCompleteObject
 
   const isEmpty = messages.length === 0
   const chips = getChipsForTurn(turnCount)
-  const showChips = playing && !isStreaming
+  const showChips = animated && playing && !isStreaming
 
   // Last assistant message index (action icons + toast only on the last one)
   const lastAssistantIdx = messages.reduce((acc, m, i) => m.role === 'assistant' ? i : acc, -1)
@@ -122,6 +122,7 @@ export default function ChatPanel({ playing = false, autoFocus, onCompleteObject
           <>
             <ChatInput
               autoFocus={autoFocus !== undefined ? autoFocus : playing}
+              animated={animated}
               onSend={handleSend}
               disabled={isStreaming}
             />

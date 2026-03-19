@@ -138,6 +138,7 @@ export default function Level5() {
         >
           <ChatPanel
             playing={screen !== 'booting'}
+            animated={screen === 'playing'}
             autoFocus={screen === 'playing'}
             onCompleteObjective={completeObjective}
           />
