@@ -232,31 +232,38 @@ Dr. Sato's academic homepage about UX history. This IS the period-authentic cont
 
 **Artifact:** Original iPhone interface
 **Discovery:** Direct Touch Interaction
-**Container:** iPhone silhouette (black slab, home button)
+**Container:** iPhone silhouette (black slab, home button) — `assets/iphone.svg`, rendered at 385×735px
 
 **Visual Palette:**
-- Skeuomorphic icon gradients
-- Linen/leather textures in apps
-- Glossy reflections on icons
-- Status bar: AT&T carrier, 9:41 AM
-- Dark blue gradient wallpaper
+- Skeuomorphic icon gradients, glossy reflections
+- Rain-drop wallpaper on lock screen (`assets/ios-rain-wallpaper.jpg`)
+- Status bar: AT&T carrier, live time, 75% battery
+- Notes app: lined yellow paper texture, marker-style header font
+- Phone theme vars defined in `src/components/phone/phone-theme.css`
 
-**Interactive Elements:**
-- Lock screen with slide-to-unlock slider
-- Home screen with tappable app icons (12 apps + 4 dock)
-- Swipeable between home screen pages
-- Physical home button (returns to home screen from any app)
-- Notes app opens with era-authentic lined paper texture
-- Simplified app interiors (Notes, Photos, or Weather)
+**Interactive Elements (built):**
+- Lock screen with drag-to-unlock slider (sound: `assets/phone/unlock.mov`)
+- Sleep/wake button on top bezel — locks phone (sound: `assets/phone/lock.mp3`); tapping black screen wakes
+- Home screen: 2 pages, 12 icons + 4-app dock. Only Notes is interactive.
+- Swipe between home screen pages (page dots indicator)
+- Physical home button: returns from Notes to home screen
+- Notes app: list → detail slide transition, 3 era-authentic notes (2007 content)
+- Rubber-band scroll in note detail view (drag only, no wheel; iOS ease-out snap on release)
 
-**Objectives:**
+**Phone hardware state machine (phonePower):** `'off' | 'booting' | 'on'`
+- Off: black screen, tap anywhere to wake
+- Booting: LockScreen animates in via keyframes (450ms)
+- On: fully interactive
+
+**Objectives (3, independent — no sequential gating):**
 1. Slide to unlock
-2. Tap to open an app (Notes)
-3. Swipe between home screens
-4. Press Home to return
+2. Explore the Notes app (open any note)
+3. Swipe between screens
 
-**In-Artifact Content:**
-Mundane personal content. Notes app has a grocery list or to-do. The content is authentic and personal, not educational.
+**In-Artifact Notes Content:**
+- "Party playlist - Saturday" — 2007 pop playlist
+- "Book list" — reading list with Harry Potter 7 release note
+- "Grocery list - 4th of July" — BBQ supplies
 
 **Discovery Card Text:**
 "For the first time, the interface disappeared. No mouse, no cursor, no abstraction layer. You touched the thing itself. Your finger became the input device, and the screen became the object."
@@ -388,5 +395,10 @@ Each level defines its own palette. The museum layer never uses artifact colors 
 - Era-authentic animations only.
 - 1984: 10fps drag outlines (choppy, authentic to hardware)
 - 1995: No CSS animations. Static page. Blinking text via step-end keyframes.
-- 2007: Smooth iOS-style transitions (slide, spring)
+- 2007: Smooth iOS-style transitions:
+  - Boot: ~1s pause after Begin Excavation, then 450ms keyframe animation (panels fly in from off-screen)
+  - Unlock: 5-phase choreography — lock screen exits (300ms), black pause, dock fades in, icons fly in, done (800ms total)
+  - App open/close: scale from center dot (300ms ease-out / 250ms ease-in)
+  - Notes slide: translateX transition, 200ms ease-out
+  - Rubber-band scroll: linear drag with 0.3× damping past bounds; snap-back via `cubic-bezier(0.25, 0.46, 0.45, 0.94)` 300ms
 - 2015: Smooth scroll, notification slide-in from right
