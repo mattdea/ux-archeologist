@@ -19,7 +19,7 @@ import NotesApp from '../components/notes/NotesApp'
 import useBezelScale from '../hooks/useBezelScale'
 import '../components/phone/phone-theme.css'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
-import unlockSoundSrc from '../../assets/phone/unlock.mov'
+import unlockSoundSrc from '../../assets/phone/unlock.mp3'
 import lockSoundSrc from '../../assets/phone/lock.mp3'
 import IntroModal from '../shared/museum-ui/IntroModal'
 

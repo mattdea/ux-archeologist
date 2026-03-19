@@ -148,7 +148,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 | 2 | 1995 | Browser chrome — no device bezel |
 | 3 | 2007 | iPhone silhouette (385×735px bezel, 320×480px screen) |
 | 4 | 2015 | Floating app viewport — no bezel |
-| 5 | 2023 | Chat window — no device, no chrome |
+| 5 | 2023 | Full-width chat panel — no device, no chrome, no frame |
 
 ---
 
@@ -286,7 +286,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Defined in `src/components/phone/phone-theme.css`
 
 **Interactive Elements:**
-- Lock screen: drag-to-unlock slider (plays `assets/phone/unlock.mov`)
+- Lock screen: drag-to-unlock slider (plays `assets/phone/unlock.mp3`)
 - Sleep/wake button (top bezel, 220×45px tap target): locks phone (plays `assets/phone/lock.mp3`)
 - Tapping black screen wakes phone; 1s pause + 450ms boot animation
 - Home screen: 2 swipeable pages, 12 icons + 4-app dock
@@ -365,46 +365,82 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 ### Level 5: 2023 — The Conversational Interface
 **Status: Not yet implemented**
 
-**Artifact:** Large language model chat interface
+**Artifact:** AI chat interface (Claude-inspired, curator persona)
 **Discovery:** Language as Interface
-**Container:** Minimal chat window — no device, no chrome, no hardware
+**Container:** Full-width chat panel — no device, no chrome, no window frame
 **Route:** `/level/5`
 
-**IntroModal (planned):**
+**Persona:** The AI is the museum curator — the same voice that has written every IntroModal and DiscoveryCard. Slightly formal, warm, knowledgeable about interface history. It knows it is inside UX Archaeologist. When asked about itself, it is honest and matter-of-fact.
+
+**Response Model:** Groq API (Llama 3.3 70B) via Netlify serverless proxy, with scripted keyword-matching fallback. System prompt constrains responses to 2-3 sentences, interface history topics only. Player never sees an error; fallback fires silently on API failure.
+
+**IntroModal:**
 - Era: `2023`
 - Title: `The Conversational Interface`
-- Description: "Every interface before this one required you to learn a new language — commands, clicks, swipes, taps. This one claims to already speak yours."
+- Description: "In late 2022, OpenAI released ChatGPT and 100 million people started talking to a machine within two months. Every previous interface required learning something new: commands, clicks, gestures, swipes. This one worked because you already knew how to type a sentence."
 
 **Visual Palette:**
-- Clean white/light gray chat window
-- Two bubble columns: user (right, muted blue) and AI (left, white with light border)
-- Subtle typing indicator animation
-- Minimal chrome — just an input bar and send button
-- No era-specific fonts; clean system sans-serif (this IS the era we're in)
+- Dark background continuous with museum layer (#1a1a1a)
+- Claude-inspired layout: user messages as right-aligned dark pills, AI responses as left-aligned plain text (no bubble)
+- Dark rounded input bar (#2a2a2a) with placeholder text
+- Non-interactive "Curator v1" model label in input bar (visual dressing)
+- Action icons below AI responses: copy, thumbs up, thumbs down, regenerate
+- Suggestion chips as outlined pill buttons below responses
+- System sans-serif throughout (this IS the current era)
 
 **Container:**
-- Floating chat window in the museum dark space
-- No device frame — the interface is pure software, pure conversation
-- Rounded corners (12px), subtle drop shadow
+- Full-width panel, no frame, no border, no shadow
+- Chat area fills the artifact zone within the three-zone layout
+- No sidebar, no logo, no attachment button, no settings
 
-**Planned Interactive Elements:**
-- Text input (player types real messages)
-- Pre-scripted AI responses that react to keywords/intent
-- "Thinking" typing indicator between messages
-- At least one moment where the AI confidently states something wrong
-- At least one moment where the AI reveals it can't do something (knowledge cutoff, refusal, etc.)
-- A "surprising capability" moment — something the player didn't expect the AI to do
+**Interactive Elements:**
+- Text input (player types real messages, or clicks suggestion chips)
+- AI responses stream in token-by-token (SSE from Groq, or simulated ~30 chars/sec for fallback)
+- Suggestion chips appear after each AI response (3 per turn, hardcoded by turn number)
+- Regenerate button replaces last AI response with a new API call
+- Thumbs up/down triggers a "Thanks for your feedback" toast (1.5s, fades out)
+- Copy button copies response to clipboard
+- Thinking indicator (3 pulsing dots) shows before first token arrives
 
-**Planned Objectives:**
-1. Ask the AI a question and get a response
-2. Discover something the AI doesn't know or gets wrong
-3. Find something the AI can do that surprises you
+**Suggestion Chips by Turn:**
+- Initial: "What is this place?" · "Who are you?" · "Tell me about the levels I just played"
+- After turn 1: "What changed between 1984 and now?" · "How does this conversation compare to the terminal?" · "What comes after this?"
+- After turn 2+: "What was the biggest leap in interface design?" · "Why did touchscreens change everything?" · "Is this the last interface?"
 
-**Key Mechanic:** The conversation feels natural — until it doesn't. The player experiences firsthand both the power and the opacity of language model interfaces: you don't know what it knows, how it was trained, or whose values shaped its answers.
+**Boot Sequence:**
+1. ~1000ms pause after "Begin Excavation"
+2. Input bar slides up from below viewport (300ms ease-out, @keyframes)
+3. Placeholder "Ask me anything..." fades in, cursor blinks
+4. Suggestion chips fade in staggered (50ms each)
+5. Museum HUD slides in per standard pattern
 
-**Discovery Card (planned):**
+**Objectives (3, independent — no sequential gating):**
+1. Start a conversation (send any message)
+2. Regenerate a response (click regenerate on any AI response)
+3. Rate a response (click thumbs up or down on any AI response)
+
+**Key Mechanic:** The player is having a conversation with the thing that has been curating their entire experience. The discovery card, written in the same third-person museum voice, arrives after the player just spoke with its author. The dissonance is intentional and unspoken.
+
+**Discovery Card:**
 - Artifact: `Language as Interface`
-- Text: "You didn't click, tap, or drag. You just talked. The machine talked back. But behind the fluency is a system you can't inspect — trained on text you didn't choose, optimized for goals you can't see. The most natural interface in history is also the least transparent."
+- Text: "Previous interfaces each had their own vocabulary. You learned to type commands, click icons, tap buttons, swipe between screens. Large language models replaced all of that with a single text field. You could ask for code, a summary, a translation, or a recipe in the same conversation. No new interaction model to learn, no specialized tool to find."
+
+**File Structure:**
+```
+netlify/functions/chat.js              # Serverless proxy to Groq API
+src/levels/Level5.jsx                  # Screen state machine, museum wiring
+src/levels/Level5.module.css           # Three-zone layout
+src/components/chat/
+  ChatPanel.jsx + .module.css          # Main container — messages, input, chips
+  ChatMessage.jsx + .module.css        # Single message (user or AI)
+  ChatInput.jsx + .module.css          # Input bar with send button
+  SuggestionChips.jsx + .module.css    # Chip row
+  ActionIcons.jsx + .module.css        # Copy, thumbs, regenerate
+  Toast.jsx + .module.css              # Feedback toast
+  useCuratorChat.js                    # Hook: messages, streaming, API, fallback
+  curatorSystemPrompt.js               # System prompt
+  curatorFallbacks.js                  # Scripted fallback responses
+```
 
 ---
 
@@ -487,6 +523,11 @@ Era-authentic only. Never use museum-layer easing inside the artifact.
 - Notification slide-in from right, into museum space
 
 **Level 5 — 2023:**
-- Typing indicator: 3-dot pulse animation
-- Message appear: subtle fade-up, 150ms
+- Boot: 1s pause → input bar slides up from bottom (translateY(100%) → translateY(0), 300ms ease-out, @keyframes)
+- Suggestion chips: fade in 200ms, staggered 50ms each
+- Thinking indicator: 3-dot pulse, CSS keyframes opacity cycle, staggered per dot
+- Message appear: subtle fade-up, 150ms ease-out
+- Streaming text: tokens append in real time, no animation per token
+- Action icons: fade in 200ms after streaming completes
+- Toast: fade in 200ms, hold 1.5s, fade out 300ms
 - Input send: instant clear + message appended
