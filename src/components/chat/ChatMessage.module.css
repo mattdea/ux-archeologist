@@ -2,7 +2,7 @@
 
 .message {
   display: flex;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
   animation: msgFadeUp 150ms ease-out both;
 }
 

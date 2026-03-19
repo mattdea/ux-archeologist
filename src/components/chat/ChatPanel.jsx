@@ -14,7 +14,7 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
   const [toastVisible, setToastVisible] = useState(false)
   const [toastKey, setToastKey] = useState(0)
 
-  // Auto-scroll to bottom on message updates
+  // Auto-scroll to bottom on message updates (including during streaming)
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -55,31 +55,47 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
   const lastAssistantIdx = messages.reduce((acc, m, i) => m.role === 'assistant' ? i : acc, -1)
 
   return (
-    <div className={`${styles.panel} ${isEmpty ? styles.panelEmpty : ''}`}>
-      <div className={styles.messageArea}>
-        <div className={styles.messageList}>
-          {messages.map((msg, i) => {
-            const isLast = i === lastAssistantIdx
-            return (
-              <ChatMessage
-                key={msg.id}
-                role={msg.role}
-                content={msg.content}
-                streaming={msg.streaming}
-                showActions={msg.role === 'assistant' && isLast}
-                toastVisible={isLast ? toastVisible : false}
-                toastKey={isLast ? toastKey : 0}
-                onCopy={() => {}}
-                onThumbsUp={handleRate}
-                onThumbsDown={handleRate}
-                onRegenerate={isLast ? handleRegenerate : undefined}
-              />
-            )
-          })}
-          <div ref={bottomRef} />
+    <div className={styles.panel}>
+
+      {/*
+       * Top spacer: flex:1 when empty (centers bottomBar), collapses to flex:0
+       * when messages exist — animates bottomBar downward over 300ms.
+       */}
+      <div className={`${styles.topSpacer} ${!isEmpty ? styles.topSpacerGone : ''}`} />
+
+      {/*
+       * Message area wrapper: invisible + collapsed when empty,
+       * expands to fill remaining space as conversation starts.
+       * Contains a fixed fade gradient overlay (does not scroll).
+       */}
+      <div className={`${styles.messageAreaWrapper} ${isEmpty ? styles.messageAreaWrapperHidden : ''}`}>
+        <div className={styles.topFade} aria-hidden="true" />
+        <div className={styles.messageArea}>
+          <div className={styles.messageList}>
+            {messages.map((msg, i) => {
+              const isLast = i === lastAssistantIdx
+              return (
+                <ChatMessage
+                  key={msg.id}
+                  role={msg.role}
+                  content={msg.content}
+                  streaming={msg.streaming}
+                  showActions={msg.role === 'assistant' && isLast}
+                  toastVisible={isLast ? toastVisible : false}
+                  toastKey={isLast ? toastKey : 0}
+                  onCopy={() => {}}
+                  onThumbsUp={handleRate}
+                  onThumbsDown={handleRate}
+                  onRegenerate={isLast ? handleRegenerate : undefined}
+                />
+              )
+            })}
+            <div ref={bottomRef} />
+          </div>
         </div>
       </div>
 
+      {/* Bottom bar: input + fixed-height chips area */}
       <div className={styles.bottomBar}>
         {playing && (
           <>
@@ -88,16 +104,28 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
               onSend={handleSend}
               disabled={isStreaming}
             />
-            {/* SuggestionChips always rendered — opacity hides when not visible so
-                the chips area height never changes and the input bar never shifts */}
-            <SuggestionChips
-              chips={chips}
-              onChipClick={handleSend}
-              visible={showChips}
-            />
+            {/*
+             * chipsArea has a fixed height so the input bar position is always
+             * determined by: panel bottom - chips height - input height.
+             * Chips fade in/out inside this space; nothing shifts.
+             */}
+            <div className={styles.chipsArea}>
+              <SuggestionChips
+                chips={chips}
+                onChipClick={handleSend}
+                visible={showChips}
+              />
+            </div>
           </>
         )}
       </div>
+
+      {/*
+       * Bottom spacer: mirrors topSpacer so bottomBar is centered when empty.
+       * Collapses simultaneously with topSpacer when messages arrive.
+       */}
+      <div className={`${styles.bottomSpacer} ${!isEmpty ? styles.bottomSpacerGone : ''}`} />
+
     </div>
   )
 }

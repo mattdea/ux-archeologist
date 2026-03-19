@@ -1,6 +1,6 @@
 /* src/components/chat/ChatPanel.module.css */
 
-/* Full-width dark panel — no frame, no border, no shadow */
+/* Full-width dark panel — flex column, no overflow */
 .panel {
   display: flex;
   flex-direction: column;
@@ -11,27 +11,77 @@
   position: relative;
 }
 
-/* Scrollable message area — fills remaining space */
+/*
+ * Empty-state centering: two spacers (top + bottom) each flex:1 sandwich
+ * the bottomBar so it's vertically centered. When the first message arrives,
+ * both spacers animate flex-grow → 0 over 300ms while the message area
+ * expands flex-grow → 1, pulling the bottomBar smoothly toward the bottom.
+ */
+.topSpacer,
+.bottomSpacer {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-height: 0;
+  transition: flex-grow 300ms ease-out;
+}
+
+.topSpacerGone,
+.bottomSpacerGone {
+  flex-grow: 0;
+}
+
+/*
+ * Message area wrapper — gives us a positioned container for the
+ * non-scrolling fade gradient overlay.
+ */
+.messageAreaWrapper {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  opacity: 1;
+  transition: flex-grow 300ms ease-out, opacity 200ms ease-out;
+}
+
+/* Collapsed + invisible in empty state */
+.messageAreaWrapperHidden {
+  flex-grow: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * Fade gradient at the top of the message area — stays fixed,
+ * does not scroll with messages. Makes old messages look like
+ * they gently disappear as they scroll off the top.
+ */
+.topFade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, #111 0%, rgba(17, 17, 17, 0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Scrollable message area — hidden scrollbar */
 .messageArea {
-  flex: 1;
+  height: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* messages anchor to bottom when few */
-  padding: 32px 0 16px;
-  scrollbar-width: thin;
-  scrollbar-color: #333 transparent;
+  justify-content: flex-end;
+  padding: 32px 0 24px;
+  scrollbar-width: none;
 }
 
 .messageArea::-webkit-scrollbar {
-  width: 4px;
-}
-.messageArea::-webkit-scrollbar-track {
-  background: transparent;
-}
-.messageArea::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 2px;
+  display: none;
 }
 
 /* Inner constrained column for messages */
@@ -42,7 +92,7 @@
   padding: 0 24px;
 }
 
-/* Bottom bar: input + chips — standard anchored-to-bottom layout */
+/* Bottom bar: input + chips — anchored below message area */
 .bottomBar {
   flex: 0 0 auto;
   padding: 0 24px 20px;
@@ -53,19 +103,10 @@
 }
 
 /*
- * Empty state layout — input bar vertically centered in the panel.
- * Activated when no messages exist yet.
- * We switch the panel to justify-content: center and hide the
- * message area, placing just the bottom bar in the center.
+ * Fixed-height chips container — reserves exactly 90px (enough for 2 lines
+ * of chips) regardless of chip content or visibility. Input bar never shifts.
  */
-.panelEmpty {
-  justify-content: center;
-}
-
-.panelEmpty .messageArea {
-  display: none;
-}
-
-.panelEmpty .bottomBar {
-  padding-bottom: 0;
+.chipsArea {
+  height: 90px;
+  overflow: hidden;
 }
