@@ -34,8 +34,6 @@ const OBJECTIVES = [
 // Screen slot: 320×480 px at (32, 131) within this 385×735 frame.
 const BEZEL_W = 385
 const BEZEL_H = 735
-// Render the phone at 80% of the viewport-fitted size
-const PHONE_SCALE = 0.8
 
 // Matches --bottom-zone-height in Level3.module.css
 const BOTTOM_ZONE_H = 180
@@ -280,12 +278,12 @@ export default function Level3() {
           <div
             className={styles.wrap}
             style={{
-              width: BEZEL_W * scale * PHONE_SCALE,
-              height: BEZEL_H * scale * PHONE_SCALE,
+              width: BEZEL_W * scale,
+              height: BEZEL_H * scale,
               pointerEvents: phoneInteractive ? 'auto' : 'none',
             }}
           >
-            <div className={styles.scaler} style={{ transform: `scale(${scale * PHONE_SCALE})` }}>
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <PhoneFrame onHomePress={handleHomePress} cursorEnabled={phoneInteractive}>
 
                 {/* HomeScreen renders first (behind) — z-index 0 */}
