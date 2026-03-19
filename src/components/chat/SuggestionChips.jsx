@@ -17,10 +17,9 @@ export function getChipsForTurn(turnCount) {
 }
 
 export default function SuggestionChips({ chips, onChipClick, visible = true }) {
-  if (!visible) return null
-
+  // Always rendered — opacity hides chips so container height never changes.
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${visible ? '' : styles.rowHidden}`}>
       {chips.map((chip) => (
         <button
           key={chip}

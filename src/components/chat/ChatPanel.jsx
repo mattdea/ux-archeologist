@@ -4,7 +4,6 @@ import styles from './ChatPanel.module.css'
 import ChatMessage from './ChatMessage'
 import ChatInput from './ChatInput'
 import SuggestionChips, { getChipsForTurn } from './SuggestionChips'
-import Toast from './Toast'
 import useCuratorChat from './useCuratorChat'
 
 export default function ChatPanel({ playing = false, onCompleteObjective }) {
@@ -52,7 +51,7 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
   const chips = getChipsForTurn(turnCount)
   const showChips = playing && !isStreaming
 
-  // Last assistant message index (for wiring regenerate only on the last one)
+  // Last assistant message index (action icons + toast only on the last one)
   const lastAssistantIdx = messages.reduce((acc, m, i) => m.role === 'assistant' ? i : acc, -1)
 
   return (
@@ -68,6 +67,8 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
                 content={msg.content}
                 streaming={msg.streaming}
                 showActions={msg.role === 'assistant' && isLast}
+                toastVisible={isLast ? toastVisible : false}
+                toastKey={isLast ? toastKey : 0}
                 onCopy={() => {}}
                 onThumbsUp={handleRate}
                 onThumbsDown={handleRate}
@@ -87,6 +88,8 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
               onSend={handleSend}
               disabled={isStreaming}
             />
+            {/* SuggestionChips always rendered — opacity hides when not visible so
+                the chips area height never changes and the input bar never shifts */}
             <SuggestionChips
               chips={chips}
               onChipClick={handleSend}
@@ -95,8 +98,6 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
           </>
         )}
       </div>
-
-      <Toast visible={toastVisible} toastKey={toastKey} />
     </div>
   )
 }

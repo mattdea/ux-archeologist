@@ -17,6 +17,8 @@ export default function ChatMessage({
   content,
   streaming = false,
   showActions = false,
+  toastVisible = false,
+  toastKey = 0,
   onCopy,
   onThumbsUp,
   onThumbsDown,
@@ -31,6 +33,7 @@ export default function ChatMessage({
   }
 
   const isThinking = content === null
+  const actionsVisible = !streaming && !isThinking
 
   return (
     <div className={`${styles.message} ${styles.assistant}`}>
@@ -38,15 +41,32 @@ export default function ChatMessage({
         ? <ThinkingIndicator />
         : <div className={styles.assistantContent}>{content}</div>
       }
-      {showActions && !streaming && !isThinking && (
-        <ActionIcons
-          content={content}
-          onCopy={onCopy}
-          onThumbsUp={onThumbsUp}
-          onThumbsDown={onThumbsDown}
-          onRegenerate={onRegenerate}
-          disabled={streaming}
-        />
+      {/*
+       * actionsBlock: always rendered when showActions=true so space is
+       * reserved from the moment this message mounts. Action icons and
+       * toast fade in/out without any layout shift.
+       */}
+      {showActions && (
+        <div className={styles.actionsBlock}>
+          <ActionIcons
+            content={content}
+            visible={actionsVisible}
+            onCopy={onCopy}
+            onThumbsUp={onThumbsUp}
+            onThumbsDown={onThumbsDown}
+            onRegenerate={onRegenerate}
+            disabled={streaming || isThinking}
+          />
+          {/* Toast area: fixed height, always in flow — toast fades in/out inline */}
+          <div className={styles.toastArea}>
+            <span
+              key={toastKey}
+              className={`${styles.toastText} ${toastVisible ? styles.toastTextVisible : ''}`}
+            >
+              Thanks for your feedback
+            </span>
+          </div>
+        </div>
       )}
     </div>
   )

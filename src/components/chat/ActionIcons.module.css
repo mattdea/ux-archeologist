@@ -6,12 +6,15 @@
   gap: 4px;
   margin-top: 6px;
   padding-left: 4px;
-  animation: iconsFadeIn 200ms ease-out both;
+  /* Default invisible — space is always reserved, icons fade in when streaming done */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-out;
 }
 
-@keyframes iconsFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+.rowVisible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .btn {

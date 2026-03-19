@@ -46,7 +46,7 @@ function RegenerateIcon() {
   )
 }
 
-export default function ActionIcons({ content, onCopy, onThumbsUp, onThumbsDown, onRegenerate, disabled = false }) {
+export default function ActionIcons({ content, visible = false, onCopy, onThumbsUp, onThumbsDown, onRegenerate, disabled = false }) {
   const [copied, setCopied] = useState(false)
   const [rated, setRated] = useState(null) // 'up' | 'down' | null
 
@@ -76,7 +76,7 @@ export default function ActionIcons({ content, onCopy, onThumbsUp, onThumbsDown,
   }
 
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${visible ? styles.rowVisible : ''}`}>
       <button className={styles.btn} title={copied ? 'Copied' : 'Copy'} type="button" onClick={handleCopy} disabled={disabled}>
         {copied ? <CheckIcon /> : <CopyIcon />}
       </button>

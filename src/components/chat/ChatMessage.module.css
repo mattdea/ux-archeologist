@@ -70,3 +70,43 @@
   0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
   40%           { opacity: 1;   transform: scale(1); }
 }
+
+/*
+ * actionsBlock: always in the DOM when showActions=true.
+ * Reserves vertical space so action icons and toast never cause layout shifts.
+ */
+.actionsBlock {
+  width: 100%;
+}
+
+/*
+ * toastArea: fixed height — always occupies space so toast appearing
+ * never shifts the action icons row or anything above/below.
+ */
+.toastArea {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  margin-top: 2px;
+}
+
+/* Toast text: invisible by default, animates in when .toastTextVisible is added */
+.toastText {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  color: #888;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toastTextVisible {
+  animation: toastShow 2s ease forwards;
+}
+
+@keyframes toastShow {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
