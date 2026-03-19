@@ -1,5 +1,5 @@
 // src/components/chat/ChatInput.jsx
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import styles from './ChatInput.module.css'
 
 function SendIcon() {
@@ -11,14 +11,29 @@ function SendIcon() {
   )
 }
 
-export default function ChatInput({ autoFocus = false }) {
+export default function ChatInput({ autoFocus = false, onSend, disabled = false }) {
   const inputRef = useRef(null)
+  const [value, setValue] = useState('')
 
   useEffect(() => {
     if (autoFocus && inputRef.current) {
       inputRef.current.focus()
     }
   }, [autoFocus])
+
+  const handleSend = () => {
+    const text = value.trim()
+    if (!text || disabled) return
+    setValue('')
+    onSend?.(text)
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
 
   return (
     <div className={styles.inputBar}>
@@ -28,9 +43,19 @@ export default function ChatInput({ autoFocus = false }) {
         type="text"
         placeholder="Ask me anything..."
         autoComplete="off"
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={disabled}
       />
       <span className={styles.modelLabel}>Curator v1</span>
-      <button className={styles.sendBtn} type="button" title="Send">
+      <button
+        className={styles.sendBtn}
+        type="button"
+        title="Send"
+        onClick={handleSend}
+        disabled={disabled || !value.trim()}
+      >
         <SendIcon />
       </button>
     </div>
