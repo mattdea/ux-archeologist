@@ -87,6 +87,7 @@ export default function Level3() {
   // Close animation: controls when dock/icons fly back in
   const [closeShowDock, setCloseShowDock] = useState(false)
   const [closeShowIcons, setCloseShowIcons] = useState(false)
+  const [phonePower, setPhonePower] = useState('off') // 'off' | 'booting' | 'on'
 
   // Timer refs for cleanup
   const unlockTimers = useRef([])
@@ -110,9 +111,11 @@ export default function Level3() {
   // Called when "Begin Excavation" is clicked.
   // LockScreen's bootPhase prop drives the CSS animation.
   const handleBeginExcavation = useCallback(() => {
-    setMuseumScreen('booting')  // LockScreen enters bootEntering — panels animate in
+    setMuseumScreen('booting')
+    setPhonePower('booting')
     bootTimers.current.push(setTimeout(() => {
       setMuseumScreen('playing')
+      setPhonePower('on')
     }, 450))
   }, [])
 
@@ -222,8 +225,26 @@ export default function Level3() {
     completeObjective('exploreNotes')
   }, [completeObjective])
 
+  const handleLock = useCallback(() => {
+    if (museumScreen !== 'playing') return
+    unlockTimers.current.forEach(clearTimeout)
+    unlockTimers.current = []
+    appTimers.current.forEach(clearTimeout)
+    appTimers.current = []
+    setPhonePower('off')
+    setPhoneScreen('lock')
+    setUnlockPhase(0)
+    setCurrentPage(0)
+    setTransitioning(false)
+  }, [museumScreen])
+
+  const handleWake = useCallback(() => {
+    setPhonePower('booting')
+    bootTimers.current.push(setTimeout(() => setPhonePower('on'), 450))
+  }, [])
+
   // ── Determine which screens to mount ───────────────────────────────────
-  const showLock  = phoneScreen === 'lock' || (phoneScreen === 'unlocking' && unlockPhase < 3)
+  const showLock  = phonePower !== 'off' && (phoneScreen === 'lock' || (phoneScreen === 'unlocking' && unlockPhase < 3))
   const showHome  = phoneScreen === 'unlocking' || phoneScreen === 'home'
                  || phoneScreen === 'opening'   || phoneScreen === 'closing'
   const showApp   = phoneScreen === 'opening' || phoneScreen === 'app' || phoneScreen === 'closing'
@@ -232,13 +253,13 @@ export default function Level3() {
                    : phoneScreen === 'closing' ? styles.appExit
                    : ''
 
-  // Phone is only interactive during 'playing' museum state
-  const phoneInteractive = museumScreen === 'playing'
+  // Phone pointer events: enabled during 'playing' (black screen wake tap + interaction)
+  const phonePointerEvents = museumScreen === 'playing' ? 'auto' : 'none'
+  // TouchCursor + full interaction: only when phone is fully on
+  const cursorEnabled = museumScreen === 'playing' && phonePower === 'on'
 
-  // LockScreen boot phase — drives CSS boot animation
-  const lockBootPhase = museumScreen === 'intro'    ? 'dark'
-                      : museumScreen === 'booting'  ? 'entering'
-                      : null
+  // LockScreen boot phase — drives CSS keyframe boot animation on fresh mount
+  const lockBootPhase = phonePower === 'booting' ? 'entering' : null
 
   // ObjectiveTracker — completedIndices derived from objectives object
   const completedIndices = [
@@ -283,11 +304,19 @@ export default function Level3() {
             style={{
               width: BEZEL_W * scale,
               height: BEZEL_H * scale,
-              pointerEvents: phoneInteractive ? 'auto' : 'none',
+              pointerEvents: phonePointerEvents,
             }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-              <PhoneFrame onHomePress={handleHomePress} cursorEnabled={phoneInteractive}>
+              <PhoneFrame onHomePress={handleHomePress} onLockPress={handleLock} cursorEnabled={cursorEnabled}>
+
+                {/* Black screen when phone is off — tap to wake */}
+                {phonePower === 'off' && (
+                  <div
+                    style={{ position: 'absolute', inset: 0, background: 'black', zIndex: 10 }}
+                    onClick={handleWake}
+                  />
+                )}
 
                 {/* HomeScreen renders first (behind) — z-index 0 */}
                 {showHome && (

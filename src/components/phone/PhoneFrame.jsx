@@ -13,7 +13,7 @@ import styles from './PhoneFrame.module.css'
 import TouchCursor from './TouchCursor'
 import iPhoneSvg from '../../../assets/iphone.svg'
 
-export default function PhoneFrame({ children, onHomePress, cursorEnabled = true }) {
+export default function PhoneFrame({ children, onHomePress, onLockPress, cursorEnabled = true }) {
   const frameRef = useRef(null)
 
   return (
@@ -39,6 +39,15 @@ export default function PhoneFrame({ children, onHomePress, cursorEnabled = true
         onClick={onHomePress}
         aria-label="Home"
       />
+
+      {/* Invisible tap target over the sleep/wake button */}
+      {onLockPress && (
+        <button
+          className={styles.lockBtn}
+          onClick={onLockPress}
+          aria-label="Sleep/Wake"
+        />
+      )}
 
       {/* Touch cursor tracks the entire frame so it covers both the screen
           slot and the home button without flickering at the boundary */}

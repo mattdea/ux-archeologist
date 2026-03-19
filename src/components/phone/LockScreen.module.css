@@ -274,16 +274,28 @@
 }
 
 .bootEntering .bgWallpaper {
-  opacity: 1;
-  transition: opacity 400ms ease-out;
+  animation: bootFadeIn 400ms ease-out forwards;
 }
 
 .bootEntering .clockBand {
-  transform: translateY(0);
-  transition: transform 400ms ease-out;
+  animation: bootSlideDown 400ms ease-out forwards;
 }
 
 .bootEntering .sliderBand {
-  transform: translateY(0);
-  transition: transform 400ms ease-out;
+  animation: bootSlideUp 400ms ease-out forwards;
+}
+
+@keyframes bootFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bootSlideDown {
+  from { transform: translateY(-120%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes bootSlideUp {
+  from { transform: translateY(120%); }
+  to   { transform: translateY(0); }
 }
