@@ -255,8 +255,8 @@ export default function Level3() {
 
   // Phone pointer events: enabled during 'playing' (black screen wake tap + interaction)
   const phonePointerEvents = museumScreen === 'playing' ? 'auto' : 'none'
-  // TouchCursor + full interaction: only when phone is fully on
-  const cursorEnabled = museumScreen === 'playing' && phonePower === 'on'
+  // TouchCursor shows whenever the phone is in the playing state (on or off)
+  const cursorEnabled = museumScreen === 'playing'
 
   // LockScreen boot phase — drives CSS keyframe boot animation on fresh mount
   const lockBootPhase = phonePower === 'booting' ? 'entering' : null
