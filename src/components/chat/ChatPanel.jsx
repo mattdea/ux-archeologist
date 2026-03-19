@@ -6,7 +6,7 @@ import ChatInput from './ChatInput'
 import SuggestionChips, { getChipsForTurn } from './SuggestionChips'
 import useCuratorChat from './useCuratorChat'
 
-export default function ChatPanel({ playing = false, onCompleteObjective }) {
+export default function ChatPanel({ playing = false, autoFocus, onCompleteObjective }) {
   const { messages, sendMessage, regenerateLastResponse, isStreaming, turnCount } = useCuratorChat()
   const bottomRef = useRef(null)
   const messageAreaRef = useRef(null)
@@ -121,7 +121,7 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
         {playing && (
           <>
             <ChatInput
-              autoFocus={playing}
+              autoFocus={autoFocus !== undefined ? autoFocus : playing}
               onSend={handleSend}
               disabled={isStreaming}
             />

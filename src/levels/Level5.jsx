@@ -38,6 +38,7 @@ export default function Level5() {
   // useEffect(() => { if (!isLevelComplete(4)) navigate('/level/4') }, [])
 
   const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
+  const [trackerVisible, setTrackerVisible] = useState(ALREADY_DONE)
 
   // Objectives: independent (no sequential gating), keyed by name
   const [objectives, setObjectives] = useState({
@@ -63,9 +64,15 @@ export default function Level5() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Notify SharedLayout when artifact is ready
+  // Notify SharedLayout after all boot animations settle:
+  // input bar (700ms) + last chip (920ms delay + 400ms) = ~1320ms. Add small buffer.
+  // Both notifyArtifactReady and trackerVisible fire together so HUD + tracker animate in sync
+  // (both use a 200ms CSS delay, matching the pattern in other levels).
   useEffect(() => {
-    if (screen === 'playing') notifyArtifactReady()
+    if (screen === 'playing') {
+      const t = setTimeout(() => { notifyArtifactReady(); setTrackerVisible(true) }, 1400)
+      return () => clearTimeout(t)
+    }
   }, [screen, notifyArtifactReady])
 
   // Continue button wiring (canonical pattern from CLAUDE.md)
@@ -121,18 +128,23 @@ export default function Level5() {
         {/* Zone 1 — mirrors Zone 3 height so artifact centers vertically */}
         <div className={styles.topSpacer} />
 
-        {/* Zone 2 — chat panel fills this zone entirely */}
-        <div className={styles.artifactZone}>
-          {(screen === 'playing' || screen === 'booting') && (
-            <ChatPanel
-              playing={screen === 'playing'}
-              onCompleteObjective={completeObjective}
-            />
-          )}
+        {/* Zone 2 — chat panel fills this zone entirely.
+            Always mounted so it's visible behind IntroModal and DiscoveryCard.
+            During 'booting' the input is hidden; it slides in on 'playing'.
+            pointer-events: none when not playing so overlays remain interactive. */}
+        <div
+          className={styles.artifactZone}
+          style={{ pointerEvents: screen === 'playing' ? 'auto' : 'none' }}
+        >
+          <ChatPanel
+            playing={screen !== 'booting'}
+            autoFocus={screen === 'playing'}
+            onCompleteObjective={completeObjective}
+          />
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
-        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+        <div className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}
