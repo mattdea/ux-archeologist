@@ -1,0 +1,46 @@
+/* src/components/chat/ChatMessage.module.css */
+
+.message {
+  display: flex;
+  margin-bottom: 8px;
+  animation: msgFadeUp 150ms ease-out both;
+}
+
+@keyframes msgFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* User messages — right-aligned dark pill */
+.user {
+  justify-content: flex-end;
+}
+
+.userBubble {
+  background: #2a2a2a;
+  color: #e8e8e8;
+  padding: 10px 16px;
+  border-radius: 18px;
+  max-width: 70%;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* AI messages — left-aligned, no bubble */
+.assistant {
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.assistantContent {
+  color: #e0e0e0;
+  padding-left: 4px;
+  max-width: 80%;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  word-break: break-word;
+}

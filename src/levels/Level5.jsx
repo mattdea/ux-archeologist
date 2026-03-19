@@ -1,0 +1,133 @@
+// src/levels/Level5.jsx
+//
+// Level 5 — 2023 AI Interface / "The Conversational Interface"
+// Museum state machine: 'intro' → 'booting' → 'playing' → 'discovery'
+//
+// Container: full-width chat panel — no device, no bezel, no chrome.
+
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styles from './Level5.module.css'
+import IntroModal from '../shared/museum-ui/IntroModal'
+import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
+import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
+import { completeLevel, isLevelComplete } from '../state/state'
+import ChatPanel from '../components/chat/ChatPanel'
+
+const OBJECTIVES = [
+  'Start a conversation',
+  'Regenerate a response',
+  'Rate a response',
+]
+
+const DISCOVERY_DESCRIPTION =
+  "Previous interfaces each had their own vocabulary. You learned to type commands, click icons, " +
+  "tap buttons, swipe between screens. Large language models replaced all of that with a single text field. " +
+  "You could ask for code, a summary, a translation, or a recipe in the same conversation. " +
+  "No new interaction model to learn, no specialized tool to find."
+
+export default function Level5() {
+  const navigate = useNavigate()
+  const notifyArtifactReady = useArtifactReady()
+  const setContinue = useSetContinue()
+
+  // Guard: Level 4 must be complete before playing Level 5.
+  // (Level 4 is a stub, so isLevelComplete(4) will return false in production.
+  //  For development, we bypass the guard so we can test Level 5 directly.)
+  useEffect(() => {
+    // Uncomment when Level 4 is implemented:
+    // if (!isLevelComplete(4)) { navigate('/level/4') }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [screen, setScreen] = useState(() =>
+    isLevelComplete(5) ? 'booting' : 'intro'
+  )
+
+  // Objectives: independent (no sequential gating)
+  const [objectives, setObjectives] = useState({
+    startConversation: isLevelComplete(5),
+    regenerate: isLevelComplete(5),
+    rate: isLevelComplete(5),
+  })
+
+  const bootTimers = useRef([])
+  useEffect(() => () => bootTimers.current.forEach(clearTimeout), [])
+
+  // Notify SharedLayout when artifact is ready
+  useEffect(() => {
+    if (screen === 'playing') notifyArtifactReady()
+  }, [screen, notifyArtifactReady])
+
+  // Continue button wiring (canonical pattern)
+  const allComplete = objectives.startConversation && objectives.regenerate && objectives.rate
+  useEffect(() => {
+    if (screen === 'playing' && allComplete) {
+      setContinue(() => () => { completeLevel(5); setScreen('discovery') })
+    } else {
+      setContinue(null)
+    }
+  }, [screen, allComplete, setContinue])
+
+  // Boot sequence: 1000ms pause → 'playing' (input bar slides up via CSS)
+  const handleBeginExcavation = () => {
+    setScreen('booting')
+    bootTimers.current.push(
+      setTimeout(() => setScreen('playing'), 1000)
+    )
+  }
+
+  const completedIndices = [
+    objectives.startConversation,
+    objectives.regenerate,
+    objectives.rate,
+  ].reduce((acc, done, i) => (done ? [...acc, i] : acc), [])
+
+  return (
+    <>
+      {/* ── Museum overlays ── */}
+
+      {screen === 'intro' && (
+        <IntroModal
+          era="2023"
+          title="The Conversational Interface"
+          description="In late 2022, OpenAI released ChatGPT and 100 million people started talking to a machine within two months. Every previous interface required learning something new: commands, clicks, gestures, swipes. This one worked because you already knew how to type a sentence."
+          objectives={OBJECTIVES}
+          onBegin={handleBeginExcavation}
+        />
+      )}
+
+      {screen === 'discovery' && (
+        <DiscoveryCard
+          era="2023"
+          artifactName="Language as Interface"
+          description={DISCOVERY_DESCRIPTION}
+          nextUrl="/timeline"
+        />
+      )}
+
+      {/* ── Three-zone layout ── */}
+      <div className={styles.levelPage}>
+
+        {/* Zone 1 — mirrors Zone 3 height so artifact centers vertically */}
+        <div className={styles.topSpacer} />
+
+        {/* Zone 2 — chat panel fills this zone entirely */}
+        <div className={styles.artifactZone}>
+          {(screen === 'playing' || screen === 'booting') && (
+            <ChatPanel playing={screen === 'playing'} />
+          )}
+        </div>
+
+        {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+          <ObjectiveTracker
+            objectives={OBJECTIVES}
+            completedIndices={completedIndices}
+          />
+        </div>
+
+      </div>
+    </>
+  )
+}
