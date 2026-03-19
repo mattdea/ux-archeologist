@@ -9,14 +9,26 @@ import useCuratorChat from './useCuratorChat'
 export default function ChatPanel({ playing = false, onCompleteObjective }) {
   const { messages, sendMessage, regenerateLastResponse, isStreaming, turnCount } = useCuratorChat()
   const bottomRef = useRef(null)
+  const messageAreaRef = useRef(null)
   const toastTimerRef = useRef(null)
+  const pinnedRef = useRef(true) // true = auto-scroll; false = user scrolled up
 
   const [toastVisible, setToastVisible] = useState(false)
   const [toastKey, setToastKey] = useState(0)
 
-  // Auto-scroll to bottom on message updates (including during streaming)
+  // Re-pin when user scrolls back near the bottom
+  const handleScroll = useCallback(() => {
+    const el = messageAreaRef.current
+    if (!el) return
+    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
+    pinnedRef.current = distFromBottom < 80
+  }, [])
+
+  // Auto-scroll only when pinned to bottom
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (pinnedRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
   }, [messages])
 
   // Cleanup toast timer on unmount
@@ -30,6 +42,7 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
   }, [])
 
   const handleSend = useCallback((text) => {
+    pinnedRef.current = true // re-pin on new send so response is visible
     // Objective 1: first message sent
     if (messages.length === 0) {
       onCompleteObjective?.('startConversation')
@@ -70,7 +83,7 @@ export default function ChatPanel({ playing = false, onCompleteObjective }) {
        */}
       <div className={`${styles.messageAreaWrapper} ${isEmpty ? styles.messageAreaWrapperHidden : ''}`}>
         <div className={styles.topFade} aria-hidden="true" />
-        <div className={styles.messageArea}>
+        <div className={styles.messageArea} ref={messageAreaRef} onScroll={handleScroll}>
           <div className={styles.messageList}>
             {messages.map((msg, i) => {
               const isLast = i === lastAssistantIdx
