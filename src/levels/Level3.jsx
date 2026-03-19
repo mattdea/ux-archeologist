@@ -20,13 +20,14 @@ import useBezelScale from '../hooks/useBezelScale'
 import '../components/phone/phone-theme.css'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import unlockSoundSrc from '../../assets/phone/unlock.mov'
+import lockSoundSrc from '../../assets/phone/lock.mp3'
+import IntroModal from '../shared/museum-ui/IntroModal'
 
 function playSound(src) {
   const audio = new Audio(src)
   audio.volume = 0.5
   audio.play().catch(() => {})
 }
-import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
@@ -226,7 +227,8 @@ export default function Level3() {
   }, [completeObjective])
 
   const handleLock = useCallback(() => {
-    if (museumScreen !== 'playing') return
+    if (museumScreen !== 'playing' || phonePower !== 'on') return
+    playSound(lockSoundSrc)
     unlockTimers.current.forEach(clearTimeout)
     unlockTimers.current = []
     appTimers.current.forEach(clearTimeout)
