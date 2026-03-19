@@ -31,15 +31,15 @@ export function isLevelComplete(level) {
 }
 
 /**
- * Returns the next level number the player should play (0–4).
- * Returns 5 if all five levels are complete.
+ * Returns the next level number the player should play (0–5).
+ * Returns 6 if all six levels are complete.
  */
 export function getCurrentLevel() {
   const { completedLevels } = load()
-  for (let i = 0; i <= 4; i++) {
+  for (let i = 0; i <= 5; i++) {
     if (!completedLevels.includes(i)) return i
   }
-  return 5
+  return 6
 }
 
 /** Add a collected artifact. Idempotent by artifact name. */

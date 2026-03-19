@@ -9,6 +9,7 @@ const ENTRIES = [
   { level: 2, year: '1995', title: 'The Hypertext Web',    artifact: 'Hyperlink Navigation',            path: '/level/2' },
   { level: 3, year: '2007', title: 'Touch Arrives',        artifact: 'Direct Touch Interaction',        path: '/level/3' },
   { level: 4, year: '2015', title: 'The Infinite Feed',    artifact: 'Attention Economy Interfaces',    path: '/level/4' },
+  { level: 5, year: '2023', title: 'The Conversational Interface', artifact: 'Language as Interface', path: '/level/5' },
 ]
 
 export default function Timeline() {
@@ -19,7 +20,9 @@ export default function Timeline() {
     <div className={styles.timeline}>
       {ENTRIES.map((entry, i) => {
         const complete = isLevelComplete(entry.level)
-        const active   = !complete && entry.level === currentLvl
+        // Level 4 is an unimplemented stub — treat Level 5 as active whenever
+        // Level 3 is done (currentLvl >= 4), so the player isn't permanently blocked.
+        const active   = !complete && (entry.level === currentLvl || (entry.level === 5 && currentLvl === 4))
         const locked   = !complete && !active
         const delay    = `${i * 150}ms`
 
