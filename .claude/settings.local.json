@@ -10,7 +10,8 @@
       "Bash(test -f src/App.css)",
       "Bash(test -f src/index.css)",
       "Bash(test -d .git)",
-      "Bash(npm test)"
+      "Bash(npm test)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
