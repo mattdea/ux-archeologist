@@ -41,6 +41,9 @@
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.6;
+  /* Reserve one line of height even when content is empty string (thinking→text swap).
+   * 15px × 1.6 = 24px = exact height of .thinking, so container never collapses. */
+  min-height: calc(15px * 1.6);
   word-break: break-word;
 }
 
