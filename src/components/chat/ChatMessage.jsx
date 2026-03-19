@@ -12,7 +12,16 @@ function ThinkingIndicator() {
   )
 }
 
-export default function ChatMessage({ role, content, streaming = false, showActions = false }) {
+export default function ChatMessage({
+  role,
+  content,
+  streaming = false,
+  showActions = false,
+  onCopy,
+  onThumbsUp,
+  onThumbsDown,
+  onRegenerate,
+}) {
   if (role === 'user') {
     return (
       <div className={`${styles.message} ${styles.user}`}>
@@ -21,7 +30,6 @@ export default function ChatMessage({ role, content, streaming = false, showActi
     )
   }
 
-  // content === null means still in thinking phase
   const isThinking = content === null
 
   return (
@@ -30,7 +38,16 @@ export default function ChatMessage({ role, content, streaming = false, showActi
         ? <ThinkingIndicator />
         : <div className={styles.assistantContent}>{content}</div>
       }
-      {showActions && !streaming && !isThinking && <ActionIcons />}
+      {showActions && !streaming && !isThinking && (
+        <ActionIcons
+          content={content}
+          onCopy={onCopy}
+          onThumbsUp={onThumbsUp}
+          onThumbsDown={onThumbsDown}
+          onRegenerate={onRegenerate}
+          disabled={streaming}
+        />
+      )}
     </div>
   )
 }

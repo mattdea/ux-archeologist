@@ -5,7 +5,7 @@
 //
 // Container: full-width chat panel — no device, no bezel, no chrome.
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './Level5.module.css'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -27,29 +27,31 @@ const DISCOVERY_DESCRIPTION =
   "You could ask for code, a summary, a translation, or a recipe in the same conversation. " +
   "No new interaction model to learn, no specialized tool to find."
 
+const ALREADY_DONE = isLevelComplete(5)
+
 export default function Level5() {
   const navigate = useNavigate()
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
-  // Guard: Level 4 must be complete before playing Level 5.
-  // (Level 4 is a stub, so isLevelComplete(4) will return false in production.
-  //  For development, we bypass the guard so we can test Level 5 directly.)
-  useEffect(() => {
-    // Uncomment when Level 4 is implemented:
-    // if (!isLevelComplete(4)) { navigate('/level/4') }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Guard: Level 4 must be complete. Bypassed while Level 4 is a stub.
+  // useEffect(() => { if (!isLevelComplete(4)) navigate('/level/4') }, [])
 
-  const [screen, setScreen] = useState(() =>
-    isLevelComplete(5) ? 'booting' : 'intro'
-  )
+  const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
 
-  // Objectives: independent (no sequential gating)
+  // Objectives: independent (no sequential gating), keyed by name
   const [objectives, setObjectives] = useState({
-    startConversation: isLevelComplete(5),
-    regenerate: isLevelComplete(5),
-    rate: isLevelComplete(5),
+    startConversation: ALREADY_DONE,
+    regenerateResponse: ALREADY_DONE,
+    rateResponse: ALREADY_DONE,
   })
+
+  const completeObjective = useCallback((key) => {
+    setObjectives(prev => {
+      if (prev[key]) return prev
+      return { ...prev, [key]: true }
+    })
+  }, [])
 
   const bootTimers = useRef([])
   useEffect(() => () => bootTimers.current.forEach(clearTimeout), [])
@@ -59,8 +61,8 @@ export default function Level5() {
     if (screen === 'playing') notifyArtifactReady()
   }, [screen, notifyArtifactReady])
 
-  // Continue button wiring (canonical pattern)
-  const allComplete = objectives.startConversation && objectives.regenerate && objectives.rate
+  // Continue button wiring (canonical pattern from CLAUDE.md)
+  const allComplete = objectives.startConversation && objectives.regenerateResponse && objectives.rateResponse
   useEffect(() => {
     if (screen === 'playing' && allComplete) {
       setContinue(() => () => { completeLevel(5); setScreen('discovery') })
@@ -69,7 +71,7 @@ export default function Level5() {
     }
   }, [screen, allComplete, setContinue])
 
-  // Boot sequence: 1000ms pause → 'playing' (input bar slides up via CSS)
+  // Boot sequence: 1000ms pause → 'playing' (input bar slides up via CSS keyframe)
   const handleBeginExcavation = () => {
     setScreen('booting')
     bootTimers.current.push(
@@ -79,8 +81,8 @@ export default function Level5() {
 
   const completedIndices = [
     objectives.startConversation,
-    objectives.regenerate,
-    objectives.rate,
+    objectives.regenerateResponse,
+    objectives.rateResponse,
   ].reduce((acc, done, i) => (done ? [...acc, i] : acc), [])
 
   return (
@@ -115,7 +117,10 @@ export default function Level5() {
         {/* Zone 2 — chat panel fills this zone entirely */}
         <div className={styles.artifactZone}>
           {(screen === 'playing' || screen === 'booting') && (
-            <ChatPanel playing={screen === 'playing'} />
+            <ChatPanel
+              playing={screen === 'playing'}
+              onCompleteObjective={completeObjective}
+            />
           )}
         </div>
 

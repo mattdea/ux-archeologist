@@ -1,0 +1,21 @@
+/* src/components/chat/Toast.module.css */
+
+.toast {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #888;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: toastShow 2s ease forwards;
+}
+
+@keyframes toastShow {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}

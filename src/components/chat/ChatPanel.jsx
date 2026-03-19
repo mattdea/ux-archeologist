@@ -1,40 +1,77 @@
 // src/components/chat/ChatPanel.jsx
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import styles from './ChatPanel.module.css'
 import ChatMessage from './ChatMessage'
 import ChatInput from './ChatInput'
 import SuggestionChips, { getChipsForTurn } from './SuggestionChips'
+import Toast from './Toast'
 import useCuratorChat from './useCuratorChat'
 
-export default function ChatPanel({ playing = false }) {
-  const { messages, sendMessage, isStreaming, turnCount } = useCuratorChat()
+export default function ChatPanel({ playing = false, onCompleteObjective }) {
+  const { messages, sendMessage, regenerateLastResponse, isStreaming, turnCount } = useCuratorChat()
   const bottomRef = useRef(null)
+  const toastTimerRef = useRef(null)
 
-  // Auto-scroll to bottom whenever messages update or streaming advances
+  const [toastVisible, setToastVisible] = useState(false)
+  const [toastKey, setToastKey] = useState(0)
+
+  // Auto-scroll to bottom on message updates
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // Cleanup toast timer on unmount
+  useEffect(() => () => clearTimeout(toastTimerRef.current), [])
+
+  const showToast = useCallback(() => {
+    clearTimeout(toastTimerRef.current)
+    setToastKey(k => k + 1)
+    setToastVisible(true)
+    toastTimerRef.current = setTimeout(() => setToastVisible(false), 2000)
+  }, [])
+
+  const handleSend = useCallback((text) => {
+    // Objective 1: first message sent
+    if (messages.length === 0) {
+      onCompleteObjective?.('startConversation')
+    }
+    sendMessage(text)
+  }, [messages.length, sendMessage, onCompleteObjective])
+
+  const handleRegenerate = useCallback(() => {
+    onCompleteObjective?.('regenerateResponse')
+    regenerateLastResponse()
+  }, [regenerateLastResponse, onCompleteObjective])
+
+  const handleRate = useCallback(() => {
+    onCompleteObjective?.('rateResponse')
+    showToast()
+  }, [onCompleteObjective, showToast])
+
   const isEmpty = messages.length === 0
   const chips = getChipsForTurn(turnCount)
-
-  // Show chips: only when not streaming and the panel is playing
   const showChips = playing && !isStreaming
+
+  // Last assistant message index (for wiring regenerate only on the last one)
+  const lastAssistantIdx = messages.reduce((acc, m, i) => m.role === 'assistant' ? i : acc, -1)
 
   return (
     <div className={`${styles.panel} ${isEmpty ? styles.panelEmpty : ''}`}>
       <div className={styles.messageArea}>
         <div className={styles.messageList}>
           {messages.map((msg, i) => {
-            const isLastAssistant = msg.role === 'assistant' &&
-              i === messages.length - 1
+            const isLast = i === lastAssistantIdx
             return (
               <ChatMessage
                 key={msg.id}
                 role={msg.role}
                 content={msg.content}
                 streaming={msg.streaming}
-                showActions={isLastAssistant}
+                showActions={msg.role === 'assistant' && isLast}
+                onCopy={() => {}}
+                onThumbsUp={handleRate}
+                onThumbsDown={handleRate}
+                onRegenerate={isLast ? handleRegenerate : undefined}
               />
             )
           })}
@@ -47,17 +84,19 @@ export default function ChatPanel({ playing = false }) {
           <>
             <ChatInput
               autoFocus={playing}
-              onSend={sendMessage}
+              onSend={handleSend}
               disabled={isStreaming}
             />
             <SuggestionChips
               chips={chips}
-              onChipClick={sendMessage}
+              onChipClick={handleSend}
               visible={showChips}
             />
           </>
         )}
       </div>
+
+      <Toast visible={toastVisible} toastKey={toastKey} />
     </div>
   )
 }

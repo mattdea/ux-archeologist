@@ -8,6 +8,7 @@
   height: 100%;
   background: #111;
   overflow: hidden;
+  position: relative;
 }
 
 /* Scrollable message area — fills remaining space */

@@ -43,7 +43,7 @@ export default function useCuratorChat() {
   const streamIntervalRef = useRef(null)
   const thinkingTimerRef = useRef(null)
 
-  // Clean up any running stream/timers
+  // Cancel any running stream or pending thinking timer
   const cancelStream = useCallback(() => {
     if (streamIntervalRef.current) {
       clearInterval(streamIntervalRef.current)
@@ -60,8 +60,6 @@ export default function useCuratorChat() {
     cancelStream()
 
     const userMsg = { id: makeId(), role: 'user', content: text.trim(), streaming: false }
-
-    // Thinking placeholder — content=null signals the ThinkingIndicator
     const thinkingId = makeId()
     const thinkingMsg = { id: thinkingId, role: 'assistant', content: null, streaming: true }
 
@@ -72,13 +70,11 @@ export default function useCuratorChat() {
     const assistantId = makeId()
 
     thinkingTimerRef.current = setTimeout(() => {
-      // Replace thinking placeholder with the streaming message
       setMessages(prev => prev.map(msg =>
         msg.id === thinkingId
           ? { ...msg, id: assistantId, content: '', streaming: true }
           : msg
       ))
-
       simulateStream(responseText, assistantId, setMessages, streamIntervalRef, () => {
         setIsStreaming(false)
         setTurnCount(c => c + 1)
@@ -86,40 +82,36 @@ export default function useCuratorChat() {
     }, THINKING_DELAY_MS)
   }, [isStreaming, cancelStream])
 
+  // Regenerate: computed entirely outside setState to avoid side effects in updaters
   const regenerateLastResponse = useCallback(() => {
     if (isStreaming) return
     cancelStream()
 
-    // Find the last assistant message
-    setMessages(prev => {
-      const lastAssistantIdx = [...prev].reverse().findIndex(m => m.role === 'assistant')
-      if (lastAssistantIdx === -1) return prev
-      const idx = prev.length - 1 - lastAssistantIdx
+    // Find last assistant message + preceding user message from current state
+    const lastAssistantIdx = [...messages].reverse().findIndex(m => m.role === 'assistant')
+    if (lastAssistantIdx === -1) return
+    const idx = messages.length - 1 - lastAssistantIdx
+    const lastUserMsg = [...messages].slice(0, idx).reverse().find(m => m.role === 'user')
+    const oldContent = messages[idx].content
+    const newText = getFallbackResponse(lastUserMsg?.content ?? '', oldContent)
+    const newId = makeId()
 
-      // Get the last user message to use for keyword matching
-      const lastUserMsg = [...prev].slice(0, idx).reverse().find(m => m.role === 'user')
-      const oldContent = prev[idx].content
-      const newText = getFallbackResponse(lastUserMsg?.content ?? '', oldContent)
-      const newId = makeId()
+    // Reset the message to thinking state
+    setMessages(prev => prev.map((msg, i) =>
+      i === idx ? { ...msg, id: newId, content: null, streaming: true } : msg
+    ))
+    setIsStreaming(true)
 
-      const updated = prev.map((msg, i) =>
-        i === idx ? { ...msg, id: newId, content: null, streaming: true } : msg
-      )
-
-      // Kick off streaming after state settles
-      setTimeout(() => {
-        setMessages(curr => curr.map(msg =>
-          msg.id === newId ? { ...msg, content: '', streaming: true } : msg
-        ))
-        setIsStreaming(true)
-        simulateStream(newText, newId, setMessages, streamIntervalRef, () => {
-          setIsStreaming(false)
-        })
-      }, THINKING_DELAY_MS)
-
-      return updated
-    })
-  }, [isStreaming, cancelStream])
+    // After thinking delay, start streaming
+    thinkingTimerRef.current = setTimeout(() => {
+      setMessages(curr => curr.map(msg =>
+        msg.id === newId ? { ...msg, content: '', streaming: true } : msg
+      ))
+      simulateStream(newText, newId, setMessages, streamIntervalRef, () => {
+        setIsStreaming(false)
+      })
+    }, THINKING_DELAY_MS)
+  }, [isStreaming, cancelStream, messages])
 
   return {
     messages,
