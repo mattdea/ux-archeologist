@@ -1,404 +1,492 @@
-# UX Archaeologist - Design Specification
+# UX Archaeologist — Design Specification
 
 ## Overview
 
 UX Archaeologist is an interactive museum experience where the player excavates digital artifacts from different eras of computing. Each level recreates a historically authentic interface that the player explores and interacts with, uncovering key UX innovations along the way.
 
-**Format:** Multi-page static site (HTML/CSS/JS)
-**Levels:** 4 playable levels + 1 reflective epilogue
-**Duration:** 5-7 minutes total, 60-90 seconds per level
-**Audience:** Dual - works as a portfolio case study and a standalone shareable experience
+**Stack:** React + Vite SPA, CSS Modules
+**Levels:** 6 playable levels (0–5)
+**Duration:** 5–8 minutes total, ~60–90 seconds per level
+**Audience:** Dual — works as a portfolio case study and a standalone shareable experience
+
+---
+
+## Routes
+
+```
+/               → TitleScreen (museum entrance)
+/timeline       → Timeline / progression map
+/level/0        → Level 0 — 1971 Unix Terminal
+/level/1        → Level 1 — 1984 Macintosh Desktop
+/level/2        → Level 2 — 1995 Netscape Web
+/level/3        → Level 3 — 2007 iPhone
+/level/4        → Level 4 — 2015 Social Feed
+/level/5        → Level 5 — 2023 AI Interface
+/collection     → Full artifact collection / shareable finale
+```
+
+Each level guards itself: if `isLevelComplete(N-1)` is false, redirect to `/level/N-1`. The `/collection` page is always accessible.
 
 ---
 
 ## Experience Architecture
 
 ### Progression
-Linear: Level 1 → Level 2 → Level 3 → Level 4 → Epilogue → Collection
+Linear: Level 0 → 1 → 2 → 3 → 4 → 5 → Timeline → Collection
 
-### Per-Level Flow (3 moments per level)
-1. **Arrive** - Intro modal overlays the artifact (museum layer)
-2. **Explore** - Player interacts with the artifact, completes objectives
-3. **Discover** - Discovery card animates in over the artifact, artifact counter increments, "Next excavation" button navigates to next level page
+### Per-Level Flow
+1. **Arrive** — IntroModal overlays the artifact (museum layer). Artifact is inert.
+2. **Boot** — Modal dismissed. Artifact boot/intro sequence plays (era-authentic). HUD hidden.
+3. **Explore** — Player interacts with the artifact, completes 3 objectives.
+4. **Discover** — Continue button appears. Player clicks → DiscoveryCard fades in. Artifact recorded. Player navigates to `/timeline`.
 
-### Routes
-- `/` - Title screen (museum entrance)
-- `/level/1` - 1984 Mac desktop
-- `/level/2` - 1995 Netscape web
-- `/level/3` - 2007 iPhone
-- `/level/4` - 2015 Social feed
-- `/collection` - Finale / full artifact timeline (also accessible after completion as shareable URL)
-
-### State Management
-- `localStorage` tracks: current level, completed levels, collected artifacts
-- Each level page checks state on load and redirects if prerequisites aren't met
-- `/collection` page is always accessible (shows what you've earned so far)
-- Reset button in collection view clears state and returns to title
+### Screen State Machine (every level)
+```
+'intro' → 'booting' → 'playing' → 'discovery'
+```
+- Level 2 has an additional `'loading'` state between 'intro' and 'booting' (simulates dial-up latency).
+- Level 3 uses `museumScreen` + `'artifact'` instead of `screen` + `'discovery'` (naming inconsistency — future levels should use `screen` + `'discovery'`).
 
 ---
 
 ## Two Design Systems
 
 ### Museum Layer (consistent across all levels)
-The curator's voice. Dark room background, HUD, intro/discovery modals, objective tracker, hint pills, and transitions. This layer is era-neutral and visually architectural.
+The curator's voice. Dark room background (#111), HUD, intro/discovery modals, objective tracker. Era-neutral and visually architectural.
 
 **Rules:**
 - Sharp corners (2px border-radius max) on all museum cards
 - System sans-serif for body text
 - Serif for level titles only
-- Monospace for dates and era labels
+- Monospace for era labels and dates
 - No era-specific fonts, ever
-- Dark translucent backgrounds for tracker and hints
-- White card backgrounds for modals and discovery cards
+- Dark translucent backgrounds: `rgba(0,0,0,0.85)` for tracker
+- White backgrounds for modals and discovery cards
 - Thin 2px black accent line at top of each modal card
-- Fade transitions only (no bounces, slides, or era-specific animations)
+- Fade transitions only (300ms, ease-in-out). No bounces, slides, or era-specific animations.
 - The museum is still. The artifact is alive.
 
 ### Artifact Layer (unique per level)
-The historical object. Everything inside the device container. Era-authentic fonts, colors, behaviors, and interaction patterns. Never contaminated by museum UI.
+The historical object. Everything inside the device container. Era-authentic fonts, colors, behaviors. Never contaminated by museum UI.
 
 **Rules:**
-- Each level gets a unique "display case" (device container) matching its era's hardware
+- Each level gets a unique device container matching its era's hardware
 - All typography, color, and behavior inside the container is period-authentic
 - No museum-layer elements render inside the device container
-- The artifact should feel like a real object someone could have used
+- The artifact should feel like something a real person could have used
 
 ---
 
 ## HUD Layout
 
-The HUD sits outside the device container in the dark museum space.
+Sits outside the device container in the dark museum space.
 
-| Position | Element | Behavior |
-|----------|---------|----------|
-| Top left | Era label + level title | `1984` (mono) + "The desktop arrives" (sans). Stays visible during gameplay. Subtle. |
-| Top right | Progress dots | 4 dots for 4 levels. Filled = complete, bright = current, empty = upcoming. No numbers. |
-| Bottom left | Artifact counter | "2 of 12 artifacts collected" - running count, grows across levels. |
-| Bottom right | Contextual hint | One-line nudge in a dark pill. Fades out once the action is taken. |
+| Position | Element | Notes |
+|----------|---------|-------|
+| Top left | Era label + level title | Mono year + sans title. Stays visible during play. |
+| Top right | Progress dots | One per level. Filled = complete, bright = current, empty = future. |
+| Bottom left | ObjectiveTracker | Slides up when `screen === 'playing'`. Hidden during boot. |
+| Bottom right | Continue button | Appears when all objectives complete. Wired via `useSetContinue`. |
 
 ---
 
-## Dialog System (4 Types)
+## Shared Components
 
-All dialogs are museum-layer elements. They share one visual language.
+```
+src/shared/museum-ui/
+  IntroModal.jsx       props: era, title, description, objectives[], onBegin
+  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl="/timeline"
+  ObjectiveTracker.jsx props: objectives[], completedIndices[]
 
-### 1. Level Intro Modal
-- White card, sharp corners (2px radius), 2px solid black accent line across top
-- Content: mono era label, serif level title, sans body text, divider, objectives list with empty checkboxes, "Begin excavation" button (full-width, black bg, white text)
-- Overlays the artifact with a dark scrim behind it
-- Identical styling regardless of which artifact is behind it
+src/shared/SharedLayout.jsx
+  Contexts: useArtifactReady(), useSetContinue(), useFadeNavigate()
 
-### 2. Objective Tracker
-- Dark translucent card (rgba black, backdrop blur)
-- Thin 1.5px accent line across top
-- Uppercase "OBJECTIVES" label in small muted text
-- Checklist items: unchecked = light text, checked = strikethrough + muted
-- "Continue" button (disabled until all complete, then becomes visible)
-- **Placement varies by level:**
-  - 1984: Bottom-left, overlaying the Mac screen
-  - 1995: Bottom-left, overlaying the browser viewport
-  - 2007: Below the phone frame, in the dark museum space (phone screen is too small to overlay)
-  - 2015: Bottom-left, overlaying the feed
+src/hooks/
+  useBezelScale.js        scales artifact bezel to fit viewport with top/bottom margins
+  useRubberBandScroll.js  iOS-style drag scroll: 0.3× rubber factor, cubic-bezier snap on release
 
-### 3. Discovery Card
-- White card, sharp corners, 2px black accent line at top
-- Content: "ARTIFACT DISCOVERED" label, large mono year, divider, artifact name (18px, 500 weight), educational description (13px, sans), "Next excavation" button
-- Animates in (fade) over the artifact after all objectives complete
-- Artifact counter in HUD increments when this card appears
+src/state/state.js
+  completeLevel(n), isLevelComplete(n), addArtifact({ name, era, description })
+  Backed by localStorage.
+```
 
-### 4. Contextual Hint Pill
-- Dark translucent pill (rounded, ~20px radius)
-- One-line italic text in muted color
-- Fades in when the player hasn't acted on the current objective for a few seconds
-- Fades out immediately when the player performs the relevant action
-- Examples: "Double-click to open", "Swipe left to see more", "Scroll down to continue"
+---
+
+## Three-Zone Layout (all levels)
+
+```
+Zone 1 — topSpacer    flex: 0 0 auto; height: var(--bottom-zone-height)
+Zone 2 — artifactZone flex: 1; centers the scaled bezel
+Zone 3 — bottomZone   padding: 16px 24px 24px; visibility: hidden until playing
+```
+
+`--bottom-zone-height: 180px` in each level's module.css. Never add `min-height` to `.bottomZone`.
+
+---
+
+## Dialog System
+
+### IntroModal
+White card, 2px black accent line, mono era label, serif title, sans body, objectives list, "Begin excavation" button (full-width black).
+
+### ObjectiveTracker
+Dark translucent card, "OBJECTIVES" label, checklist (unchecked = light, checked = strikethrough + muted). Slides up via `trackerSlideUp` keyframe when playing state begins.
+
+### DiscoveryCard
+White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artifact name, description, "Next excavation" button → `/timeline`.
 
 ---
 
 ## Container Progression
 
-The device container tells its own story: computing moved from physical objects to invisible infrastructure.
+Hardware presence decreases across the arc: physical terminal → monitor bezel → browser window → handheld device → no device → no device → pure conversation.
 
-### Level 1 - 1984: Beige CRT Monitor
-- Heavy beige plastic bezel with rounded corners
-- Black screen surround
-- Rainbow Apple logo (bottom left)
-- Green power LED (bottom right)
-- 620x415px screen area inside
-- Strongest physical presence of any level
-
-### Level 2 - 1995: Browser Window (Netscape)
-- No device bezel. The browser chrome IS the container
-- Blue title bar with window controls
-- Gray beveled toolbar: Back, Forward, Reload, Home buttons
-- Location bar with URL
-- N throbber icon (top right)
-- The shift from physical device to software window
-
-### Level 3 - 2007: Original iPhone
-- Black slab silhouette
-- Silver speaker grille at top
-- Physical home button with square icon at bottom
-- 320x480 aspect ratio screen
-- 2px dark border, rounded corners (36px)
-- The return of a physical device, but sleeker
-
-### Level 4 - 2015: No Device Frame
-- Floating app viewport with soft corners (12px radius)
-- Against the dark museum background directly
-- No bezel, no chrome, no hardware
-- Notifications and badges appear OUTSIDE the frame, breaking into the museum space
-- The hardware has disappeared entirely
-
-### Epilogue - 2025: Empty Screen
-- No container at all
-- Just text on the dark background with a blinking cursor
-- The progression endpoint: the interface has become invisible
+| Level | Era | Container |
+|-------|-----|-----------|
+| 0 | 1971 | Green-screen terminal bezel (780×540px) |
+| 1 | 1984 | Beige CRT monitor bezel (780×755px) |
+| 2 | 1995 | Browser chrome — no device bezel |
+| 3 | 2007 | iPhone silhouette (385×735px bezel, 320×480px screen) |
+| 4 | 2015 | Floating app viewport — no bezel |
+| 5 | 2023 | Chat window — no device, no chrome |
 
 ---
 
 ## Level Details
 
-### Level 1: 1984 - The Desktop Arrives
+---
+
+### Level 0: 1971 — The Terminal Arrives
+**Status: Complete**
+
+**Artifact:** Unix terminal session
+**Discovery:** Command-Response Interaction
+**Container:** `src/components/terminal/` — TerminalBezel + TerminalScreen; 780×540px
+**Route:** `/level/0`
+
+**IntroModal:**
+- Era: `1971`
+- Title: `The Terminal Arrives`
+- Description: "Before icons, windows, or the web, there was a conversation. A researcher sat down at a terminal, typed a command, and waited. The machine replied. This was computing at its most direct — and its most demanding."
+
+**Visual Palette:**
+- Black screen, green phosphor text
+- Monospace font throughout
+- Blinking cursor
+
+**Objectives (sequential):**
+1. Read the notes file
+2. Check your messages
+3. Look up a command in the manual
+
+**Discovery Card:**
+- Artifact: `Command-Response Interaction`
+- Text: "Before icons and touchscreens, computing required negotiation. You typed a precise request. The machine responded. Every modern interface — every tap, swipe, and voice command — is still a variation on this conversation. You just had it yourself."
+
+---
+
+### Level 1: 1984 — The Desktop Arrives
+**Status: Complete**
 
 **Artifact:** Macintosh System 1 desktop
 **Discovery:** Direct Manipulation
-**Container:** Beige CRT monitor bezel
+**Container:** `MonitorBezel.jsx` — beige CRT SVG; 780×755px, 620×415px screen
+**Route:** `/level/1`
+
+**IntroModal:**
+- Era: `1984`
+- Title: `The Desktop Arrives`
+- Description: "You're looking at the original Macintosh desktop from 1984. Explore the interface and complete the objectives to discover what made it revolutionary."
 
 **Visual Palette:**
-- Pure 1-bit: black and white only inside the screen
+- Pure 1-bit: black and white only inside screen
 - Checkered desktop pattern
-- Chicago monospace font for all UI text
+- Chicago monospace font
 - Striped window title bars
-- Dashed drag outlines at ~10fps (authentic to 8MHz 68000)
+- Dashed drag outlines (~10fps, authentic to 8MHz 68000)
 
 **Interactive Elements:**
-- Notes icon (double-click to open scrollable text window)
+- Documents folder icon (double-click to open text window)
 - Projects folder icon (draggable to Trash)
 - Trash icon (drop target, highlights on hover)
-- Menu bar: File menu with New Folder / Open / Close / About This System
-- Windows: draggable by title bar with laggy outline effect, clamped to screen bounds
+- Menu bar: File menu (New Folder, Open, Close, About This System)
+- Windows: draggable by title bar with laggy outline, clamped to screen bounds
 
-**Objectives:**
-1. Open the Notes file (double-click) - teaches direct manipulation
-2. Drag Projects folder to Trash - teaches desktop metaphor
-3. Use the File menu - teaches persistent menu bar
+**Objectives (sequential):**
+1. Find the document on this computer
+2. Delete the Projects folder
+3. Discover what commands are available
 
-**In-Artifact Content (Notes file):**
-Era-authentic journal entry from a first-time Mac user, not a retrospective essay. Example tone: "Jan 25, 1984 - Finally got the Macintosh set up on my desk today. Susan showed me how the mouse works..."
-
-**Discovery Card Text:**
-"Instead of typing abstract commands, users could act directly on visible objects: open folders, move files, and choose commands from menus. The Macintosh proved that interfaces could mirror physical intuition. You just did it yourself."
+**Discovery Card:**
+- Artifact: `Direct Manipulation`
+- Text: "Before 1984, using a computer meant typing commands into a blank screen. The Macintosh let you point at things, drag them around, and open them with a click. You didn't need to learn the computer's language. It learned yours."
 
 ---
 
-### Level 2: 1995 - The Hypertext Web
+### Level 2: 1995 — The Hypertext Web
+**Status: Complete**
 
 **Artifact:** Academic homepage viewed in Netscape Navigator
 **Discovery:** Hyperlink Navigation
-**Container:** Netscape browser chrome (no device bezel)
+**Container:** `src/components/web/BrowserChrome.jsx` — no device bezel; 700×520px
+**Route:** `/level/2`
+
+**IntroModal:**
+- Era: `1995`
+- Title: `The Hypertext Web`
+- Description: "Information wasn't something you searched for. It was something you followed, one link at a time."
 
 **Visual Palette:**
-- Teal/dark blue sidebar, white main content area
-- Times New Roman / serif body text
-- Blue underlined links (#0000EE)
-- Comic Sans or Courier for banners
-- Beveled 3D button chrome (outset borders)
-- Animated marquee text
-- "Under Construction" badges
-- Visitor counter
+- Gray beveled browser chrome (outset borders, 3D button effect)
+- White page content area
+- Times New Roman body text, blue underlined links (#0000EE)
+- Comic Sans / Courier for banners
+- Animated marquee, "Under Construction" badges, visitor counter
+
+**Pages (implemented):**
+- `yahoo` — Yahoo! directory homepage
+- `yahoo-computers` — Yahoo! Computers and Internet category
+- `valley` — Valley Computer Repair & Sales
+- `archive` — The Vintage Computer Archive (contains "A Brief History of the Web")
 
 **Interactive Elements:**
-- Sidebar navigation links (clickable, navigate between 2-3 pages)
-- Back/Forward buttons in toolbar (functional)
-- Inline text links
-- Guestbook sign form (non-functional, era flavor)
-- Blinking "NEW!" text
+- All sidebar/inline links navigate between pages
+- Back / Forward buttons in toolbar (functional)
+- 500ms load delay simulating dial-up
 
-**Objectives:**
-1. Click a link to navigate to another page
-2. Use the Back button to return
-3. Find Dr. Sato's research paper (requires navigating across 2 pages)
+**Objectives (sequential):**
+1. Navigate to a new page
+2. Return to a previous page
+3. Find "A Brief History of the Web"
 
-**In-Artifact Content:**
-Dr. Sato's academic homepage about UX history. This IS the period-authentic content - a real-feeling 90s academic site that happens to be about interface history. The "research paper" contains a plausible abstract.
-
-**Discovery Card Text:**
-"Instead of searching for information or requesting it from a system, users could follow connections between documents. The web made knowledge spatial: not a destination, but a path you chose to walk."
+**Discovery Card:**
+- Artifact: `Hyperlink Navigation`
+- Text: "The early web wasn't searched. It was browsed. Every page linked to other pages, and finding what you needed meant following a trail of connections that other people had made."
 
 ---
 
-### Level 3: 2007 - Touch Arrives
+### Level 3: 2007 — Touch Arrives
+**Status: Complete**
 
 **Artifact:** Original iPhone interface
 **Discovery:** Direct Touch Interaction
-**Container:** iPhone silhouette (black slab, home button) — `assets/iphone.svg`, rendered at 385×735px
+**Container:** `src/components/phone/PhoneFrame.jsx` — `assets/iphone.svg` at 385×735px; screen slot 320×480px
+**Route:** `/level/3`
+
+**IntroModal:**
+- Era: `2007`
+- Title: `Touch Arrives`
+- Description: "For thirty years, a layer of abstraction stood between people and their computers — a mouse, a cursor, a keyboard. Then the glass became the interface."
 
 **Visual Palette:**
 - Skeuomorphic icon gradients, glossy reflections
-- Rain-drop wallpaper on lock screen (`assets/ios-rain-wallpaper.jpg`)
-- Status bar: AT&T carrier, live time, 75% battery
-- Notes app: lined yellow paper texture, marker-style header font
-- Phone theme vars defined in `src/components/phone/phone-theme.css`
+- Rain-drop lock screen wallpaper (`assets/ios-rain-wallpaper.jpg`)
+- Live status bar: AT&T, real clock, 75% battery
+- Notes app: lined yellow paper, marker-style header font
+- Defined in `src/components/phone/phone-theme.css`
 
-**Interactive Elements (built):**
-- Lock screen with drag-to-unlock slider (sound: `assets/phone/unlock.mov`)
-- Sleep/wake button on top bezel — locks phone (sound: `assets/phone/lock.mp3`); tapping black screen wakes
-- Home screen: 2 pages, 12 icons + 4-app dock. Only Notes is interactive.
-- Swipe between home screen pages (page dots indicator)
-- Physical home button: returns from Notes to home screen
-- Notes app: list → detail slide transition, 3 era-authentic notes (2007 content)
-- Rubber-band scroll in note detail view (drag only, no wheel; iOS ease-out snap on release)
+**Interactive Elements:**
+- Lock screen: drag-to-unlock slider (plays `assets/phone/unlock.mov`)
+- Sleep/wake button (top bezel, 220×45px tap target): locks phone (plays `assets/phone/lock.mp3`)
+- Tapping black screen wakes phone; 1s pause + 450ms boot animation
+- Home screen: 2 swipeable pages, 12 icons + 4-app dock
+- Only Notes app is interactive (other icons are decorative)
+- Home button: returns to home screen from any app
+- Notes app: list → detail slide transition, rubber-band scroll in detail view
 
-**Phone hardware state machine (phonePower):** `'off' | 'booting' | 'on'`
-- Off: black screen, tap anywhere to wake
-- Booting: LockScreen animates in via keyframes (450ms)
-- On: fully interactive
+**Phone hardware state machine:**
+```
+phonePower: 'off' | 'booting' | 'on'
+```
+Nested inside the museum `'playing'` state.
+
+**Phone screen state machine:**
+```
+phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
+```
+
+**Notes content (3 notes, all 2007-authentic):**
+- "Party playlist - Saturday" — 2007 pop playlist, Ask Mike if he has speakers
+- "Book list" — reading list including Harry Potter 7 (July 21!!)
+- "Grocery list - 4th of July" — BBQ supplies
 
 **Objectives (3, independent — no sequential gating):**
 1. Slide to unlock
 2. Explore the Notes app (open any note)
 3. Swipe between screens
 
-**In-Artifact Notes Content:**
-- "Party playlist - Saturday" — 2007 pop playlist
-- "Book list" — reading list with Harry Potter 7 release note
-- "Grocery list - 4th of July" — BBQ supplies
-
-**Discovery Card Text:**
-"For the first time, the interface disappeared. No mouse, no cursor, no abstraction layer. You touched the thing itself. Your finger became the input device, and the screen became the object."
+**Discovery Card:**
+- Artifact: `Direct Touch Interaction`
+- Text: "For the first time, the interface disappeared. No mouse, no cursor, no abstraction layer. You touched the thing itself. Your finger became the input device, and the screen became the object."
 
 ---
 
-### Level 4: 2015 - The Infinite Feed
+### Level 4: 2015 — The Infinite Feed
+**Status: Stub (not yet implemented)**
 
 **Artifact:** Social media feed app (Instagram-like)
 **Discovery:** Attention Economy Interfaces
-**Container:** No device frame (floating viewport)
+**Container:** Floating app viewport, no device bezel (hardware has disappeared)
+**Route:** `/level/4`
+
+**IntroModal (planned):**
+- Era: `2015`
+- Title: `The Infinite Feed`
+- Description: "The interface stopped waiting for you. It started optimizing for your attention."
 
 **Visual Palette:**
 - Clean flat design, white backgrounds
-- Gradient story rings (Instagram-style)
+- Gradient story rings
 - Card-based post layout
-- Subtle shadows and rounded corners
-- Sans-serif typography throughout
+- Subtle shadows, rounded corners
 - Colorful photo placeholders
 
-**Interactive Elements:**
-- Scrollable feed with posts
+**Planned Interactive Elements:**
+- Scrollable feed (posts never end)
 - Story bar at top (visual only)
-- Notification toasts appearing OUTSIDE the app frame
-- Notification badge on the frame edge
+- Notification toasts appearing OUTSIDE the app frame, into museum space
+- Notification badge on frame edge
 - Sponsored posts blended into feed
-- "Target post" the player needs to find
-- Pull-to-refresh (optional)
+- Target post player must find
 
-**Objectives:**
+**Planned Objectives:**
 1. Scroll the feed to find a specific target post
 2. Dismiss 3 notification interruptions
-3. Notice the sponsored content insertion (or get tricked by it)
+3. Spot the sponsored content (or get fooled by it)
 
-**Key Mechanic:** Notifications appear outside the app frame, breaking the fourth wall into the museum HUD space. The feed is shuffled so the target post isn't where you'd expect. The player feels the manipulation firsthand.
+**Key Mechanic:** Notifications break into the museum HUD space — the fourth wall. Demonstrates that the interface now has its own agenda.
 
-**In-Artifact Content:**
-Generic social content. Posts from accounts like "interface_history" and "retro_computing." The target post could be something like a real-feeling social post: "TIL the first banner ad had a 44% click rate."
-
-**Discovery Card Text:**
-"The interface learned to want your attention. Algorithms decided what you saw. Notifications interrupted what you were doing. The scroll never ended. For the first time, the interface had its own goals, and they weren't yours."
+**Discovery Card (planned):**
+- Artifact: `Attention Economy Interface`
+- Text: "The interface learned to want your attention. Algorithms decided what you saw. Notifications interrupted what you were doing. The scroll never ended. For the first time, the interface had its own goals — and they weren't yours."
 
 ---
 
-### Epilogue: 2025 - What Comes Next?
+### Level 5: 2023 — The Conversational Interface
+**Status: Not yet implemented**
 
-**Not a playable level.** A reflective coda.
+**Artifact:** Large language model chat interface
+**Discovery:** Language as Interface
+**Container:** Minimal chat window — no device, no chrome, no hardware
+**Route:** `/level/5`
 
-The screen is empty except for a blinking cursor and a question:
+**IntroModal (planned):**
+- Era: `2023`
+- Title: `The Conversational Interface`
+- Description: "Every interface before this one required you to learn a new language — commands, clicks, swipes, taps. This one claims to already speak yours."
 
-> "What patterns are you living inside right now that you can't see yet?"
+**Visual Palette:**
+- Clean white/light gray chat window
+- Two bubble columns: user (right, muted blue) and AI (left, white with light border)
+- Subtle typing indicator animation
+- Minimal chrome — just an input bar and send button
+- No era-specific fonts; clean system sans-serif (this IS the era we're in)
 
-Short supporting text: "Every interface in this exhibit was once invisible. The desktop, the link, the swipe, the feed. They shaped how people thought before anyone noticed they were being shaped."
+**Container:**
+- Floating chat window in the museum dark space
+- No device frame — the interface is pure software, pure conversation
+- Rounded corners (12px), subtle drop shadow
 
-"View your collection" button transitions to the full collection/timeline view.
+**Planned Interactive Elements:**
+- Text input (player types real messages)
+- Pre-scripted AI responses that react to keywords/intent
+- "Thinking" typing indicator between messages
+- At least one moment where the AI confidently states something wrong
+- At least one moment where the AI reveals it can't do something (knowledge cutoff, refusal, etc.)
+- A "surprising capability" moment — something the player didn't expect the AI to do
 
-**Portfolio Signal:** Shows the player (and potential employers) that you think critically about design futures, not just design history.
+**Planned Objectives:**
+1. Ask the AI a question and get a response
+2. Discover something the AI doesn't know or gets wrong
+3. Find something the AI can do that surprises you
 
----
+**Key Mechanic:** The conversation feels natural — until it doesn't. The player experiences firsthand both the power and the opacity of language model interfaces: you don't know what it knows, how it was trained, or whose values shaped its answers.
 
-## Content Strategy
-
-### In-Artifact Content: Option A + C
-Primary content inside each artifact should be era-authentic. It should feel like a real person's real content from that time period.
-
-Each level may include one "found document" that's a period-appropriate piece of writing about the technology itself:
-- 1984: Journal entry from a new Mac user
-- 1995: Academic homepage that happens to be about UX history
-- 2007: Mundane personal app content (grocery list, notes)
-- 2015: Social posts from design-adjacent accounts
-
-### Educational Content Placement
-- **During gameplay:** Minimal. The interactions teach through doing.
-- **Discovery cards:** 2-3 sentence synthesis of the key insight. Museum voice.
-- **Collection/timeline view:** Deeper historical context, hardware specs, connections to prior innovations. This is where the detailed essay content lives.
+**Discovery Card (planned):**
+- Artifact: `Language as Interface`
+- Text: "You didn't click, tap, or drag. You just talked. The machine talked back. But behind the fluency is a system you can't inspect — trained on text you didn't choose, optimized for goals you can't see. The most natural interface in history is also the least transparent."
 
 ---
 
 ## Typography Tokens
 
 ### Museum Layer
-- **Titles:** Serif, 22px, weight 400
-- **Era labels:** Monospace, 11px, color #999, letter-spacing 0.1em
-- **Body:** System sans-serif, 13px, color #555, line-height 1.7
-- **Objective labels:** Sans-serif, 10px, uppercase, letter-spacing 0.08em, color #999
-- **Objective items:** Sans-serif, 13px, color #333
-- **Hint pills:** Sans-serif, 11px, italic, color #999
+- **Era labels:** Monospace, 11px, #999, letter-spacing 0.1em
+- **Level titles:** Serif, 22px, weight 400
+- **Body text:** System sans-serif, 13px, #555, line-height 1.7
+- **Objective label:** Sans-serif, 10px, uppercase, letter-spacing 0.08em, #999
+- **Objective items:** Sans-serif, 13px, #333
 - **Buttons:** Sans-serif, 13px, letter-spacing 0.02em
 
-### Artifact Layer
-Each level has its own type stack. Never mix.
-- 1984: Chicago / Courier New monospace
-- 1995: Times New Roman (body), Courier New (code/URLs), Comic Sans (banners)
-- 2007: -apple-system / Helvetica Neue
-- 2015: System sans-serif (clean, modern)
+### Artifact Layer — Per Level
+| Level | Primary Font | Notes |
+|-------|-------------|-------|
+| 0 | Monospace (Courier/system) | Green phosphor, everything fixed-width |
+| 1 | Chicago / Courier New | 1-bit only, no anti-aliasing |
+| 2 | Times New Roman (body), Courier New (URLs), Comic Sans (banners) | |
+| 3 | -apple-system / Helvetica Neue | Defined in phone-theme.css |
+| 4 | System sans-serif | Clean, flat |
+| 5 | System sans-serif | Clean, minimal — this is the present |
 
 ---
 
 ## Color Tokens
 
 ### Museum Layer
-- Background: #111 (dark room)
-- Card backgrounds: #fff (modals), rgba(0,0,0,0.85) (tracker)
-- Accent line: #333 (2px, top of modals)
-- Primary text on white: #111
-- Secondary text on white: #555
-- Muted text on white: #999
-- Primary text on dark: #ccc
-- Secondary text on dark: #777
-- Muted text on dark: #444
-- Hint pill bg: rgba(0,0,0,0.75)
-- HUD text: #555 (labels), #999 (values)
-- Progress dots: #444 (border), #666 (filled/done), #fff (active)
-
-### Artifact Layer
-Each level defines its own palette. The museum layer never uses artifact colors and vice versa.
+| Token | Value |
+|-------|-------|
+| Background | `#111` |
+| Modal background | `#fff` |
+| Tracker background | `rgba(0,0,0,0.85)` |
+| Accent line | `#333` (2px) |
+| Primary text on white | `#111` |
+| Secondary text on white | `#555` |
+| Muted text on white | `#999` |
+| Primary text on dark | `#ccc` |
+| Secondary text on dark | `#777` |
+| Progress dot — done | `#666` |
+| Progress dot — active | `#fff` |
+| Progress dot — future | transparent + `#444` border |
 
 ---
 
 ## Animation Rules
 
 ### Museum Layer
-- Fade in/out only. Duration: 300ms. Easing: ease-in-out.
-- No bounces, slides, or era-specific animations.
-- Discovery card fades in over artifact.
-- Hint pill fades in after 5 seconds of inactivity, fades out on action.
+- Fade in/out only. 300ms, ease-in-out. No slides, bounces, or springs.
+- ObjectiveTracker: `trackerSlideUp` keyframe, 400ms, 200ms delay after playing state.
+- DiscoveryCard fades in over artifact on Continue click.
 
 ### Artifact Layer
-- Era-authentic animations only.
-- 1984: 10fps drag outlines (choppy, authentic to hardware)
-- 1995: No CSS animations. Static page. Blinking text via step-end keyframes.
-- 2007: Smooth iOS-style transitions:
-  - Boot: ~1s pause after Begin Excavation, then 450ms keyframe animation (panels fly in from off-screen)
-  - Unlock: 5-phase choreography — lock screen exits (300ms), black pause, dock fades in, icons fly in, done (800ms total)
-  - App open/close: scale from center dot (300ms ease-out / 250ms ease-in)
-  - Notes slide: translateX transition, 200ms ease-out
-  - Rubber-band scroll: linear drag with 0.3× damping past bounds; snap-back via `cubic-bezier(0.25, 0.46, 0.45, 0.94)` 300ms
-- 2015: Smooth scroll, notification slide-in from right
+Era-authentic only. Never use museum-layer easing inside the artifact.
+
+**Level 0 — 1971:**
+- Monospace text rendered character by character (typing animation)
+- Blinking cursor via step-end keyframes
+
+**Level 1 — 1984:**
+- ~10fps drag outlines (choppy, authentic to 8MHz 68000)
+- Instant window paint (no smooth transitions)
+
+**Level 2 — 1995:**
+- No CSS animations inside pages. Blinking text: step-end keyframes.
+- Page load: 500ms delay (simulated dial-up)
+- Browser Back/Forward: instant page swap
+
+**Level 3 — 2007:**
+- Boot: 1s pause → 450ms keyframe animation (clock slides down, slider slides up, wallpaper fades in)
+- Unlock choreography: 5-phase, 800ms total (lock exit → black → dock → icons → home)
+- App open: `scale(0.02) → scale(1)`, 300ms ease-out
+- App close: `scale(1) → scale(0.02)`, 250ms ease-in
+- Notes slide transition: translateX, 200ms ease-out
+- Rubber-band scroll: linear drag, 0.3× damping past bounds; `cubic-bezier(0.25, 0.46, 0.45, 0.94)` 300ms snap on release
+- Sound effects: `audio.volume = 0.5` for all sounds
+
+**Level 4 — 2015:**
+- Smooth scroll (planned)
+- Notification slide-in from right, into museum space
+
+**Level 5 — 2023:**
+- Typing indicator: 3-dot pulse animation
+- Message appear: subtle fade-up, 150ms
+- Input send: instant clear + message appended
