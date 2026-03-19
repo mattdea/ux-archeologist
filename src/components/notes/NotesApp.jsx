@@ -79,14 +79,15 @@ export const NOTES = [
   },
 ]
 
-export default function NotesApp() {
+export default function NotesApp({ onNoteOpen }) {
   const [notesScreen, setNotesScreen] = useState('list')
   const [selectedNoteId, setSelectedNoteId] = useState(null)
 
   const handleNoteSelect = useCallback((id) => {
     setSelectedNoteId(id)
     setNotesScreen('detail')
-  }, [])
+    onNoteOpen?.()
+  }, [onNoteOpen])
 
   const handleBack = useCallback(() => {
     setNotesScreen('list')

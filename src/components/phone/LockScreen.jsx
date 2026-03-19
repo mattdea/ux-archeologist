@@ -13,7 +13,7 @@ import StatusBar from './StatusBar'
 import wallpaperSrc from '../../../assets/ios-rain-wallpaper.jpg'
 import { useCurrentTime, formatLockTime, formatLockDate } from '../../hooks/useCurrentTime'
 
-export default function LockScreen({ onUnlock, exiting = false }) {
+export default function LockScreen({ onUnlock, exiting = false, bootPhase = null }) {
   const now = useCurrentTime()
   const trackRef = useRef(null)
   const knobRef  = useRef(null)
@@ -136,8 +136,12 @@ export default function LockScreen({ onUnlock, exiting = false }) {
     }
   }, [])
 
+  const bootCls = bootPhase === 'dark'    ? styles.bootDark
+               : bootPhase === 'entering' ? styles.bootEntering
+               : ''
+
   return (
-    <div className={`${styles.lockScreen} ${exiting ? styles.exiting : ''}`}>
+    <div className={`${styles.lockScreen} ${exiting ? styles.exiting : ''} ${bootCls}`}>
 
       {/* Full-bleed wallpaper (behind all content, z-index 0) */}
       <div className={styles.bg} aria-hidden="true">

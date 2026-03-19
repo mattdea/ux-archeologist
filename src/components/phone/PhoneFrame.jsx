@@ -13,7 +13,7 @@ import styles from './PhoneFrame.module.css'
 import TouchCursor from './TouchCursor'
 import iPhoneSvg from '../../../assets/iphone.svg'
 
-export default function PhoneFrame({ children, onHomePress }) {
+export default function PhoneFrame({ children, onHomePress, cursorEnabled = true }) {
   const frameRef = useRef(null)
 
   return (
@@ -42,7 +42,7 @@ export default function PhoneFrame({ children, onHomePress }) {
 
       {/* Touch cursor tracks the entire frame so it covers both the screen
           slot and the home button without flickering at the boundary */}
-      <TouchCursor containerRef={frameRef} />
+      {cursorEnabled && <TouchCursor containerRef={frameRef} />}
 
     </div>
   )

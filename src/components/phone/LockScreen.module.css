@@ -256,3 +256,34 @@
   opacity: 0;
   transition: transform 300ms ease-out, opacity 300ms ease-out;
 }
+
+/* ── Boot animation — phone powering on ───────────────────────────────────────
+ * bootDark: initial "off" state — content at off-screen positions, no transition
+ * bootEntering: animate to normal positions with transitions */
+
+.bootDark .bgWallpaper {
+  opacity: 0;
+}
+
+.bootDark .clockBand {
+  transform: translateY(-120%);
+}
+
+.bootDark .sliderBand {
+  transform: translateY(120%);
+}
+
+.bootEntering .bgWallpaper {
+  opacity: 1;
+  transition: opacity 400ms ease-out;
+}
+
+.bootEntering .clockBand {
+  transform: translateY(0);
+  transition: transform 400ms ease-out;
+}
+
+.bootEntering .sliderBand {
+  transform: translateY(0);
+  transition: transform 400ms ease-out;
+}
