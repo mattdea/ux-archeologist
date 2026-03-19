@@ -19,6 +19,13 @@ import NotesApp from '../components/notes/NotesApp'
 import useBezelScale from '../hooks/useBezelScale'
 import '../components/phone/phone-theme.css'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import unlockSoundSrc from '../../assets/phone/unlock.mov'
+
+function playSound(src) {
+  const audio = new Audio(src)
+  audio.volume = 0.5
+  audio.play().catch(() => {})
+}
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
@@ -137,6 +144,7 @@ export default function Level3() {
 
   // ── Unlock handler — triggers the 5-phase choreography ─────────────────
   const handleUnlock = useCallback(() => {
+    playSound(unlockSoundSrc)
     completeObjective('slideToUnlock')
     setPhoneScreen('unlocking')
     setUnlockPhase(1) // Phase 1: lock screen exit animations begin (CSS-driven)
