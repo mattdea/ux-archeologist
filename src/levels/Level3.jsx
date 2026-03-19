@@ -114,21 +114,17 @@ export default function Level3() {
     if (museumScreen === 'playing') notifyArtifactReady()
   }, [museumScreen, notifyArtifactReady])
 
-  // Level 3 transitions automatically (no HUD Continue button).
+  // Wire / unwire the HUD Continue button based on play state + completion.
+  const allComplete = objectives.slideToUnlock && objectives.exploreNotes && objectives.swipePage
   useEffect(() => {
-    setContinue(null)
-  }, [setContinue])
-
-  // ── All objectives complete → show discovery card after 600ms ────────────
-  useEffect(() => {
-    const allDone = objectives.slideToUnlock && objectives.exploreNotes && objectives.swipePage
-    if (allDone && museumScreen === 'playing') {
-      const timer = setTimeout(() => setMuseumScreen('artifact'), 600)
-      return () => clearTimeout(timer)
+    if (museumScreen === 'playing' && allComplete) {
+      setContinue(() => () => { completeLevel(3); setMuseumScreen('artifact') })
+    } else {
+      setContinue(null)
     }
-  }, [objectives, museumScreen])
+  }, [museumScreen, allComplete, setContinue])
 
-  // Record artifact + mark level complete when discovery card appears.
+  // Record artifact when discovery card appears.
   useEffect(() => {
     if (museumScreen === 'artifact') {
       addArtifact({
@@ -136,7 +132,6 @@ export default function Level3() {
         era: '2007',
         description: 'The moment computing became physical — touch removed the abstraction between person and machine.',
       })
-      completeLevel(3)
     }
   }, [museumScreen])
 
