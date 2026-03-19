@@ -42,14 +42,12 @@
   min-height: 0;
   position: relative;
   overflow: hidden;
-  opacity: 1;
-  transition: flex-grow 300ms ease-out, opacity 200ms ease-out;
+  transition: flex-grow 300ms ease-out;
 }
 
-/* Collapsed + invisible in empty state */
+/* Collapsed in empty state — no opacity trick, just height collapse */
 .messageAreaWrapperHidden {
   flex-grow: 0;
-  opacity: 0;
   pointer-events: none;
 }
 
@@ -75,7 +73,8 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  /* No justify-content: flex-end — that makes overflow inaccessible.
+     margin-top: auto on messageList handles bottom-anchoring instead. */
   padding: 32px 0 24px;
   scrollbar-width: none;
 }
@@ -88,7 +87,9 @@
 .messageList {
   width: 100%;
   max-width: 680px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto; /* pushes messages to bottom when short; allows scroll when long */
   padding: 0 24px;
 }
 
