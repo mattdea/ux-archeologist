@@ -10,7 +10,6 @@
 //   'intro' → 'booting' → 'playing' → 'artifact'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styles from './Level3.module.css'
 import PhoneFrame from '../components/phone/PhoneFrame'
 import LockScreen from '../components/phone/LockScreen'
@@ -47,25 +46,22 @@ const BEZEL_H = 735
 const BOTTOM_ZONE_H = 180
 
 const DISCOVERY_DESCRIPTION =
-  'For the first time, the interface disappeared. No mouse, no cursor, no abstraction layer. ' +
-  'You touched the thing itself. Your finger became the input device, and the screen became the object.'
+  'For thirty years, a layer of hardware stood between people and their software: a mouse, a keyboard, a stylus. ' +
+  'The iPhone removed all of it. You touched the object itself, moved it with your finger, and the screen responded. ' +
+  'The gap between intention and action had never been smaller.'
 
 export default function Level3() {
-  const navigate = useNavigate()
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
-  // Guard disabled until all levels are implemented.
-  // useEffect(() => { if (!isLevelComplete(2)) navigate('/level/2') }, [])
-
   // ── Museum screen state ──────────────────────────────────────────────────
-  const [museumScreen, setMuseumScreen] = useState('intro')
+  // Skip intro+boot and go directly to 'playing' on replay (level already complete).
+  const [museumScreen, setMuseumScreen] = useState(() => isLevelComplete(3) ? 'playing' : 'intro')
 
   // ── Objectives (independent — no sequential gating) ──────────────────────
-  const [objectives, setObjectives] = useState({
-    slideToUnlock: false,
-    exploreNotes: false,
-    swipePage: false,
+  const [objectives, setObjectives] = useState(() => {
+    const done = isLevelComplete(3)
+    return { slideToUnlock: done, exploreNotes: done, swipePage: done }
   })
 
   const completeObjective = useCallback((key) => {
@@ -77,14 +73,14 @@ export default function Level3() {
 
   // ── Phone screen state ──────────────────────────────────────────────────
   // 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
-  const [phoneScreen, setPhoneScreen] = useState('lock')
+  const [phoneScreen, setPhoneScreen] = useState(() => isLevelComplete(3) ? 'home' : 'lock')
   const [unlockPhase, setUnlockPhase] = useState(0)       // 0-5
   const [currentPage, setCurrentPage] = useState(0)       // home screen page index
   const [transitioning, setTransitioning] = useState(false)
   // Close animation: controls when dock/icons fly back in
   const [closeShowDock, setCloseShowDock] = useState(false)
   const [closeShowIcons, setCloseShowIcons] = useState(false)
-  const [phonePower, setPhonePower] = useState('off') // 'off' | 'booting' | 'on'
+  const [phonePower, setPhonePower] = useState(() => isLevelComplete(3) ? 'on' : 'off')
 
   // Timer refs for cleanup
   const unlockTimers = useRef([])
@@ -109,14 +105,14 @@ export default function Level3() {
   // LockScreen's bootPhase prop drives the CSS animation.
   const handleBeginExcavation = useCallback(() => {
     setMuseumScreen('booting')
-    // ~1s pause before boot animation starts, then 450ms for the animation itself
+    // brief pause before boot animation starts, then 450ms for the animation itself
     bootTimers.current.push(setTimeout(() => {
       setPhonePower('booting')
       bootTimers.current.push(setTimeout(() => {
         setMuseumScreen('playing')
         setPhonePower('on')
       }, 450))
-    }, 1000))
+    }, 300))
   }, [])
 
   // Notify SharedLayout when the artifact is ready for interaction.
@@ -138,9 +134,9 @@ export default function Level3() {
   useEffect(() => {
     if (museumScreen === 'artifact') {
       addArtifact({
-        name: 'Direct Touch Interaction',
+        name: 'Multi-Touch',
         era: '2007',
-        description: 'The moment computing became physical — touch removed the abstraction between person and machine.',
+        description: DISCOVERY_DESCRIPTION,
       })
     }
   }, [museumScreen])
@@ -277,7 +273,7 @@ export default function Level3() {
         <IntroModal
           era="2007"
           title="The Touchscreen"
-          description="For thirty years, a layer of abstraction stood between people and their computers — a mouse, a cursor, a keyboard. Then the glass became the interface."
+          description="This is the original iPhone. There's no stylus, no keyboard, no instruction manual. Just a glass screen and your finger."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}
         />
@@ -286,9 +282,9 @@ export default function Level3() {
       {museumScreen === 'artifact' && (
         <DiscoveryCard
           era="2007"
-          artifactName="Direct Touch Interaction"
+          artifactName="Multi-Touch"
           description={DISCOVERY_DESCRIPTION}
-          nextUrl="/timeline"
+          nextUrl="/level/4"
         />
       )}
 
