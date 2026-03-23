@@ -48,6 +48,13 @@
   z-index: 1;
 }
 
+/* ── Top block — wraps StatusBar + clockBand so they animate together ─────── */
+.topBlock {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 /* ── Clock band ─────────────────────────────────────────────────────────────
  * Figma 640px h:192 → 96px at 320px.
  * Gradient: rgba(0,0,0,0.35) 51.042% hard-stop rgba(0,0,0,0.5) 51.052%
@@ -265,7 +272,7 @@
   opacity: 0;
 }
 
-.bootDark .clockBand {
+.bootDark .topBlock {
   transform: translateY(-120%);
 }
 
@@ -277,7 +284,7 @@
   animation: bootFadeIn 400ms ease-out forwards;
 }
 
-.bootEntering .clockBand {
+.bootEntering .topBlock {
   animation: bootSlideDown 400ms ease-out forwards;
 }
 

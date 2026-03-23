@@ -149,14 +149,16 @@ export default function LockScreen({ onUnlock, exiting = false, bootPhase = null
         <img src={wallpaperSrc} className={styles.bgWallpaper} alt="" draggable={false} />
       </div>
 
-      {/* Status bar — always dark on lock screen */}
-      <StatusBar variant="dark" />
+      {/* ── Top block: status bar + clock slide in together on boot ──────── */}
+      <div className={styles.topBlock}>
+        <StatusBar variant="dark" />
 
       {/* ── Clock band ──────────────────────────────────────────────────── */}
       <div className={styles.clockBand}>
         <div className={styles.clockTime}>{formatLockTime(now)}</div>
         <div className={styles.clockDate}>{formatLockDate(now)}</div>
       </div>
+      </div>{/* end topBlock */}
 
       {/* ── Middle spacer ────────────────────────────────────────────────── */}
       <div className={styles.spacer} />
