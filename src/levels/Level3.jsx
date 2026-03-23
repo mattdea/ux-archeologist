@@ -175,7 +175,13 @@ export default function Level3() {
                       : phoneScreen === 'closing'   ? closeShowIcons
                       : true
 
+  const handleWake = useCallback(() => {
+    setPhonePower('booting')
+    bootTimers.current.push(setTimeout(() => setPhonePower('on'), 450))
+  }, [])
+
   const handleHomePress = useCallback(() => {
+    if (phonePower === 'off') { handleWake(); return }
     if (transitioning) return
     if (phoneScreen === 'home') {
       setCurrentPage(0)
@@ -198,7 +204,7 @@ export default function Level3() {
         setTransitioning(false)
       }, 400))
     }
-  }, [phoneScreen, transitioning])
+  }, [phoneScreen, transitioning, phonePower, handleWake])
 
   const handleAppOpen = useCallback((appId) => {
     if (transitioning || appId !== 'notes') return
@@ -222,7 +228,9 @@ export default function Level3() {
   }, [completeObjective])
 
   const handleLock = useCallback(() => {
-    if (museumScreen !== 'playing' || phonePower !== 'on') return
+    if (museumScreen !== 'playing') return
+    if (phonePower === 'off') { handleWake(); return }
+    if (phonePower !== 'on') return
     playSound(lockSoundSrc)
     unlockTimers.current.forEach(clearTimeout)
     unlockTimers.current = []
@@ -233,12 +241,7 @@ export default function Level3() {
     setUnlockPhase(0)
     setCurrentPage(0)
     setTransitioning(false)
-  }, [museumScreen, phonePower])
-
-  const handleWake = useCallback(() => {
-    setPhonePower('booting')
-    bootTimers.current.push(setTimeout(() => setPhonePower('on'), 450))
-  }, [])
+  }, [museumScreen, phonePower, handleWake])
 
   // ── Determine which screens to mount ───────────────────────────────────
   const showLock  = phonePower !== 'off' && (phoneScreen === 'lock' || (phoneScreen === 'unlocking' && unlockPhase < 3))
