@@ -19,9 +19,9 @@
 
 > **Note:** Level3 uses `museumScreen` (not `screen`) and calls the last state `'artifact'` instead of `'discovery'`. Level0/Level1 use `screen` and `'discovery'`. Prefer `screen` + `'discovery'` in future levels.
 
-**After completing a level, always return to the timeline:**
-- `DiscoveryCard nextUrl` is always `"/timeline"` — never `/level/N`.
-- The timeline marks the level complete and unlocks the next artifact.
+**After completing a level, navigate to the next level:**
+- `DiscoveryCard nextUrl` is `/level/N+1` (e.g. Level 0 → `/level/1`). The final level (Level 5) uses `/collection`.
+- The timeline is still accessible via the "Back to timeline" link in the HUD.
 
 **Boot sequence:**
 - Every level has a boot/intro sequence that plays after "Begin Excavation" is clicked.
@@ -83,7 +83,7 @@ function playSound(src) {
 - `src/levels/LevelN.jsx` — screen state machine, museum wiring, artifact composition
 - `src/levels/LevelN.module.css` — three-zone layout (topSpacer / artifactZone / bottomZone), mirrors existing levels exactly
 - `src/components/[artifact]/` — all artifact-layer components and hooks, self-contained
-- Gate the level in `LevelN.jsx`: redirect to `/level/N-1` if `isLevelComplete(N-1)` is false
+- Levels are not gated. All levels are accessible regardless of completion state.
 
 ## Phone-layer pattern (Level3 / future phone levels)
 

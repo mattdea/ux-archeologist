@@ -1,6 +1,5 @@
 // src/levels/Level1.jsx
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useBezelScale from '../hooks/useBezelScale'
@@ -30,16 +29,12 @@ const BEZEL_H = 755
 const BOTTOM_ZONE_H = 180
 
 export default function Level1() {
-  const navigate = useNavigate()
-
-  // Guard disabled until all levels are implemented.
-  // useEffect(() => { if (!isLevelComplete(0)) navigate('/level/0') }, [])
-
-  // Boot always plays on every mount/refresh.
-  // Skip intro only if it was already dismissed this browser session.
+  // Skip intro+boot and go directly to 'playing' on replay (level already complete).
+  // Skip intro only (boot still plays) if intro was dismissed this session but not yet finished.
   const [screen, setScreen] = useState(() => {
+    if (isLevelComplete(1)) return 'playing'
     const introSeen = sessionStorage.getItem('l1_intro_seen') === '1'
-    return (isLevelComplete(1) || introSeen) ? 'booting' : 'intro'
+    return introSeen ? 'booting' : 'intro'
   })
   // Restore objectives from this session, or all-complete if level is done.
   const [completedIndices, setCompletedIndices] = useState(() => {
@@ -93,7 +88,7 @@ export default function Level1() {
         <IntroModal
           era="1984"
           title="The Desktop"
-          description="You're looking at the original Macintosh desktop from 1984. Explore the interface and complete the objectives to discover what made it revolutionary."
+          description="This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find."
           objectives={OBJECTIVES}
           onBegin={() => { sessionStorage.setItem('l1_intro_seen', '1'); setScreen('booting') }}
         />
@@ -103,8 +98,8 @@ export default function Level1() {
         <DiscoveryCard
           era="1984"
           artifactName="Direct Manipulation"
-          description="Before 1984, using a computer meant typing commands into a blank screen. The Macintosh let you point at things, drag them around, and open them with a click. You didn't need to learn the computer's language. It learned yours."
-          nextUrl="/timeline"
+          description="Before this, using a computer meant memorizing commands and typing them precisely. The Macintosh replaced all of that with objects you could see and manipulate: folders, files, a trash can. Point at something, drag it somewhere, open it with a click. The computer finally spoke in a language people already understood."
+          nextUrl="/level/2"
         />
       )}
 

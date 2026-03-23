@@ -206,7 +206,7 @@ export default function Level2() {
         <IntroModal
           era="1995"
           title="The Hyperlink"
-          description="Information wasn't something you searched for. It was something you followed, one link at a time."
+          description="This is Netscape Navigator, circa 1995. The web is a network of pages linked together by people — no search engine required. Follow the trail."
           objectives={OBJECTIVES}
           onBegin={() => {
             setScreen('loading')
@@ -219,8 +219,8 @@ export default function Level2() {
         <DiscoveryCard
           era="1995"
           artifactName="Hyperlink Navigation"
-          description="The early web wasn't searched. It was browsed. Every page linked to other pages, and finding what you needed meant following a trail of connections that other people had made."
-          nextUrl="/timeline"
+          description="The early web was a network of pages connected by links that people had deliberately placed. Finding something meant following a trail, clicking from one page to the next, trusting that someone had mapped the path before you. No algorithm decided what you saw. Every connection was a human choice."
+          nextUrl="/level/3"
         />
       )}
 

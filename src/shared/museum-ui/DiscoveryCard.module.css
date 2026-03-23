@@ -44,30 +44,30 @@
   margin-bottom: 14px;
 }
 
-/* Year hero — monospace, 36px, bold */
+/* Year label — monospace, 17px, muted */
 .year {
   font-family: 'Courier New', monospace;
-  font-size: 36px;
-  font-weight: 700;
-  color: #111;
+  font-size: 17px;
+  font-weight: 500;
+  color: #888;
   line-height: 1;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .divider {
   border: none;
   border-top: 1px solid #e8e8e8;
-  margin: 0 0 20px;
+  margin: 0 0 16px;
 }
 
-/* Artifact name — 18px, weight 500, system-ui (original) */
+/* Artifact name — hero element, 30px, bold */
 .artifactName {
   font-family: system-ui, sans-serif;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 500;
   color: #111;
-  line-height: 1.3;
-  margin-bottom: 12px;
+  line-height: 1.2;
+  margin-bottom: 16px;
 }
 
 /* Description */
@@ -84,7 +84,7 @@
   display: block;
   width: 100%;
   margin-top: 20px;
-  padding: 16px;
+  padding: 13px;
   background: #111;
   color: #fff;
   border: none;

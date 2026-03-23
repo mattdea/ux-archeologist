@@ -1,9 +1,12 @@
 // src/pages/TitleScreen.jsx
+import { useState } from 'react'
 import styles from './TitleScreen.module.css'
 import { useFadeNavigate } from '../shared/SharedLayout'
+import AboutModal from '../shared/museum-ui/AboutModal'
 
 export default function TitleScreen() {
   const navigate = useFadeNavigate()
+  const [showAbout, setShowAbout] = useState(false)
 
   return (
     <>
@@ -17,6 +20,8 @@ export default function TitleScreen() {
         </button>
       </div>
       <p className={styles.attribution}>A project by Matthew Dea</p>
+      <button className={styles.aboutLink} onClick={() => setShowAbout(true)}>About</button>
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
     </>
   )
 }

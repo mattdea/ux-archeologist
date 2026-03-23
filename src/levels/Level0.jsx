@@ -25,14 +25,14 @@ const BEZEL_H = 540
 const BOTTOM_ZONE_H = 180
 
 const DISCOVERY_DESCRIPTION =
-  'Before icons and touchscreens, computing required negotiation. You typed a precise request. ' +
-  'The machine responded. Every modern interface — every tap, swipe, and voice command — is still ' +
-  'a variation on this conversation. You just had it yourself.'
+  'Every interaction you just had followed the same pattern: you typed a command, the machine responded, ' +
+  'and you decided what to do next. No guidance, no suggestions, no undo. Every interface that came after ' +
+  'this one tried to make that exchange easier, but the conversation underneath never changed.'
 
 export default function Level0() {
   // 'intro' → 'booting' → 'playing' → 'discovery'
-  // Skip intro and start booting immediately on replay (level already complete).
-  const [screen, setScreen] = useState(() => isLevelComplete(0) ? 'booting' : 'intro')
+  // Skip intro+boot and go directly to 'playing' on replay (level already complete).
+  const [screen, setScreen] = useState(() => isLevelComplete(0) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(0) ? [0, 1, 2] : [])
 
   const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
@@ -46,6 +46,7 @@ export default function Level0() {
   const terminal = useTerminal({
     onObjectiveComplete: completeObjective,
     completedIndices,
+    replay: isLevelComplete(0),
   })
 
   // Start the boot sequence when screen enters 'booting'.
@@ -75,7 +76,7 @@ export default function Level0() {
   useEffect(() => {
     if (screen === 'discovery') {
       addArtifact({
-        name: 'Command-Response Interaction',
+        name: 'Command & Response',
         era: '1971',
         description: DISCOVERY_DESCRIPTION,
       })
@@ -90,7 +91,7 @@ export default function Level0() {
         <IntroModal
           era="1971"
           title="The Command Line"
-          description="Before icons, windows, or the web, there was a conversation. A researcher sat down at a terminal, typed a command, and waited. The machine replied. This was computing at its most direct — and its most demanding."
+          description="This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something."
           objectives={OBJECTIVES}
           onBegin={() => setScreen('booting')}
         />
@@ -99,9 +100,9 @@ export default function Level0() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="1971"
-          artifactName="Command-Response Interaction"
+          artifactName="Command & Response"
           description={DISCOVERY_DESCRIPTION}
-          nextUrl="/timeline"
+          nextUrl="/level/1"
         />
       )}
 

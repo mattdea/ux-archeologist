@@ -128,11 +128,13 @@ const WELCOME_LINES = [
 const CHAR_DELAY = 2
 
 // ── Hook ──────────────────────────────────────────────────────────────────────
-export default function useTerminal({ onObjectiveComplete, completedIndices } = {}) {
-  // Start in 'booting' — keypresses are blocked and no prompt is shown
-  // until the boot sequence finishes and phase transitions to 'login'.
-  const [phase,          setPhase]          = useState('booting')
-  const [history,        setHistory]        = useState([])
+export default function useTerminal({ onObjectiveComplete, completedIndices, replay = false } = {}) {
+  // Normal: start in 'booting' — keypresses blocked until boot sequence completes.
+  // Replay: start in 'shell' with welcome message pre-populated in history.
+  const [phase,          setPhase]          = useState(() => replay ? 'shell' : 'booting')
+  const [history,        setHistory]        = useState(() =>
+    replay ? WELCOME_LINES.map(text => text === '' ? { type: 'blank', text: '' } : { type: 'output', text }) : []
+  )
   const [currentInput,   setCurrentInput]   = useState('')
   const [commandHistory, setCommandHistory] = useState([])
   const [historyIndex,   setHistoryIndex]   = useState(-1)

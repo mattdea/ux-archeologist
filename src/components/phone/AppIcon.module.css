@@ -26,7 +26,7 @@
   position: relative;
   width: 57px;                      /* Figma 114px at 2× → 57px */
   height: 57px;
-  border-radius: 10px;              /* Figma 20px at 2× → 10px */
+  border-radius: 14px;              /* Figma 20px at 2× → 10px */
   overflow: hidden;
   flex-shrink: 0;
 
@@ -42,7 +42,7 @@
 }
 
 .pressed {
-  transform: scale(0.85);
+  transform: scale(0.93);
 }
 
 /* Custom icon image fills the container */

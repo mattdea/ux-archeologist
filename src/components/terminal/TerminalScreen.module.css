@@ -46,6 +46,10 @@
 .content {
   position: relative;
   z-index: 2;
+  scrollbar-width: none;
+}
+.content::-webkit-scrollbar {
+  display: none;
   /* Dual text-shadow: diffuse bloom + tight phosphor core */
   text-shadow:
     0 0 8px rgba(98, 212, 245, 0.55),

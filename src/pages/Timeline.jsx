@@ -1,57 +1,43 @@
 // src/pages/Timeline.jsx
+import { useState } from 'react'
 import styles from './Timeline.module.css'
-import { getCurrentLevel, isLevelComplete, resetAll } from '../state/state'
+import { isLevelComplete, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
+import AboutModal from '../shared/museum-ui/AboutModal'
 
 const ENTRIES = [
-  { level: 0, year: '1971', title: 'The Command Line',  artifact: 'Command-Response Interaction', path: '/level/0' },
-  { level: 1, year: '1984', title: 'The Desktop',       artifact: 'Direct Manipulation',          path: '/level/1' },
-  { level: 2, year: '1995', title: 'The Hyperlink',     artifact: 'Hyperlink Navigation',         path: '/level/2' },
-  { level: 3, year: '2007', title: 'The Touchscreen',   artifact: 'Direct Touch Interaction',     path: '/level/3' },
-  { level: 4, year: '2015', title: 'The Feed',          artifact: 'Attention Economy Interfaces', path: '/level/4' },
-  { level: 5, year: '2023', title: 'The Conversation',  artifact: 'Language as Interface',        path: '/level/5' },
+  { level: 0, year: '1971', title: 'The Command Line',  artifact: 'Command & Response',   path: '/level/0' },
+  { level: 1, year: '1984', title: 'The Desktop',       artifact: 'Direct Manipulation',  path: '/level/1' },
+  { level: 2, year: '1995', title: 'The Hyperlink',     artifact: 'Hyperlink Navigation', path: '/level/2' },
+  { level: 3, year: '2007', title: 'The Touchscreen',   artifact: 'Multi-Touch',          path: '/level/3' },
+  { level: 4, year: '2015', title: 'The Feed',          artifact: 'Infinite Scroll',      path: '/level/4' },
+  { level: 5, year: '2023', title: 'The Conversation',  artifact: 'Natural Language',     path: '/level/5' },
 ]
 
 export default function Timeline() {
-  const navigate    = useFadeNavigate()
-  const currentLvl  = getCurrentLevel()
+  const navigate = useFadeNavigate()
+  const [showAbout, setShowAbout] = useState(false)
 
   return (
     <div className={styles.timeline}>
       {ENTRIES.map((entry, i) => {
         const complete = isLevelComplete(entry.level)
-        // Level 4 is an unimplemented stub — treat Level 5 as active whenever
-        // Level 3 is done (currentLvl >= 4), so the player isn't permanently blocked.
-        const active   = !complete && (entry.level === currentLvl || (entry.level === 5 && currentLvl === 4))
-        const locked   = !complete && !active
         const delay    = `${i * 150}ms`
 
         return (
           <div
             key={entry.year}
-            className={[
-              styles.entry,
-              complete ? styles.entryComplete : '',
-              active   ? styles.entryActive   : '',
-              locked   ? styles.entryLocked   : '',
-            ].join(' ')}
-            onClick={(active || complete) ? () => navigate(entry.path) : undefined}
+            className={`${styles.entry} ${complete ? styles.entryComplete : styles.entryIncomplete}`}
+            onClick={() => navigate(entry.path)}
             style={{ '--entry-delay': delay, animationDelay: delay }}
           >
-            <span
-              className={[
-                styles.dot,
-                complete ? styles.dotComplete : '',
-                active   ? styles.dotActive   : '',
-                locked   ? styles.dotLocked   : '',
-              ].join(' ')}
-            />
+            <span className={`${styles.dot} ${complete ? styles.dotComplete : styles.dotIncomplete}`} />
 
             <div className={styles.content}>
               <span className={styles.year}>{entry.year}</span>
               <div className={styles.titleRow}>
                 <span className={styles.title}>{entry.title}</span>
-                {active && <span className={styles.arrow}>→</span>}
+                <span className={styles.arrow}>→</span>
               </div>
               {complete && (
                 <span className={styles.artifact}>{entry.artifact}</span>
@@ -69,6 +55,9 @@ export default function Timeline() {
       >
         Reset progress
       </button>
+
+      <button className={styles.aboutLink} onClick={() => setShowAbout(true)}>About</button>
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
     </div>
   )
 }

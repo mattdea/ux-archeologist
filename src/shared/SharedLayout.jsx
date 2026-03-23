@@ -137,7 +137,7 @@ export default function SharedLayout() {
                 {/* Top-right — progress dots */}
                 <div className={styles.hudTopRight} style={hudStyle('down', 0)}>
                   {LEVEL_NUMBERS.map(n => (
-                    <span key={n} className={dotClass(n, activeLevel)} />
+                    <span key={n} className={dotClass(n, activeLevel)} onClick={() => fadeNavigate('/level/' + n)} style={{ cursor: 'pointer' }} />
                   ))}
                 </div>
 

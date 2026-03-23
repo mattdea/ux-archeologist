@@ -25,20 +25,20 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 /collection     → Full artifact collection / shareable finale
 ```
 
-Each level guards itself: if `isLevelComplete(N-1)` is false, redirect to `/level/N-1`. The `/collection` page is always accessible.
+All levels are freely accessible. Sequential order is suggested but not enforced. The `/collection` page is always accessible.
 
 ---
 
 ## Experience Architecture
 
 ### Progression
-Linear: Level 0 → 1 → 2 → 3 → 4 → 5 → Timeline → Collection
+Sequential order is suggested but not enforced: Level 0 → 1 → 2 → 3 → 4 → 5 → Collection. All levels are freely accessible at any time. Completing a level navigates directly to the next level (DiscoveryCard nextUrl).
 
 ### Per-Level Flow
 1. **Arrive** — IntroModal overlays the artifact (museum layer). Artifact is inert.
 2. **Boot** — Modal dismissed. Artifact boot/intro sequence plays (era-authentic). HUD hidden.
 3. **Explore** — Player interacts with the artifact, completes 3 objectives.
-4. **Discover** — Continue button appears. Player clicks → DiscoveryCard fades in. Artifact recorded. Player navigates to `/timeline`.
+4. **Discover** — Continue button appears. Player clicks → DiscoveryCard fades in. Artifact recorded. Player navigates to the next level (or `/collection` after Level 5).
 
 ### Screen State Machine (every level)
 ```
@@ -95,7 +95,7 @@ Sits outside the device container in the dark museum space.
 ```
 src/shared/museum-ui/
   IntroModal.jsx       props: era, title, description, objectives[], onBegin
-  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl="/timeline"
+  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl="/level/N+1" (final level → "/collection")
   ObjectiveTracker.jsx props: objectives[], completedIndices[]
 
 src/shared/SharedLayout.jsx
@@ -160,7 +160,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Status: Complete**
 
 **Artifact:** Unix terminal session
-**Discovery:** Command-Response Interaction
+**Discovery:** Command & Response
 **Container:** `src/components/terminal/` — TerminalBezel + TerminalScreen; 780×540px
 **Route:** `/level/0`
 
@@ -180,7 +180,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 3. Look up a command in the manual
 
 **Discovery Card:**
-- Artifact: `Command-Response Interaction`
+- Artifact: `Command & Response`
 - Text: "Before icons and touchscreens, computing required negotiation. You typed a precise request. The machine responded. Every modern interface — every tap, swipe, and voice command — is still a variation on this conversation. You just had it yourself."
 
 ---
@@ -269,7 +269,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Status: Complete**
 
 **Artifact:** Original iPhone interface
-**Discovery:** Direct Touch Interaction
+**Discovery:** Multi-Touch
 **Container:** `src/components/phone/PhoneFrame.jsx` — `assets/iphone.svg` at 385×735px; screen slot 320×480px
 **Route:** `/level/3`
 
@@ -316,7 +316,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 3. Swipe between screens
 
 **Discovery Card:**
-- Artifact: `Direct Touch Interaction`
+- Artifact: `Multi-Touch`
 - Text: "For the first time, the interface disappeared. No mouse, no cursor, no abstraction layer. You touched the thing itself. Your finger became the input device, and the screen became the object."
 
 ---
@@ -325,7 +325,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **Status: Stub (not yet implemented)**
 
 **Artifact:** Social media feed app (Instagram-like)
-**Discovery:** Attention Economy Interfaces
+**Discovery:** Infinite Scroll
 **Container:** Floating app viewport, no device bezel (hardware has disappeared)
 **Route:** `/level/4`
 
@@ -366,7 +366,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **Status: Not yet implemented**
 
 **Artifact:** AI chat interface (Claude-inspired, curator persona)
-**Discovery:** Language as Interface
+**Discovery:** Natural Language
 **Container:** Full-width chat panel — no device, no chrome, no window frame
 **Route:** `/level/5`
 
@@ -422,7 +422,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **Key Mechanic:** The player is having a conversation with the thing that has been curating their entire experience. The discovery card, written in the same third-person museum voice, arrives after the player just spoke with its author. The dissonance is intentional and unspoken.
 
 **Discovery Card:**
-- Artifact: `Language as Interface`
+- Artifact: `Natural Language`
 - Text: "Previous interfaces each had their own vocabulary. You learned to type commands, click icons, tap buttons, swipe between screens. Large language models replaced all of that with a single text field. You could ask for code, a summary, a translation, or a recipe in the same conversation. No new interaction model to learn, no specialized tool to find."
 
 **File Structure:**
