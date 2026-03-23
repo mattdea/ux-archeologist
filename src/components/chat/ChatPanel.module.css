@@ -23,7 +23,7 @@
   flex-shrink: 1;
   flex-basis: 0;
   min-height: 0;
-  transition: flex-grow 300ms ease-out;
+  transition: flex-grow 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .topSpacerGone,
@@ -42,7 +42,7 @@
   min-height: 0;
   position: relative;
   overflow: hidden;
-  transition: flex-grow 300ms ease-out;
+  transition: flex-grow 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Collapsed in empty state — no opacity trick, just height collapse */

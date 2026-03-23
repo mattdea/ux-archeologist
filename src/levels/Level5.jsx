@@ -6,7 +6,6 @@
 // Container: full-width chat panel — no device, no bezel, no chrome.
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styles from './Level5.module.css'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
@@ -22,22 +21,17 @@ const OBJECTIVES = [
 ]
 
 const DISCOVERY_DESCRIPTION =
-  "Previous interfaces each had their own vocabulary. You learned to type commands, click icons, " +
-  "tap buttons, swipe between screens. Large language models replaced all of that with a single text field. " +
-  "You could ask for code, a summary, a translation, or a recipe in the same conversation. " +
-  "No new interaction model to learn, no specialized tool to find."
+  "Every previous interface required you to learn its language: commands, clicks, menus, gestures. " +
+  "This one already speaks yours. But behind the fluency is a system you can't see, trained on text you didn't choose, " +
+  "shaped by decisions you can't inspect. The most natural interface ever built is also the least transparent."
 
 const ALREADY_DONE = isLevelComplete(5)
 
 export default function Level5() {
-  const navigate = useNavigate()
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
-  // Guard: Level 4 must be complete. Bypassed while Level 4 is a stub.
-  // useEffect(() => { if (!isLevelComplete(4)) navigate('/level/4') }, [])
-
-  const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
+  const [screen, setScreen] = useState(() => ALREADY_DONE ? 'playing' : 'intro')
   const [trackerVisible, setTrackerVisible] = useState(ALREADY_DONE)
 
   // Objectives: independent (no sequential gating), keyed by name
@@ -60,7 +54,7 @@ export default function Level5() {
   // Replay: if we skipped the intro (level already complete), auto-advance to playing
   useEffect(() => {
     if (screen === 'booting') {
-      bootTimers.current.push(setTimeout(() => setScreen('playing'), 1000))
+      bootTimers.current.push(setTimeout(() => setScreen('playing'), 200))
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -70,7 +64,7 @@ export default function Level5() {
   // (both use a 200ms CSS delay, matching the pattern in other levels).
   useEffect(() => {
     if (screen === 'playing') {
-      const t = setTimeout(() => { notifyArtifactReady(); setTrackerVisible(true) }, 1400)
+      const t = setTimeout(() => { notifyArtifactReady(); setTrackerVisible(true) }, 800)
       return () => clearTimeout(t)
     }
   }, [screen, notifyArtifactReady])
@@ -89,7 +83,7 @@ export default function Level5() {
   const handleBeginExcavation = () => {
     setScreen('booting')
     bootTimers.current.push(
-      setTimeout(() => setScreen('playing'), 1000)
+      setTimeout(() => setScreen('playing'), 200)
     )
   }
 
@@ -107,7 +101,7 @@ export default function Level5() {
         <IntroModal
           era="2023"
           title="The Conversation"
-          description="In late 2022, OpenAI released ChatGPT and 100 million people started talking to a machine within two months. Every previous interface required learning something new: commands, clicks, gestures, swipes. This one worked because you already knew how to type a sentence."
+          description="This is a large language model. There are no buttons to learn, no gestures to memorize. You type a sentence, and it types one back."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}
         />
@@ -116,9 +110,9 @@ export default function Level5() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="2023"
-          artifactName="Language as Interface"
+          artifactName="Natural Language"
           description={DISCOVERY_DESCRIPTION}
-          nextUrl="/timeline"
+          nextUrl="/collection"
         />
       )}
 
