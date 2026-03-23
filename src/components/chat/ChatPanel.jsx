@@ -1,5 +1,5 @@
 // src/components/chat/ChatPanel.jsx
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import styles from './ChatPanel.module.css'
 import ChatMessage from './ChatMessage'
 import ChatInput from './ChatInput'
@@ -10,12 +10,8 @@ export default function ChatPanel({ playing = false, autoFocus, animated = true,
   const { messages, sendMessage, regenerateLastResponse, isStreaming, turnCount } = useCuratorChat()
   const bottomRef = useRef(null)
   const messageAreaRef = useRef(null)
-  const toastTimerRef = useRef(null)
   const pinnedRef = useRef(true)      // true = auto-scroll; false = user scrolled up
   const lastScrollTopRef = useRef(0)  // detect user-initiated upward scroll
-
-  const [toastVisible, setToastVisible] = useState(false)
-  const [toastKey, setToastKey] = useState(0)
 
   // Only unpin when the user actively scrolls UP — programmatic downward
   // scroll events (from auto-scroll) never trigger unpin.
@@ -39,34 +35,25 @@ export default function ChatPanel({ playing = false, autoFocus, animated = true,
     }
   }, [messages])
 
-  // Cleanup toast timer on unmount
-  useEffect(() => () => clearTimeout(toastTimerRef.current), [])
-
-  const showToast = useCallback(() => {
-    clearTimeout(toastTimerRef.current)
-    setToastKey(k => k + 1)
-    setToastVisible(true)
-    toastTimerRef.current = setTimeout(() => setToastVisible(false), 2000)
-  }, [])
-
   const handleSend = useCallback((text) => {
     pinnedRef.current = true // re-pin on new send so response is visible
     // Objective 1: first message sent
     if (messages.length === 0) {
       onCompleteObjective?.('startConversation')
     }
+    // Objective 2: follow-up question — player sends 2nd+ message after receiving 1+ AI response
+    const userCount = messages.filter(m => m.role === 'user').length
+    const assistantCount = messages.filter(m => m.role === 'assistant' && m.content !== null).length
+    if (userCount >= 1 && assistantCount >= 1) {
+      onCompleteObjective?.('askFollowUp')
+    }
     sendMessage(text)
-  }, [messages.length, sendMessage, onCompleteObjective])
+  }, [messages, sendMessage, onCompleteObjective])
 
   const handleRegenerate = useCallback(() => {
     onCompleteObjective?.('regenerateResponse')
     regenerateLastResponse()
   }, [regenerateLastResponse, onCompleteObjective])
-
-  const handleRate = useCallback(() => {
-    onCompleteObjective?.('rateResponse')
-    showToast()
-  }, [onCompleteObjective, showToast])
 
   const isEmpty = messages.length === 0
   const chips = getChipsForTurn(turnCount)
@@ -102,11 +89,9 @@ export default function ChatPanel({ playing = false, autoFocus, animated = true,
                   content={msg.content}
                   streaming={msg.streaming}
                   showActions={msg.role === 'assistant' && isLast}
-                  toastVisible={isLast ? toastVisible : false}
-                  toastKey={isLast ? toastKey : 0}
                   onCopy={() => {}}
-                  onThumbsUp={handleRate}
-                  onThumbsDown={handleRate}
+                  onThumbsUp={() => {}}
+                  onThumbsDown={() => {}}
                   onRegenerate={isLast ? handleRegenerate : undefined}
                 />
               )

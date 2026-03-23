@@ -17,8 +17,6 @@ export default function ChatMessage({
   content,
   streaming = false,
   showActions = false,
-  toastVisible = false,
-  toastKey = 0,
   onCopy,
   onThumbsUp,
   onThumbsDown,
@@ -57,15 +55,6 @@ export default function ChatMessage({
             onRegenerate={onRegenerate}
             disabled={streaming || isThinking}
           />
-          {/* Toast area: fixed height, always in flow — toast fades in/out inline */}
-          <div className={styles.toastArea}>
-            <span
-              key={toastKey}
-              className={`${styles.toastText} ${toastVisible ? styles.toastTextVisible : ''}`}
-            >
-              Thanks for your feedback
-            </span>
-          </div>
         </div>
       )}
     </div>

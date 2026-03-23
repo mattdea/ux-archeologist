@@ -16,8 +16,8 @@ import ChatPanel from '../components/chat/ChatPanel'
 
 const OBJECTIVES = [
   'Start a conversation',
+  'Ask a follow-up question',
   'Regenerate a response',
-  'Rate a response',
 ]
 
 const DISCOVERY_DESCRIPTION =
@@ -37,8 +37,8 @@ export default function Level5() {
   // Objectives: independent (no sequential gating), keyed by name
   const [objectives, setObjectives] = useState({
     startConversation: ALREADY_DONE,
+    askFollowUp: ALREADY_DONE,
     regenerateResponse: ALREADY_DONE,
-    rateResponse: ALREADY_DONE,
   })
 
   const completeObjective = useCallback((key) => {
@@ -70,7 +70,7 @@ export default function Level5() {
   }, [screen, notifyArtifactReady])
 
   // Continue button wiring (canonical pattern from CLAUDE.md)
-  const allComplete = objectives.startConversation && objectives.regenerateResponse && objectives.rateResponse
+  const allComplete = objectives.startConversation && objectives.askFollowUp && objectives.regenerateResponse
   useEffect(() => {
     if (screen === 'playing' && allComplete) {
       setContinue(() => () => { completeLevel(5); setScreen('discovery') })
@@ -89,8 +89,8 @@ export default function Level5() {
 
   const completedIndices = [
     objectives.startConversation,
+    objectives.askFollowUp,
     objectives.regenerateResponse,
-    objectives.rateResponse,
   ].reduce((acc, done, i) => (done ? [...acc, i] : acc), [])
 
   return (
