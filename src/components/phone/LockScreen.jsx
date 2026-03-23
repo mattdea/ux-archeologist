@@ -151,7 +151,7 @@ export default function LockScreen({ onUnlock, exiting = false, bootPhase = null
 
       {/* ── Top block: status bar + clock slide in together on boot ──────── */}
       <div className={styles.topBlock}>
-        <StatusBar variant="dark" />
+        <StatusBar variant="dark" showTime={false} />
 
       {/* ── Clock band ──────────────────────────────────────────────────── */}
       <div className={styles.clockBand}>

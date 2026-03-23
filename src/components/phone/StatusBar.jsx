@@ -75,7 +75,7 @@ function BatteryIcon() {
   )
 }
 
-export default function StatusBar({ variant = 'dark' }) {
+export default function StatusBar({ variant = 'dark', showTime = true }) {
   const now = useCurrentTime()
   return (
     <div className={`${styles.bar} ${variant === 'transparent' ? styles.barTransparent : ''}`}>
@@ -89,8 +89,8 @@ export default function StatusBar({ variant = 'dark' }) {
         <WifiIcon />
       </div>
 
-      {/* Center: time — absolutely positioned */}
-      <span className={styles.timeLabel}>{formatStatusTime(now)}</span>
+      {/* Center: time — hidden on lock screen where the clock band shows it */}
+      {showTime && <span className={styles.timeLabel}>{formatStatusTime(now)}</span>}
 
       {/* Right: percentage + battery */}
       <div className={styles.right}>
