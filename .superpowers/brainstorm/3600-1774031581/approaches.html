@@ -1,0 +1,42 @@
+<h2>Three approaches to the search feature</h2>
+<p class="subtitle">All three include the dial-up modem sound. The main difference is what happens when you click a search result link.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Search + dead links <span style="font-size:11px;color:#888;font-weight:400">(simplest)</span></h3>
+      <p>Groq generates 4–5 results rendered as a Yahoo directory results page. Links are visual only — clicking them does nothing (or shows a brief "Unable to connect" tooltip). Clean and fast to build.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pros</h4><ul><li>Least code</li><li>No new page to design</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Dead links feel incomplete</li><li>Breaks player immersion</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Search + authentic 404 page <span style="font-size:11px;color:#4a9;font-weight:400">(recommended)</span></h3>
+      <p>Groq generates results. Clicking any result navigates to a period-accurate Netscape 404 error page ("The requested URL was not found on this server"). This is historically perfect — broken links were everywhere in 1995. Adds to the era's feel of fragility and impermanence.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pros</h4><ul><li>Historically accurate</li><li>Links feel real (and appropriately dead)</li><li>Only one new page to build</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Every result is a dead end</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Search + smart results <span style="font-size:11px;color:#888;font-weight:400">(richest)</span></h3>
+      <p>Groq generates results, but the existing 4 pages (Yahoo, Yahoo Computers, Valley Computer, Vintage Archive) surface as top results for relevant queries. Those links navigate to the real pages. All other generated links go to the 404 page. Rewards players who search for things related to the level.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pros</h4><ul><li>Some links actually work — feels most alive</li><li>Rewarding for explorers</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Most complex to build</li><li>Groq prompt needs tuning to surface right pages</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px">Let me know your pick in the terminal.</p>

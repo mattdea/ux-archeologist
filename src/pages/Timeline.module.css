@@ -176,6 +176,7 @@
   text-decoration: none;
   cursor: pointer;
   letter-spacing: 0.01em;
+  animation: fadeIn 400ms ease-out both;
 }
 
 .aboutLink:hover {

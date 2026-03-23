@@ -95,7 +95,7 @@ Sits outside the device container in the dark museum space.
 ```
 src/shared/museum-ui/
   IntroModal.jsx       props: era, title, description, objectives[], onBegin
-  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl="/level/N+1" (final level → "/collection")
+  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl="/timeline" (all levels)
   ObjectiveTracker.jsx props: objectives[], completedIndices[]
 
 src/shared/SharedLayout.jsx
@@ -104,6 +104,9 @@ src/shared/SharedLayout.jsx
 src/hooks/
   useBezelScale.js        scales artifact bezel to fit viewport with top/bottom margins
   useRubberBandScroll.js  iOS-style drag scroll: 0.3× rubber factor, cubic-bezier snap on release
+
+src/shared/museum-ui/AboutModal.jsx        no props — standalone modal, opened from TitleScreen
+src/shared/museum-ui/AboutModal.module.css
 
 src/state/state.js
   completeLevel(n), isLevelComplete(n), addArtifact({ name, era, description })
@@ -287,11 +290,12 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Interactive Elements:**
 - Lock screen: drag-to-unlock slider (plays `assets/phone/unlock.mp3`)
-- Sleep/wake button (top bezel, 220×45px tap target): locks phone (plays `assets/phone/lock.mp3`)
-- Tapping black screen wakes phone; 1s pause + 450ms boot animation
+- Sleep/wake button (top bezel, 220×45px tap target): locks phone (plays `assets/phone/lock.mp3`); also wakes phone if off
+- Home button wakes phone if off
+- Tapping black screen wakes phone; 300ms pause + 450ms boot animation
 - Home screen: 2 swipeable pages, 12 icons + 4-app dock
 - Only Notes app is interactive (other icons are decorative)
-- Home button: returns to home screen from any app
+- Home button: returns to home screen from any app; also wakes phone if `phonePower === 'off'`
 - Notes app: list → detail slide transition, rubber-band scroll in detail view
 
 **Phone hardware state machine:**
@@ -363,7 +367,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 ---
 
 ### Level 5: 2023 — The Conversation
-**Status: Not yet implemented**
+**Status: Complete**
 
 **Artifact:** AI chat interface (Claude-inspired, curator persona)
 **Discovery:** Natural Language
@@ -416,14 +420,14 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 **Objectives (3, independent — no sequential gating):**
 1. Start a conversation (send any message)
-2. Regenerate a response (click regenerate on any AI response)
-3. Rate a response (click thumbs up or down on any AI response)
+2. Ask a follow-up question (send a second message after your first)
+3. Regenerate a response (click regenerate on any AI response)
 
 **Key Mechanic:** The player is having a conversation with the thing that has been curating their entire experience. The discovery card, written in the same third-person museum voice, arrives after the player just spoke with its author. The dissonance is intentional and unspoken.
 
 **Discovery Card:**
 - Artifact: `Natural Language`
-- Text: "Previous interfaces each had their own vocabulary. You learned to type commands, click icons, tap buttons, swipe between screens. Large language models replaced all of that with a single text field. You could ask for code, a summary, a translation, or a recipe in the same conversation. No new interaction model to learn, no specialized tool to find."
+- Text: "Every previous interface required you to learn its language: commands, clicks, menus, gestures. This one already speaks yours. But behind the fluency is a system you can't see, trained on text you didn't choose, shaped by decisions you can't inspect. The most natural interface ever built is also the least transparent."
 
 **File Structure:**
 ```
@@ -510,7 +514,7 @@ Era-authentic only. Never use museum-layer easing inside the artifact.
 - Browser Back/Forward: instant page swap
 
 **Level 3 — 2007:**
-- Boot: 1s pause → 450ms keyframe animation (clock slides down, slider slides up, wallpaper fades in)
+- Boot: 300ms pause → 450ms keyframe animation (StatusBar + clockBand slide down together as `.topBlock`, slider slides up, wallpaper fades in); StatusBar on lock screen has `showTime={false}` since clock band shows time prominently
 - Unlock choreography: 5-phase, 800ms total (lock exit → black → dock → icons → home)
 - App open: `scale(0.02) → scale(1)`, 300ms ease-out
 - App close: `scale(1) → scale(0.02)`, 250ms ease-in

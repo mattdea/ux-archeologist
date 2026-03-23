@@ -1,28 +1,23 @@
 // src/components/web/BrowserChrome.jsx
-// Internet Explorer 4 / Windows 98 browser chrome
+// Netscape Navigator 2.01 / Windows 95 browser chrome
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styles from './BrowserChrome.module.css'
 
-const SCROLL_STEP    = 20   // px per arrow-button tick
-const SCROLL_REPEAT  = 60   // ms between repeat ticks while button held
+import netscapeLogoIcon from '../../../assets/netscapelogo.png'
+import backIcon      from '../../assets/web/back.png'
+import backGrayIcon  from '../../assets/web/back-gray.png'
+import forwardIcon     from '../../assets/web/forward.png'
+import forwardGrayIcon from '../../assets/web/forward-gray.png'
+import homeIcon      from '../../assets/web/home.png'
+import reloadIcon    from '../../assets/web/reload.png'
+import openIcon      from '../../assets/web/open.png'
+import printIcon     from '../../assets/web/print.png'
+import findIcon      from '../../assets/web/find.png'
+import stopIcon      from '../../assets/web/stop.png'
+import throbberIcon  from '../../assets/web/throbber.png'
 
-/* ── IE "e" logo icon ─────────────────────────────────────────────── */
-function IELogo() {
-  return (
-    <span className={styles.ieLogo} aria-hidden="true">
-      <span className={styles.ieLogoE}>e</span>
-    </span>
-  )
-}
-
-/* ── Title bar window buttons ─────────────────────────────────────── */
-function WinButton({ symbol, variant }) {
-  return (
-    <span className={`${styles.winBtn} ${variant === 'close' ? styles.winBtnClose : ''}`}>
-      {symbol}
-    </span>
-  )
-}
+const SCROLL_STEP   = 20  // px per arrow-button tick
+const SCROLL_REPEAT = 60  // ms between repeat ticks while button held
 
 /* ── Toolbar button (icon stacked above label) ───────────────────── */
 function ToolbarButton({ icon, label, disabled, onClick }) {
@@ -31,22 +26,17 @@ function ToolbarButton({ icon, label, disabled, onClick }) {
       className={`${styles.toolbarBtn} ${disabled ? styles.toolbarBtnDisabled : ''}`}
       onClick={!disabled && onClick ? onClick : undefined}
     >
-      <span className={styles.toolbarIcon}>{icon}</span>
-      <span className={styles.toolbarLabel}>{label}</span>
+      <img src={icon} className={styles.toolbarIcon} alt="" draggable="false" />
+      <span className={`${styles.toolbarLabel} ${disabled ? styles.toolbarLabelDisabled : ''}`}>{label}</span>
     </span>
   )
-}
-
-/* ── Toolbar separator ────────────────────────────────────────────── */
-function ToolbarSep() {
-  return <span className={styles.toolbarSep} />
 }
 
 /* ── Main component ───────────────────────────────────────────────── */
 export default function BrowserChrome({
   children,
   currentUrl   = 'about:blank',
-  pageTitle    = 'Microsoft Internet Explorer',
+  pageTitle    = '',
   canGoBack    = false,
   canGoForward = false,
   onBack,
@@ -54,14 +44,13 @@ export default function BrowserChrome({
   statusText   = 'Done',
 }) {
   // ── Scroll state ────────────────────────────────────────────────
-  const viewportRef  = useRef(null)
-  const trackRef     = useRef(null)
-  const intervalRef  = useRef(null)
-  const dragRef      = useRef(null)
+  const viewportRef = useRef(null)
+  const trackRef    = useRef(null)
+  const intervalRef = useRef(null)
+  const dragRef     = useRef(null)
 
   const [scroll, setScroll] = useState({ top: 0, total: 1, visible: 1 })
 
-  // Read current scroll metrics from the DOM
   const readScroll = useCallback(() => {
     const el = viewportRef.current
     if (!el) return
@@ -72,7 +61,6 @@ export default function BrowserChrome({
     })
   }, [])
 
-  // Reset to top and re-measure when URL changes (new page loaded)
   useEffect(() => {
     const el = viewportRef.current
     if (!el) return
@@ -80,7 +68,6 @@ export default function BrowserChrome({
     readScroll()
   }, [currentUrl, readScroll])
 
-  // Re-measure after children change (content height may differ)
   useLayoutEffect(() => {
     readScroll()
   }, [children, readScroll])
@@ -110,7 +97,6 @@ export default function BrowserChrome({
     clearInterval(intervalRef.current)
   }, [])
 
-  // Clean up interval on unmount
   useEffect(() => () => clearInterval(intervalRef.current), [])
 
   // ── Thumb drag ───────────────────────────────────────────────────
@@ -153,10 +139,10 @@ export default function BrowserChrome({
     const el    = viewportRef.current
     if (!track || !el) return
 
-    const trackH    = track.clientHeight
-    const thumbH    = Math.max(16, (el.clientHeight / el.scrollHeight) * trackH)
+    const trackH     = track.clientHeight
+    const thumbH     = Math.max(16, (el.clientHeight / el.scrollHeight) * trackH)
     const scrollable = el.scrollHeight - el.clientHeight
-    const thumbTop  = scrollable > 0
+    const thumbTop   = scrollable > 0
       ? (el.scrollTop / scrollable) * (trackH - thumbH)
       : 0
 
@@ -171,15 +157,15 @@ export default function BrowserChrome({
   // ── Derived thumb geometry for rendering ────────────────────────
   const { top, total, visible } = scroll
   const canScroll  = total > visible
-  const trackH     = Math.max(0, visible - 32) // track = scrollbar height minus 2×16px buttons
+  const trackH     = Math.max(0, visible - 32)
   const thumbH     = canScroll ? Math.max(16, (visible / total) * trackH) : trackH
   const travelH    = trackH - thumbH
   const scrollable = total - visible
   const thumbTop   = canScroll && scrollable > 0 ? (top / scrollable) * travelH : 0
 
   const titleBarText = pageTitle
-    ? `${pageTitle} - Microsoft Internet Explorer`
-    : 'Microsoft Internet Explorer'
+    ? `Netscape - [${pageTitle}]`
+    : 'Netscape - [Version 2.01]'
 
   return (
     <div className={styles.browser}>
@@ -187,48 +173,101 @@ export default function BrowserChrome({
       {/* ── Title bar ───────────────────────────────────────────── */}
       <div className={styles.titleBar}>
         <div className={styles.titleLeft}>
-          <IELogo />
+          <span className={styles.titleIcon} aria-hidden="true" />
           <span className={styles.titleText}>{titleBarText}</span>
         </div>
         <div className={styles.winBtns}>
-          <WinButton symbol="─" />
-          <WinButton symbol="□" />
-          <WinButton symbol="✕" variant="close" />
+          {/* Minimize */}
+          <span className={styles.winBtn}>
+            <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="minimize-mask" fill="white">
+                <path d="M3 8H9V10H3V8Z"/>
+              </mask>
+              <path d="M3 8V7H2V8H3ZM9 8H10V7H9V8ZM9 10V11H10V10H9ZM3 10H2V11H3V10ZM3 8V9H9V8V7H3V8ZM9 8H8V10H9H10V8H9ZM9 10V9H3V10V11H9V10ZM3 10H4V8H3H2V10H3Z" fill="black" mask="url(#minimize-mask)"/>
+            </svg>
+          </span>
+          {/* Maximize */}
+          <span className={styles.winBtn}>
+            <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="maximize-mask" fill="white">
+                <path d="M2 1H11V10H2V1Z"/>
+              </mask>
+              <path d="M2 1V-1H1V1H2ZM11 1H12V-1H11V1ZM11 10V11H12V10H11ZM2 10H1V11H2V10ZM2 1V3H11V1V-1H2V1ZM11 1H10V10H11H12V1H11ZM11 10V9H2V10V11H11V10ZM2 10H3V1H2H1V10H2Z" fill="black" mask="url(#maximize-mask)"/>
+            </svg>
+          </span>
+          {/* Close */}
+          <span className={styles.winBtn}>
+            <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 2H3V3H4V4H5V5H6V6H5V7H4V8H3V9H5V8H6V7H8V8H9V9H11V8H10V7H9V6H8V5H9V4H10V3H11V2H9V3H8V4H6V3H5V2Z" fill="black"/>
+            </svg>
+          </span>
         </div>
       </div>
 
       {/* ── Menu bar ────────────────────────────────────────────── */}
       <div className={styles.menuBar}>
-        {['File', 'Edit', 'View', 'Favorites', 'Tools', 'Help'].map(item => (
-          <span key={item} className={styles.menuItem}>{item}</span>
+        {['File','Edit','View','Go','Bookmarks','Options','Directory','Window','Help'].map(item => (
+          <span key={item} className={styles.menuItem}>
+            <span style={{textDecoration: 'underline'}}>{item[0]}</span>{item.slice(1)}
+          </span>
         ))}
       </div>
 
       {/* ── Toolbar ─────────────────────────────────────────────── */}
       <div className={styles.toolbar}>
-        <ToolbarButton icon="◀" label="Back"    disabled={!canGoBack}    onClick={onBack} />
-        <ToolbarButton icon="▶" label="Forward" disabled={!canGoForward} onClick={onForward} />
-        <ToolbarSep />
-        <ToolbarButton icon="⊗" label="Stop" />
-        <ToolbarButton icon="↺" label="Refresh" />
-        <ToolbarSep />
-        <ToolbarButton icon="⌂" label="Home" />
-        <div className={styles.toolbarSpacer} />
-        {/* Throbber — the animated IE logo in the top-right of toolbar */}
+        {/* Group 1: navigation */}
+        <ToolbarButton icon={canGoBack ? backIcon : backGrayIcon}         label="Back"    disabled={!canGoBack}    onClick={onBack} />
+        <ToolbarButton icon={canGoForward ? forwardIcon : forwardGrayIcon} label="Forward" disabled={!canGoForward} onClick={onForward} />
+        <ToolbarButton icon={homeIcon}   label="Home" />
+
+        {/* Gap between nav group and utility group */}
+        <span className={styles.toolbarGap} />
+
+        {/* Group 2: utility (decorative) */}
+        <ToolbarButton icon={reloadIcon} label="Reload" />
+        <ToolbarButton icon={openIcon}   label="Open" />
+        <ToolbarButton icon={printIcon}  label="Print" />
+        <ToolbarButton icon={findIcon}   label="Find" />
+
+        {/* Gap between Find and Stop */}
+        <span className={styles.toolbarGap} />
+
+        <ToolbarButton icon={stopIcon} label="Stop" disabled={true} />
+
+        <span className={styles.toolbarSpacer} />
+
+        {/* Throbber — Netscape N logo, top-right */}
         <span className={styles.throbber}>
-          <IELogo />
+          <img src={throbberIcon} className={styles.throbberImg} alt="" draggable="false" />
         </span>
       </div>
 
-      {/* ── Address bar ─────────────────────────────────────────── */}
-      <div className={styles.addressBar}>
-        <span className={styles.addressLabel}>Address</span>
-        <span className={styles.addressDrop}>▾</span>
-        <span className={styles.addressInput}>{currentUrl}</span>
-        <span className={styles.goBtn}>Go</span>
+      {/* ── Location bar + Directory row + Netscape logo ───────── */}
+      <div className={styles.locationSection}>
+
+        <div className={styles.addressBar}>
+          <span className={styles.addressLabel}>Location:</span>
+          <span className={styles.addressInput}>
+            <span className={styles.addressUrl}>{currentUrl}</span>
+            <span className={styles.locationDropBtn}>
+              <span className={styles.locationArrow} />
+            </span>
+          </span>
+        </div>
+
+        <div className={styles.directoryBar}>
+          {["What's New!", "What's Cool!", 'Handbook', 'Net Search', 'Net Directory', 'Software'].map(label => (
+            <span key={label} className={styles.dirBtn}>{label}</span>
+          ))}
+        </div>
+
+        {/* Netscape logo — spans location bar + directory bar */}
+        <img src={netscapeLogoIcon} className={styles.netscapeLogo} alt="" draggable="false" />
+
       </div>
 
-      {/* ── Content viewport + Win98 custom scrollbar ───────────── */}
+      {/* ── Content viewport + Win95 custom scrollbar ───────────── */}
+      <div className={styles.contentFrame}>
       <div className={styles.contentArea}>
 
         {/* Scrollable page — native scrollbar hidden via CSS */}
@@ -240,7 +279,7 @@ export default function BrowserChrome({
           {children}
         </div>
 
-        {/* Win98 scrollbar */}
+        {/* Win95 scrollbar */}
         <div className={styles.scrollbar}>
 
           {/* Up arrow button */}
@@ -275,11 +314,16 @@ export default function BrowserChrome({
 
         </div>
       </div>
+      </div>
 
       {/* ── Status bar ──────────────────────────────────────────── */}
       <div className={styles.statusBar}>
-        <span className={styles.statusText}>{statusText}</span>
-        <span className={styles.statusZone}>Internet zone</span>
+        <span className={styles.statusText}>Document: {statusText}</span>
+        <div className={styles.statusIcons}>
+          <span className={styles.statusIcon} />
+          <span className={styles.statusIcon} />
+          <span className={styles.statusIcon} />
+        </div>
       </div>
 
     </div>

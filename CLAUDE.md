@@ -19,8 +19,8 @@
 
 > **Note:** Level3 uses `museumScreen` (not `screen`) and calls the last state `'artifact'` instead of `'discovery'`. Level0/Level1 use `screen` and `'discovery'`. Prefer `screen` + `'discovery'` in future levels.
 
-**After completing a level, navigate to the next level:**
-- `DiscoveryCard nextUrl` is `/level/N+1` (e.g. Level 0 → `/level/1`). The final level (Level 5) uses `/collection`.
+**After completing a level, navigate to the timeline:**
+- `DiscoveryCard nextUrl` is always `"/timeline"` — all levels return to the timeline on discovery.
 - The timeline is still accessible via the "Back to timeline" link in the HUD.
 
 **Boot sequence:**
@@ -32,7 +32,7 @@
 - Use whichever pattern fits the artifact's complexity.
 
 **Boot delay before animation:**
-- Add ~1000ms pause before the visual boot animation plays so the transition from modal → artifact feels intentional (not instant). See Level3's `handleBeginExcavation`.
+- Add a short pause before the visual boot animation plays so the transition from modal → artifact feels intentional (not instant). 300ms is the current Level3 timing — enough to register without stalling. See Level3's `handleBeginExcavation`.
 
 **Replay behavior:**
 - If `isLevelComplete(N)` is true on load, skip `'intro'` and start at `'booting'` directly.
@@ -101,10 +101,11 @@ phonePower: 'off' | 'booting' | 'on'
 - `phonePointerEvents = museumScreen === 'playing' ? 'auto' : 'none'` — on the wrap div, allows wake-tap on black screen during playing state.
 - `cursorEnabled = museumScreen === 'playing'` — TouchCursor shows whenever playing, regardless of phonePower.
 
-**Lock button:**
+**Lock button + home button wake behavior:**
 - Invisible `<button className={styles.lockBtn}>` in PhoneFrame, positioned over the hardware sleep/wake button.
 - Top face of bezel: `top: 8px; left: 110px; width: 220px; height: 45px`.
 - Only plays lock sound when `phonePower === 'on'` — guard this in `useCallback` deps.
+- Both the lock button and home button call `handleWake()` when `phonePower === 'off'`.
 
 **PhoneFrame dimensions:**
 - BEZEL_W=385, BEZEL_H=735
