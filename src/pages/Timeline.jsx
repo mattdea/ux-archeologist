@@ -20,6 +20,8 @@ export default function Timeline() {
 
   return (
     <div className={styles.timeline}>
+      <span className={styles.pageTitle}>Interface Artifacts</span>
+
       {ENTRIES.map((entry, i) => {
         const complete = isLevelComplete(entry.level)
         const delay    = `${i * 150}ms`

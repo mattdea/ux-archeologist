@@ -36,12 +36,12 @@
 .eraLabel {
   display: block;
   font-family: 'Courier New', monospace;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: #999;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 /* Level title — system sans, 22px, medium */
