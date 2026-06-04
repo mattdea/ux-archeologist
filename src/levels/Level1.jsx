@@ -31,11 +31,7 @@ const BOTTOM_ZONE_H = 180
 export default function Level1() {
   // Skip intro+boot and go directly to 'playing' on replay (level already complete).
   // Skip intro only (boot still plays) if intro was dismissed this session but not yet finished.
-  const [screen, setScreen] = useState(() => {
-    if (isLevelComplete(1)) return 'playing'
-    const introSeen = sessionStorage.getItem('l1_intro_seen') === '1'
-    return introSeen ? 'booting' : 'intro'
-  })
+  const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
   // Restore objectives from this session, or all-complete if level is done.
   const [completedIndices, setCompletedIndices] = useState(() => {
     if (isLevelComplete(1)) return [0, 1, 2]
@@ -90,7 +86,7 @@ export default function Level1() {
           title="The Desktop"
           description="This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find."
           objectives={OBJECTIVES}
-          onBegin={() => { sessionStorage.setItem('l1_intro_seen', '1'); setScreen('booting') }}
+          onBegin={() => setScreen('booting')}
         />
       )}
 
