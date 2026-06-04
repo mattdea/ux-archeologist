@@ -10,7 +10,7 @@ const ENTRIES = [
   { level: 1, year: '1984', title: 'The Desktop',       artifact: 'Direct Manipulation',  path: '/level/1' },
   { level: 2, year: '1995', title: 'The Hyperlink',     artifact: 'Hyperlink Navigation', path: '/level/2' },
   { level: 3, year: '2007', title: 'The Touchscreen',   artifact: 'Multi-Touch',          path: '/level/3' },
-  { level: 4, year: '2015', title: 'The Feed',          artifact: 'Infinite Scroll',      path: '/level/4' },
+  { level: 4, year: '2015', title: 'The Feed',          artifact: 'Algorithmic Feed',     path: '/level/4' },
   { level: 5, year: '2023', title: 'The Conversation',  artifact: 'Natural Language',     path: '/level/5' },
 ]
 
