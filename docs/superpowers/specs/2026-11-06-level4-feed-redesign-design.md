@@ -35,7 +35,7 @@ feed must stay *ranked*, not chronological. The discovery copy and the
     feed's square, saved as `assets/feed/imani/post.jpg`.
   - Grid: the post plus every other photo the user saved from the account in
     `assets/feed/profiles/imani brooks/` (22 full-size Unsplash downloads),
-    except `alioune-seye-fII6JlDwkxI-unsplash.jpg`, a portrait of children,
+    except `alioune-seye-lZMZO-CCOqA-unsplash.jpg`, a portrait of children,
     which the level leaves out as it does every photo of a minor. That is 20
     more photos: Senegalese portraits, fashion work, Dakar beaches and
     streets. Saved square as `assets/feed/imani/grid-01.jpg` …

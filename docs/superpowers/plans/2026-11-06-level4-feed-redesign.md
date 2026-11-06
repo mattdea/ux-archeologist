@@ -18,7 +18,7 @@
 
 | File | Responsibility | Change |
 | --- | --- | --- |
-| `assets/feed/imani/{avatar,post,grid-1,grid-2,grid-3}.jpg` | Imani's committed Unsplash photos | create |
+| `assets/feed/imani/{avatar,post,grid-01…grid-20}.jpg` | Imani's committed Unsplash photos | create |
 | `src/components/feed/archiveData.js` | real accounts from the archive | remove date cutoff; `gridTime(i)` replaces `relativeTime` |
 | `src/components/feed/libraryData.js` | blog photos, friend photo sets | remove `CUTOFF`; `FRIEND_SETS` trimmed to 3 friends |
 | `src/components/feed/feedData.js` | feed, profiles, activity | Imani; 6 `BASE_POSTS`; `FEED_ORDER` + `FEED_TIMES`; activity rows |
@@ -40,7 +40,7 @@ Sources:
   quote the path). Files are named `alioune-seye-<id>-unsplash.jpg`.
 - The post is `alioune-seye-Hp2PFbBdg4w-unsplash.jpg` (3000×2090, woman in a
   checkered dress on a sofa in a red room).
-- Leave out `alioune-seye-fII6JlDwkxI-unsplash.jpg` (a portrait of children).
+- Leave out `alioune-seye-lZMZO-CCOqA-unsplash.jpg` (a portrait of children).
 - The avatar photo (Unsplash id `XQBcBGWvxF4`, a smiling woman with striped
   shadows, 1080×1620) is **not** in that folder. It is in the session
   scratchpad at `/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad/unsplash/XQBcBGWvxF4.jpg`.
@@ -61,7 +61,7 @@ magick "$AV" -gravity north -crop 1080x1080+0+180 +repage -resize 320x320 -quali
 magick "$SRC/alioune-seye-Hp2PFbBdg4w-unsplash.jpg" -resize 750x750^ -gravity center -extent 750x750 -quality 85 assets/feed/imani/post.jpg
 i=0
 for f in "$SRC"/alioune-seye-*-unsplash.jpg; do
-  case "$f" in *Hp2PFbBdg4w*|*fII6JlDwkxI*) continue;; esac
+  case "$f" in *Hp2PFbBdg4w*|*lZMZO-CCOqA*) continue;; esac
   i=$((i+1))
   magick "$f" -resize 750x750^ -gravity center -extent 750x750 -quality 85 "$(printf 'assets/feed/imani/grid-%02d.jpg' $i)"
 done
