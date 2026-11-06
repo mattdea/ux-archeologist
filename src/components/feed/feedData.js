@@ -5,7 +5,7 @@
 // `photo` / `avatar`. Missing files fall back to the gradient / color below,
 // so the feed renders either way.
 
-import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos } from './libraryData'
+import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
 
 // Every image in /assets/feed/, keyed by filename ("living-room.jpg" → URL).
 const FILES = import.meta.glob('../../../assets/feed/*.{jpg,jpeg,png,webp}', {
@@ -37,6 +37,8 @@ const EXPLORE_TIMES = ['3m', '12m', '28m', '41m', '1h', '2h', '3h', '5h', '6h', 
 
 /** A post by a real library account. Deterministic per photo, so the same
     photo shows the same likes and caption in the feed, Explore and profile. */
+const EXTRA_CAPTIONS = ['📷', 'this light though', 'new favorite', 'can’t stop looking at this', 'a good day', 'saturday ✨', 'details', 'more soon']
+
 export function libraryPost(account, url, overrides = {}) {
   const meta = ACCOUNTS[account]
   const h = hashString(url)
@@ -49,7 +51,10 @@ export function libraryPost(account, url, overrides = {}) {
     avatarColor: '#dddddd',
     initial: account[0],
     likes: (big ? 4000 + (h % 90000) : 150 + (h % 3800)).toLocaleString('en-US'),
-    caption: meta.captions[h % meta.captions.length],
+    // The account's own captions on its own photos; plain lines on extras
+    caption: libraryPhotos(account).includes(url)
+      ? meta.captions[h % meta.captions.length]
+      : EXTRA_CAPTIONS[h % EXTRA_CAPTIONS.length],
     commentCount: big ? 60 + (h % 900) : 4 + (h % 80),
     comments: [],
     timestamp: EXPLORE_TIMES[h % EXPLORE_TIMES.length],
@@ -356,11 +361,7 @@ export const TRENDING_TAGS = [
   { tag: '#easter', account: 'wolfordroger' },
   { tag: '#mothersday', account: 'soraceballos' },
 ]
-  .map(t => {
-    const photos = libraryPhotos(t.account)
-    const src = t.post ? photos.find(u => u.includes(t.post + '_')) : photos[t.photo || 0]
-    return { tag: t.tag, src: src || null }
-  })
+  .map(t => ({ tag: t.tag, src: sourcePhoto(t.account, t.post) }))
   .filter(t => t.src)
 
 const EXPLORE_USERS = [
@@ -401,7 +402,10 @@ const EXPLORE_CAPTIONS = [
 export function exploreTile(n) {
   const item = EXPLORE_ORDER[n % EXPLORE_ORDER.length]
   // Video tiles already carry Instagram's camcorder badge in the image.
-  return { id: 'explore-' + n, image: item.url, isVideo: false, post: libraryPost(item.account, item.url) }
+  const post = isLibraryAccount(item.account)
+    ? libraryPost(item.account, item.url)
+    : getProfile(item.account).grid.find(t => t.image === item.url)?.post
+  return { id: 'explore-' + n, image: item.url, isVideo: false, post }
 }
 
 // ── Profiles ───────────────────────────────────────────────────────────────
@@ -449,13 +453,15 @@ export function getProfile(username) {
   // Real accounts: their own photos, in the order they posted them.
   if (isLibraryAccount(username)) {
     const meta = ACCOUNTS[username]
-    const photos = libraryPhotos(username)
+    // Own photos first, then this account's share of same-subject photos.
+    // No photo is owned by two accounts, so no two grids repeat an image.
+    const photos = ownedPhotos(username)
     return {
       username,
       name: meta.name,
       bio: meta.bio,
       website: meta.website || null,
-      posts: (photos.length + 180 + (h % 1400)).toLocaleString('en-US'),
+      posts: photos.length,
       followers: meta.followers,
       following: meta.following,
       ...avatarFor(username),
@@ -467,10 +473,10 @@ export function getProfile(username) {
   const feedPosts = POSTS.filter(p => p.username === username)
   const isBrand = feedPosts.some(p => p.isSponsored)
 
-  // Invented accounts show only their own photos: a friend's whole set (lead
-  // photo is their feed post), or an ad's single photo. Friends' post counts
-  // match what's on the grid.
-  const own = isBrand ? feedPosts.map(p => p.imageSrc).filter(Boolean) : friendPhotos(username)
+  // Invented accounts: a friend's own set first (lead photo is their feed
+  // post), filled out with same-subject photos; an ad shows its one photo.
+  const set = isBrand ? feedPosts.map(p => p.imageSrc).filter(Boolean) : friendPhotos(username)
+  const own = set
   const grid = own.map((image, i) => {
     const feedPost = feedPosts.find(p => p.imageSrc === image)
     const ph = hashString(username + i)
@@ -490,6 +496,7 @@ export function getProfile(username) {
       },
     }
   })
+  // The count matches the grid: every post shown, none claimed but missing.
   const postCount = isBrand ? 240 + (h % 900) : grid.length
 
   return {
@@ -510,7 +517,7 @@ export function getProfile(username) {
 
 /** Photos from a real account, newest first: lib('otntty', 0, 1). */
 function lib(account, ...idx) {
-  const photos = libraryPhotos(account)
+  const photos = ownedPhotos(account)
   return idx.map(i => photos[i]).filter(Boolean)
 }
 
@@ -522,13 +529,13 @@ function friend(username) {
 export const FOLLOWING_ACTIVITY = [
   { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: friend('julia.creates') },
   { id: 'f2', actor: 'daniela.reyes', segments: ['started following ', { user: 'j.okafor' }, ', ', { user: 'mia.c' }, ' and 3 others.'], time: '26m' },
-  { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib('p.hil', 0), ...lib('honoluluchris', 0), ...lib('savagesband', 0)] },
+  { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib('julia.creates', 1), ...lib('lens.folk', 1), ...lib('sfmoma', 2)] },
   { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: 'hummingbirdsxoxo' }, "'s video."], time: '55m', thumbs: lib('hummingbirdsxoxo', 1) },
   { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: 'thejoshuatreehouse' }, '.'], time: '1h' },
   { id: 'f6', actor: 'alex.wanderer', segments: ['liked 2 photos.'], time: '2h', thumbs: [...friendPhotos('city.frames').slice(1, 2), ...friendPhotos('outdoor.vibes').slice(1, 2)] },
   { id: 'f7', actor: 'outdoor.vibes', segments: ['liked ', { user: 'acacia.johnson' }, "'s photo."], time: '3h', thumbs: lib('acacia.johnson', 1) },
   { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: 'otntty' }, '.'], time: '5h' },
-  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib('sfmoma', 1, 2), ...lib('otntty', 1), ...lib('mimphx', 0)] },
+  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib('sfmoma', 1, 3), ...lib('otntty', 1), ...lib('acacia.johnson', 2)] },
 ]
 
 export const YOU_ACTIVITY = [

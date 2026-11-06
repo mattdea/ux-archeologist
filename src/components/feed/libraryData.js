@@ -271,29 +271,104 @@ export const ACCOUNTS = {
   },
 }
 
-// ── Invented friends' photo sets ─────────────────────────────────────────
-// Each invented friend posts from one photo set whose subject matches theirs,
-// so their feed post and profile grid look like one person's account. A set
-// is an account name or a blog-post prefix (date_account). Sets are reserved:
-// their photos never appear under a real account. `lead` picks the photo
-// used for the friend's feed post (default: the set's first photo).
+// ── Who owns which photo ─────────────────────────────────────────────────
+// Every photo on screen belongs to exactly one account, so no image ever
+// appears in two grids. Owners are the accounts in the player's feed: the
+// invented friends and the real accounts they follow. Each owner keeps its
+// own photos, then same-subject photos from library accounts that don't
+// appear in the level are dealt out to fill its grid (fewest-first, up to
+// GRID_CAP). Those source accounts never appear as names on screen.
 
+export const GRID_CAP = 24
+
+// Invented friends. `from` = their own set (account name or date_account
+// blog-post prefix); `lead` = the photo used for their feed post.
 export const FRIEND_SETS = {
-  'marcus.h':       { from: ['christian_foto'] },
-  'julia.creates':  { from: ['jadeantoine'] },
-  'alex.wanderer':  { from: ['chefyash'] },
-  'sarah.moments':  { from: ['liaselina'], lead: '2016-05-01_liaselina_o6ifm73.jpg' },
-  'mike.film':      { from: ['danoziontifik'], lead: '2016-03-30_danoziontifik_o4uz4l5.jpg' },
-  'outdoor.vibes':  { from: ['ssazanovich'], lead: '2016-04-19_ssazanovich_o5w8f63.jpg' },
-  'studio.light':   { from: ['bali_ayu'] },
-  'city.frames':    { from: ['corasacher'], lead: '2016-03-28_corasacher_o4r60j4.jpg' },
-  'lens.folk':      { from: ['asmitaparelkar'] },
-  // #WHPfamilyfeast, Nov 2016: food and family meals
-  'bakes.and.more': { from: ['2016-11-18_instagram', '2016-11-21_instagram'] },
-  // #WHPthisishome, Nov 2016: home life; the lead is the empty living room
-  'daniela.reyes':  { from: ['2016-11-25_instagram', '2016-11-28_instagram'] },
-  // #WHPescape, Nov 2016: getaways
-  'travel.tales':   { from: ['2016-11-04_instagram'] },
+  'marcus.h':       { from: ['christian_foto'], topic: 'people' },
+  'julia.creates':  { from: ['jadeantoine'], topic: 'art' },
+  'alex.wanderer':  { from: ['chefyash'], topic: ['city', 'people'] },
+  'sarah.moments':  { from: ['liaselina'], topic: 'art', lead: '2016-05-01_liaselina_o6ifm73.jpg' },
+  'mike.film':      { from: ['danoziontifik'], topic: 'music', lead: '2016-03-30_danoziontifik_o4uz4l5.jpg' },
+  'outdoor.vibes':  { from: ['ssazanovich'], topic: ['nature', 'sport'], lead: '2016-04-19_ssazanovich_o5w8f63.jpg' },
+  'studio.light':   { from: ['bali_ayu'], topic: ['home', 'art'] },
+  'city.frames':    { from: ['corasacher'], topic: ['city', 'style'], lead: '2016-03-28_corasacher_o4r60j4.jpg' },
+  'lens.folk':      { from: ['asmitaparelkar'], topic: 'style' },
+  // #WHPfamilyfeast (Nov 2016) plus two food blog posts
+  'bakes.and.more': { from: ['2016-11-18_instagram', '2016-11-21_instagram', 'chocolateforbasil', 'uglyproduceisbeautiful'], topic: 'food' },
+  // #WHPthisishome (Nov 2016); the lead is the empty living room
+  'daniela.reyes':  { from: ['2016-11-25_instagram', '2016-11-28_instagram'], topic: 'home' },
+  // #WHPescape (Nov 2016)
+  'travel.tales':   { from: ['2016-11-04_instagram'], topic: ['nature', 'people'] },
+}
+
+// Real accounts in the feed and the subject they draw extra photos from.
+export const REAL_OWNERS = {
+  sfmoma: ['city', 'art'],
+  hummingbirdsxoxo: 'nature',
+  thejoshuatreehouse: ['home', 'style'],
+  'acacia.johnson': 'nature',
+  lucacappuccinodonofrio: 'food',
+  otntty: ['home', 'art'],
+  theoregonduck: ['sport', 'people'],
+  instagram: '*',             // lends some of its 49 to pools below; takes whatever is left over
+}
+
+// Source accounts (never shown as names) grouped by subject.
+const POOLS = {
+  art: ['phannapast', 'richardahnert', 'tatiana_mc_garry', 'mangaday', 'jhnmclghln', 'soraceballos',
+    'paperfashion', 'hombre_mcsteez', 'tylersean13', 'thecuadro', '8bithiphop', 'esposin'],
+  music: ['music', 'savagesband', 'p.hil', 'honoluluchris', 'andyshauf', 'kyson_eye', 'mimphx', 'sashabarr'],
+  style: ['patmcgrathreal', 'mac_daddyy', 'yuki__fujisawa', 'thehatgirls', 'mayaraefe'],
+  people: ['la_mayte', 'ericunderwood', 'kuraevaolga'],
+  city: [],
+  nature: ['pondlife_pondlife'],
+  home: ['wolfordroger'],
+  food: [],
+  sport: ['jameslenger'],
+}
+
+// @instagram community photos lent to thin subjects (the rest stay its own).
+const INSTAGRAM_LENT = {
+  nature: [
+    '2016-02-08_instagram_o290fp2.jpg',
+    '2016-03-09_instagram_o3rsqu2.jpg',
+    '2016-03-09_instagram_o3rsqu4.jpg',
+    '2016-03-18_instagram_o4975s5.jpg',
+    '2016-04-08_instagram_o5c2g01.jpg',
+    '2016-04-18_instagram_o5uowo4.jpg',
+    '2016-04-29_instagram_o6evyy5.jpg',
+    '2016-05-09_instagram_o6xlga3.jpg',
+  ],
+  city: [
+    '2016-02-08_instagram_o290fp3.jpg',
+    '2016-03-18_instagram_o4975s2.jpg',
+    '2016-03-18_instagram_o4975s3.jpg',
+    '2016-03-28_instagram_o4rqxh3.jpg',
+    '2016-04-08_instagram_o5c2g02.jpg',
+    '2016-04-08_instagram_o5c2g03.jpg',
+    '2016-04-08_instagram_o5c2g05.jpg',
+    '2016-04-18_instagram_o5uowo5.jpg',
+    '2016-04-29_instagram_o6evyy3.jpg',
+  ],
+  food: [
+    '2016-02-08_instagram_o290fp4.jpg',
+    '2016-04-08_instagram_o5c2g04.jpg',
+  ],
+  people: [
+    '2016-01-22_instagram_o1dlfz1.jpg',
+    '2016-01-22_instagram_o1dlfz2.jpg',
+    '2016-03-07_instagram_o3p27s4.jpg',
+    '2016-03-07_instagram_o3p27s5.jpg',
+    '2016-03-07_instagram_o3p27s6.jpg',
+    '2016-03-09_instagram_o3rsqu1.jpg',
+    '2016-03-18_instagram_o4975s4.jpg',
+    '2016-03-28_instagram_o4rqxh4.jpg',
+    '2016-04-29_instagram_o6evyy4.jpg',
+    '2016-05-06_instagram_o6rws91.jpg',
+    '2016-05-06_instagram_o6rws94.jpg',
+    '2016-05-06_instagram_o6rws95.jpg',
+    '2016-05-09_instagram_o6xlga5.jpg',
+  ],
 }
 
 // Single photos reserved for the two ads.
@@ -317,17 +392,82 @@ const ALL = Object.entries(FILES)
 
 const inSet = (p, entry) => p.account === entry || p.name.startsWith(entry + '_')
 const AD_FILES = new Set(Object.values(AD_PHOTOS))
-const isReserved = p => AD_FILES.has(p.name) ||
-  Object.values(FRIEND_SETS).some(set => set.from.some(e => inSet(p, e)))
+const LENT = new Set(Object.values(INSTAGRAM_LENT).flat())
 
-/** A friend's photo URLs, lead photo first. Excludes ad photos. */
+function hash(str) {
+  let h = 2166136261
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0 }
+  return h
+}
+
+// Build the ownership table once: owner → [{ url, name, own }], own first.
+const OWNED = (() => {
+  const claimed = new Set(AD_FILES)
+  const owned = {}
+  const take = (owner, photos, own) => photos.forEach(p => {
+    if (claimed.has(p.name)) return
+    claimed.add(p.name)
+    owned[owner].push({ url: p.url, name: p.name, own })
+  })
+
+  // 1. Own photos
+  Object.entries(FRIEND_SETS).forEach(([u, set]) => {
+    owned[u] = []
+    let photos = ALL.filter(p => set.from.some(e => inSet(p, e)))
+    const lead = set.lead ? photos.findIndex(p => p.name === set.lead) : 0
+    if (lead > 0) photos = [photos[lead], ...photos.filter((_, i) => i !== lead)]
+    take(u, photos, true)
+  })
+  Object.keys(REAL_OWNERS).forEach(u => {
+    owned[u] = []
+    // Newest blog post first; within a post, the blog's own order
+    const photos = ALL
+      .filter(p => p.account === u && p.date <= CUTOFF && !LENT.has(p.name))
+      .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name))
+    take(u, photos, true)
+  })
+
+  // 2. Deal each subject's spare photos to its owners, fewest first. An
+  //    owner can draw from a second subject, e.g. @sfmoma also takes art.
+  const topicOwners = {}
+  const addOwner = (u, t) => [].concat(t || []).forEach(x => x !== '*' && (topicOwners[x] ||= []).push(u))
+  Object.entries(FRIEND_SETS).forEach(([u, s]) => addOwner(u, s.topic))
+  Object.entries(REAL_OWNERS).forEach(([u, t]) => addOwner(u, t))
+  Object.entries(topicOwners).forEach(([topic, owners]) => {
+    const spare = ALL
+      .filter(p => !claimed.has(p.name) &&
+        ((POOLS[topic] || []).some(e => inSet(p, e)) || (INSTAGRAM_LENT[topic] || []).includes(p.name)))
+      .sort((a, b) => hash(topic + a.name) - hash(topic + b.name))
+    spare.forEach(p => {
+      const open = owners.filter(o => owned[o].length < GRID_CAP)
+      if (!open.length) return
+      open.sort((a, b) => owned[a].length - owned[b].length || a.localeCompare(b))
+      take(open[0], [p], false)
+    })
+  })
+
+  // 3. @instagram takes everything still unclaimed, with no cap: its real
+  //    grid was a mix of community photos on every subject.
+  const pooled = p => Object.values(POOLS).flat().some(e => inSet(p, e)) || LENT.has(p.name)
+  ALL.filter(p => !claimed.has(p.name) && pooled(p))
+    .sort((a, b) => hash('ig' + a.name) - hash('ig' + b.name))
+    .forEach(p => take('instagram', [p], false))   // no cap: nothing goes unused
+  return owned
+})()
+
+/** Every photo URL an account owns: its own first, then its share of extras. */
+export function ownedPhotos(username) {
+  return (OWNED[username] || []).map(p => p.url)
+}
+
+/** Only the account's own photos (no extras): for feed posts and avatars. */
+export function libraryPhotos(account) {
+  return (OWNED[account] || []).filter(p => p.own).map(p => p.url)
+}
+
+/** A friend's photos, lead first (own set, then extras). */
 export function friendPhotos(username) {
-  const set = FRIEND_SETS[username]
-  if (!set) return []
-  const photos = ALL.filter(p => set.from.some(e => inSet(p, e)) && !AD_FILES.has(p.name))
-  const lead = set.lead ? photos.findIndex(p => p.name === set.lead) : 0
-  if (lead > 0) photos.unshift(photos.splice(lead, 1)[0])
-  return photos.map(p => p.url)
+  return FRIEND_SETS[username] ? ownedPhotos(username) : []
 }
 
 /** URL of an ad's reserved photo. */
@@ -337,46 +477,36 @@ export function adPhoto(username) {
   return p ? p.url : null
 }
 
-/** Every photo usable for real accounts: { url, account, date }, oldest
-    first. Skips sub-640px photos and anything reserved for friends or ads. */
-export const LIBRARY = ALL
-  .filter(p => p.date <= CUTOFF && ACCOUNTS[p.account] && !isReserved(p))
-  .sort((a, b) => (a.date + a.url).localeCompare(b.date + b.url))
-
-// Per account: newest blog post first, and within a post the blog's own
-// order (photo 1 is the lead image).
-const BY_ACCOUNT = {}
-LIBRARY.forEach(p => { (BY_ACCOUNT[p.account] ||= []).push(p) })
-Object.keys(BY_ACCOUNT).forEach(a => {
-  BY_ACCOUNT[a] = BY_ACCOUNT[a]
-    .sort((x, y) => (y.date.localeCompare(x.date)) || x.url.localeCompare(y.url))
-    .map(p => p.url)
-})
-
-/** All photo URLs for an account, newest post first. */
-export function libraryPhotos(account) {
-  return (BY_ACCOUNT[account] || []).slice()
-}
-
-/** The account's avatar: the lead photo of its earliest post. */
+/** The account's avatar: the lead photo of its earliest own post. */
 export function libraryAvatar(account) {
-  const lib = LIBRARY.find(p => p.account === account)
-  return lib ? lib.url : null
+  const own = (OWNED[account] || []).filter(p => p.own)
+  if (!own.length) return null
+  return own.slice().sort((a, b) => a.name.localeCompare(b.name))[0].url
 }
 
 export function isLibraryAccount(username) {
-  return !!(ACCOUNTS[username] && BY_ACCOUNT[username])
+  return !!(ACCOUNTS[username] && REAL_OWNERS[username] !== undefined && OWNED[username]?.length)
+}
+
+/** Who owns a photo URL, or null. */
+export function ownerOf(url) {
+  for (const [u, list] of Object.entries(OWNED)) if (list.some(p => p.url === url)) return u
+  return null
 }
 
 /**
- * Explore order: round-robin across accounts, so neighbouring tiles come from
- * different people. [{ url, account }]
+ * Explore order: every owned photo, round-robin across owners so
+ * neighbouring tiles come from different accounts. [{ url, account }]
  */
 export const EXPLORE_ORDER = (() => {
-  const queues = Object.keys(BY_ACCOUNT).map(a => BY_ACCOUNT[a].map(url => ({ url, account: a })))
+  const queues = Object.keys(OWNED).map(a => OWNED[a].map(p => ({ url: p.url, account: a })))
   const out = []
-  for (let round = 0; queues.some(q => q.length); round++) {
-    queues.forEach(q => { if (q.length) out.push(q.shift()) })
-  }
+  while (queues.some(q => q.length)) queues.forEach(q => { if (q.length) out.push(q.shift()) })
   return out
 })()
+
+/** A photo from a source account (for hashtag thumbnails), wherever it ended up. */
+export function sourcePhoto(account, match) {
+  const p = ALL.find(x => x.account === account && (!match || x.name.includes(match)) && !AD_FILES.has(x.name))
+  return p ? p.url : null
+}
