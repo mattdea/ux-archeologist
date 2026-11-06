@@ -19,8 +19,15 @@ export default function TouchCursor({ containerRef }) {
     const container = containerRef.current
     if (!container) return
 
-    const handleMouseMove = (e) => {
+    // Move the indicator to the pointer and show it. Every show goes through
+    // here so the indicator is never visible at its unpositioned origin (the
+    // screen's top-left corner). Returns false if the point is outside.
+    const place = (e) => {
       const rect = container.getBoundingClientRect()
+      const inside = rect.width > 0 &&
+        e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom
+      if (!inside || !posRef.current) return false
       // getBoundingClientRect gives visual (scaled) coordinates.
       // translate() operates in the element's local (unscaled) coordinate space.
       // Multiply by the layout/visual ratio to convert correctly.
@@ -28,16 +35,18 @@ export default function TouchCursor({ containerRef }) {
       const scaleY = container.offsetHeight / rect.height
       const x = (e.clientX - rect.left) * scaleX
       const y = (e.clientY - rect.top)  * scaleY
-      if (posRef.current) {
-        posRef.current.style.transform = `translate(${x}px, ${y}px)`
-        // Also show on move: the pointer may already be inside when this mounts
-        posRef.current.style.opacity = '1'
-      }
+      posRef.current.style.transform = `translate(${x}px, ${y}px)`
+      posRef.current.style.opacity = '1'
+      return true
     }
 
-    const handleMouseEnter = () => {
-      if (posRef.current) posRef.current.style.opacity = '1'
-    }
+    // Move also shows the indicator: the pointer may already be inside when
+    // this mounts.
+    const handleMouseMove = (e) => { place(e) }
+
+    // The browser also fires mouseenter when the screen appears under a still
+    // pointer (e.g. when the intro modal closes), so position before showing.
+    const handleMouseEnter = (e) => { place(e) }
 
     const handleMouseLeave = () => {
       if (posRef.current) posRef.current.style.opacity = '0'
@@ -76,7 +85,7 @@ export default function TouchCursor({ containerRef }) {
 
   return (
     <div className={styles.layer}>
-      {/* Initially invisible — handleMouseEnter shows it */}
+      {/* Invisible until place() has put it under the pointer */}
       <div ref={posRef} className={styles.pos} style={{ opacity: 0 }}>
         <div ref={circleRef} className={styles.circle} />
         <div ref={rippleRef} className={styles.ripple} />
