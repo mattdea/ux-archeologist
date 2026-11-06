@@ -1,5 +1,5 @@
 // src/components/feed/icons.jsx
-// Glyphs for the 2015 Instagram iOS app (pre-May-2016 redesign), drawn as
+// Glyphs for the 2016 Instagram iOS app (pre-May-2016 redesign), drawn as
 // inline SVGs from the reference screenshots in docs/reference/.
 // Sizes are in points at 1× (the feed lays out at 320 × 568, then is zoomed to 375 wide).
 
@@ -59,7 +59,7 @@ export function CommentOutlineIcon() {
   )
 }
 
-/** "ooo" overflow menu: three 5pt outlined grey rings, as in the 2015 app. */
+/** "ooo" overflow menu: three 5pt outlined grey rings, as in the 2016 app. */
 export function MoreDotsIcon() {
   return (
     <svg width="26" height="6" viewBox="0 0 26 6" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true">
@@ -91,7 +91,7 @@ export function BurstHeartIcon() {
 // ─── Tab bar ─────────────────────────────────────────────────────────────────
 
 /** House: steep roof whose eaves overhang the walls, with an arched doorway
-    cut out of the middle. Traced from the 2015 tab bar, 30 × 25.5. */
+    cut out of the middle. Traced from the 2016 tab bar, 30 × 25.5. */
 export function TabHomeIcon() {
   return (
     <svg width="30" height="25.5" viewBox="0 0 80 68" fill="currentColor" aria-hidden="true">
@@ -139,7 +139,7 @@ export function TabActivityIcon() {
 }
 
 /** Profile: an egg-shaped head, taller than wide, over domed shoulders with
-    a flat base. Traced from the 2015 tab bar, 22 × 24. */
+    a flat base. Traced from the 2016 tab bar, 22 × 24. */
 export function TabProfileIcon() {
   return (
     <svg width="22" height="24.2" viewBox="0 0 60 66" fill="currentColor" aria-hidden="true">

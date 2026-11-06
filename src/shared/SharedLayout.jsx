@@ -51,7 +51,7 @@ const LEVEL_META = {
   level1: { era: '1984', title: 'The Desktop',        level: 1 },
   level2: { era: '1995', title: 'The Hyperlink',      level: 2 },
   level3: { era: '2007', title: 'The Touchscreen',    level: 3 },
-  level4: { era: '2015', title: 'The Feed',           level: 4 },
+  level4: { era: '2016', title: 'The Feed',           level: 4 },
   level5: { era: '2023', title: 'The Conversation',   level: 5 },
 }
 

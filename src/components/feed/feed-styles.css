@@ -16,7 +16,7 @@
   --ig-tab-glyph: #a7a9ad;
   --ig-badge: #ed4956;
   --ig-font: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-  /* Nav titles, toggles, section labels: the 2015 app set these in Proxima Nova.
+  /* Nav titles, toggles, section labels: the 2016 app set these in Proxima Nova.
      Montserrat (loaded in index.html) stands in where it isn't installed. */
   --ig-display-font: 'Proxima Nova', 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

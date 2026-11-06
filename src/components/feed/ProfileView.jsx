@@ -1,5 +1,5 @@
 // src/components/feed/ProfileView.jsx
-// 2015 profile: blue header with the username centered (gear on your own,
+// 2016 profile: blue header with the username centered (gear on your own,
 // back chevron on others), round avatar at left, posts / followers / following
 // at right with an "Edit Profile" or "Follow" button beneath, name + bio, the
 // grid / list / pin / tagged row, then the 3-column grid. The player's own

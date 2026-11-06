@@ -1,7 +1,7 @@
 // src/components/feed/ActivityTab.jsx
 // Heart tab: "FOLLOWING / YOU" toggle under an "ACTIVITY" title, then
 // notification rows (avatar, text with blue usernames, grey time, post
-// thumbnails). The "You" tab has the player's two followers and the 2015
+// thumbnails). The "You" tab has the player's two followers and the 2016
 // empty-state copy for posts.
 // Props:
 //   following     — rows for the Following tab (newest first)

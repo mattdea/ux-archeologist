@@ -1,6 +1,6 @@
 // src/levels/Level4.jsx
 //
-// Level 4 — 2015 Instagram Feed / "The Feed"
+// Level 4 — 2016 Instagram Feed / "The Feed"
 // Museum state machine: 'intro' → 'booting' → 'playing' → 'discovery'
 //
 // Container: the lit feed screen inside a ghost iPhone 6 outline + glow
@@ -89,7 +89,7 @@ export default function Level4() {
   // Record artifact when discovery card appears
   useEffect(() => {
     if (screen === 'discovery') {
-      addArtifact({ name: 'Algorithmic Feed', era: '2015', description: DISCOVERY_DESCRIPTION })
+      addArtifact({ name: 'Algorithmic Feed', era: '2016', description: DISCOVERY_DESCRIPTION })
     }
   }, [screen])
 
@@ -107,7 +107,7 @@ export default function Level4() {
 
       {screen === 'intro' && (
         <IntroModal
-          era="2015"
+          era="2016"
           title="The Feed"
           description="The interface stopped waiting for you. It started optimizing for your attention."
           objectives={OBJECTIVES}
@@ -117,7 +117,7 @@ export default function Level4() {
 
       {screen === 'discovery' && (
         <DiscoveryCard
-          era="2015"
+          era="2016"
           artifactName="Algorithmic Feed"
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/timeline"

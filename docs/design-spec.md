@@ -20,7 +20,7 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 /level/1        → Level 1 — 1984 Macintosh Desktop
 /level/2        → Level 2 — 1995 Netscape Web
 /level/3        → Level 3 — 2007 iPhone
-/level/4        → Level 4 — 2015 Social Feed
+/level/4        → Level 4 — 2016 Social Feed
 /level/5        → Level 5 — 2023 AI Interface
 /collection     → Full artifact collection / shareable finale
 ```
@@ -150,7 +150,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 | 1 | 1984 | Beige CRT monitor bezel (780×755px) |
 | 2 | 1995 | Browser chrome — no device bezel |
 | 3 | 2007 | iPhone silhouette (385×735px bezel, 320×480px screen) |
-| 4 | 2015 | Ghost iPhone 6: hairline outline + screen glow, 375×667px screen (`GhostDevice`) |
+| 4 | 2016 | Ghost iPhone 6: hairline outline + screen glow, 375×667px screen (`GhostDevice`) |
 | 5 | 2023 | Full-width chat panel — no device, no chrome, no frame |
 
 ---
@@ -325,7 +325,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 ---
 
-### Level 4: 2015 — The Feed
+### Level 4: 2016 — The Feed
 **Status: Complete**
 
 **Artifact:** Instagram for iOS, spring 2016 (blue header, dark tab bar: the UI just before the May 2016 redesign)
@@ -334,7 +334,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **Route:** `/level/4`
 
 **IntroModal:**
-- Era: `2015`
+- Era: `2016`
 - Title: `The Feed`
 - Description: "The interface stopped waiting for you. It started optimizing for your attention."
 
@@ -391,7 +391,7 @@ src/components/feed/
   NavBar.jsx, StatusBar.jsx            # Blue header
   Post.jsx                             # Post card, double-tap like
   ExploreTab.jsx, ActivityTab.jsx, ProfileView.jsx, PostDetailView.jsx, PhotoGrid.jsx
-  Avatar.jsx, icons.jsx                # Traced 2015 glyphs
+  Avatar.jsx, icons.jsx                # Traced 2016 glyphs
   feed-styles.css                      # Artifact styles, tokens, nav transitions
   feedData.js                          # Friends, feed assembly, profiles, activity
   archiveData.js                       # Wayback archive accounts
@@ -558,7 +558,7 @@ Era-authentic only. Never use museum-layer easing inside the artifact.
 - Rubber-band scroll: linear drag, 0.3× damping past bounds; `cubic-bezier(0.25, 0.46, 0.45, 0.94)` 300ms snap on release
 - Sound effects: `audio.volume = 0.5` for all sounds
 
-**Level 4 — 2015:**
+**Level 4 — 2016:**
 - Boot: nothing drawn during the intro; 300ms pause → screen fades up in place (450ms) with content already there → ghost outline and glow fade in (800ms) → HUD
 - Navigation push/pop like iOS 9: incoming view slides from the right with a leading-edge shadow, the view beneath drifts 30% left and dims 10%, the blue bar holds still while titles cross-fade; pop is the reverse. 500ms, `cubic-bezier(0.32, 0.72, 0, 1)`
 - Double-tap heart: spring in with overshoot (~250ms), hold, fade by 900ms; small heart bounce 320ms

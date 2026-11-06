@@ -1,5 +1,5 @@
 // src/components/feed/feedData.js
-// Content for the 2015 Instagram feed.
+// Content for the 2016 Instagram feed.
 //
 // Photos: drop files into /assets/feed/ and reference them by filename in
 // `photo` / `avatar`. Missing files fall back to the gradient / color below,
@@ -64,7 +64,7 @@ export function libraryPost(account, url, overrides = {}) {
 }
 
 // ── Posts ──────────────────────────────────────────────────────────────────
-// `timestamp` is the 2015 short form shown at the right of the post header.
+// `timestamp` is the 2016 short form shown at the right of the post header.
 // BASE_POSTS are the player's (invented) friends and two ads; real accounts
 // they follow are woven in below as POSTS.
 

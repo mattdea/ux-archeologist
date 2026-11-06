@@ -1,5 +1,5 @@
 // src/components/feed/Post.jsx
-// Single feed post, 2015 Instagram iOS layout: header (avatar, blue username,
+// Single feed post, 2016 Instagram iOS layout: header (avatar, blue username,
 // grey timestamp or blue "Sponsored"), square photo, action row (outlined
 // heart + comment, "•••" or a blue CTA button on the right) over a hairline,
 // then likes, caption, "View all N comments" and the latest comments.

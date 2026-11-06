@@ -1,5 +1,5 @@
 // src/components/feed/PhotoGrid.jsx
-// 3-column square grid used by Explore and profiles. 2015 layout: 1pt white
+// 3-column square grid used by Explore and profiles. 2016 layout: 1pt white
 // gutters, video tiles carry the small camcorder badge at the top right.
 // Props:
 //   tiles      — [{ id, image, gradient, isVideo, post }]
