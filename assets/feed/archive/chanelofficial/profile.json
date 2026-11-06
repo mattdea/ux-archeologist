@@ -1,0 +1,501 @@
+{
+ "handle": "chanelofficial",
+ "full_name": "CHANEL",
+ "biography": "",
+ "external_url": "http://www.chanel.com",
+ "is_verified": true,
+ "followers": 11575938,
+ "following": 0,
+ "posts_count": 331,
+ "profile_pic": null,
+ "captured_at": "20160409195929",
+ "captures_used": [
+  "20160304132134",
+  "20160318060108",
+  "20160328104010",
+  "20160409195929"
+ ],
+ "source": "https://web.archive.org/web/20160409195929/https://www.instagram.com/chanelofficial/",
+ "posts": [
+  {
+   "code": "BDBm4CbAEma",
+   "date": 1458155362,
+   "caption": "Get up close and personal with supermodel Gisele Bündchen and CHANEL Makeup Creative Director Lucia Pica in CHANEL Beauty Talks, the exclusive new makeup series. In this first episode, Gisele reveals the secrets to achieving her signature natural glow with LES BEIGES DE CHANEL. #lesbeigesdechanel #chanelbeautytalks #chanelmakeup",
+   "likes": 93477,
+   "comments": 200,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BDBUFszgEuW",
+   "date": 1458145513,
+   "caption": "Go behind the scenes with Gisele Bündchen and CHANEL Makeup Creative Director Lucia Pica in the exclusive new series from CHANEL, Beauty Talks. In Episode 1, Gisele reveals the secrets to achieving her signature natural glow with LES BEIGES DE CHANEL. #lesbeigesdechanel #chanelbeautytalks #chanelmakeup",
+   "likes": 102220,
+   "comments": 177,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BDBAScQgEne",
+   "date": 1458135131,
+   "caption": "Become a beauty insider in the one-off Beauty Talk between supermodel Gisele Bündchen and CHANEL Makeup Creative Director Lucia Pica. In this episode, uncover the makeup secrets to find the perfect natural glow with LES BEIGES DE CHANEL. #lesbeigesdechanel #chanelbeautytalks #chanelmakeup",
+   "likes": 94288,
+   "comments": 107,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BC-0sHfgEiF",
+   "date": 1458061941,
+   "caption": "@caradelevingne #ChanelSunglasses #ChanelSpringSummer2016",
+   "likes": 98906,
+   "comments": 373,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BC-zknoAEgE",
+   "date": 1458061355,
+   "caption": "#ChanelSunglasses #ChanelSpringSummer2016",
+   "likes": 93080,
+   "comments": 392,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BC-kXPqAEv4",
+   "date": 1458053382,
+   "caption": "#ChanelSunglasses #ChanelSpringSummer2016",
+   "likes": 71109,
+   "comments": 364,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BC77WgQgEgr",
+   "date": 1457964771,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW @pharrell",
+   "likes": 94518,
+   "comments": 766,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCzukeHgEhS",
+   "date": 1457689634,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 128419,
+   "comments": 1263,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCvE5o5AEkb",
+   "date": 1457533570,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 95952,
+   "comments": 611,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCtTTZTgEn2",
+   "date": 1457474012,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 95707,
+   "comments": 530,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCtQdTjAEhq",
+   "date": 1457472520,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 79581,
+   "comments": 169,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCtK5W4AEl_",
+   "date": 1457469604,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW @gigihadid",
+   "likes": 143303,
+   "comments": 464,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCtHTpiAEu2",
+   "date": 1457467722,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 86116,
+   "comments": 167,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCs8uJPAEnI",
+   "date": 1457462172,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW @gweelos @pharrell",
+   "likes": 115369,
+   "comments": 409,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCs6iNOgEik",
+   "date": 1457461026,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 84952,
+   "comments": 251,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCsyq_EgEhl",
+   "date": 1457456904,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 114318,
+   "comments": 473,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCswDz5gErr",
+   "date": 1457455534,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 79443,
+   "comments": 137,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCsHqyoAEgj",
+   "date": 1457434358,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW  @gweelos",
+   "likes": 121708,
+   "comments": 500,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCsFw1UAEt4",
+   "date": 1457433358,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 142751,
+   "comments": 363,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCsBaEygEnm",
+   "date": 1457431075,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 98541,
+   "comments": 270,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCr7TdWgEu7",
+   "date": 1457427875,
+   "caption": "#ChanelFallWinter2017 #FrontRowOnly #PFW",
+   "likes": 110883,
+   "comments": 617,
+   "is_video": false,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCi9yV-AEkS",
+   "date": 1457127187,
+   "caption": "The #CocoCase Show 3 #ChanelSpringSummer2016",
+   "likes": 75148,
+   "comments": 452,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCizrH5AEvv",
+   "date": 1457121885,
+   "caption": "The #CocoCase Show 2 #ChanelSpringSummer2016",
+   "likes": 76596,
+   "comments": 1212,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BCisZUMAEhJ",
+   "date": 1457118069,
+   "caption": "The #CocoCase Show 1 #ChanelSpringSummer2016",
+   "likes": 63031,
+   "comments": 474,
+   "is_video": true,
+   "captured_at": "20160318060108",
+   "file": null
+  },
+  {
+   "code": "BChRZj0gElw",
+   "date": 1457070361,
+   "caption": "#ChanelSpringSummer2016",
+   "likes": 56539,
+   "comments": 237,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BCgKg23gEhE",
+   "date": 1457033196,
+   "caption": "#ChanelSpringSummer2016",
+   "likes": 76116,
+   "comments": 519,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BCcxhp4gEgd",
+   "date": 1456919432,
+   "caption": "Daisy Ridley, #Oscars 2016, Los Angeles @theacademy @daisyridley #ChanelHauteCouture #ChanelFineJewelry",
+   "likes": 126666,
+   "comments": 405,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BCbJrDpAEsf",
+   "date": 1456864983,
+   "caption": "#ChanelSpringSummer2016 #CocoCase @micarganaraz @lineisymontero",
+   "likes": 86103,
+   "comments": 724,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BCatieNAEll",
+   "date": 1456850233,
+   "caption": "#ChanelSpringSummer2016 @micarganaraz @lineisymontero",
+   "likes": 70037,
+   "comments": 413,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BCZ5zgYgEso",
+   "date": 1456823109,
+   "caption": "Julianne Moore, #Oscars 2016, Los Angeles @theacademy #ChanelHauteCouture",
+   "likes": 137290,
+   "comments": 476,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BCN8wtTgEhh",
+   "date": 1456422006,
+   "caption": "#CarineandKarl #CocoCase #ChanelSpringSummer2016",
+   "likes": 91988,
+   "comments": 888,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BB97mz7gEiX",
+   "date": 1455884530,
+   "caption": "@caradelevingne #ChanelSunglasses #ChanelSpringSummer2016",
+   "likes": 88777,
+   "comments": 716,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBn56BGAEhA",
+   "date": 1455145441,
+   "caption": "I can't get you out of my head. #BeMyValentine #CocoCrush #Chanel (Photo by Soo Joo)",
+   "likes": 126900,
+   "comments": 1144,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBnY_X8AEh0",
+   "date": 1455128183,
+   "caption": "Come ride with me. #BeMyValentine #CocoCrush #Chanel (Photo by Soo Joo)",
+   "likes": 100901,
+   "comments": 423,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBm_TuTgErQ",
+   "date": 1455114718,
+   "caption": "I feel like I'm glowing. #BeMyValentine #CocoCrush #Chanel (Photo by Soo Joo)",
+   "likes": 120782,
+   "comments": 470,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBlKob2gEny",
+   "date": 1455053546,
+   "caption": "You make me fly. #BeMyValentine #CocoCrush #Chanel (Photo by Soo Joo)",
+   "likes": 114239,
+   "comments": 248,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBkyrfWAEnC",
+   "date": 1455040989,
+   "caption": "I want more than your kisses. #BeMyValentine #CocoCrush #Chanel (Photo by Soo Joo)",
+   "likes": 96755,
+   "comments": 304,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBkhNXPAEj2",
+   "date": 1455031829,
+   "caption": "Floating on cloud 9. #BeMyValentine #CocoCrush #Chanel (Photo by Soo Joo)",
+   "likes": 140946,
+   "comments": 245,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBDJJJ2gEkw",
+   "date": 1453911915,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 107756,
+   "comments": 852,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBCiB28gEtd",
+   "date": 1453891408,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 192222,
+   "comments": 3393,
+   "is_video": true,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBA46YugEmS",
+   "date": 1453836297,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 152022,
+   "comments": 988,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBA25ysAEiw",
+   "date": 1453835243,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 146731,
+   "comments": 819,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBA2tAHgEiU",
+   "date": 1453835139,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 125901,
+   "comments": 290,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBA2eowgEh4",
+   "date": 1453835021,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 111935,
+   "comments": 314,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBA0HzcAEtA",
+   "date": 1453833785,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 100547,
+   "comments": 191,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBAytQnAEqO",
+   "date": 1453833044,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 93016,
+   "comments": 285,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBAxZsAAEnI",
+   "date": 1453832359,
+   "caption": "#ChanelHauteCouture #ChanelHC16 @kendalljenner  @gigihadid",
+   "likes": 207050,
+   "comments": 2343,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  },
+  {
+   "code": "BBAthPUAEv_",
+   "date": 1453830324,
+   "caption": "#ChanelHauteCouture #ChanelHC16",
+   "likes": 111710,
+   "comments": 412,
+   "is_video": false,
+   "captured_at": "20160304132134",
+   "file": null
+  }
+ ]
+}
