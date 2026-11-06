@@ -21,7 +21,7 @@ import useBezelScale from '../hooks/useBezelScale'
 const BOTTOM_ZONE_H = 180
 
 const OBJECTIVES = [
-  "Find your friend's post",
+  "Find Imani's post — she has news",
   'Learn more about a sponsored post',
   'Like a post',
 ]
