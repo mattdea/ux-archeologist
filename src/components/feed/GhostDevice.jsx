@@ -65,7 +65,7 @@ export default function GhostDevice({ children, lit = false, touch = false }) {
         </defs>
 
         <g className={styles.ticks}>
-          {/* Side buttons: short, slightly brighter ticks on the edges.
+          {/* Side buttons: short ticks on the edges, as faint as the body.
               Left: mute switch, volume up, volume down. Right: sleep/wake. */}
           <path d="M0.5 128.5v26" />
           <path d="M0.5 188.5v50" />
