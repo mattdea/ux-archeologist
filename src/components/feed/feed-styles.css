@@ -1,183 +1,190 @@
-/* feed-styles.css — 2016 Instagram artifact layer */
+/* feed-styles.css — spring 2016 Instagram artifact layer (iOS 9, iPhone 6, pre-May-2016 redesign) */
 /* Do NOT import or reference museum-ui styles */
 
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-
-/* ─── App shell ──────────────────────────────────────────────────────────── */
+/* ─── Tokens (sampled from docs/reference/instagram1.jpeg) ───────────────── */
 
 .feedApp {
-  width: 390px;
+  --ig-blue: #12558a;          /* header, camera tab, usernames, likes, links */
+  --ig-cta-blue: #2a8fc1;      /* outlined SHOP NOW / LEARN MORE button */
+  --ig-text: #262626;
+  --ig-muted: #999999;         /* timestamps, "View all N comments" */
+  --ig-icon: #9a9a9a;          /* outlined heart / comment stroke, "•••" */
+  --ig-hairline: #eeeeee;
+  --ig-link-blue: #4090db;     /* selected grid icon, empty-state arrow, Follow button */
+  --ig-tab-bg: #26272b;
+  --ig-tab-selected-bg: #313236; /* selected tab: a slightly lighter tile */
+  --ig-tab-glyph: #a7a9ad;
+  --ig-badge: #ed4956;
+  --ig-font: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+/* ─── App shell: iPhone 6 point size (375 × 667) ─────────────────────────── */
+
+.feedApp {
+  width: 375px;
+  height: 100%;
+  max-height: 667px;
+  align-self: center;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #fafafa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #262626;
+  background: #ffffff;
+  font-family: var(--ig-font);
+  font-size: 13px;
+  color: var(--ig-text);
+  -webkit-font-smoothing: antialiased;
   box-shadow:
     0 14px 80px rgba(0, 0, 0, 0.65),
     0 3px 24px rgba(0, 0, 0, 0.45);
 }
 
-/* ─── Top bar ────────────────────────────────────────────────────────────── */
+/* Inside the ghost device: the slot is exact, the frame owns any shadow, and
+   the root paints no background — when the unit is transform-scaled, a white
+   root can show as a hairline seam past the edges of its children. */
+.feedAppFramed {
+  height: 667px;
+  background: transparent;
+  box-shadow: none;
+}
 
-.feedTopBar {
+.feedApp button {
+  font-family: inherit;
+}
+
+/* ─── Blue header: status bar + nav bar ──────────────────────────────────── */
+
+.feedHeader {
   flex: 0 0 auto;
-  height: 44px;
-  background: #ffffff;
-  border-bottom: 1px solid #dbdbdb;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
+  background: var(--ig-blue);
+  color: #ffffff;
   position: relative;
   z-index: 10;
 }
 
-.feedTopBarBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
+.iosStatusBar {
+  height: 20px;
   display: flex;
   align-items: center;
-  color: #262626;
-  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 0 5.5px 0 6.5px;
+  font-size: 12px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.iosStatusLeft,
+.iosStatusRight {
+  display: flex;
+  align-items: center;
+  flex: 1;
   line-height: 0;
 }
 
-.feedTopBarRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.iosStatusLeft {
+  gap: 4px;
 }
 
-.feedWordmark {
-  font-family: 'Dancing Script', cursive;
-  font-weight: 700;
-  font-size: 27px;
-  color: #262626;
+.iosStatusRight {
+  justify-content: flex-end;
+}
+
+.iosStatusTime {
+  flex: 0 0 auto;
   line-height: 1;
-  letter-spacing: -0.5px;
+}
+
+.iosStatusBar svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.feedNavBar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+}
+
+/* Title sits dead center regardless of what is at the edges */
+.feedNavTitle {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 250px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #ffffff;
+  line-height: 1;
   pointer-events: none;
 }
 
-/* ─── Story tray ─────────────────────────────────────────────────────────── */
-
-.storyTray {
-  background: #ffffff;
-  border-bottom: 1px solid #dbdbdb;
-  padding: 10px 4px 10px 12px;
+.feedNavLeft {
+  margin-right: auto;
   display: flex;
-  gap: 2px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  flex-shrink: 0;
+  align-items: center;
 }
 
-.storyTray::-webkit-scrollbar {
-  display: none;
+.feedNavRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 
-.storyItem {
+/* Script wordmark: the repo SVG is #262626, so it is used as a mask over white */
+.feedWordmark {
+  display: block;
+  width: 105px;
+  height: 30px;
+  background: #ffffff;
+  -webkit-mask: url('../../../assets/instagram-wordmark.svg') center / contain no-repeat;
+  mask: url('../../../assets/instagram-wordmark.svg') center / contain no-repeat;
+  pointer-events: none;
+  user-select: none;
+}
+
+.feedNavBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+/* ─── Screen stack ───────────────────────────────────────────────────────── */
+
+.feedScreens {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.feedScreen {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  flex-shrink: 0;
-  padding: 0 5px;
-}
-
-.storyRingOuter {
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.storyAvatarWrap {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
   background: #ffffff;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.storyAvatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 21px;
-  font-weight: 700;
-  color: #ffffff;
+/* Pushed post / profile: iOS navigation push from the right */
+.feedScreenPushed {
+  z-index: 20;
+  animation: igPush 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.12);
 }
 
-.storyUsername {
-  font-size: 10.5px;
-  color: #262626;
-  width: 64px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height: 1.2;
-}
-
-/* "Your Story" — no gradient ring, plus badge */
-.yourStoryOuter {
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  border: 1.5px solid #dbdbdb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background: #efefef;
-}
-
-.yourStoryAvatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aaaaaa;
-}
-
-.yourStoryPlus {
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 22px;
-  height: 22px;
-  background: #3897f0;
-  border-radius: 50%;
-  border: 2.5px solid #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 300;
-  line-height: 1;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+@keyframes igPush {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
 }
 
 /* ─── Feed scroll area ───────────────────────────────────────────────────── */
@@ -187,205 +194,204 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
-  background: #fafafa;
+  background: #ffffff;
+  scrollbar-width: none;
 }
 
 .feedScroll::-webkit-scrollbar {
-  width: 3px;
+  display: none;
 }
 
-.feedScroll::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* ─── Avatars ────────────────────────────────────────────────────────────── */
 
-.feedScroll::-webkit-scrollbar-thumb {
-  background: #dbdbdb;
-  border-radius: 2px;
-}
-
-/* ─── Post card ──────────────────────────────────────────────────────────── */
-
-.postCard {
-  background: #ffffff;
-  border-top: 1px solid #efefef;
-  border-bottom: 1px solid #efefef;
-  margin-bottom: 4px;
-}
-
-/* Target post — daniela.reyes: warm amber accent so it's findable */
-.postCardTarget {
-  border-left: 3px solid #fdcb6e;
-  background: #fffef9;
-}
-
-/* "Suggested For You" top badge */
-.suggestedBadge {
-  padding: 8px 14px 5px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #8e8e8e;
-  letter-spacing: 0.02em;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-/* Post header row */
-.postHeader {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px 8px 12px;
-  gap: 10px;
-}
-
-.postAvatar {
-  width: 32px;
-  height: 32px;
+.feedAvatar {
   border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  display: block;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+}
+
+.feedAvatarFallback {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
-  flex-shrink: 0;
   text-transform: uppercase;
+  user-select: none;
 }
 
-.postHeaderInfo {
-  flex: 1;
-  min-width: 0;
+/* ─── Post ───────────────────────────────────────────────────────────────── */
+
+.postCard {
+  background: #ffffff;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 13px 0 10px;
+  box-sizing: border-box;
+}
+
+.postAvatarBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+  flex-shrink: 0;
 }
 
 .postUsername {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #262626;
-  line-height: 1.2;
+  flex: 1;
+  min-width: 0;
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ig-blue);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.postLocation {
-  font-size: 11px;
-  color: #262626;
-  line-height: 1.3;
+.postTimestamp {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--ig-muted);
 }
 
-.postMenuBtn {
+.postSponsored {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
   background: none;
   border: none;
+  padding: 0;
   cursor: pointer;
-  padding: 4px 8px;
-  color: #8e8e8e;
-  font-size: 18px;
-  letter-spacing: 2px;
-  flex-shrink: 0;
-  line-height: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ig-blue);
 }
 
-/* Post image — square 1:1 color block */
+.postImageWrap {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  background: #efefef;
+}
+
 .postImage {
   width: 100%;
   aspect-ratio: 1 / 1;
   display: block;
+  object-fit: cover;
 }
 
-/* Sponsored CTA bar (below image, above action row) */
-.sponsoredCtaBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-top: 1px solid #efefef;
-  border-bottom: 1px solid #efefef;
-  background: #fafafa;
-  gap: 12px;
-}
-
-.sponsoredCtaText {
-  font-size: 12.5px;
-  color: #8e8e8e;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sponsoredCtaBtn {
-  font-size: 13px;
-  font-weight: 600;
-  color: #3897f0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-/* Action row (heart / comment / share / bookmark) */
+/* Action row: heart, comment … "•••" or a CTA button; hairline beneath */
 .actionRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 6px 12px 2px;
-}
-
-.actionLeft {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  height: 44px;
+  padding: 0 14px;
+  box-sizing: border-box;
 }
 
 .actionBtn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 0;
+  margin-right: 20px;
   display: flex;
   align-items: center;
-  color: #262626;
+  color: var(--ig-icon);
   line-height: 0;
 }
 
-/* Post body text */
+.moreBtn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  color: var(--ig-icon);
+  line-height: 0;
+}
+
+.ctaBtn {
+  margin-left: auto;
+  min-width: 78px;
+  height: 27px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid var(--ig-cta-blue);
+  border-radius: 3px;
+  color: var(--ig-cta-blue);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.actionDivider {
+  height: 1px;
+  margin: 0 14px 0 13px;
+  background: var(--ig-hairline);
+}
+
+/* Likes, caption, comments */
 .postBody {
-  padding: 2px 12px 10px;
+  padding: 10px 15px 12px;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.likesLine,
+.captionLine,
+.viewCommentsLine,
+.commentLine {
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+}
+
+.postBody > :last-child {
+  margin-bottom: 0;
 }
 
 .likesLine {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #262626;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-bottom: 5px;
+  font-weight: 700;
+  color: var(--ig-blue);
 }
 
-.captionLine {
-  font-size: 13.5px;
-  color: #262626;
-  line-height: 1.5;
-  margin-bottom: 4px;
+.postUser {
+  font-weight: 700;
+  color: var(--ig-blue);
+  cursor: pointer;
 }
 
-.captionUser {
-  font-weight: 600;
+.postLink {
+  color: var(--ig-blue);
 }
 
 .viewCommentsLine {
-  font-size: 13.5px;
-  color: #8e8e8e;
+  color: var(--ig-muted);
   cursor: pointer;
-  margin-bottom: 4px;
-}
-
-.timestampLine {
-  font-size: 10.5px;
-  color: #8e8e8e;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-top: 2px;
 }
 
 /* ─── Loading spinner at feed bottom ─────────────────────────────────────── */
@@ -394,14 +400,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 28px 0 32px;
+  padding: 24px 0 32px;
 }
 
 .spinner {
-  width: 26px;
-  height: 26px;
-  border: 2px solid #efefef;
-  border-top-color: #8e8e8e;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ig-hairline);
+  border-top-color: var(--ig-muted);
   border-radius: 50%;
   animation: igSpin 0.75s linear infinite;
 }
@@ -410,16 +416,14 @@
   to { transform: rotate(360deg); }
 }
 
-/* ─── Bottom tab bar ─────────────────────────────────────────────────────── */
+/* ─── Tab bar (dark, 49pt, blue camera square in the middle) ─────────────── */
 
-.feedBottomBar {
+.feedTabBar {
   flex: 0 0 auto;
   height: 49px;
-  background: #ffffff;
-  border-top: 1px solid #dbdbdb;
+  background: var(--ig-tab-bg);
   display: flex;
-  align-items: center;
-  padding: 0 4px;
+  align-items: stretch;
 }
 
 .tabBtn {
@@ -427,42 +431,57 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  height: 100%;
   cursor: pointer;
-  color: #8e8e8e;
+  color: var(--ig-tab-glyph);
   background: none;
   border: none;
   padding: 0;
   line-height: 0;
-  transition: color 0.1s;
 }
 
 .tabBtnActive {
-  color: #262626;
+  color: #ffffff;
+  background: var(--ig-tab-selected-bg);
 }
 
-.tabCenterBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  height: 100%;
-  cursor: pointer;
-  color: #8e8e8e;
-  background: none;
-  border: none;
-  padding: 0;
-  line-height: 0;
+.tabBtn {
+  position: relative;
+}
+
+/* Unread count on the heart tab */
+.tabBadge {
+  position: absolute;
+  top: 8px;
+  left: calc(50% + 6px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: var(--ig-badge);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  animation: igBadgeIn 200ms ease-out both;
+}
+
+@keyframes igBadgeIn {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.tabBtnCamera {
+  background: var(--ig-blue);
 }
 
 /* ─── Boot animation ─────────────────────────────────────────────────────── */
 
-/* Feed is invisible before 'playing' state */
 .feedAppHidden {
   opacity: 0;
 }
 
-/* Gentle fade + slide-up when 'playing' starts */
 .feedAppEntering {
   animation: feedEnter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -472,17 +491,9 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Post image — double-tap target ─────────────────────────────────────── */
-
-.postImageWrap {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* ─── Heart burst (double-tap) ───────────────────────────────────────────── */
+/* ─── Heart burst (double-tap), 2016 iOS timing ─────────────────────────── */
+/* The big white heart springs in (overshoot, settle) in ~250ms, holds, then
+   fades out so it is gone ~900ms after the tap. */
 
 .heartBurst {
   position: absolute;
@@ -490,13 +501,517 @@
   left: 50%;
   pointer-events: none;
   z-index: 5;
-  animation: heartBurstAnim 0.75s ease-out forwards;
+  line-height: 0;
+  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.28));
+  animation: heartBurstAnim 900ms linear forwards;
 }
 
 @keyframes heartBurstAnim {
-  0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.15); }
-  18%  { opacity: 1;   transform: translate(-50%, -50%) scale(1.15); }
-  38%  { opacity: 1;   transform: translate(-50%, -50%) scale(0.92); }
-  62%  { opacity: 1;   transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.05); }
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.1); }
+  14%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
+  22%  { transform: translate(-50%, -50%) scale(0.94); }
+  30%  { transform: translate(-50%, -50%) scale(1.02); }
+  36%  { transform: translate(-50%, -50%) scale(1); }
+  72%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
+}
+
+/* The action-row heart fills red and bounces once as the burst pops */
+.actionBtnBounce svg {
+  animation: igHeartBounce 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes igHeartBounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+/* ─── Explore (search tab) ───────────────────────────────────────────────── */
+
+.searchField {
+  flex: 1;
+  height: 28px;
+  margin-right: 10px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 14px;
+  user-select: none;
+}
+
+.searchField svg {
+  display: block;
+}
+
+.exploreHero {
+  display: block;
+  width: 100%;
+  height: 150px;
+  position: relative;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 70% at 30% 20%, rgba(70, 60, 140, 0.55), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 80% 90%, rgba(30, 80, 120, 0.5), transparent 70%),
+    linear-gradient(180deg, #0e0e1c 0%, #171a36 60%, #0b0d1a 100%);
+}
+
+.exploreHeroStars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.exploreHeroText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.exploreHeroText svg {
+  margin-bottom: 6px;
+}
+
+.exploreHeroTitle {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2.6px;
+  line-height: 1;
+}
+
+.exploreHeroSub {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.6px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.sectionHeadGrid {
+  border-top: 1px solid var(--ig-hairline);
+  margin-top: 8px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: var(--ig-muted);
+}
+
+.seeAll {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ig-link-blue);
+}
+
+.tagRow {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tagRow::-webkit-scrollbar {
+  display: none;
+}
+
+.tagCard {
+  flex: 0 0 auto;
+  width: 94px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tagThumb {
+  width: 94px;
+  height: 94px;
+  overflow: hidden;
+  background: #efefef;
+}
+
+.tagThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tagLabel {
+  margin-top: 7px;
+  font-size: 12px;
+  color: var(--ig-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Photo grid (explore + profiles) ────────────────────────────────────── */
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #ffffff;
+}
+
+.gridTile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: none;
+  background: #efefef;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.gridTile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gridVideoBadge {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  line-height: 0;
+}
+
+/* ─── Activity (heart tab) ───────────────────────────────────────────────── */
+
+.activityToggle {
+  flex: 0 0 auto;
+  display: flex;
+  height: 38px;
+  border-bottom: 1px solid #dbdbdb;
+  background: #ffffff;
+}
+
+.activityToggleBtn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--ig-text);
+  position: relative;
+}
+
+.activityToggleOn {
+  color: var(--ig-link-blue);
+}
+
+.activityToggleOn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--ig-link-blue);
+}
+
+.activityRow {
+  padding: 9px 12px 9px 10px;
+  border-bottom: 1px solid var(--ig-hairline);
+  animation: igRowIn 250ms ease-out both;
+}
+
+@keyframes igRowIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.activityMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.activityAvatarBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.activityText {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--ig-text);
+  overflow-wrap: anywhere;
+}
+
+.activityTime {
+  color: var(--ig-muted);
+}
+
+.activityThumb {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #efefef;
+}
+
+.activityThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.activityThumbRow {
+  display: flex;
+  gap: 2px;
+  margin: 8px 0 0 40px;
+}
+
+.followBtnSmall {
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--ig-link-blue);
+  border-radius: 3px;
+  background: #ffffff;
+  color: var(--ig-link-blue);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.followBtnSmallOn {
+  border-color: #5cb85c;
+  background: #5cb85c;
+  color: #ffffff;
+}
+
+.activityEmpty {
+  padding: 72px 36px 0;
+  text-align: center;
+  color: var(--ig-text);
+}
+
+.activityEmpty svg {
+  margin-bottom: 14px;
+}
+
+.activityEmptyTitle {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.activityEmptyBody {
+  font-size: 11px;
+  line-height: 15px;
+  color: #555555;
+}
+
+/* ─── Profile ────────────────────────────────────────────────────────────── */
+
+.profileScroll {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileTop {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 12px 10px;
+}
+
+.profileAvatarEmpty {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: radial-gradient(circle at 50% 36%, #dcdcdc 0 16px, transparent 17px),
+    radial-gradient(ellipse at 50% 92%, #dcdcdc 0 26px, transparent 27px),
+    #ebebeb;
+}
+
+.profileRight {
+  flex: 1;
+  min-width: 0;
+}
+
+.profileStats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 8px;
+}
+
+.profileStat {
+  text-align: center;
+}
+
+.profileStatNum {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--ig-text);
+}
+
+.profileStatLabel {
+  font-size: 12px;
+  color: #8e8e8e;
+  line-height: 14px;
+}
+
+.editProfileBtn,
+.followBtn {
+  width: 100%;
+  height: 27px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editProfileBtn {
+  border: 1px solid #dbdbdb;
+  background: #ededed;
+  color: var(--ig-text);
+}
+
+.followBtn {
+  border: 1px solid var(--ig-link-blue);
+  background: var(--ig-link-blue);
+  color: #ffffff;
+}
+
+.followBtnOn {
+  border-color: #5cb85c;
+  background: #5cb85c;
+}
+
+.profileBio {
+  padding: 0 12px 12px;
+  font-size: 13px;
+  line-height: 17px;
+  color: var(--ig-text);
+}
+
+.profileName {
+  font-weight: 700;
+}
+
+.profileBioText {
+  white-space: pre-line;
+}
+
+.profileWebsite {
+  color: var(--ig-blue);
+}
+
+.profileModes {
+  display: flex;
+  height: 44px;
+  border-top: 1px solid #dbdbdb;
+  border-bottom: 1px solid #dbdbdb;
+  background: #ffffff;
+}
+
+.profileMode {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a0a0a0;
+  line-height: 0;
+}
+
+.profileMode + .profileMode {
+  border-left: 1px solid #dbdbdb;
+}
+
+.profileModeOn {
+  color: var(--ig-link-blue);
+}
+
+/* Own, empty profile: first-run copy with an arrow toward the camera tab */
+.profileScrollOwn {
+  overflow: hidden;
+}
+
+.profileEmpty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: var(--ig-text);
+}
+
+.profileEmptyTop {
+  margin-top: 54px;
+  font-size: 12px;
+  color: #8e8e8e;
+}
+
+.profileEmptyBottom {
+  margin-top: auto;
+  padding-bottom: 10px;
+  font-size: 12px;
+  line-height: 15px;
+  width: 220px;
+}
+
+.profileEmptyArrow {
+  margin-top: 8px;
+  color: var(--ig-link-blue);
+  line-height: 0;
+  animation: igArrowNudge 1.6s ease-in-out infinite;
+}
+
+@keyframes igArrowNudge {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
 }

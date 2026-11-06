@@ -1,220 +1,187 @@
 // src/components/feed/Post.jsx
-// Single feed post card — 2016 Instagram flat design.
-// Interactions: double-tap image (heart burst), tap heart icon (like),
-// tap sponsored CTA or "Sponsored" label (tapSponsored objective).
+// Single feed post, 2015 Instagram iOS layout: header (avatar, blue username,
+// grey timestamp or blue "Sponsored"), square photo, action row (outlined
+// heart + comment, "•••" or a blue CTA button on the right) over a hairline,
+// then likes, caption, "View all N comments" and the latest comments.
+// Interactions: double-tap photo (heart burst + like), tap heart (like),
+// tap "Sponsored" or the CTA button (tapSponsored objective), tap the
+// username or avatar (open profile).
+//
+// Double-tap like, 2016 iOS timing: the big white heart springs in over
+// ~250ms (overshoot then settle), holds, and fades out ~900ms after the tap
+// (.heartBurst keyframes in feed-styles.css). The action-row heart fills red
+// and does a quick 1 → 1.25 → 1 bounce at the same moment.
 
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { feedImage } from './feedData'
+import Avatar from './Avatar'
+import {
+  HeartOutlineIcon, CommentOutlineIcon, MoreDotsIcon, LikesHeartIcon,
+  AdBadgeIcon, BurstHeartIcon,
+} from './icons'
 
-// ── Inline SVG icons ───────────────────────────────────────────────────────
+// Splits caption / comment text so #hashtags and @mentions render in blue.
+const LINK_RE = /([#@][\w.]+)/g
 
-function HeartIcon() {
-  return (
-    <svg width="24" height="22" viewBox="0 0 24 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-    </svg>
+function RichText({ text }) {
+  return text.split(LINK_RE).map((part, i) =>
+    LINK_RE.test(part) && (part[0] === '#' || part[0] === '@')
+      ? <span className="postLink" key={i}>{part}</span>
+      : <span key={i}>{part}</span>
   )
 }
-
-function HeartFilledIcon() {
-  return (
-    <svg width="24" height="22" viewBox="0 0 24 22" fill="#ed4956" stroke="#ed4956" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-    </svg>
-  )
-}
-
-function CommentIcon() {
-  return (
-    <svg width="23" height="22" viewBox="0 0 23 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15a2 2 0 01-2 2H7l-5 4V3a2 2 0 012-2h14a2 2 0 012 2z" />
-    </svg>
-  )
-}
-
-function ShareIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="22" y1="2" x2="11" y2="13" />
-      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-    </svg>
-  )
-}
-
-function BookmarkIcon() {
-  return (
-    <svg width="18" height="22" viewBox="0 0 18 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21l-8-6-8 6V3a2 2 0 012-2h12a2 2 0 012 2z" />
-    </svg>
-  )
-}
-
-function ChevronRight() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      <path d="M5 2l4 5-4 5" />
-    </svg>
-  )
-}
-
-// ── Component ──────────────────────────────────────────────────────────────
 
 export default function Post({
   username,
-  location,
-  isSuggested,
   isSponsored,
   isTarget,
   ctaLabel,
+  photo,
+  imageSrc,
+  avatar,
   imageGradient,
   likes,
   caption,
   commentCount,
+  comments = [],
   timestamp,
   avatarColor,
   initial,
   containerRef,
   onLike,
   onSponsoredTap,
+  onOpenProfile,
 }) {
   const [liked, setLiked] = useState(false)
-  const [showBurst, setShowBurst] = useState(false)
+  const [burstKey, setBurstKey] = useState(0)      // > 0 while the big heart shows
+  const [bounceKey, setBounceKey] = useState(0)    // > 0 while the small heart bounces
   const lastTapRef = useRef(0)
   const burstTimerRef = useRef(null)
+  const bounceTimerRef = useRef(null)
 
   useEffect(() => () => {
     if (burstTimerRef.current) clearTimeout(burstTimerRef.current)
+    if (bounceTimerRef.current) clearTimeout(bounceTimerRef.current)
   }, [])
 
-  // Single like action — called from both double-tap and heart icon tap
+  const bounceSmallHeart = useCallback(() => {
+    setBounceKey(k => k + 1)
+    if (bounceTimerRef.current) clearTimeout(bounceTimerRef.current)
+    bounceTimerRef.current = setTimeout(() => setBounceKey(0), 320)
+  }, [])
+
   const doLike = useCallback(() => {
     if (!liked) {
       setLiked(true)
+      bounceSmallHeart()
       if (onLike) onLike()
     }
-  }, [liked, onLike])
+  }, [liked, onLike, bounceSmallHeart])
 
-  // Double-tap on image → heart burst + like
+  // Double-tap always shows the burst, even on an already-liked photo (as in the app).
   const handleDoubleTap = useCallback(() => {
     doLike()
-    setShowBurst(true)
+    setBurstKey(k => k + 1)
     if (burstTimerRef.current) clearTimeout(burstTimerRef.current)
-    burstTimerRef.current = setTimeout(() => setShowBurst(false), 800)
+    burstTimerRef.current = setTimeout(() => setBurstKey(0), 950)
   }, [doLike])
+
+  const openProfile = useCallback((e) => {
+    e.stopPropagation()
+    if (onOpenProfile) onOpenProfile(username)
+  }, [onOpenProfile, username])
 
   const handleImageClick = useCallback(() => {
     const now = Date.now()
     const elapsed = now - lastTapRef.current
     lastTapRef.current = now
-    if (elapsed > 0 && elapsed < 300) {
-      handleDoubleTap()
-    }
+    if (elapsed > 0 && elapsed < 300) handleDoubleTap()
   }, [handleDoubleTap])
 
-  // Heart icon tap → like (no burst)
   const handleHeartClick = useCallback((e) => {
     e.stopPropagation()
     doLike()
   }, [doLike])
 
-  const cardClass = ['postCard', isTarget ? 'postCardTarget' : ''].filter(Boolean).join(' ')
+  const photoSrc = imageSrc || feedImage(photo)
 
   return (
-    <article className={cardClass} ref={containerRef}>
+    <article className="postCard" ref={containerRef} data-target={isTarget || undefined}>
 
-      {/* Suggested For You badge */}
-      {isSuggested && (
-        <div className="suggestedBadge">Suggested For You</div>
-      )}
-
-      {/* Header row */}
+      {/* Header */}
       <div className="postHeader">
-        <div className="postAvatar" style={{ background: avatarColor }}>
-          {initial || username.charAt(0)}
-        </div>
-        <div className="postHeaderInfo">
-          <div className="postUsername">{username}</div>
-          {location && <div className="postLocation">{location}</div>}
-        </div>
-        <button className="postMenuBtn" aria-label="More options">···</button>
+        <button className="postAvatarBtn" onClick={openProfile} aria-label={`${username}'s profile`}>
+          <Avatar photo={avatar} color={avatarColor} initial={initial} size={32} />
+        </button>
+        <div className="postUsername" onClick={openProfile}>{username}</div>
+        {isSponsored
+          ? (
+            <button className="postSponsored" onClick={onSponsoredTap}>
+              <AdBadgeIcon />
+              <span>Sponsored</span>
+            </button>
+          )
+          : <div className="postTimestamp">{timestamp}</div>}
       </div>
 
-      {/* Square image — double-tap target */}
+      {/* Square photo: double-tap target */}
       <div className="postImageWrap" onClick={handleImageClick}>
-        <div className="postImage" style={{ background: imageGradient }} />
-        {showBurst && (
-          <div className="heartBurst">
-            <svg
-              width="90"
-              height="84"
-              viewBox="0 0 24 22"
-              fill="white"
-              stroke="white"
-              strokeWidth="0.3"
-              style={{ filter: 'drop-shadow(0 3px 12px rgba(0,0,0,0.35))' }}
-            >
-              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-            </svg>
+        {photoSrc
+          ? <img className="postImage" src={photoSrc} alt="" draggable={false} />
+          : <div className="postImage" style={{ background: imageGradient }} />}
+        {burstKey > 0 && (
+          <div className="heartBurst" key={burstKey}>
+            <BurstHeartIcon />
           </div>
         )}
       </div>
 
-      {/* Sponsored CTA bar — tapping completes tapSponsored objective */}
-      {isSponsored && ctaLabel && (
-        <div
-          className="sponsoredCtaBar"
-          onClick={onSponsoredTap}
-          style={{ cursor: 'pointer' }}
-        >
-          <span className="sponsoredCtaText">{username} · Paid partnership</span>
-          <button className="sponsoredCtaBtn">
-            {ctaLabel}
-            <ChevronRight />
-          </button>
-        </div>
-      )}
-
       {/* Action row */}
       <div className="actionRow">
-        <div className="actionLeft">
-          <button
-            className="actionBtn"
-            aria-label={liked ? 'Unlike' : 'Like'}
-            onClick={handleHeartClick}
-          >
-            {liked ? <HeartFilledIcon /> : <HeartIcon />}
-          </button>
-          <button className="actionBtn" aria-label="Comment">
-            <CommentIcon />
-          </button>
-          <button className="actionBtn" aria-label="Share">
-            <ShareIcon />
-          </button>
-        </div>
-        <button className="actionBtn" aria-label="Save">
-          <BookmarkIcon />
+        <button
+          className={bounceKey > 0 ? 'actionBtn actionBtnBounce' : 'actionBtn'}
+          key={bounceKey}
+          aria-label={liked ? 'Unlike' : 'Like'}
+          onClick={handleHeartClick}
+        >
+          <HeartOutlineIcon filled={liked} />
         </button>
+        <button className="actionBtn" aria-label="Comment">
+          <CommentOutlineIcon />
+        </button>
+        {isSponsored && ctaLabel
+          ? (
+            <button className="ctaBtn" onClick={onSponsoredTap}>
+              {ctaLabel}
+            </button>
+          )
+          : (
+            <button className="moreBtn" aria-label="More options">
+              <MoreDotsIcon />
+            </button>
+          )}
       </div>
+      <div className="actionDivider" />
 
-      {/* Body text */}
+      {/* Text block */}
       <div className="postBody">
-        <div className="likesLine">{likes} likes</div>
-        <div className="captionLine">
-          <span className="captionUser">{username}</span>{' '}
-          {caption}
+        <div className="likesLine">
+          <LikesHeartIcon />
+          <span>{likes} likes</span>
         </div>
-        {commentCount > 0 && (
+        <div className="captionLine">
+          <span className="postUser" onClick={openProfile}>{username}</span> <RichText text={caption} />
+        </div>
+        {commentCount > comments.length && (
           <div className="viewCommentsLine">
             View all {commentCount} comments
           </div>
         )}
-        {/* "Sponsored" label — tapping also completes tapSponsored objective */}
-        <div
-          className="timestampLine"
-          onClick={isSponsored ? onSponsoredTap : undefined}
-          style={isSponsored ? { cursor: 'pointer' } : undefined}
-        >
-          {isSponsored ? 'Sponsored' : timestamp}
-        </div>
+        {comments.map((c, i) => (
+          <div className="commentLine" key={i}>
+            <span className="postUser">{c.username}</span> <RichText text={c.text} />
+          </div>
+        ))}
       </div>
 
     </article>

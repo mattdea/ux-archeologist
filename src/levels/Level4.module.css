@@ -1,7 +1,7 @@
 /* src/levels/Level4.module.css */
 
 /*
- * Level 4 — 2016 Instagram Feed / "The Feed"
+ * Level 4 — 2015 Instagram Feed / "The Feed"
  * Floating app viewport — no bezel, no scaler, no device frame.
  * Mirrors Level5.module.css exactly (same three-zone layout pattern).
  */
@@ -32,6 +32,25 @@
   width: 100%;
   overflow: hidden;
   pointer-events: auto;
+}
+
+/* The artifact zone centers the scaled ghost-device footprint */
+.artifactZone:has(.frameWrap) {
+  align-items: center;
+  overflow: visible;
+}
+
+.frameWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.frameScaler {
+  transform-origin: center center;
+  flex-shrink: 0;
 }
 
 /*

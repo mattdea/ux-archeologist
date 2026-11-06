@@ -11,7 +11,11 @@
       "Bash(test -f src/index.css)",
       "Bash(test -d .git)",
       "Bash(npm test)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Read(//opt/homebrew/lib/node_modules/netlify-cli/bin/**)",
+      "Read(//Users/matthewdea/.npm-global/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(chmod +x \"/Users/matthewdea/Code/ux-archeologist/.claude/start-dev.sh\")"
     ]
   }
 }

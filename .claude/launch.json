@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev:netlify"],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [".claude/start-dev.sh"],
       "port": 8888,
       "autoPort": false
     }

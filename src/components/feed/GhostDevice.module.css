@@ -1,0 +1,108 @@
+/* src/components/feed/GhostDevice.module.css
+ *
+ * Ghost iPhone 6 outline + screen glow around the Level 4 feed.
+ * Artifact layer only — no museum-ui styles.
+ *
+ * Unit: 429 × 885 (the body). Screen 375 × 667 at 27 / 109.
+ * Layer order, bottom → top: bloom, ghost outline, screen.
+ */
+
+.unit {
+  position: relative;
+  width: 429px;
+  height: 885px;
+}
+
+/* ─── Light ─────────────────────────────────────────────────────────────── */
+
+/* Bloom: the screen is the only light in the room, and it should barely
+   register — a wide, very low-alpha lift around the screen, cool white with a
+   hint of the header blue. The box sits 12px inside the screen with no
+   background, so the shadow's bright core is hidden under the feed and only
+   its soft tail shows outside. No rim, no banding. */
+.bloom {
+  position: absolute;
+  top: 121px;
+  left: 39px;
+  width: 351px;
+  height: 643px;
+  background: transparent;
+  box-shadow:
+    0 0 36px 8px rgba(206, 220, 240, 0.055),
+    0 0 90px 16px rgba(186, 204, 234, 0.03);
+}
+
+/* ─── Ghost outline ─────────────────────────────────────────────────────── */
+
+.ghost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 429px;
+  height: 885px;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Hairlines sit on .5 coordinates; non-scaling-stroke keeps them 1 device
+   pixel even when the whole unit is scaled down to fit the viewport. */
+.lines,
+.ticks {
+  fill: none;
+  stroke-width: 1;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.lines * ,
+.ticks * {
+  vector-effect: non-scaling-stroke;
+}
+
+.lines {
+  stroke: url(#ghost-stroke);
+}
+
+.ticks {
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 1.5;
+}
+
+/* ─── Screen slot ───────────────────────────────────────────────────────── */
+
+.screen {
+  position: absolute;
+  top: 109px;
+  left: 27px;
+  width: 375px;
+  height: 667px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ─── Boot: screen powers on first, then the room adjusts ───────────────── */
+
+.bloom,
+.ghost {
+  opacity: 0;
+}
+
+.unitLit .bloom,
+.unitLit .ghost {
+  animation: ghostFadeIn 800ms ease-out 450ms both;
+}
+
+@keyframes ghostFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unitLit .bloom,
+  .unitLit .ghost {
+    animation: none;
+    opacity: 1;
+  }
+}
