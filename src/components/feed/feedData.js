@@ -298,9 +298,12 @@ BASE_POSTS.forEach(p => {
 // Real accounts in the home feed, from the Wayback archive when present:
 // a 2016 mix of friends-of-friends, brands, publishers and a few celebrities.
 // Each shows its most recent archived post with its real caption and likes.
+// Only accounts whose photos exist in the archive actually appear; the rest
+// are listed so they join the feed as soon as their photos are saved.
 const REAL_FEED = [
-  'natgeo', 'humansofny', 'nasa', 'itsdougthepug', 'thefeedfeed', 'muradosmann',
-  'nala_cat', 'instagram', 'selenagomez', 'taylorswift', '9gag', 'voguemagazine',
+  'natgeo', 'instagram', 'humansofny', 'nasa', 'itsdougthepug', 'thefeedfeed', 'muradosmann',
+  'nala_cat', 'gigihadid', 'kimkardashian', 'kevinhart4real', 'jlo', 'badgalriri', 'leomessi',
+  'nike', 'cristiano', 'emmawatson', 'selenagomez', 'taylorswift', '9gag', 'voguemagazine',
   'symmetrybreakfast', 'natgeotravel', 'jiffpom', 'nytimes', 'starbucks', 'everlane',
 ]
 const REAL_FEED_COMMENTS = {

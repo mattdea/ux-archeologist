@@ -35,13 +35,24 @@ What to expect:
   connections, so downloads run one at a time. Budget about two minutes per
   account. It also stalls requests with a custom User-Agent, so the script uses
   curl's default.
-- Big accounts (natgeo, nasa, humansofny, brands) have many captures and
-  archived photos. Many celebrity accounts' photos were never archived; the
-  script notices after six misses and moves on with just the account data.
-- Only the first 24 posts of each capture are available, so an account's grid
-  holds the union of its captures: usually 24–60 posts.
+- Every account comes back with its full data (bio, counts, 36–120 posts with
+  real captions and like counts), but the archive kept the **photos** for only
+  about one account in four. The first run (Nov 2026, 49 handles) found photos
+  for 13: instagram (120), kimkardashian (40), kevinhart4real (27), natgeo (24),
+  gigihadid, jlo, badgalriri, leomessi, cristiano, emmawatson, neymarjr, nike,
+  victoriassecret. humansofny, nasa, nytimes, the pet accounts and most
+  celebrities have data only. The script notices after six misses and moves on.
+- Only the 24 most recent posts of each capture are available, so an account's
+  grid holds the union of its captures: usually 36–120 posts.
 - `archive/recover.log` has the last run's output; `archive/index.json` lists
   what was recovered.
+
+Accounts whose photos the archive never saved (most celebrities, humansofny)
+still get a full `profile.json` with real captions and like counts. To give
+them photos, save each post's image by hand (the post links are in
+`profiles/POST-LINKS.md`) as `archive/<handle>/<code>.jpg`, where `<code>` is
+the post's code in `profile.json`. The level picks them up on the next
+reload; no wiring needed.
 
 To put a recovered account in the home feed, add its handle to `REAL_FEED` in
 `src/components/feed/feedData.js`. Every recovered account already appears in

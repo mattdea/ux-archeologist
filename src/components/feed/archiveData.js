@@ -30,8 +30,11 @@ const fallbackAvatar = handle => FALLBACK_AVATARS[`../../../assets/feed/profiles
 export const ARCHIVE = Object.fromEntries(
   Object.entries(MANIFESTS).map(([path, m]) => {
     const handle = path.split('/').slice(-2)[0]
+    // A post's photo is the archived file, or <code>.jpg saved by hand into
+    // the account's folder (for accounts whose photos were never archived).
     const posts = (m.posts || [])
-      .filter(p => p.file && photoUrl(handle, p.file))
+      .map(p => ({ ...p, file: (p.file && photoUrl(handle, p.file)) ? p.file : (photoUrl(handle, `${p.code}.jpg`) ? `${p.code}.jpg` : null) }))
+      .filter(p => p.file)
       .map(p => ({
         code: p.code,
         date: p.date,

@@ -39,3 +39,6 @@ dist-ssr
 /assets/feed/profiles/
 /assets/feed/archive/
 /assets/feed/*.jpg
+
+# Python
+__pycache__/
