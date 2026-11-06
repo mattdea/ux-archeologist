@@ -3,11 +3,8 @@
 // (assets/feed/library/, listed in index.csv with archive.org sources).
 //
 // Filenames are `YYYY-MM-DD_<account>_<id>.jpg`. Only accounts listed in
-// ACCOUNTS below are used, and no photo dated after 10 May 2016 (the day
-// before the redesign, and the level's "today") is ever loaded. Left out on
-// purpose:
-//   - anything later than that (late-2016 @instagram, chocolateforbasil,
-//     uglyproduceisbeautiful)
+// ACCOUNTS below are used. Dates are not filtered; grids and the feed label
+// posts by position. Left out on purpose:
 //   - celebrities, so the level doesn't invent captions for famous people
 //     (champagnepapi, justsza, virgilabloh, jacobwhitesides, braxtonmiller92,
 //     joythebaker's Drake cake)
@@ -17,7 +14,7 @@
 // Names and bios paraphrase each account's blog story. Captions are short,
 // generic lines written for the level, not the accounts' real captions.
 //
-// Some sets are reserved for the invented friends (FRIEND_SETS below) and for
+// Some sets are reserved for three invented friends (FRIEND_SETS below) and for
 // the ads; those never appear under a real account's name.
 
 import { SKIP } from './libraryQuality'
@@ -26,8 +23,6 @@ const FILES = import.meta.glob('../../../assets/feed/library/*.jpg', {
   eager: true,
   import: 'default',
 })
-
-const CUTOFF = '2016-05-10'
 
 export const ACCOUNTS = {
   instagram: {
@@ -272,26 +267,13 @@ export const ACCOUNTS = {
 
 export const GRID_CAP = 24
 
-// Invented friends. `from` = their own set (account name or date_account
-// blog-post prefix); `lead` = the photo used for their feed post.
+// Invented friends with a photo set from the blog library. `from` = their own
+// set; `lead` = the photo used for their feed post. imani.brooks is not here:
+// her photos are committed ES imports in feedData.js (IMANI_PHOTOS).
 export const FRIEND_SETS = {
   'marcus.h':       { from: ['christian_foto'], topic: 'people' },
   'julia.creates':  { from: ['jadeantoine'], topic: 'art' },
-  'alex.wanderer':  { from: ['chefyash'], topic: ['city', 'people'] },
   'sarah.moments':  { from: ['liaselina'], topic: 'art', lead: '2016-05-01_liaselina_o6ifm73.jpg' },
-  'mike.film':      { from: ['danoziontifik'], topic: 'music', lead: '2016-03-30_danoziontifik_o4uz4l5.jpg' },
-  'outdoor.vibes':  { from: ['ssazanovich'], topic: ['nature', 'sport'], lead: '2016-04-19_ssazanovich_o5w8f63.jpg' },
-  'studio.light':   { from: ['bali_ayu'], topic: ['home', 'art'] },
-  'city.frames':    { from: ['corasacher'], topic: ['city', 'style'], lead: '2016-03-28_corasacher_o4r60j4.jpg' },
-  'lens.folk':      { from: ['asmitaparelkar'], topic: 'style' },
-  // Spring 2016 only (see CUTOFF). These three borrow whole blog sets, so
-  // their source accounts are not in REAL_OWNERS:
-  // @lucacappuccinodonofrio's pasta (Feb 2016)
-  'bakes.and.more': { from: ['lucacappuccinodonofrio'], topic: 'food' },
-  // @thejoshuatreehouse (May 2016); the lead is the house from outside
-  'daniela.reyes':  { from: ['thejoshuatreehouse'], topic: 'home', lead: '2016-05-06_thejoshuatreehouse_o6s3ju3.jpg' },
-  // #WHPonthego (Apr 2016)
-  'travel.tales':   { from: ['2016-04-18_instagram'], topic: ['nature', 'people'] },
 }
 
 // Real accounts in the feed and the subject they draw extra photos from.
@@ -374,7 +356,7 @@ const ALL = Object.entries(FILES)
   .map(([path, url]) => {
     const name = fileName(path)
     const m = name.match(NAME_RE)
-    return m && !SKIP.has(name) && m[1] <= CUTOFF ? { url, name, date: m[1], account: m[2] } : null
+    return m && !SKIP.has(name) ? { url, name, date: m[1], account: m[2] } : null
   })
   .filter(Boolean)
   .sort((a, b) => a.name.localeCompare(b.name))
@@ -411,7 +393,7 @@ const OWNED = (() => {
     owned[u] = []
     // Newest blog post first; within a post, the blog's own order
     const photos = ALL
-      .filter(p => p.account === u && p.date <= CUTOFF && !LENT.has(p.name))
+      .filter(p => p.account === u && !LENT.has(p.name))
       .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name))
     take(u, photos, true)
   })
