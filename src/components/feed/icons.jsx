@@ -1,7 +1,7 @@
 // src/components/feed/icons.jsx
 // Glyphs for the 2015 Instagram iOS app (pre-May-2016 redesign), drawn as
 // inline SVGs from the reference screenshots in docs/reference/.
-// Sizes are in points at 1× (the feed renders at 375 × 667).
+// Sizes are in points at 1× (the feed lays out at 320 × 568, then is zoomed to 375 wide).
 
 // ─── Navigation bar ──────────────────────────────────────────────────────────
 

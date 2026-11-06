@@ -3,7 +3,8 @@
 // blue header, dark tab bar, four tabs plus pushed post / profile screens.
 // Props:
 //   animated           — true when screen === 'playing'; triggers feed-enter keyframe
-//   framed             — true inside GhostDevice: fills the screen slot, no drop shadow
+//   framed             — true inside GhostDevice: lays out at 320 × 568 and is
+//                        zoomed to fill the 375 × 667 slot (iPhone 6 Display Zoom)
 //   onCompleteObjective(key) — fires 'findFriend' | 'tapSponsored' | 'likePost'
 //
 // Navigation: `tab` picks the root screen; `stacks[tab]` holds pushed views
@@ -145,7 +146,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     profile: <ProfileView onOpenPost={openPost} />,
   }
 
-  return (
+  const app = (
     <div className={appClass}>
 
       <div className="feedScreens">
@@ -186,4 +187,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
 
     </div>
   )
+
+  // The zoom lives on a wrapper so the enter animation keeps its own transform.
+  return framed ? <div className="feedZoom">{app}</div> : app
 }

@@ -18,7 +18,7 @@ const INITIAL = 21
 const STARS = Array.from({ length: 70 }, (_, i) => {
   const a = (i * 9301 + 49297) % 233280
   const b = (i * 4973 + 7919) % 233280
-  return { x: (a / 233280) * 375, y: (b / 233280) * 150, r: 0.4 + ((i * 7) % 5) * 0.25 }
+  return { x: (a / 233280) * 320, y: (b / 233280) * 130, r: 0.4 + ((i * 7) % 5) * 0.25 }
 })
 
 export default function ExploreTab({ onOpenPost }) {
@@ -56,7 +56,7 @@ export default function ExploreTab({ onOpenPost }) {
 
         {/* Hero banner */}
         <button className="exploreHero" aria-label="Explore videos">
-          <svg className="exploreHeroStars" viewBox="0 0 375 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <svg className="exploreHeroStars" viewBox="0 0 320 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             {STARS.map((s, i) => <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#ffffff" opacity={0.5 + (i % 3) * 0.2} />)}
           </svg>
           <div className="exploreHeroText">

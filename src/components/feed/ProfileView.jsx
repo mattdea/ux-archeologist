@@ -59,7 +59,7 @@ export default function ProfileView({ username, onBack, onOpenPost }) {
         <div className="profileTop">
           {own
             ? <div className="profileAvatarEmpty" aria-hidden="true" />
-            : <Avatar photo={profile.avatar} color={profile.avatarColor} initial={profile.initial} size={86} />}
+            : <Avatar photo={profile.avatar} color={profile.avatarColor} initial={profile.initial} size={77} />}
           <div className="profileRight">
             <div className="profileStats">
               <Stat n={own ? ME.posts : profile.posts} label="posts" />
