@@ -374,7 +374,6 @@ const FEED_PROFILES = {
   'j.okafor': { name: 'Jordan Okafor', bio: 'Austin. Tacos. Dogs.' },
   'mia.c': { name: 'Mia Chen', bio: 'resident hype woman' },
   'pete.photo': { name: 'Pete Novak', bio: 'gear nerd. ask me about lenses' },
-  'cafe.list': { name: 'The Cafe List', bio: 'Every cafe worth the walk.' },
 }
 
 function avatarFor(username) {

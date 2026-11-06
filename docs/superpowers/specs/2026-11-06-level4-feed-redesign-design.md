@@ -16,6 +16,8 @@ close friend's biggest news could sit under three strangers and an ad. The
 feed must stay *ranked*, not chronological. The discovery copy and the
 "Algorithmic Feed" artifact are unchanged.
 
+> **As built (6 Nov 2026):** `FEED_ORDER` and `FEED_TIMES` became one list of `[username, timestamp]` pairs, `FEED`, with the two arrays derived from it, so a slot's label can't drift from its account. `buildFeed(seed)` later added reload/pull-to-refresh re-dealing and older pages; `assets/feed` was reorganised into `archive/`, `archive-avatars/`, `library/`, `friends/`, `raw/`.
+
 ## 1. Imani Brooks (replaces Daniela Reyes)
 
 - Rename `daniela.reyes` → `imani.brooks` (display name "Imani Brooks")
