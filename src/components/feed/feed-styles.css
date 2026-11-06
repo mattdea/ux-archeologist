@@ -16,6 +16,9 @@
   --ig-tab-glyph: #a7a9ad;
   --ig-badge: #ed4956;
   --ig-font: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  /* Nav titles, toggles, section labels: the 2015 app set these in Proxima Nova.
+     Montserrat (loaded in index.html) stands in where it isn't installed. */
+  --ig-display-font: 'Proxima Nova', 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 /* ─── App shell: iPhone 6 point size (375 × 667) ─────────────────────────── */
@@ -116,9 +119,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-family: var(--ig-display-font);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
   color: #ffffff;
   line-height: 1;
   pointer-events: none;
@@ -532,7 +536,6 @@
 .searchField {
   flex: 1;
   height: 28px;
-  margin-right: 10px;
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.3);
   color: #ffffff;
@@ -586,14 +589,16 @@
 }
 
 .exploreHeroTitle {
-  font-size: 17px;
-  font-weight: 700;
+  font-family: var(--ig-display-font);
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 2.6px;
   line-height: 1;
 }
 
 .exploreHeroSub {
-  font-size: 10px;
+  font-family: var(--ig-display-font);
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 1.6px;
   color: rgba(255, 255, 255, 0.85);
@@ -615,7 +620,8 @@
 }
 
 .sectionLabel {
-  font-size: 12px;
+  font-family: var(--ig-display-font);
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.6px;
   color: var(--ig-muted);
@@ -729,8 +735,9 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
+  font-family: var(--ig-display-font);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.4px;
   color: var(--ig-text);
   position: relative;
@@ -818,8 +825,9 @@
   border-radius: 3px;
   background: #ffffff;
   color: var(--ig-link-blue);
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--ig-display-font);
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   cursor: pointer;
@@ -953,9 +961,9 @@
 
 .profileModes {
   display: flex;
-  height: 44px;
-  border-top: 1px solid #dbdbdb;
-  border-bottom: 1px solid #dbdbdb;
+  height: 46px;
+  border-top: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
   background: #ffffff;
 }
 
@@ -964,12 +972,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #a0a0a0;
+  color: #a8a8a8;
   line-height: 0;
 }
 
 .profileMode + .profileMode {
-  border-left: 1px solid #dbdbdb;
+  position: relative;
+}
+
+/* Separators stop short of the row's edges, as in the app */
+.profileMode + .profileMode::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: #d6d6d6;
 }
 
 .profileModeOn {

@@ -1,5 +1,5 @@
 // src/components/feed/ExploreTab.jsx
-// Search tab, spring 2016: dark-blue "Search" field + add-person icon, the
+// Search tab, spring 2016: full-width dark-blue "Search" field, the
 // "PRESS PLAY / Explore Videos" hero, a sideways-scrolling TRENDING TAGS row,
 // and the EXPLORE POSTS grid that keeps loading as you scroll.
 // Props:
@@ -9,7 +9,7 @@ import { useState, useRef, useCallback, useMemo } from 'react'
 import NavBar from './NavBar'
 import PhotoGrid from './PhotoGrid'
 import { TRENDING_TAGS, exploreImage, exploreTile } from './feedData'
-import { SearchFieldIcon, AddPersonIcon, PlayCircleIcon, ChevronRightIcon } from './icons'
+import { SearchFieldIcon, PlayCircleIcon, ChevronRightIcon } from './icons'
 
 const PAGE = 15
 const INITIAL = 21
@@ -45,7 +45,7 @@ export default function ExploreTab({ onOpenPost }) {
 
   return (
     <>
-      <NavBar right={<button className="feedNavBtn" aria-label="Find friends"><AddPersonIcon /></button>}>
+      <NavBar>
         <div className="searchField" role="search">
           <SearchFieldIcon />
           <span>Search</span>

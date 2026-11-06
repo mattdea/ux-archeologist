@@ -219,11 +219,11 @@ export function GearIcon() {
 
 // ─── Profile view-mode row ───────────────────────────────────────────────────
 
-/** 3 × 3 dot grid, 22 × 22. Blue when selected. */
+/** 3 × 3 grid of small squares, 22 × 22. Blue when selected. */
 export function GridModeIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true">
-      {[2.5, 11, 19.5].map(y => [2.5, 11, 19.5].map(x => <circle key={`${x}-${y}`} cx={x} cy={y} r="2.5" />))}
+      {[0, 8.5, 17].map(y => [0, 8.5, 17].map(x => <rect key={`${x}-${y}`} x={x} y={y} width="5" height="5" />))}
     </svg>
   )
 }
@@ -231,30 +231,31 @@ export function GridModeIcon() {
 /** Three horizontal lines (list view), 24 × 18, grey. */
 export function ListModeIcon() {
   return (
-    <svg width="24" height="18" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
-      <path d="M1 1h22M1 9h22M1 17h22" />
+    <svg width="24" height="18" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true">
+      <rect x="0" y="0" width="24" height="2" />
+      <rect x="0" y="8" width="24" height="2" />
+      <rect x="0" y="16" width="24" height="2" />
     </svg>
   )
 }
 
-/** Outlined location pin, 18 × 24, grey. */
+/** Outlined location pin with a solid dot, 18 × 24, grey. */
 export function PinModeIcon() {
   return (
-    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d="M9 23S1 13.9 1 8.8a8 8 0 0 1 16 0C17 13.9 9 23 9 23z" />
-      <circle cx="9" cy="8.6" r="2.8" />
+    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <path d="M9 22.6S1.4 13.6 1.4 8.6a7.6 7.6 0 0 1 15.2 0c0 5-7.6 14-7.6 14z" />
+      <circle cx="9" cy="8.6" r="2.4" fill="currentColor" stroke="none" />
     </svg>
   )
 }
 
-/** Photos of you: a person inside a rounded square with a folded tab, 24 × 22, grey. */
+/** Photos of you: a rounded square with a small folded tab on top and a person inside, 24 × 22, grey. */
 export function TaggedModeIcon() {
   return (
-    <svg width="24" height="22" viewBox="0 0 24 22" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <rect x="1" y="4" width="22" height="17" rx="2.5" />
-      <path d="M8 4V1.5h8V4" />
-      <circle cx="12" cy="10.5" r="2.6" fill="currentColor" stroke="none" />
-      <path d="M6.5 18.5c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8" fill="currentColor" stroke="none" />
+    <svg width="24" height="22" viewBox="0 0 24 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true">
+      <path d="M8.5 4.5L10 1.5h4l1.5 3H20a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3v-10a3 3 0 0 1 3-3z" />
+      <circle cx="12" cy="10" r="2.4" fill="currentColor" stroke="none" />
+      <path d="M7.5 17.5c0-2.6 2-4.2 4.5-4.2s4.5 1.6 4.5 4.2z" fill="currentColor" stroke="none" />
     </svg>
   )
 }
