@@ -90,13 +90,17 @@ export function BurstHeartIcon() {
 
 // ─── Tab bar ─────────────────────────────────────────────────────────────────
 
-/** Solid house with a door notch, 27 × 24. White when selected. */
+/** House: steep roof whose eaves overhang the walls, with an arched doorway
+    cut out of the middle. Traced from the 2015 tab bar, 30 × 25.5. */
 export function TabHomeIcon() {
   return (
-    <svg width="28" height="25" viewBox="0 0 27 24" fill="currentColor" aria-hidden="true">
+    <svg width="30" height="25.5" viewBox="0 0 80 68" fill="currentColor" aria-hidden="true">
       <path
         fillRule="evenodd"
-        d="M13.5 0L27 12.2h-3.6V24h-7.3v-7.4h-5.2V24H3.6V12.2H0z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        d="M39.7 1L79 39.5L75.2 43.6L67.3 35.6V67H47.7V50A8 8 0 0 0 31.7 50V67H12.1V35.6L4.2 43.6L0.4 39.5Z"
       />
     </svg>
   )
@@ -134,12 +138,13 @@ export function TabActivityIcon() {
   )
 }
 
-/** Profile silhouette: head and shoulders, 20 × 22. */
+/** Profile: an egg-shaped head, taller than wide, over domed shoulders with
+    a flat base. Traced from the 2015 tab bar, 22 × 24. */
 export function TabProfileIcon() {
   return (
-    <svg width="22" height="24" viewBox="0 0 20 22" fill="currentColor" aria-hidden="true">
-      <circle cx="10" cy="5.6" r="5.6" />
-      <path d="M0 22c0-5.4 4.5-9.2 10-9.2s10 3.8 10 9.2z" />
+    <svg width="22" height="24.2" viewBox="0 0 60 66" fill="currentColor" aria-hidden="true">
+      <path d="M30 0C38.6 0 43.6 7.4 43.6 16.2C43.6 26.4 37.2 35 30 35S16.4 26.4 16.4 16.2C16.4 7.4 21.4 0 30 0Z" />
+      <path d="M0 66V57.5C0 48.2 13.4 42.3 30 42.3S60 48.2 60 57.5V66Z" />
     </svg>
   )
 }

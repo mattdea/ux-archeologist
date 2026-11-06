@@ -98,10 +98,18 @@ export default function Post({
     if (elapsed > 0 && elapsed < 300) handleDoubleTap()
   }, [handleDoubleTap])
 
+  // The heart button toggles; only double-tap is like-only.
   const handleHeartClick = useCallback((e) => {
     e.stopPropagation()
-    doLike()
-  }, [doLike])
+    if (liked) setLiked(false)
+    else doLike()
+  }, [liked, doLike])
+
+  // Count shown under the photo: the post's count plus the player's own like.
+  const baseLikes = parseInt(String(likes).replace(/,/g, ''), 10)
+  const likesLabel = Number.isFinite(baseLikes)
+    ? (baseLikes + (liked ? 1 : 0)).toLocaleString('en-US')
+    : likes
 
   const photoSrc = imageSrc || feedImage(photo)
 
@@ -167,7 +175,7 @@ export default function Post({
       <div className="postBody">
         <div className="likesLine">
           <LikesHeartIcon />
-          <span>{likes} likes</span>
+          <span>{likesLabel} likes</span>
         </div>
         <div className="captionLine">
           <span className="postUser" onClick={openProfile}>{username}</span> <RichText text={caption} />
