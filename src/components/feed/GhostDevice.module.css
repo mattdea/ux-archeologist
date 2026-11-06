@@ -48,28 +48,16 @@
 
 /* Hairlines sit on .5 coordinates; non-scaling-stroke keeps them 1 device
    pixel even when the whole unit is scaled down to fit the viewport. */
-.lines,
-.ticks {
+.lines {
   fill: none;
+  stroke: url(#ghost-stroke);
   stroke-width: 1;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
 }
 
-.lines * ,
-.ticks * {
+.lines * {
   vector-effect: non-scaling-stroke;
-}
-
-.lines {
-  stroke: url(#ghost-stroke);
-}
-
-/* Side buttons: no brighter than the body outline, so they read as part of
-   the ghost rather than as marks on it. */
-.ticks {
-  stroke: rgba(255, 255, 255, 0.06);
-  stroke-width: 1;
 }
 
 /* ─── Screen slot ───────────────────────────────────────────────────────── */

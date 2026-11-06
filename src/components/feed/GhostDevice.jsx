@@ -64,15 +64,6 @@ export default function GhostDevice({ children, lit = false, touch = false }) {
           </linearGradient>
         </defs>
 
-        <g className={styles.ticks}>
-          {/* Side buttons: short ticks on the edges, as faint as the body.
-              Left: mute switch, volume up, volume down. Right: sleep/wake. */}
-          <path d="M0.5 128.5v26" />
-          <path d="M0.5 188.5v50" />
-          <path d="M0.5 252.5v50" />
-          <path d={`M${BODY_W - 0.5} 190.5v64`} />
-        </g>
-
         <g className={styles.lines}>
           {/* Body */}
           <rect x="0.5" y="0.5" width={BODY_W - 1} height={BODY_H - 1} rx={R_BODY} />
