@@ -14,8 +14,11 @@ plain color blocks when a photo is missing.
 | --- | --- | --- |
 | `archive/<handle>/` | Real accounts as the Wayback Machine captured them in spring 2016: `profile.json` (bio, counts, posts with real captions, like counts, dates) plus one JPG per post and, when archived, `avatar.jpg` | `src/components/feed/archiveData.js` |
 | `library/` | Real accounts and photos from Instagram's own blog, Jan–May 2016 (`index.csv` has the sources). Each photo is owned by exactly one account; some sets are reserved for the invented friends | `libraryData.js`, `libraryQuality.js` |
-| `profiles/` | Wayback profile captures of 40 big accounts (counts, bios, post links) and their avatars, pulled by an earlier session. The archive falls back to `archive-avatars/<handle>.jpg` when a profile picture was not archived | `archiveData.js` (avatars only) |
-| `explore/`, `period/`, `*.jpg` | Older crops from the reference screenshots. No longer used | — |
+| `archive-avatars/<handle>.jpg` | Profile pictures of the archived accounts, saved from Wayback profile captures; used when `archive/<handle>/avatar.jpg` was not archived | `archiveData.js` |
+| `friends/avatars/<username>.jpg` | Profile pictures of the invented friends, the ads and the commenters with profiles, resolved by username (`friendAvatar()`) | `feedData.js` |
+| `friends/imani.brooks/` | Imani's 21 photos and avatar (Unsplash, @aliounepic) | `feedData.js` |
+| `ads/` | Advertiser artwork for the in-app browser's local landing pages (Airbnb wordmark) | `AirbnbLiveThere.jsx` |
+| `raw/` | Gitignored downloads (SodaFox dumps, full-size Unsplash originals, `old-crops/`) plus tracked notes: `POST-LINKS.md`, `PROFILES.md`, `profiles.json` | — |
 
 An account in `archive/` wins over the same account in `library/`.
 

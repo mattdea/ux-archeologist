@@ -1,6 +1,8 @@
 # Level 4 Feed Redesign Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
+
+**Status (6 Nov 2026): done.** All seven tasks shipped on `main`; later the same day the feed gained reload / pull-to-refresh re-dealing, older pages, tappable commenters, the asset reorganisation (`archive/`, `archive-avatars/`, `library/`, `friends/`, `raw/`) and the sponsored-post ad overlay + in-app browser. See `docs/design-spec.md` → Level 4.
 
 **Goal:** Replace Level 4's bloated 44-post feed with a 24-post ranked feed of recognisable accounts, rename the target friend to Imani Brooks with committed Unsplash photos, drop the 10 May 2016 date cutoff, and label dates by position so everything reads recent.
 
@@ -48,7 +50,7 @@ Sources:
   plain curl (no custom User-Agent):
   `curl -sL -o XQBcBGWvxF4.jpg "https://unsplash.com/photos/XQBcBGWvxF4/download?force=true&w=1080"`.
 
-- [ ] **Step 1: Crop and save into the repo**
+- [x] **Step 1: Crop and save into the repo**
 
 Feed photos are square. Grid photos are centre-cropped; the avatar is cropped on the face (upper-middle of the portrait).
 
@@ -70,7 +72,7 @@ magick identify assets/feed/imani/*.jpg | awk '{print $1, $3}'
 ```
 Expected: `grid photos: 20`; `avatar.jpg 320x320`; `post.jpg` and `grid-01.jpg` … `grid-20.jpg` all `750x750`; 22 files in total.
 
-- [ ] **Step 2: Check the crops**
+- [x] **Step 2: Check the crops**
 
 ```bash
 S=/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad
@@ -78,7 +80,7 @@ magick montage -font /System/Library/Fonts/Supplemental/Arial.ttf -label '%f' as
 ```
 Open `$S/imani_crops.jpg` with the Read tool. The avatar must be centred on the face (adjust the `+0+180` offset if not); the post must keep the woman and the painting above her; no grid photo may have its subject's head cut off. For any tall portrait that does, re-run that one file with `-gravity north` instead of `center` and check again.
 
-- [ ] **Step 3: Confirm they are not gitignored, then commit**
+- [x] **Step 3: Confirm they are not gitignored, then commit**
 
 ```bash
 git check-ignore -v assets/feed/imani/post.jpg; echo "exit $?"
@@ -101,7 +103,7 @@ git push
 - Modify: `src/components/feed/archiveData.js`
 - Create: `src/test/archiveData.test.js`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `src/test/archiveData.test.js`:
 
@@ -124,12 +126,12 @@ describe('gridTime', () => {
 })
 ```
 
-- [ ] **Step 2: Run it to verify it fails**
+- [x] **Step 2: Run it to verify it fails**
 
 Run: `npx vitest run src/test/archiveData.test.js`
 Expected: FAIL — `gridTime` is not exported (`undefined is not a function`).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `src/components/feed/archiveData.js`:
 
@@ -177,7 +179,7 @@ to
 
 Update the file's header comment (lines 2–11) by appending one line: `// No date cutoff: everything in the folder loads.` Leave `date` on each post object; nothing reads it now but the data is real and harmless.
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `npx vitest run src/test/archiveData.test.js`
 Expected: 3 passed.
@@ -185,7 +187,7 @@ Expected: 3 passed.
 Run: `grep -rn "LEVEL_NOW\|ARCHIVE_NOW\|relativeTime" src`
 Expected: no output.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/feed/archiveData.js src/test/archiveData.test.js
@@ -202,7 +204,7 @@ git push
 **Files:**
 - Modify: `src/components/feed/libraryData.js`
 
-- [ ] **Step 1: Remove the cutoff**
+- [x] **Step 1: Remove the cutoff**
 
 Delete line 30 (`const CUTOFF = '2016-05-10'`). In the `ALL` builder change
 
@@ -234,7 +236,7 @@ Rewrite the header comment lines 5–9 so they read:
 ```
 (i.e. drop the "anything later than that…" bullet; keep the remaining bullets.)
 
-- [ ] **Step 2: Trim FRIEND_SETS**
+- [x] **Step 2: Trim FRIEND_SETS**
 
 Replace the whole `FRIEND_SETS` object (lines 277–295) with:
 
@@ -251,7 +253,7 @@ export const FRIEND_SETS = {
 
 Update the comment at lines 20–21 to: `// Some sets are reserved for the three invented friends (FRIEND_SETS below) and for the ads; those never appear under a real account's name.`
 
-- [ ] **Step 3: Check nothing broke**
+- [x] **Step 3: Check nothing broke**
 
 Run: `npx vitest run`
 Expected: all existing tests pass (App, DesktopScene, MenuBar, archiveData).
@@ -259,7 +261,7 @@ Expected: all existing tests pass (App, DesktopScene, MenuBar, archiveData).
 Run: `grep -n "CUTOFF\|thejoshuatreehouse\|lucacappuccinodonofrio" src/components/feed/libraryData.js`
 Expected: no output.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/components/feed/libraryData.js
@@ -277,7 +279,7 @@ git push
 - Modify: `src/components/feed/feedData.js`
 - Create: `src/test/feedData.test.js`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `src/test/feedData.test.js`:
 
@@ -336,12 +338,12 @@ describe("Imani's profile", () => {
 })
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `npx vitest run src/test/feedData.test.js`
 Expected: FAIL — `FEED_ORDER`/`FEED_TIMES` are not exported.
 
-- [ ] **Step 3: Imani's imports and photo set**
+- [x] **Step 3: Imani's imports and photo set**
 
 At the top of `src/components/feed/feedData.js`, after the two existing imports (line 9), add:
 
@@ -379,7 +381,7 @@ to
   const set = isBrand ? feedPosts.map(p => p.imageSrc).filter(Boolean) : friendSet(username)
 ```
 
-- [ ] **Step 4: Trim BASE_POSTS to six entries**
+- [x] **Step 4: Trim BASE_POSTS to six entries**
 
 Replace the entire `BASE_POSTS` array (from `const BASE_POSTS = [` through its closing `]`, currently lines 73–291) with exactly these six posts. Keep `id`s so nothing else that keys on them changes:
 
@@ -479,7 +481,7 @@ const BASE_POSTS = [
 
 (Timestamps are deliberately absent: `FEED_TIMES` supplies them.) The `BASE_POSTS.forEach` block that sets `imageSrc` stays as is; `FRIEND_PHOTO_LEAD('imani.brooks')` now resolves to `imaniPost`.
 
-- [ ] **Step 5: Replace the feed assembly**
+- [x] **Step 5: Replace the feed assembly**
 
 Replace everything from the comment `// Real accounts in the home feed, from the Wayback archive when present:` through the `export const POSTS = …` statement (currently lines 297–344: `REAL_FEED`, `REAL_FEED_COMMENTS`, `FOLLOWED_REAL`, `ARCHIVE_FEED_POSTS`, `LIBRARY_FEED_POSTS`, `REAL_POSTS`, `POSTS`) with:
 
@@ -525,7 +527,7 @@ export const POSTS = FEED_ORDER.flatMap((username, i) => {
 
 Remove `libraryPhotos` and `libraryPost`'s feed use only if nothing else needs them: `libraryPost` is still used by Explore (`exploreTile`) and `getProfile`, and `libraryPhotos` by `libraryPost` — keep both. Remove `ARCHIVE_HANDLES`? No — Explore uses it. Leave the import line alone.
 
-- [ ] **Step 6: Profiles and activity**
+- [x] **Step 6: Profiles and activity**
 
 In `FEED_PROFILES`, delete the entries for `alex.wanderer`, `mike.film`, `coffee.culture`, `outdoor.vibes`, `studio.light`, `city.frames`, `bakes.and.more`, `daniela.reyes`, `travel.tales`, `morning.run`, `lens.folk`, `home.spaces`, `pnw.shots`, and add:
 
@@ -564,7 +566,7 @@ export const TRICKLE_ACTIVITY = [
 
 The `friend()` helper calls `friendPhoto(username)`, which calls `FRIEND_PHOTO_LEAD` — now `friendSet`-based, so `friend('imani.brooks')` would also work. Update the comment above `BASE_POSTS` (lines 66–69) to: `// BASE_POSTS are the player's four invented friends and two ads; the real accounts are listed in FEED_ORDER below.`
 
-- [ ] **Step 7: Run the tests**
+- [x] **Step 7: Run the tests**
 
 Run: `npx vitest run`
 Expected: all pass, including the 6 new feedData tests. If `getProfile('imani.brooks').grid` has length 1 instead of 21, `friendSet` is not being used in `getProfile` (Step 3).
@@ -572,7 +574,7 @@ Expected: all pass, including the 6 new feedData tests. If `getProfile('imani.br
 Run: `grep -n "daniela\|REAL_FEED\|FOLLOWED_REAL\|alex.wanderer\|mike.film\|outdoor.vibes\|city.frames\|lens.folk\|bakes.and.more\|travel.tales\|studio.light" src/components/feed/feedData.js`
 Expected: no output.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/components/feed/feedData.js src/test/feedData.test.js
@@ -589,7 +591,7 @@ git push
 **Files:**
 - Modify: `src/levels/Level4.jsx:22-26`
 
-- [ ] **Step 1: Change the first objective**
+- [x] **Step 1: Change the first objective**
 
 ```js
 const OBJECTIVES = [
@@ -599,7 +601,7 @@ const OBJECTIVES = [
 ]
 ```
 
-- [ ] **Step 2: Test and commit**
+- [x] **Step 2: Test and commit**
 
 Run: `npx vitest run`
 Expected: all pass.
@@ -621,7 +623,7 @@ git push
 - Modify: `assets/feed/README.md:55-77`
 - Delete (local, gitignored, no git change): `assets/feed/avatar-daniela-reyes.jpg` and the avatars of the eight removed friends
 
-- [ ] **Step 1: design-spec.md**
+- [x] **Step 1: design-spec.md**
 
 Replace the **Content date** paragraph (line 371) with:
 
@@ -641,7 +643,7 @@ Replace objective 1 (line 376) with:
 1. Find Imani's post — she has news (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)
 ```
 
-- [ ] **Step 2: README.md**
+- [x] **Step 2: README.md**
 
 Replace the paragraph starting `To put a recovered account in the home feed` (line 57) with:
 
@@ -674,7 +676,7 @@ by @aliounepic on Unsplash (Unsplash License): the one committed folder here,
 `imani/`. The full-size originals sit in `profiles/imani brooks/` (gitignored).
 ```
 
-- [ ] **Step 3: Delete stale avatars (local only)**
+- [x] **Step 3: Delete stale avatars (local only)**
 
 ```bash
 cd /Users/matthewdea/Code/ux-archeologist/assets/feed
@@ -683,7 +685,7 @@ git status --short
 ```
 Expected: only `docs/design-spec.md` and `assets/feed/README.md` modified (the jpgs are gitignored).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add docs/design-spec.md assets/feed/README.md
@@ -699,11 +701,11 @@ git push
 
 **Files:** none.
 
-- [ ] **Step 1: Open the level**
+- [x] **Step 1: Open the level**
 
 `preview_start {name: "dev"}`. If port 8888 is held by another chat's server, `navigate` to http://localhost:8888/ instead (it serves this working tree). Click "Begin excavation", then the "2016" timeline entry, then "Begin excavation" in the intro modal. Confirm the modal lists "Find Imani's post — she has news".
 
-- [ ] **Step 2: Check the data**
+- [x] **Step 2: Check the data**
 
 `javascript_tool`:
 ```js
@@ -714,14 +716,14 @@ Expected: 24 lines in `FEED_ORDER` order (fewer only if an archive account has n
 
 `read_console_messages {onlyErrors: true}` → expected: nothing new.
 
-- [ ] **Step 3: Play the objectives**
+- [x] **Step 3: Play the objectives**
 
 Scroll the feed (`computer` scroll on the phone screen) until Imani's red-room post is ≥40% visible → the tracker's first objective ticks. Tap "LEARN MORE" on the Airbnb ad → second ticks. Double-tap or heart any post → third ticks. The Continue button appears.
 
-- [ ] **Step 4: Check profiles and activity**
+- [x] **Step 4: Check profiles and activity**
 
 Tap `imani.brooks` → profile shows name "Imani Brooks", 21 posts, the bio's three lines and website, grid labels `3h, 1d, 2d, 4d` when the first tiles are opened. Tap `kimkardashian` → grid opens; first tile reads `3h`. Open the Activity tab → "imani.brooks started following you" in the You list; no row names a removed friend.
 
-- [ ] **Step 5: Record proof**
+- [x] **Step 5: Record proof**
 
 `computer {action: "screenshot"}` at the feed top and at Imani's post. Report what passed and anything that did not.

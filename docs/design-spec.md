@@ -330,7 +330,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 **Artifact:** Instagram for iOS, spring 2016 (blue header, dark tab bar: the UI just before the May 2016 redesign)
 **Discovery:** Algorithmic Feed
-**Container:** `src/components/feed/GhostDevice.jsx` — hairline iPhone 6 outline and screen glow, 375×667px screen; no solid bezel (the hardware is fading out between Level 3 and Level 5)
+**Container:** `src/components/feed/GhostDevice.jsx` — hairline iPhone 6 outline and screen glow, 375×667px screen; no solid bezel and no side-button ticks (the hardware is fading out between Level 3 and Level 5)
 **Route:** `/level/4`
 
 **IntroModal:**
@@ -348,18 +348,19 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 - Reference screenshots: `docs/reference/`
 
 **Screens:**
-- Home: feed of posts (header, square photo, action row, likes, caption, comments); infinite spinner at the bottom
-- Explore (search tab): dark-blue Search field, PRESS PLAY / EXPLORE VIDEOS hero, sideways TRENDING TAGS row, 3-column EXPLORE POSTS grid that keeps loading
+- Home: feed of posts (header, square photo, action row, likes, caption, comments). Nearing the bottom loads a page of older posts (one more per real account, labelled a day older each page) until every account runs out; pulling the list ~100pt past its top shows a spinner and re-deals the feed. Every page load deals it fresh too (`buildFeed(seed)`): real accounts swap slots and posts, friends, ads and the target stay put
+- Explore (search tab): dark-blue Search field, PRESS PLAY / EXPLORE VIDEOS hero, sideways TRENDING TAGS row, 3-column EXPLORE POSTS grid that keeps loading; starts from a new offset on every load and on pull-to-refresh
 - Activity (heart tab): FOLLOWING / YOU toggle, notification rows (avatar, blue usernames, grey time, thumbnails); new likes trickle into Following while the player is in the feed, with a count badge on the tab
 - Profile: username title (gear on your own, back chevron on others), avatar, posts / followers / following, Edit Profile or Follow, grid / list / pin / tagged row, 3-column grid; your own profile is the 2016 first-run empty state with a blue arrow toward the camera tab; verified accounts show the blue check by their name
 - Post detail (PHOTO / VIDEO): the same post card, pushed over any tab
 
 **Interactive Elements:**
 - Tab bar switches tabs; re-tapping the current tab pops to its root
-- Tapping a username or avatar opens that profile; tapping a grid tile opens the post; Back pops
+- Tapping a username or avatar opens that profile, as does a commenter's name when that account has a profile (`hasProfile()`); tapping a grid tile opens the post; Back pops. Nav-bar buttons have a 44pt tap target that extends 10pt past the glyph
+- Sponsored posts: tapping the photo shows the ad overlay; LEARN MORE / Sponsored open the in-app browser (see objective 2)
 - Double-tap a photo: big white heart springs in (~250ms), holds, fades by ~900ms; action-row heart fills red and bounces; like count moves by one. The heart button toggles like / unlike
 - Follow / Unfollow on a profile or Activity row updates everywhere (`followStore.js`): exact follower counts move by one, abbreviated ones stay put
-- Press-and-drag scrolling with iOS fling (0.998/ms deceleration), 0.3× rubber band and snap-back; mouse wheel also works; a drag never counts as a tap (`useDragScroll.js`)
+- Press-and-drag scrolling with iOS fling (0.998/ms deceleration), 0.3× rubber band and snap-back; mouse wheel also works; a drag never counts as a tap; releasing ≥30pt of rubber band past the top fires `pullrefresh` (`useDragScroll.js`)
 - Level 3's fingertip TouchCursor replaces the system cursor on the screen
 
 **Data:**
@@ -390,11 +391,14 @@ src/components/feed/
   GhostDevice.jsx + .module.css        # Ghost iPhone 6 outline, glow, screen slot, TouchCursor
   FeedApp.jsx                          # Tabs, pushed-screen stack, nav transitions, trickle
   NavBar.jsx, StatusBar.jsx            # Blue header
-  Post.jsx                             # Post card, double-tap like
+  Post.jsx                             # Post card, double-tap like, sponsored-photo ad overlay
+  InAppBrowser.jsx                     # Slide-up browser over the app (BROWSER_CHROME constants), action sheet
+  AirbnbLiveThere.jsx                  # Local reconstruction of the 2016 "Live There" landing page
+  ad-browser.css                       # Overlay, browser and landing-page styles
   ExploreTab.jsx, ActivityTab.jsx, ProfileView.jsx, PostDetailView.jsx, PhotoGrid.jsx
   Avatar.jsx, icons.jsx                # Traced 2016 glyphs
   feed-styles.css                      # Artifact styles, tokens, nav transitions
-  feedData.js                          # Friends, feed assembly, profiles, activity
+  feedData.js                          # Friends, FEED slots + buildFeed(seed), older pages, profiles, activity
   archiveData.js                       # Wayback archive accounts
   libraryData.js, libraryQuality.js    # Blog library accounts and photo ownership
   followStore.js                       # Shared follow state

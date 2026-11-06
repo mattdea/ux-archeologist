@@ -1,6 +1,6 @@
 # Level 4 feed redesign — design
 
-Date: 6 November 2026. Status: approved in conversation, pending review of this file.
+Date: 6 November 2026. Status: implemented 6 Nov 2026 (see the as-built note below and `docs/design-spec.md`).
 
 ## Why
 

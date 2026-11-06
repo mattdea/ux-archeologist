@@ -4,7 +4,9 @@
     {
       "name": "dev",
       "runtimeExecutable": "/bin/sh",
-      "runtimeArgs": [".claude/start-dev.sh"],
+      "runtimeArgs": [
+        ".claude/start-dev.sh"
+      ],
       "port": 8888,
       "autoPort": false
     }
