@@ -39,9 +39,11 @@ feed must stay *ranked*, not chronological. The discovery copy and the
     `assets/feed/imani/grid-1.jpg` … `grid-3.jpg`. Her grid is exactly these
     four; no topic top-up from library pools (`FRIEND_SETS` entry gets no
     `topic` and no `from`; her photos are listed explicitly).
-- The news: she finished her apartment. Caption:
-  "first night in the new place 🏡 eight months of saving, three coats of red
-  paint, worth every second 😭". Likes "847" and comment count 134 stay.
+- The news: she finished doing up her apartment, and the photo is the reveal
+  (a room this styled is months of work, not a first night). Caption:
+  "the living room is finally DONE 🏡 eight months, three coats of red paint,
+  and one very patient landlord. housewarming soon 😭". Likes "847" and
+  comment count 134 stay.
   Comments: j.okafor "CONGRATS!!! 🎉🎉" (unchanged), mia.c "@imani.brooks
   housewarming when??" (handle updated). Bio: "new place, who dis 🏡\nOakland,
   CA".
