@@ -59,6 +59,8 @@ describe("Imani's profile", () => {
     expect(profile.grid).toHaveLength(21)
     expect(profile.grid[0].image).toMatch(/imani\/post/)
     expect(profile.grid[1].image).toMatch(/imani\/grid-01/)
+    // Grid tiles after her feed post follow the same position ladder as real accounts
+    expect(profile.grid.slice(1, 4).map(t => t.post.timestamp)).toEqual(['1d', '2d', '4d'])
     expect(profile.grid[0].post.caption).toMatch(/my first editorial/)
     expect(profile.website).toBe('imanibrooks.com')
   })

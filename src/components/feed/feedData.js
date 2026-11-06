@@ -11,7 +11,7 @@
 // A photo that is missing on this machine falls back to the post's gradient.
 
 import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
-import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile } from './archiveData'
+import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile, gridTime } from './archiveData'
 
 // Imani's photos are committed (Unsplash License, @aliounepic), so her post
 // works on the public site that ships without the gitignored photo folders.
@@ -390,7 +390,7 @@ export function getProfile(username) {
         caption: EXPLORE_CAPTIONS[ph % EXPLORE_CAPTIONS.length],
         commentCount: 1 + (ph % 40),
         comments: [],
-        timestamp: `${1 + (i % 6)}${i < 3 ? 'd' : 'w'}`,
+        timestamp: gridTime(i),
         ...avatarFor(username),
       },
     }
