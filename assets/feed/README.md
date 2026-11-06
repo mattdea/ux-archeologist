@@ -58,9 +58,20 @@ To put a recovered account in the home feed, add its handle to `REAL_FEED` in
 `src/components/feed/feedData.js`. Every recovered account already appears in
 Explore and can be opened as a profile.
 
+## The level's date
+
+Everything is dated as of 6 pm Pacific on 10 May 2016, the last evening before
+the redesign (`LEVEL_NOW` in `archiveData.js`, `CUTOFF` in `libraryData.js`).
+Archived posts and library photos after that are ignored, so a recovery run
+over a wider date range, or a late-2016 blog photo, cannot leak into the level.
+
 ## Invented friends
 
 Twelve invented accounts (marcus.h, julia.creates, daniela.reyes…) carry the
 level's objectives. Each posts from a reserved set of library photos matching
 its subject (`FRIEND_SETS` in `libraryData.js`), so their feed post and profile
-grid look like one person's account.
+grid look like one person's account. Three of them borrow a whole spring
+blog set, so those source accounts no longer appear under their own names:
+daniela.reyes posts @thejoshuatreehouse's house (May 2016), bakes.and.more
+posts @lucacappuccinodonofrio's pasta (Feb 2016), and travel.tales posts
+#WHPonthego (Apr 2016).

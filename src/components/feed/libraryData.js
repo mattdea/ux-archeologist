@@ -3,9 +3,10 @@
 // (assets/feed/library/, listed in index.csv with archive.org sources).
 //
 // Filenames are `YYYY-MM-DD_<account>_<id>.jpg`. Only accounts listed in
-// ACCOUNTS below are used, and only photos dated on or before 10 May 2016
-// (the day before the redesign). Left out on purpose:
-//   - anything later than May 2016 (late-2016 @instagram, chocolateforbasil,
+// ACCOUNTS below are used, and no photo dated after 10 May 2016 (the day
+// before the redesign, and the level's "today") is ever loaded. Left out on
+// purpose:
+//   - anything later than that (late-2016 @instagram, chocolateforbasil,
 //     uglyproduceisbeautiful)
 //   - celebrities, so the level doesn't invent captions for famous people
 //     (champagnepapi, justsza, virgilabloh, jacobwhitesides, braxtonmiller92,
@@ -49,11 +50,6 @@ export const ACCOUNTS = {
     bio: 'Backyard bird paparazzo 🐦 Hummingbird photos + videos.',
     captions: ['Morning regular at the feeder 🐦', 'This little one stayed for almost a minute 💚'],
   },
-  thejoshuatreehouse: {
-    name: 'The Joshua Tree House', followers: '88.9k', following: 402, website: 'thejoshuatreehouse.com',
-    bio: 'At home in the high desert. Joshua Tree, CA 🌵',
-    captions: ['Desert mornings 🌵', 'Golden hour from the porch.'],
-  },
   'acacia.johnson': {
     name: 'Acacia Johnson', followers: '24.7k', following: 618,
     bio: 'Photographer. Polar regions ❄️ Alaska → Antarctica',
@@ -63,11 +59,6 @@ export const ACCOUNTS = {
     name: 'Tetsuya', followers: '33.5k', following: 156,
     bio: 'Workshop. Simple things, made by hand.',
     captions: ['New pieces drying in the workshop.', 'Simple shapes.'],
-  },
-  lucacappuccinodonofrio: {
-    name: 'Luca', followers: '19.8k', following: 344,
-    bio: 'Pasta as an art 🍝 Eataly',
-    captions: ['Today’s shapes 🍝', 'Made by hand this morning.'],
   },
   theoregonduck: {
     name: 'The Oregon Duck', followers: '71.3k', following: 120,
@@ -293,21 +284,21 @@ export const FRIEND_SETS = {
   'studio.light':   { from: ['bali_ayu'], topic: ['home', 'art'] },
   'city.frames':    { from: ['corasacher'], topic: ['city', 'style'], lead: '2016-03-28_corasacher_o4r60j4.jpg' },
   'lens.folk':      { from: ['asmitaparelkar'], topic: 'style' },
-  // #WHPfamilyfeast (Nov 2016) plus two food blog posts
-  'bakes.and.more': { from: ['2016-11-18_instagram', '2016-11-21_instagram', 'chocolateforbasil', 'uglyproduceisbeautiful'], topic: 'food' },
-  // #WHPthisishome (Nov 2016); the lead is the empty living room
-  'daniela.reyes':  { from: ['2016-11-25_instagram', '2016-11-28_instagram'], topic: 'home' },
-  // #WHPescape (Nov 2016)
-  'travel.tales':   { from: ['2016-11-04_instagram'], topic: ['nature', 'people'] },
+  // Spring 2016 only (see CUTOFF). These three borrow whole blog sets, so
+  // their source accounts are not in REAL_OWNERS:
+  // @lucacappuccinodonofrio's pasta (Feb 2016)
+  'bakes.and.more': { from: ['lucacappuccinodonofrio'], topic: 'food' },
+  // @thejoshuatreehouse (May 2016); the lead is the house from outside
+  'daniela.reyes':  { from: ['thejoshuatreehouse'], topic: 'home', lead: '2016-05-06_thejoshuatreehouse_o6s3ju3.jpg' },
+  // #WHPonthego (Apr 2016)
+  'travel.tales':   { from: ['2016-04-18_instagram'], topic: ['nature', 'people'] },
 }
 
 // Real accounts in the feed and the subject they draw extra photos from.
 export const REAL_OWNERS = {
   sfmoma: ['city', 'art'],
   hummingbirdsxoxo: 'nature',
-  thejoshuatreehouse: ['home', 'style'],
   'acacia.johnson': 'nature',
-  lucacappuccinodonofrio: 'food',
   otntty: ['home', 'art'],
   theoregonduck: ['sport', 'people'],
   instagram: '*',             // lends some of its 49 to pools below; takes whatever is left over
@@ -335,7 +326,6 @@ const INSTAGRAM_LENT = {
     '2016-03-09_instagram_o3rsqu4.jpg',
     '2016-03-18_instagram_o4975s5.jpg',
     '2016-04-08_instagram_o5c2g01.jpg',
-    '2016-04-18_instagram_o5uowo4.jpg',
     '2016-04-29_instagram_o6evyy5.jpg',
     '2016-05-09_instagram_o6xlga3.jpg',
   ],
@@ -347,7 +337,6 @@ const INSTAGRAM_LENT = {
     '2016-04-08_instagram_o5c2g02.jpg',
     '2016-04-08_instagram_o5c2g03.jpg',
     '2016-04-08_instagram_o5c2g05.jpg',
-    '2016-04-18_instagram_o5uowo5.jpg',
     '2016-04-29_instagram_o6evyy3.jpg',
   ],
   food: [
@@ -385,7 +374,7 @@ const ALL = Object.entries(FILES)
   .map(([path, url]) => {
     const name = fileName(path)
     const m = name.match(NAME_RE)
-    return m && !SKIP.has(name) ? { url, name, date: m[1], account: m[2] } : null
+    return m && !SKIP.has(name) && m[1] <= CUTOFF ? { url, name, date: m[1], account: m[2] } : null
   })
   .filter(Boolean)
   .sort((a, b) => a.name.localeCompare(b.name))

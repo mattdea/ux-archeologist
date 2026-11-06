@@ -226,7 +226,7 @@ const BASE_POSTS = [
     avatar: 'avatar-bakes-and-more.jpg',
     imageGradient: 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)',
     likes: '3,204',
-    caption: "Pastry attempt #47. I think we're getting somewhere. 🥐",
+    caption: "Pasta attempt #47. I think we're getting somewhere. 🍝",
     commentCount: 112,
     comments: [
       { username: 'cafe.list', text: 'recipe pls' },
@@ -245,7 +245,7 @@ const BASE_POSTS = [
     avatar: 'avatar-daniela-reyes.jpg',
     imageGradient: 'linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 60%, #e6a817 100%)',
     likes: '847',
-    caption: 'we bought a house!! 🏡 keys in hand after eight months of paperwork. the empty living room i already love. thank you to everyone who talked us off the ledge 😭',
+    caption: 'we bought a house!! 🏡 keys in hand after eight months of paperwork. thank you to everyone who talked us off the ledge 😭',
     commentCount: 134,
     comments: [
       { username: 'j.okafor', text: 'CONGRATS!!! 🎉🎉' },
@@ -319,12 +319,8 @@ const FOLLOWED_REAL = [
   { after: 1, account: 'sfmoma', photo: 0, timestamp: '2h',
     comments: [{ username: 'julia.creates', text: 'can’t wait 😍' }] },
   { after: 3, account: 'hummingbirdsxoxo', photo: 0, timestamp: '4h' },
-  { after: 5, account: 'thejoshuatreehouse', photo: 0, timestamp: '6h',
-    comments: [{ username: 'alex.wanderer', text: 'adding this to the list' }] },
   { after: 9, account: 'acacia.johnson', photo: 0, timestamp: '9h' },
   { after: 10, account: 'instagram', photo: 0, timestamp: '11h' },
-  { after: 12, account: 'lucacappuccinodonofrio', photo: 0, timestamp: '13h',
-    comments: [{ username: 'bakes.and.more', text: 'teach me 🙏' }] },
   { after: 14, account: 'otntty', photo: 0, timestamp: '15h' },
   { after: 16, account: 'theoregonduck', photo: 0, timestamp: '17h' },
 ]
@@ -466,7 +462,7 @@ const FEED_PROFILES = {
   'studio.light': { name: 'Studio Light', bio: 'Still life. Old tools and found objects.' },
   'city.frames': { name: 'City Frames', bio: 'Urban geometry at 5am. Stuttgart.' },
   'bakes.and.more': { name: 'Priya Bakes', bio: 'Cooking for the people I love.\nRecipes on the blog', website: 'bakesandmore.blog' },
-  'daniela.reyes': { name: 'Daniela Reyes', bio: 'new homeowner 🏡 (!!!)\nAustin, TX' },
+  'daniela.reyes': { name: 'Daniela Reyes', bio: 'new homeowner 🏡 (!!!)\nYucca Valley, CA' },
   'travel.tales': { name: 'Travel Tales', bio: 'Weekend escapes.' },
   'morning.run': { name: 'Morning Run', bio: '6 miles before sunrise. Every day.' },
   'lens.folk': { name: 'Lens Folk', bio: 'Analog is not dead. Mumbai.' },
@@ -577,8 +573,8 @@ function pick(...handles) {
 const NATURE = pick('natgeo', 'acacia.johnson')
 const PETS = pick('itsdougthepug', 'hummingbirdsxoxo')
 const SPACE = pick('nasa', 'sfmoma')
-const FOOD = pick('thefeedfeed', 'lucacappuccinodonofrio')
-const HOME = pick('muradosmann', 'thejoshuatreehouse')
+const FOOD = pick('thefeedfeed', 'bakes.and.more')
+const HOME = pick('muradosmann', 'otntty')
 
 /** A friend's own feed photo, as a one-thumbnail list. */
 function friend(username) {

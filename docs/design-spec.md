@@ -367,6 +367,8 @@ Accounts come from three sources, in order of preference, each falling back to t
 2. `assets/feed/library/` — real accounts and photos from Instagram's own blog, Jan–May 2016, each photo owned by exactly one account; read by `libraryData.js`
 3. Plain color blocks, when neither folder is present
 
+**Content date:** the level's "today" is 6 pm Pacific on 10 May 2016, the last evening before the 11 May redesign (`LEVEL_NOW` in `archiveData.js`). It is fixed, so adding accounts never moves the clock. Nothing dated after it is shown: archived posts past it are dropped, and library photos past it are never loaded (`CUTOFF` in `libraryData.js`). Real posts show their true age against that evening; the newest recovered photo is from 4 May, so real accounts read 6 days old or more.
+
 The 12 invented friends (Marcus, Julia, Daniela with the house, two ads…) carry the objectives and post from reserved photo sets that match their subject. All real photos and account data are gitignored and live only on the author's machine; the public site and repository build without them. See `assets/feed/README.md`.
 
 **Objectives (3, independent):**

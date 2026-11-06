@@ -30,7 +30,8 @@ Instagram's official blog featured community photos (1080 × 1080) in each post.
 pulled from Wayback Machine captures of the blog. Post photos are resized to 750 × 750 and
 avatars to 150 × 150. Three had Instagram's video icon in the corner, which was cropped off.
 Most are from Jan–May 2016; a few food/home shots come from late-2016 Weekend Hashtag
-Project posts (the photos themselves show no UI).
+Project posts (the photos themselves show no UI). These `post-*`/`avatar-*` crops are no
+longer used: the level now shows nothing dated after 10 May 2016.
 
 | File | Blog post | Archived image |
 | --- | --- | --- |

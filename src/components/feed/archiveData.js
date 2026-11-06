@@ -23,6 +23,12 @@ const FALLBACK_AVATARS = import.meta.glob('../../../assets/feed/profiles/avatars
   import: 'default',
 })
 
+// The level's "today": 6 pm Pacific on 10 May 2016, the last evening before
+// Instagram's 11 May redesign. Fixed, so adding accounts never moves the
+// clock. Posts after it are ignored; libraryData.js uses the same date as
+// its CUTOFF.
+export const LEVEL_NOW = Date.UTC(2016, 4, 11, 1, 0) / 1000
+
 const photoUrl = (handle, file) => PHOTOS[`../../../assets/feed/archive/${handle}/${file}`] || null
 const fallbackAvatar = handle => FALLBACK_AVATARS[`../../../assets/feed/profiles/avatars/${handle}.jpg`] || null
 
@@ -34,7 +40,7 @@ export const ARCHIVE = Object.fromEntries(
     // the account's folder (for accounts whose photos were never archived).
     const posts = (m.posts || [])
       .map(p => ({ ...p, file: (p.file && photoUrl(handle, p.file)) ? p.file : (photoUrl(handle, `${p.code}.jpg`) ? `${p.code}.jpg` : null) }))
-      .filter(p => p.file)
+      .filter(p => p.file && p.date <= LEVEL_NOW)
       .map(p => ({
         code: p.code,
         date: p.date,
@@ -67,10 +73,8 @@ export function isArchiveAccount(handle) {
   return !!ARCHIVE[handle]
 }
 
-// "Now" for relative timestamps: just after the newest archived post, so the
-// feed reads as that day in May 2016.
-const NEWEST = Math.max(0, ...ARCHIVE_HANDLES.flatMap(h => ARCHIVE[h].posts.map(p => p.date)))
-export const ARCHIVE_NOW = NEWEST + 2 * 3600
+// "Now" for relative timestamps (3h, 6d, 2w) is ARCHIVE_NOW = LEVEL_NOW.
+export const ARCHIVE_NOW = LEVEL_NOW
 
 /** 2016 short relative time: 3m, 5h, 2d, 3w. */
 export function relativeTime(dateSec, now = ARCHIVE_NOW) {
