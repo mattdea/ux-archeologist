@@ -241,7 +241,11 @@
 .navPopIn   > .feedHeader { animation: navHoldFromLeft  var(--nav-dur) var(--nav-ease) both; }
 
 /* The top layer's bar is see-through while it moves, so the bar underneath
-   (same blue, same status bar) shows and the titles can cross-fade. */
+   (same blue, same status bar) shows and the titles can cross-fade. The
+   layer itself must be see-through too, or its white backdrop shows in the
+   bar area; its content areas paint their own white. */
+.navPushIn,
+.navPopOut,
 .navPushIn > .feedHeader,
 .navPopOut > .feedHeader {
   background: transparent;
