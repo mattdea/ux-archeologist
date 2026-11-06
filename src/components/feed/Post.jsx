@@ -13,7 +13,7 @@
 // and does a quick 1 → 1.25 → 1 bounce at the same moment.
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { feedImage, hasProfile } from './feedData'
+import { hasProfile } from './feedData'
 import Avatar from './Avatar'
 import {
   HeartOutlineIcon, CommentOutlineIcon, MoreDotsIcon, LikesHeartIcon,
@@ -36,7 +36,6 @@ export default function Post({
   isSponsored,
   isTarget,
   ctaLabel,
-  photo,
   imageSrc,
   avatar,
   imageGradient,
@@ -117,7 +116,7 @@ export default function Post({
     ? (baseLikes + (liked ? 1 : 0)).toLocaleString('en-US')
     : likes
 
-  const photoSrc = imageSrc || feedImage(photo)
+  const photoSrc = imageSrc
 
   return (
     <article className="postCard" ref={containerRef} data-target={isTarget || undefined}>

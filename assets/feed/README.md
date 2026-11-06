@@ -3,8 +3,8 @@
 The real Instagram photos and account data here are **committed**, so the
 public site shows the same feed as this machine. They are used non-commercially
 for education (see the repository's note on fair use). Only raw downloads and
-unused crops stay gitignored: `profiles/<account>/` dumps from SodaFox,
-`profiles/imani brooks/` (full-size Unsplash originals), `explore/`, `period/`,
+unused crops stay gitignored: `raw/<account>/` dumps from SodaFox,
+`raw/imani brooks/` (full-size Unsplash originals), `explore/`, `period/`,
 `post-*.jpg` and `archive/*/profile.json.bak`. The level still falls back to
 plain color blocks when a photo is missing.
 
@@ -14,7 +14,7 @@ plain color blocks when a photo is missing.
 | --- | --- | --- |
 | `archive/<handle>/` | Real accounts as the Wayback Machine captured them in spring 2016: `profile.json` (bio, counts, posts with real captions, like counts, dates) plus one JPG per post and, when archived, `avatar.jpg` | `src/components/feed/archiveData.js` |
 | `library/` | Real accounts and photos from Instagram's own blog, Jan–May 2016 (`index.csv` has the sources). Each photo is owned by exactly one account; some sets are reserved for the invented friends | `libraryData.js`, `libraryQuality.js` |
-| `profiles/` | Wayback profile captures of 40 big accounts (counts, bios, post links) and their avatars, pulled by an earlier session. The archive falls back to `profiles/avatars/<handle>.jpg` when a profile picture was not archived | `archiveData.js` (avatars only) |
+| `profiles/` | Wayback profile captures of 40 big accounts (counts, bios, post links) and their avatars, pulled by an earlier session. The archive falls back to `archive-avatars/<handle>.jpg` when a profile picture was not archived | `archiveData.js` (avatars only) |
 | `explore/`, `period/`, `*.jpg` | Older crops from the reference screenshots. No longer used | — |
 
 An account in `archive/` wins over the same account in `library/`.
@@ -53,7 +53,7 @@ What to expect:
 Accounts whose photos the archive never saved (most celebrities, humansofny)
 still get a full `profile.json` with real captions and like counts. To give
 them photos, save each post's image by hand (the post links are in
-`profiles/POST-LINKS.md`) as `archive/<handle>/<code>.jpg`, where `<code>` is
+`raw/POST-LINKS.md`) as `archive/<handle>/<code>.jpg`, where `<code>` is
 the post's code in `profile.json`. The level picks them up on the next
 reload; no wiring needed.
 
@@ -73,5 +73,5 @@ Four invented accounts carry the level's objectives. marcus.h, julia.creates
 and sarah.moments post from reserved library sets (`FRIEND_SETS` in
 `libraryData.js`). imani.brooks, whose post is the one the player has to
 find, is a portrait and fashion photographer whose 21 photos (plus avatar)
-are by @aliounepic on Unsplash (Unsplash License), in `imani/`. The full-size
-originals sit in `profiles/imani brooks/` (gitignored).
+are by @aliounepic on Unsplash (Unsplash License), in `friends/imani.brooks/`. The full-size
+originals sit in `raw/imani brooks/` (gitignored).

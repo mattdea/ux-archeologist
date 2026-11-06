@@ -1,12 +1,9 @@
 // src/components/feed/Avatar.jsx
-// Circular profile picture. Uses the photo from /assets/feed/ when it exists,
+// Circular profile picture: the account's image URL when it has one,
 // otherwise a flat colored circle with the account's initial.
 
-import { feedImage } from './feedData'
-
 export default function Avatar({ photo, color, initial, size = 32, className = '' }) {
-  // `photo` is a filename in /assets/feed/ or an already-resolved image URL
-  const src = feedImage(photo) || (typeof photo === 'string' && photo.includes('/') ? photo : null)
+  const src = typeof photo === 'string' && photo.includes('/') ? photo : null
   const style = { width: size, height: size }
 
   if (src) {

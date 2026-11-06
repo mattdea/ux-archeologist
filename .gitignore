@@ -30,21 +30,14 @@ dist-ssr
 # Local Netlify folder
 .netlify
 
-# Level 4 photos: archive/, library/, profiles/avatars/ and the avatar jpgs
-# are committed so the public site has them (non-commercial, educational
-# use; see assets/feed/README.md). Only raw downloads and unused crops stay
-# local.
-/assets/feed/explore/
-/assets/feed/period/
+# Level 4 photos (archive/, archive-avatars/, library/, friends/) are
+# committed so the public site has them (non-commercial, educational use;
+# see assets/feed/README.md). Raw downloads and old crops under raw/ stay
+# local; its notes (*.md, *.json, *.txt) are tracked.
+/assets/feed/raw/*/
 /assets/feed/instaloader/
-/assets/feed/profiles/cristiano/
-/assets/feed/profiles/thejoshuatreehouse/
-/assets/feed/profiles/imani brooks/
-/assets/feed/profiles/multi_creator_*/
 /assets/feed/archive/*/profile.json.bak
 /assets/feed/archive/recover.log
-# Old hand-cropped post photos that nothing loads any more
-/assets/feed/post-*.jpg
 
 # Python
 __pycache__/

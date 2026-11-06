@@ -370,7 +370,7 @@ Accounts come from three sources, in order of preference, each falling back to t
 
 **Dates:** nothing is filtered by date. Every photo on disk loads, and timestamps are labels by position: the feed's come from the hand-ranked `FEED` list in `feedData.js` (one `[username, timestamp]` pair per slot; ads carry `null`), and profile grids use `gridTime(index)` in `archiveData.js` (3h, 1d, 2d … then weeks), so every surface reads as today regardless of when a capture was made.
 
-The home feed is 24 posts in a hand-ranked order (`FEED` in `feedData.js`): 18 recognisable real accounts, four invented friends (marcus.h, julia.creates, sarah.moments and imani.brooks, whose post is the target), and two ads. Imani's photos are Unsplash (free licence) in `assets/feed/imani/`; the real Instagram photos and account data are committed too (non-commercial, educational use), so the public site shows the same feed. See `assets/feed/README.md`.
+The home feed is 24 posts in a hand-ranked order (`FEED` in `feedData.js`): 18 recognisable real accounts, four invented friends (marcus.h, julia.creates, sarah.moments and imani.brooks, whose post is the target), and two ads. Imani's photos are Unsplash (free licence) in `assets/feed/friends/imani.brooks/`; the real Instagram photos and account data are committed too (non-commercial, educational use), so the public site shows the same feed. See `assets/feed/README.md`.
 
 **Objectives (3, independent):**
 1. Find Imani's post — she has news (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)

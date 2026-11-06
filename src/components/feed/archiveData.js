@@ -5,7 +5,7 @@
 //   profile.json  bio, counts, and posts with real captions, likes, dates
 //   <code>.jpg    the post's photo
 //   avatar.jpg    profile picture (often not archived; falls back to
-//                 assets/feed/profiles/avatars/<handle>.jpg)
+//                 assets/feed/archive-avatars/<handle>.jpg)
 //
 // A build without the folder gets an empty ARCHIVE and the level falls
 // back to the blog library, then to plain color blocks.
@@ -19,7 +19,7 @@ const PHOTOS = import.meta.glob('../../../assets/feed/archive/*/*.jpg', {
   eager: true,
   import: 'default',
 })
-const FALLBACK_AVATARS = import.meta.glob('../../../assets/feed/profiles/avatars/*.jpg', {
+const FALLBACK_AVATARS = import.meta.glob('../../../assets/feed/archive-avatars/*.jpg', {
   eager: true,
   import: 'default',
 })
@@ -30,7 +30,7 @@ const FALLBACK_AVATARS = import.meta.glob('../../../assets/feed/profiles/avatars
 // as "today" however old the captures are.
 
 const photoUrl = (handle, file) => PHOTOS[`../../../assets/feed/archive/${handle}/${file}`] || null
-const fallbackAvatar = handle => FALLBACK_AVATARS[`../../../assets/feed/profiles/avatars/${handle}.jpg`] || null
+const fallbackAvatar = handle => FALLBACK_AVATARS[`../../../assets/feed/archive-avatars/${handle}.jpg`] || null
 
 /** handle → account. Posts newest first, only those whose photo was recovered. */
 export const ARCHIVE = Object.fromEntries(

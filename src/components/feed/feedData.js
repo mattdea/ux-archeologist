@@ -14,9 +14,9 @@ import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile
 
 // Imani's photos are Unsplash (Unsplash License, @aliounepic), the one set
 // in the feed under a free licence.
-import imaniAvatar from '../../../assets/feed/imani/avatar.jpg'
-import imaniPost from '../../../assets/feed/imani/post.jpg'
-const IMANI_GRID = import.meta.glob('../../../assets/feed/imani/grid-*.jpg', { eager: true, import: 'default' })
+import imaniAvatar from '../../../assets/feed/friends/imani.brooks/avatar.jpg'
+import imaniPost from '../../../assets/feed/friends/imani.brooks/post.jpg'
+const IMANI_GRID = import.meta.glob('../../../assets/feed/friends/imani.brooks/grid-*.jpg', { eager: true, import: 'default' })
 
 // Her post first, then grid-01 … grid-20 in file order.
 const IMANI_PHOTOS = [imaniPost, ...Object.keys(IMANI_GRID).sort().map(k => IMANI_GRID[k])]
@@ -24,18 +24,19 @@ const IMANI_PHOTOS = [imaniPost, ...Object.keys(IMANI_GRID).sort().map(k => IMAN
 /** A friend's photos, lead first: Imani's committed set, else the library set. */
 const friendSet = username => username === 'imani.brooks' ? IMANI_PHOTOS : friendPhotos(username)
 
-// Every image in /assets/feed/, keyed by filename ("living-room.jpg" → URL).
-const FILES = import.meta.glob('../../../assets/feed/*.{jpg,jpeg,png,webp}', {
+// Profile pictures of the invented friends, ads and commenters:
+// assets/feed/friends/avatars/<username>.jpg, keyed by username.
+const AVATAR_FILES = import.meta.glob('../../../assets/feed/friends/avatars/*.jpg', {
   eager: true,
   import: 'default',
 })
-const IMAGES = Object.fromEntries(
-  Object.entries(FILES).map(([path, url]) => [path.split('/').pop(), url])
+const FRIEND_AVATARS = Object.fromEntries(
+  Object.entries(AVATAR_FILES).map(([path, url]) => [path.split('/').pop().replace(/\.jpg$/, ''), url])
 )
 
-/** Resolve a filename from /assets/feed/ to a URL, or null if it isn't there. */
-export function feedImage(name) {
-  return name && IMAGES[name] ? IMAGES[name] : null
+/** URL of an invented account's profile picture, or null if it has none. */
+export function friendAvatar(username) {
+  return FRIEND_AVATARS[username] || null
 }
 
 // Small deterministic hash so every generated value is stable across renders.
@@ -90,8 +91,7 @@ const BASE_POSTS = [
   {
     id: 1,
     username: 'marcus.h',
-    photo: 'post-marcus-studio.jpg',
-    avatar: 'avatar-marcus-h.jpg',
+    avatar: friendAvatar('marcus.h'),
     imageGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     likes: '283',
     caption: 'Golden hour portraits. Some days the light just cooperates. #naturallight #portrait',
@@ -108,8 +108,7 @@ const BASE_POSTS = [
     username: 'airbnb',
     isSponsored: true,
     ctaLabel: 'LEARN MORE',
-    photo: 'post-airbnb-cabin.jpg',
-    avatar: 'avatar-airbnb.jpg',
+    avatar: friendAvatar('airbnb'),
     imageGradient: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
     likes: '12,440',
     caption: "Don't just go there. Live there. Book homes in over 191 countries. #LiveThere",
@@ -121,8 +120,7 @@ const BASE_POSTS = [
   {
     id: 3,
     username: 'julia.creates',
-    photo: 'post-julia-ceramics.jpg',
-    avatar: 'avatar-julia-creates.jpg',
+    avatar: friendAvatar('julia.creates'),
     imageGradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
     likes: '1,204',
     caption: 'new work in the shop 🎨 link in bio',
@@ -134,8 +132,7 @@ const BASE_POSTS = [
   {
     id: 5,
     username: 'sarah.moments',
-    photo: 'post-sarah-coffee.jpg',
-    avatar: 'avatar-sarah-moments.jpg',
+    avatar: friendAvatar('sarah.moments'),
     imageGradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
     likes: '397',
     caption: 'lazy sunday mornings are underrated ☕',
@@ -149,8 +146,7 @@ const BASE_POSTS = [
     username: 'warbyparker',
     isSponsored: true,
     ctaLabel: 'SHOP NOW',
-    photo: 'post-warbyparker-frames.jpg',
-    avatar: 'avatar-warbyparker.jpg',
+    avatar: friendAvatar('warbyparker'),
     imageGradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
     likes: '7,892',
     caption: 'Fall frames are here. Try 5 pairs at home, free. #WarbyParker',
@@ -386,6 +382,8 @@ function avatarFor(username) {
   if (isLibraryAccount(username)) return { avatar: libraryAvatar(username), avatarColor: '#dddddd', initial: username[0] }
   const fromFeed = POSTS.find(p => p.username === username)
   if (fromFeed) return { avatar: fromFeed.avatar, avatarColor: fromFeed.avatarColor, initial: fromFeed.initial }
+  const own = friendAvatar(username)
+  if (own) return { avatar: own, avatarColor: '#dddddd', initial: username[0] }
   const explore = EXPLORE_USERS.find(u => u.username === username)
   if (explore) return { avatar: null, avatarColor: explore.color, initial: username[0] }
   const hues = ['#4facfe', '#a18cd1', '#fda085', '#ff9a9e', '#c05c7e', '#43e97b', '#2c5364', '#e17055', '#fdcb6e']

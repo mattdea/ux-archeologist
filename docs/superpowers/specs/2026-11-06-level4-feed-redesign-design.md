@@ -24,21 +24,21 @@ feed must stay *ranked*, not chronological. The discovery copy and the
 - Photos come from one Unsplash account, [@aliounepic](https://unsplash.com/@aliounepic),
   under the Unsplash License (free to use, no attribution required). Because
   they are licensed, they are **committed**, in a new folder
-  `assets/feed/imani/`, so the target post works on the public site too. The
+  `assets/feed/friends/imani.brooks/`, so the target post works on the public site too. The
   existing `/assets/feed/*.jpg` gitignore rule does not match a subfolder; no
   gitignore change is needed.
   - Avatar: [XQBcBGWvxF4](https://unsplash.com/photos/smiling-young-black-woman-with-striped-shadows-on-her-face-XQBcBGWvxF4),
-    cropped square on the face, saved as `assets/feed/imani/avatar.jpg`.
+    cropped square on the face, saved as `assets/feed/friends/imani.brooks/avatar.jpg`.
     The old `avatar-daniela-reyes.jpg` is no longer referenced.
   - Target post: [Hp2PFbBdg4w](https://unsplash.com/photos/woman-in-checkered-dress-on-sofa-Hp2PFbBdg4w)
     (woman in a checkered dress on a sofa in a red room), cropped to the
-    feed's square, saved as `assets/feed/imani/post.jpg`.
+    feed's square, saved as `assets/feed/friends/imani.brooks/post.jpg`.
   - Grid: the post plus every other photo the user saved from the account in
     `assets/feed/profiles/imani brooks/` (22 full-size Unsplash downloads),
     except `alioune-seye-lZMZO-CCOqA-unsplash.jpg`, a portrait of children,
     which the level leaves out as it does every photo of a minor. That is 20
     more photos: Senegalese portraits, fashion work, Dakar beaches and
-    streets. Saved square as `assets/feed/imani/grid-01.jpg` …
+    streets. Saved square as `assets/feed/friends/imani.brooks/grid-01.jpg` …
     `grid-20.jpg`, 750 px. Her grid is exactly these 21; no topic top-up from
     library pools (she has no `FRIEND_SETS` entry; `feedData.js` imports her
     photos directly).
@@ -126,7 +126,7 @@ feed must stay *ranked*, not chronological. The discovery copy and the
   removed, Imani's explicit photo list.
 - `src/levels/Level4.jsx` — objective text.
 - `docs/design-spec.md` — Level 4 section: objective text, feed composition.
-- `assets/feed/imani/` — four photos + avatar (committed).
+- `assets/feed/friends/imani.brooks/` — four photos + avatar (committed).
 - `assets/feed/avatar-*.jpg` for removed friends — deleted (local, gitignored).
 - `assets/feed/README.md` — note the committed Unsplash folder and the
   removed cutoff.
