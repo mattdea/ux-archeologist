@@ -374,7 +374,7 @@ The home feed is 24 posts in a hand-ranked order (`FEED` in `feedData.js`): 18 r
 
 **Objectives (3, independent):**
 1. Find Imani's post — she has news (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)
-2. Learn more about a sponsored post (tap Sponsored, LEARN MORE or SHOP NOW)
+2. Learn more about a sponsored post — completes when the in-app browser opens. Tapping a sponsored *photo* reveals the March 2016 ad overlay (photo blurred and dimmed, an outlined ↗ circle, the advertiser's name and domain; reference: `docs/reference/ads/`); tapping elsewhere on it dismisses. LEARN MORE, the Sponsored label or the overlay's arrow open the in-app browser (`InAppBrowser.jsx`): slides up over the whole app in 350ms, keeps the status bar, covers the tab bar, leaves the feed mounted at its scroll position, and closes in reverse. Its chrome (light grey bar, X, bold title over grey domain, ellipsis with a Copy Link / Open in Safari / Cancel action sheet, blue progress bar) is a reconstruction — unverified — with every value in `BROWSER_CHROME`. The destination is a locally built page (`AirbnbLiveThere.jsx`, keyed by the post's `ad.page` in `AD_PAGES`), a reconstruction of Airbnb's April 2016 "Don't just go there. Live there." mobile page; no live site is ever loaded.
 3. Like a post
 
 **Discovery Card:**
