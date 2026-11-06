@@ -218,6 +218,18 @@ export const POSTS = FEED.flatMap(([username, timestamp]) => {
   return post ? [{ ...post, timestamp }] : []
 })
 
+/** Older posts for the feed's n-th extra page (n ≥ 1): each real account's
+    n-th most recent post, in FEED order, labelled gridTime(n) by archivePost
+    so a page reads as one older day. Empty once every account has run out,
+    which is when the feed's spinner goes away. */
+export function feedPage(n) {
+  return FEED.flatMap(([username]) => {
+    if (BASE_POSTS.some(p => p.username === username)) return []
+    const post = archivePost(username, n)
+    return post ? [post] : []
+  })
+}
+
 // ── Who the player follows ──────────────────────────────────────────────────
 // Everyone whose posts reach the home feed, except the ads.
 

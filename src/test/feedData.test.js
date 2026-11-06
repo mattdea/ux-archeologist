@@ -1,7 +1,23 @@
 // src/test/feedData.test.js
 // The real-account photos are gitignored, so these tests only assert on what
 // holds with or without them: the invented friends, the ads, and the ordering.
-import { POSTS, FEED, FEED_ORDER, FEED_TIMES, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
+import { POSTS, FEED, FEED_ORDER, FEED_TIMES, feedPage, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
+
+describe('older feed pages', () => {
+  it('hold only real accounts, in FEED order, labelled as one older day', () => {
+    const friendsAndAds = ['imani.brooks', 'marcus.h', 'julia.creates', 'sarah.moments', 'airbnb', 'warbyparker']
+    const page = feedPage(1)
+    const names = page.map(p => p.username)
+    expect(names).toEqual(FEED_ORDER.filter(u => names.includes(u)))
+    for (const p of page) {
+      expect(friendsAndAds).not.toContain(p.username)
+      expect(p.timestamp).toBe('1d')
+    }
+  })
+  it('run out eventually', () => {
+    expect(feedPage(500)).toEqual([])
+  })
+})
 
 describe('home feed', () => {
   it('has one timestamp slot per FEED_ORDER entry', () => {

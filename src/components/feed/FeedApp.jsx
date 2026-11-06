@@ -26,7 +26,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import useDragScroll from './useDragScroll'
 import { resetFollows } from './followStore'
 import './feed-styles.css'
-import { POSTS, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
+import { POSTS, feedPage, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
 import NavBar from './NavBar'
 import Post from './Post'
 import ExploreTab from './ExploreTab'
@@ -39,6 +39,8 @@ import {
 
 const TABS = ['home', 'explore', 'activity', 'profile']
 const NAV_MS = 500
+const LOAD_MORE_MS = 650       // spinner time before the next page of older posts
+const LOAD_MORE_PX = 240       // how close to the bottom before loading
 const TRICKLE_FIRST_MS = 5000
 const TRICKLE_GAP_MS = 7000
 
@@ -97,6 +99,26 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     }, delay)
     return () => clearTimeout(t)
   }, [inFeed, following])
+
+  // Older posts load as the player nears the bottom, a page per day back,
+  // until every real account has run out; then the spinner goes away.
+  const [pages, setPages] = useState([])
+  const [exhausted, setExhausted] = useState(false)
+  const loadingMore = useRef(false)
+  const handleFeedScroll = useCallback(() => {
+    const el = feedScrollRef.current
+    if (!el || loadingMore.current || exhausted) return
+    if (el.scrollTop + el.clientHeight < el.scrollHeight - LOAD_MORE_PX) return
+    loadingMore.current = true
+    setTimeout(() => {
+      setPages(prev => {
+        const next = feedPage(prev.length + 1)
+        if (!next.length) setExhausted(true)
+        return next.length ? [...prev, next] : prev
+      })
+      loadingMore.current = false
+    }, LOAD_MORE_MS)
+  }, [exhausted])
 
   const handleLike = useCallback(() => {
     if (onCompleteObjective) onCompleteObjective('likePost')
@@ -165,8 +187,8 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
           title={<span className="feedWordmark" role="img" aria-label="Instagram" />}
           right={<button className="feedNavBtn" aria-label="Direct inbox"><InboxIcon /></button>}
         />
-        <div ref={feedScrollRef} className="feedScroll">
-          {POSTS.map(post => (
+        <div ref={feedScrollRef} className="feedScroll" onScroll={handleFeedScroll}>
+          {[...POSTS, ...pages.flat()].map(post => (
             <Post
               key={post.id}
               {...post}
@@ -176,9 +198,11 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
               onOpenProfile={openProfile}
             />
           ))}
-          <div className="loadingArea">
-            <div className="spinner" />
-          </div>
+          {!exhausted && (
+            <div className="loadingArea">
+              <div className="spinner" />
+            </div>
+          )}
         </div>
       </>
     ),
