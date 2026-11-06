@@ -100,11 +100,6 @@ export const ACCOUNTS = {
     bio: 'Animated doodles. Stop-motion goofiness.',
     captions: ['Tissue trouble 🤧 #stopmotion'],
   },
-  asmitaparelkar: {
-    name: 'Asmita Parelkar', followers: '21.9k', following: 455,
-    bio: 'Photographer. Calm in the chaos. Mumbai',
-    captions: ['Quiet corner of the city.'],
-  },
   paperfashion: {
     name: 'Katie Rodgers', followers: '402k', following: 711, website: 'paperfashion.net',
     bio: 'Paper Fashion. Paint + fabric.',
@@ -135,11 +130,6 @@ export const ACCOUNTS = {
     bio: 'Carved eggs 🥚',
     captions: ['Happy Easter 🥚 #eggcarving'],
   },
-  corasacher: {
-    name: 'Cora Sacher', followers: '52.5k', following: 377,
-    bio: 'Stuttgart & Heidelberg. Street photography.',
-    captions: ['Stuttgart afternoon.'],
-  },
   ericunderwood: {
     name: 'Eric Underwood', followers: '67.0k', following: 430,
     bio: 'Dancer. London.',
@@ -149,11 +139,6 @@ export const ACCOUNTS = {
     name: 'Pond Life', followers: '11.7k', following: 75,
     bio: 'New York City’s waters, under the microscope 🔬',
     captions: ['Found in a Central Park pond 🔬'],
-  },
-  danoziontifik: {
-    name: 'Dano', followers: '41.2k', following: 289,
-    bio: 'Ziontifik. Buenos Aires.',
-    captions: ['Lines.'],
   },
   '8bithiphop': {
     name: '8-Bit Hip Hop', followers: '23.4k', following: 12,
@@ -180,11 +165,6 @@ export const ACCOUNTS = {
     bio: 'Portraits. Fact and fantasy.',
     captions: ['Portrait series.'],
   },
-  chefyash: {
-    name: 'Yash', followers: '13.0k', following: 395,
-    bio: 'Mumbai’s hidden sanctuaries.',
-    captions: ['Found a quiet spot.'],
-  },
   'p.hil': {
     name: 'Phil Shaw', followers: '29.4k', following: 701,
     bio: 'Music photographer.',
@@ -199,11 +179,6 @@ export const ACCOUNTS = {
     name: 'Richard Ahnert', followers: '22.1k', following: 344,
     bio: 'Artist. Man and the natural world.',
     captions: ['New work.'],
-  },
-  ssazanovich: {
-    name: 'Ksenia', followers: '38.8k', following: 280,
-    bio: 'Siberia ❄️',
-    captions: ['Snow everywhere ❄️'],
   },
   yuki__fujisawa: {
     name: 'Yuki Fujisawa', followers: '12.9k', following: 233,
@@ -250,11 +225,6 @@ export const ACCOUNTS = {
     bio: 'Human, honest, humorous things.',
     captions: ['What a time to be alive.'],
   },
-  bali_ayu: {
-    name: 'Maki', followers: '11.9k', following: 205,
-    bio: 'Vintage tools, brought back to life.',
-    captions: ['Restored this week.'],
-  },
 }
 
 // ── Who owns which photo ─────────────────────────────────────────────────
@@ -286,17 +256,20 @@ export const REAL_OWNERS = {
   instagram: '*',             // lends some of its 49 to pools below; takes whatever is left over
 }
 
-// Source accounts (never shown as names) grouped by subject.
+// Source accounts (never shown as names) grouped by subject. The sets that
+// belonged to the invented friends cut in Nov 2026 (chefyash, asmitaparelkar,
+// corasacher, danoziontifik, ssazanovich, bali_ayu), Luca's pasta and the
+// Joshua Tree house live on here as pool photos.
 const POOLS = {
   art: ['phannapast', 'richardahnert', 'tatiana_mc_garry', 'mangaday', 'jhnmclghln', 'soraceballos',
     'paperfashion', 'hombre_mcsteez', 'tylersean13', 'thecuadro', '8bithiphop', 'esposin'],
-  music: ['music', 'savagesband', 'p.hil', 'honoluluchris', 'andyshauf', 'kyson_eye', 'mimphx', 'sashabarr'],
-  style: ['patmcgrathreal', 'mac_daddyy', 'yuki__fujisawa', 'thehatgirls', 'mayaraefe'],
-  people: ['la_mayte', 'ericunderwood', 'kuraevaolga'],
-  city: [],
-  nature: ['pondlife_pondlife'],
-  home: ['wolfordroger'],
-  food: [],
+  music: ['music', 'savagesband', 'p.hil', 'honoluluchris', 'andyshauf', 'kyson_eye', 'mimphx', 'sashabarr', 'danoziontifik'],
+  style: ['patmcgrathreal', 'mac_daddyy', 'yuki__fujisawa', 'thehatgirls', 'mayaraefe', 'asmitaparelkar'],
+  people: ['la_mayte', 'ericunderwood', 'kuraevaolga', 'chefyash'],
+  city: ['corasacher'],
+  nature: ['pondlife_pondlife', 'ssazanovich'],
+  home: ['wolfordroger', 'bali_ayu', 'thejoshuatreehouse'],
+  food: ['lucacappuccinodonofrio'],
   sport: ['jameslenger'],
 }
 
