@@ -272,10 +272,9 @@
 }
 
 .abnbWordmark {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: var(--abnb-rausch);
+  height: 26px;
+  width: auto;
+  display: block;
 }
 
 .abnbLogin {
