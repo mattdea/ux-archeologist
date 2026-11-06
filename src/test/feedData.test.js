@@ -1,7 +1,7 @@
 // src/test/feedData.test.js
 // The real-account photos are gitignored, so these tests only assert on what
 // holds with or without them: the invented friends, the ads, and the ordering.
-import { POSTS, FEED, FEED_ORDER, FEED_TIMES, feedPage, buildFeed, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
+import { POSTS, FEED, FEED_ORDER, FEED_TIMES, feedPage, buildFeed, hasProfile, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
 
 describe('buildFeed(seed)', () => {
   const fixed = ['imani.brooks', 'marcus.h', 'julia.creates', 'sarah.moments', 'airbnb', 'warbyparker']
@@ -28,6 +28,15 @@ describe('buildFeed(seed)', () => {
     const f = buildFeed(99)
     const ids = [...f.posts, ...f.page(1), ...f.page(2)].map(p => p.id)
     expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+describe('hasProfile', () => {
+  it('is true for friends, commenters with a written profile, and false for strangers', () => {
+    expect(hasProfile('julia.creates')).toBe(true)
+    expect(hasProfile('mia.c')).toBe(true)
+    expect(hasProfile('imani.brooks')).toBe(true)
+    expect(hasProfile('nobody.here')).toBe(false)
   })
 })
 

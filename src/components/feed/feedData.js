@@ -393,6 +393,14 @@ function avatarFor(username) {
   return { avatar: null, avatarColor: hues[hashString(username) % hues.length], initial: username[0] }
 }
 
+/** True when a username has a real page to open: a friend or commenter with a
+    written profile, an archived or library account, or an Explore user.
+    getProfile still answers for any name, but these are the ones worth a tap. */
+export function hasProfile(username) {
+  return !!(FEED_PROFILES[username] || ACCOUNTS[username] || isArchiveAccount(username)
+    || isLibraryAccount(username) || EXPLORE_USERS.some(u => u.username === username))
+}
+
 /** Full profile for any username: name, bio, counts, avatar, and a photo grid. */
 export function getProfile(username) {
   const h = hashString(username)

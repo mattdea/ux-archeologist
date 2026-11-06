@@ -535,6 +535,11 @@
   cursor: pointer;
 }
 
+/* A name with no page behind it keeps the 2016 look but isn't a tap target */
+.postUserPlain {
+  cursor: default;
+}
+
 .postLink {
   color: var(--ig-blue);
 }

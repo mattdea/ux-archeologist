@@ -13,7 +13,7 @@
 // and does a quick 1 → 1.25 → 1 bounce at the same moment.
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { feedImage } from './feedData'
+import { feedImage, hasProfile } from './feedData'
 import Avatar from './Avatar'
 import {
   HeartOutlineIcon, CommentOutlineIcon, MoreDotsIcon, LikesHeartIcon,
@@ -90,6 +90,12 @@ export default function Post({
     e.stopPropagation()
     if (onOpenProfile) onOpenProfile(username)
   }, [onOpenProfile, username])
+
+  // A commenter's name opens their profile when they have one.
+  const openCommenter = useCallback((e, name) => {
+    e.stopPropagation()
+    if (onOpenProfile && hasProfile(name)) onOpenProfile(name)
+  }, [onOpenProfile])
 
   const handleImageClick = useCallback(() => {
     const now = Date.now()
@@ -187,7 +193,10 @@ export default function Post({
         )}
         {comments.map((c, i) => (
           <div className="commentLine" key={i}>
-            <span className="postUser">{c.username}</span> <RichText text={c.text} />
+            <span
+              className={hasProfile(c.username) ? 'postUser' : 'postUser postUserPlain'}
+              onClick={e => openCommenter(e, c.username)}
+            >{c.username}</span> <RichText text={c.text} />
           </div>
         ))}
       </div>
