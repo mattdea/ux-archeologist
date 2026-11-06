@@ -10,11 +10,11 @@
 //   onBack     — shown as a back chevron when present
 //   onOpenPost — (post) => void
 
-import { useState } from 'react'
 import NavBar from './NavBar'
 import Avatar from './Avatar'
 import PhotoGrid from './PhotoGrid'
 import { ME, getProfile, isFollowing } from './feedData'
+import { useIsFollowing, useFollowingCount, toggleFollow, adjustCount } from './followStore'
 import {
   BackChevronIcon, GearIcon, GridModeIcon, ListModeIcon, PinModeIcon, TaggedModeIcon, DownArrowIcon,
 } from './icons'
@@ -41,7 +41,11 @@ function ModeRow() {
 
 export default function ProfileView({ username, onBack, onOpenPost }) {
   const own = !username
-  const [following, setFollowing] = useState(() => !!username && isFollowing(username))
+  const following = useIsFollowing(username)
+  const myFollowing = useFollowingCount()
+  // The profile's count already includes the player if they followed at the
+  // start; move it by one when that changes.
+  const followDelta = own ? 0 : (following ? 1 : 0) - (isFollowing(username) ? 1 : 0)
   const profile = own ? null : getProfile(username)
   const title = (own ? ME.username : username).toUpperCase()
 
@@ -63,15 +67,15 @@ export default function ProfileView({ username, onBack, onOpenPost }) {
           <div className="profileRight">
             <div className="profileStats">
               <Stat n={own ? ME.posts : profile.posts} label="posts" />
-              <Stat n={own ? ME.followers : profile.followers} label="followers" />
-              <Stat n={own ? ME.following : profile.following} label="following" />
+              <Stat n={own ? ME.followers : adjustCount(profile.followers, followDelta)} label="followers" />
+              <Stat n={own ? myFollowing : profile.following} label="following" />
             </div>
             {own
               ? <button className="editProfileBtn">Edit Profile</button>
               : (
                 <button
                   className={following ? 'followBtn followBtnOn' : 'followBtn'}
-                  onClick={() => setFollowing(f => !f)}
+                  onClick={() => toggleFollow(username)}
                 >
                   {following ? '✓ Following' : '+ Follow'}
                 </button>

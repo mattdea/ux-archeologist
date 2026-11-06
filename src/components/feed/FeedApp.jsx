@@ -24,6 +24,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import useDragScroll from './useDragScroll'
+import { resetFollows } from './followStore'
 import './feed-styles.css'
 import { POSTS, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
 import NavBar from './NavBar'
@@ -52,6 +53,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
   const trickleIdx = useRef(0)
   const appRef = useRef(null)
   useDragScroll(appRef)
+  useEffect(() => { resetFollows() }, [])
 
   // Running push/pop: { kind: 'push' | 'pop', tab } while it animates.
   const [nav, setNav] = useState(null)

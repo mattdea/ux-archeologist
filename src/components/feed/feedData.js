@@ -5,7 +5,7 @@
 // `photo` / `avatar`. Missing files fall back to the gradient / color below,
 // so the feed renders either way.
 
-import { ACCOUNTS, EXPLORE_ORDER, isLibraryAccount, libraryAvatar, libraryPhotos } from './libraryData'
+import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos } from './libraryData'
 
 // Every image in /assets/feed/, keyed by filename ("living-room.jpg" → URL).
 const FILES = import.meta.glob('../../../assets/feed/*.{jpg,jpeg,png,webp}', {
@@ -62,6 +62,8 @@ export function libraryPost(account, url, overrides = {}) {
 // BASE_POSTS are the player's (invented) friends and two ads; real accounts
 // they follow are woven in below as POSTS.
 
+const FRIEND_PHOTO_LEAD = username => friendPhotos(username)[0] || null
+
 const BASE_POSTS = [
   {
     id: 1,
@@ -70,7 +72,7 @@ const BASE_POSTS = [
     avatar: 'avatar-marcus-h.jpg',
     imageGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     likes: '283',
-    caption: 'Golden hour in the studio. Some days the light just cooperates. #naturallight #studio',
+    caption: 'Golden hour portraits. Some days the light just cooperates. #naturallight #portrait',
     commentCount: 12,
     comments: [
       { username: 'julia.creates', text: 'that light 😍' },
@@ -116,7 +118,7 @@ const BASE_POSTS = [
     avatar: 'avatar-alex-wanderer.jpg',
     imageGradient: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
     likes: '541',
-    caption: 'Lisbon. The city that smells like bread and sea salt. Will definitely return. #lisboa #vscocam',
+    caption: 'Mumbai at first light. Already planning the next trip back. #travel #vscocam',
     commentCount: 31,
     comments: [{ username: 'mia.c', text: '@alex.wanderer take me next time' }],
     timestamp: '5h',
@@ -170,27 +172,13 @@ const BASE_POSTS = [
     initial: 'W',
   },
   {
-    id: 8,
-    username: 'coffee.culture',
-    photo: 'post-coffee-pour.jpg',
-    avatar: 'avatar-coffee-culture.jpg',
-    imageGradient: 'linear-gradient(135deg, #c9d6ff 0%, #e2e2e2 100%)',
-    likes: '2,341',
-    caption: 'The perfect cup exists and we have proof.',
-    commentCount: 89,
-    comments: [{ username: 'alex.wanderer', text: 'Where is this?' }],
-    timestamp: '9h',
-    avatarColor: '#795548',
-    initial: 'C',
-  },
-  {
     id: 9,
     username: 'outdoor.vibes',
     photo: 'post-outdoor-trail.jpg',
     avatar: 'avatar-outdoor-vibes.jpg',
     imageGradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
     likes: '763',
-    caption: 'Trail conditions: perfect. Company: also perfect 🌲 #pnw #optoutside',
+    caption: 'Fresh snow and nobody around for miles ❄️ #optoutside',
     commentCount: 22,
     comments: [],
     timestamp: '10h',
@@ -204,7 +192,7 @@ const BASE_POSTS = [
     avatar: 'avatar-studio-light.jpg',
     imageGradient: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
     likes: '521',
-    caption: 'Sometimes simple is everything.',
+    caption: 'Everything in its place.',
     commentCount: 14,
     comments: [],
     timestamp: '11h',
@@ -232,7 +220,7 @@ const BASE_POSTS = [
     avatar: 'avatar-bakes-and-more.jpg',
     imageGradient: 'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)',
     likes: '3,204',
-    caption: "Sourdough attempt #47. I think we're getting somewhere. 🍞",
+    caption: "Pastry attempt #47. I think we're getting somewhere. 🥐",
     commentCount: 112,
     comments: [
       { username: 'cafe.list', text: 'recipe pls' },
@@ -268,26 +256,12 @@ const BASE_POSTS = [
     avatar: 'avatar-travel-tales.jpg',
     imageGradient: 'linear-gradient(135deg, #fd7043 0%, #ffb74d 100%)',
     likes: '692',
-    caption: "Santorini didn't disappoint. Neither did the wine.",
+    caption: "Weekend escape. Did not want to come back. ✈️",
     commentCount: 29,
     comments: [],
     timestamp: '15h',
     avatarColor: '#ff7043',
     initial: 'T',
-  },
-  {
-    id: 15,
-    username: 'morning.run',
-    photo: 'post-morning-run.jpg',
-    avatar: 'avatar-morning-run.jpg',
-    imageGradient: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
-    likes: '428',
-    caption: '6 miles before sunrise 🏃 the only good reason to be awake at 5am',
-    commentCount: 17,
-    comments: [],
-    timestamp: '16h',
-    avatarColor: '#8ec5fc',
-    initial: 'M',
   },
   {
     id: 16,
@@ -303,35 +277,15 @@ const BASE_POSTS = [
     avatarColor: '#55efc4',
     initial: 'L',
   },
-  {
-    id: 17,
-    username: 'home.spaces',
-    photo: 'post-home-books.jpg',
-    avatar: 'avatar-home-spaces.jpg',
-    imageGradient: 'linear-gradient(135deg, #f5f0e8 0%, #d4c5a9 100%)',
-    likes: '2,031',
-    caption: 'A corner that belongs to no one but books.',
-    commentCount: 76,
-    comments: [],
-    timestamp: '18h',
-    avatarColor: '#b8860b',
-    initial: 'H',
-  },
-  {
-    id: 18,
-    username: 'pnw.shots',
-    photo: 'post-pnw-forest.jpg',
-    avatar: 'avatar-pnw-shots.jpg',
-    imageGradient: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
-    likes: '934',
-    caption: 'Pacific Northwest summer. All 3 days of it. ☀️',
-    commentCount: 38,
-    comments: [],
-    timestamp: '20h',
-    avatarColor: '#71b280',
-    initial: 'P',
-  },
+
 ]
+
+// Point each friend's post at the lead photo of their set, and each ad at its
+// reserved photo. The old post-*.jpg files are no longer used.
+BASE_POSTS.forEach(p => {
+  const src = FRIEND_PHOTO_LEAD(p.username) || adPhoto(p.username)
+  if (src) p.imageSrc = src
+})
 
 // Real accounts the player follows, placed after the friend post with `after`.
 // `photo` indexes the account's photos, newest first.
@@ -341,7 +295,7 @@ const FOLLOWED_REAL = [
   { after: 3, account: 'hummingbirdsxoxo', photo: 0, timestamp: '4h' },
   { after: 5, account: 'thejoshuatreehouse', photo: 0, timestamp: '6h',
     comments: [{ username: 'alex.wanderer', text: 'adding this to the list' }] },
-  { after: 8, account: 'acacia.johnson', photo: 0, timestamp: '9h' },
+  { after: 9, account: 'acacia.johnson', photo: 0, timestamp: '9h' },
   { after: 10, account: 'instagram', photo: 0, timestamp: '11h' },
   { after: 12, account: 'lucacappuccinodonofrio', photo: 0, timestamp: '13h',
     comments: [{ username: 'bakes.and.more', text: 'teach me 🙏' }] },
@@ -373,26 +327,7 @@ export function isFollowing(username) {
 
 /** A friend's feed photo, by username (for activity thumbnails). */
 function friendPhoto(username) {
-  const p = BASE_POSTS.find(x => x.username === username)
-  return (p && feedImage(p.photo)) || null
-}
-
-// ── Explore / profile grid photos ──────────────────────────────────────────
-// Tiles cropped from the period screenshots in docs/reference/ (see
-// assets/feed/SOURCES.md). Sorted by filename so indices are stable.
-
-const EXPLORE_FILES = import.meta.glob('../../../assets/feed/explore/*.jpg', {
-  eager: true,
-  import: 'default',
-})
-export const EXPLORE_IMAGES = Object.entries(EXPLORE_FILES)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([, url]) => url)
-
-/** Explore tile image by 1-based number from SOURCES.md (explore-07.jpg → 7). */
-export function exploreImage(n) {
-  if (!EXPLORE_IMAGES.length) return null
-  return EXPLORE_IMAGES[(n - 1 + EXPLORE_IMAGES.length) % EXPLORE_IMAGES.length]
+  return FRIEND_PHOTO_LEAD(username)
 }
 
 // ── The player ─────────────────────────────────────────────────────────────
@@ -461,55 +396,31 @@ const EXPLORE_CAPTIONS = [
   'friday feeling',
 ]
 
-/** The n-th explore tile (0-based). Infinite: wraps around the image pool.
-    Uses the real-account library when present, else the reference crops. */
+/** The n-th explore tile (0-based). Infinite: cycles the library, taking
+    each next tile from a different account. */
 export function exploreTile(n) {
-  if (EXPLORE_ORDER.length) {
-    const item = EXPLORE_ORDER[n % EXPLORE_ORDER.length]
-    // Video tiles already carry Instagram's camcorder badge in the image.
-    return { id: 'explore-' + n, image: item.url, isVideo: false, post: libraryPost(item.account, item.url) }
-  }
-  const h = hashString('tile' + n)
-  const user = EXPLORE_USERS[n % EXPLORE_USERS.length]
-  const isVideo = n % 7 === 3
-  return {
-    id: 'explore-' + n,
-    image: EXPLORE_IMAGES.length ? EXPLORE_IMAGES[(n * 11 + 5) % EXPLORE_IMAGES.length] : null,
-    isVideo,
-    post: {
-      id: 'explore-post-' + n,
-      username: user.username,
-      imageSrc: EXPLORE_IMAGES.length ? EXPLORE_IMAGES[(n * 11 + 5) % EXPLORE_IMAGES.length] : null,
-      imageGradient: `linear-gradient(135deg, ${user.color} 0%, #ffffff 160%)`,
-      likes: (120 + (h % 4200)).toLocaleString('en-US'),
-      caption: EXPLORE_CAPTIONS[h % EXPLORE_CAPTIONS.length],
-      commentCount: 3 + (h % 60),
-      comments: [],
-      timestamp: EXPLORE_TIMES[h % EXPLORE_TIMES.length],
-      avatarColor: user.color,
-      initial: user.username[0],
-      isVideo,
-    },
-  }
+  const item = EXPLORE_ORDER[n % EXPLORE_ORDER.length]
+  // Video tiles already carry Instagram's camcorder badge in the image.
+  return { id: 'explore-' + n, image: item.url, isVideo: false, post: libraryPost(item.account, item.url) }
 }
 
 // ── Profiles ───────────────────────────────────────────────────────────────
 
 const FEED_PROFILES = {
-  'marcus.h': { name: 'Marcus Hale', bio: 'Photographer. Natural light only.\nBrooklyn, NY', website: 'marcushale.com' },
-  'julia.creates': { name: 'Julia Ortega', bio: 'ceramics + small paintings\nshop link below 🎨', website: 'juliacreates.etsy.com' },
-  'alex.wanderer': { name: 'Alex Wanderer', bio: 'slow travel. film when I can afford it.' },
-  'sarah.moments': { name: 'Sarah Lin', bio: 'coffee, light, and quiet mornings ☕' },
+  'marcus.h': { name: 'Marcus Hale', bio: 'Photographer. Portraits in natural light.\nBrooklyn, NY', website: 'marcushale.com' },
+  'julia.creates': { name: 'Julia Ortega', bio: 'paintings + illustrations\nshop link below 🎨', website: 'juliacreates.etsy.com' },
+  'alex.wanderer': { name: 'Alex Wanderer', bio: 'slow travel. currently: Mumbai.' },
+  'sarah.moments': { name: 'Sarah Lin', bio: 'tea, sketchbooks, and quiet mornings ☕✏️' },
   'mike.film': { name: 'Mike Ferraro', bio: '35mm only. Portra forever.\nChicago' },
   'coffee.culture': { name: 'Coffee Culture', bio: 'The best cups in every city.\nTag us #coffeeculture', website: 'coffeeculture.co' },
-  'outdoor.vibes': { name: 'Outdoor Vibes', bio: 'PNW trails, lakes, and dogs 🌲 #optoutside' },
-  'studio.light': { name: 'Studio Light', bio: 'Minimal still life. Prints available.' },
-  'city.frames': { name: 'City Frames', bio: 'Urban geometry at 5am.' },
-  'bakes.and.more': { name: 'Priya Bakes', bio: 'Sourdough attempts, numbered.\nRecipes on the blog', website: 'bakesandmore.blog' },
+  'outdoor.vibes': { name: 'Outdoor Vibes', bio: 'Outside in every season ❄️ #optoutside' },
+  'studio.light': { name: 'Studio Light', bio: 'Still life. Old tools and found objects.' },
+  'city.frames': { name: 'City Frames', bio: 'Urban geometry at 5am. Stuttgart.' },
+  'bakes.and.more': { name: 'Priya Bakes', bio: 'Cooking for the people I love.\nRecipes on the blog', website: 'bakesandmore.blog' },
   'daniela.reyes': { name: 'Daniela Reyes', bio: 'new homeowner 🏡 (!!!)\nAustin, TX' },
-  'travel.tales': { name: 'Travel Tales', bio: 'One island at a time.' },
+  'travel.tales': { name: 'Travel Tales', bio: 'Weekend escapes.' },
   'morning.run': { name: 'Morning Run', bio: '6 miles before sunrise. Every day.' },
-  'lens.folk': { name: 'Lens Folk', bio: 'Analog is not dead.' },
+  'lens.folk': { name: 'Lens Folk', bio: 'Analog is not dead. Mumbai.' },
   'home.spaces': { name: 'Home Spaces', bio: 'Corners worth sitting in.' },
   'pnw.shots': { name: 'PNW Shots', bio: 'Pacific Northwest, all 3 sunny days of it.' },
   'airbnb': { name: 'Airbnb', bio: 'Belong anywhere.', website: 'airbnb.com' },
@@ -520,11 +431,6 @@ const FEED_PROFILES = {
   'pete.photo': { name: 'Pete Novak', bio: 'gear nerd. ask me about lenses' },
   'cafe.list': { name: 'The Cafe List', bio: 'Every cafe worth the walk.' },
 }
-
-// Reference crops with no identifiable people (numbers from SOURCES.md):
-// places, food, objects, skies. Used to fill invented accounts' grids.
-const SCENERY = [2, 4, 5, 6, 8, 9, 11, 12, 13, 14, 15, 19, 20, 21, 23, 26, 28, 29,
-  33, 35, 36, 37, 39, 40, 41, 42, 43, 45, 47]
 
 function avatarFor(username) {
   if (isLibraryAccount(username)) return { avatar: libraryAvatar(username), avatarColor: '#dddddd', initial: username[0] }
@@ -561,42 +467,30 @@ export function getProfile(username) {
   const feedPosts = POSTS.filter(p => p.username === username)
   const isBrand = feedPosts.some(p => p.isSponsored)
 
-  // Friends are casual accounts: a few dozen posts, a short grid.
-  const postCount = isBrand ? 240 + (h % 900) : 14 + (h % 60)
-  const gridLen = Math.min(postCount, isBrand ? 21 : 12)
-  const grid = []
-  feedPosts.forEach(p => {
-    grid.push({
-      id: 'grid-' + p.id,
-      image: p.imageSrc || feedImage(p.photo),
-      gradient: p.imageGradient,
-      post: { ...p, imageSrc: p.imageSrc || feedImage(p.photo) },
-    })
-  })
-  for (let i = grid.length; i < gridLen; i++) {
-    // Only people-free photos, so a friend's grid never shows a stranger's face.
-    const image = exploreImage(SCENERY[(h + i * 7) % SCENERY.length])
+  // Invented accounts show only their own photos: a friend's whole set (lead
+  // photo is their feed post), or an ad's single photo. Friends' post counts
+  // match what's on the grid.
+  const own = isBrand ? feedPosts.map(p => p.imageSrc).filter(Boolean) : friendPhotos(username)
+  const grid = own.map((image, i) => {
+    const feedPost = feedPosts.find(p => p.imageSrc === image)
     const ph = hashString(username + i)
-    grid.push({
+    return {
       id: `grid-${username}-${i}`,
       image,
-      gradient: `linear-gradient(135deg, ${avatarFor(username).avatarColor} 0%, #ffffff 160%)`,
-      isVideo: i % 9 === 4,
-      post: {
+      post: feedPost || {
         id: `profile-post-${username}-${i}`,
         username,
         imageSrc: image,
-        imageGradient: `linear-gradient(135deg, ${avatarFor(username).avatarColor} 0%, #ffffff 160%)`,
         likes: (40 + (ph % 1800)).toLocaleString('en-US'),
         caption: EXPLORE_CAPTIONS[ph % EXPLORE_CAPTIONS.length],
         commentCount: 1 + (ph % 40),
         comments: [],
         timestamp: `${1 + (i % 6)}${i < 3 ? 'd' : 'w'}`,
         ...avatarFor(username),
-        isVideo: i % 9 === 4,
       },
-    })
-  }
+    }
+  })
+  const postCount = isBrand ? 240 + (h % 900) : grid.length
 
   return {
     username,
@@ -614,31 +508,27 @@ export function getProfile(username) {
 // ── Activity ───────────────────────────────────────────────────────────────
 // `text` segments: strings render plain, { user } renders a bold blue username.
 
-function thumbs(...nums) {
-  return nums.map(n => exploreImage(n))
-}
-
 /** Photos from a real account, newest first: lib('otntty', 0, 1). */
 function lib(account, ...idx) {
   const photos = libraryPhotos(account)
   return idx.map(i => photos[i]).filter(Boolean)
 }
 
-/** A friend's own feed photo, falling back to a reference crop. */
-function friend(username, fallback) {
-  return [friendPhoto(username) || exploreImage(fallback)]
+/** A friend's own feed photo, as a one-thumbnail list. */
+function friend(username) {
+  return [friendPhoto(username)].filter(Boolean)
 }
 
 export const FOLLOWING_ACTIVITY = [
-  { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: friend('julia.creates', 29) },
+  { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: friend('julia.creates') },
   { id: 'f2', actor: 'daniela.reyes', segments: ['started following ', { user: 'j.okafor' }, ', ', { user: 'mia.c' }, ' and 3 others.'], time: '26m' },
   { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib('p.hil', 0), ...lib('honoluluchris', 0), ...lib('savagesband', 0)] },
   { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: 'hummingbirdsxoxo' }, "'s video."], time: '55m', thumbs: lib('hummingbirdsxoxo', 1) },
   { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: 'thejoshuatreehouse' }, '.'], time: '1h' },
-  { id: 'f6', actor: 'alex.wanderer', segments: ['liked 2 photos.'], time: '2h', thumbs: [...lib('corasacher', 0), ...lib('ssazanovich', 0)] },
+  { id: 'f6', actor: 'alex.wanderer', segments: ['liked 2 photos.'], time: '2h', thumbs: [...friendPhotos('city.frames').slice(1, 2), ...friendPhotos('outdoor.vibes').slice(1, 2)] },
   { id: 'f7', actor: 'outdoor.vibes', segments: ['liked ', { user: 'acacia.johnson' }, "'s photo."], time: '3h', thumbs: lib('acacia.johnson', 1) },
   { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: 'otntty' }, '.'], time: '5h' },
-  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: lib('corasacher', 1, 2, 3, 4) },
+  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib('sfmoma', 1, 2), ...lib('otntty', 1), ...lib('mimphx', 0)] },
 ]
 
 export const YOU_ACTIVITY = [
@@ -648,7 +538,7 @@ export const YOU_ACTIVITY = [
 
 /** New likes that arrive while the player scrolls the feed, in order. */
 export const TRICKLE_ACTIVITY = [
-  { id: 't1', actor: 'daniela.reyes', segments: ['liked ', { user: 'marcus.h' }, "'s photo."], time: '1m', thumbs: friend('marcus.h', 29) },
+  { id: 't1', actor: 'daniela.reyes', segments: ['liked ', { user: 'marcus.h' }, "'s photo."], time: '1m', thumbs: friend('marcus.h') },
   { id: 't2', actor: 'julia.creates', segments: ['liked 2 photos.'], time: '1m', thumbs: lib('otntty', 0, 1) },
   { id: 't3', actor: 'nadia_s', segments: ['liked ', { user: 'lucacappuccinodonofrio' }, "'s photo."], time: '1m', thumbs: lib('lucacappuccinodonofrio', 1) },
   { id: 't4', actor: 'mike.film', segments: ['liked ', { user: 'sfmoma' }, "'s photo."], time: '1m', thumbs: lib('sfmoma', 0) },

@@ -11,7 +11,8 @@
 import { useState } from 'react'
 import NavBar from './NavBar'
 import Avatar from './Avatar'
-import { getProfile, isFollowing } from './feedData'
+import { getProfile } from './feedData'
+import { useIsFollowing, toggleFollow } from './followStore'
 import { ActivityEmptyIcon } from './icons'
 
 function Segments({ segments, onOpenProfile }) {
@@ -23,7 +24,7 @@ function Segments({ segments, onOpenProfile }) {
 }
 
 function Row({ row, onOpenProfile }) {
-  const [followed, setFollowed] = useState(() => isFollowing(row.actor))
+  const followed = useIsFollowing(row.actor)
   const profile = getProfile(row.actor)
   const thumbs = row.thumbs || []
   const single = thumbs.length === 1
@@ -47,7 +48,7 @@ function Row({ row, onOpenProfile }) {
         {row.follow && (
           <button
             className={followed ? 'followBtnSmall followBtnSmallOn' : 'followBtnSmall'}
-            onClick={() => setFollowed(f => !f)}
+            onClick={() => toggleFollow(row.actor)}
           >
             {followed ? '✓ Following' : '+ Follow'}
           </button>

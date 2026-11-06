@@ -1,0 +1,43 @@
+// src/components/feed/libraryQuality.js
+// The one quality rule for assets/feed/library: photos under 640px wide are
+// too soft for the 375pt-wide screen and are never shown. Everything else is
+// an original Instagram blog photo and is used as is.
+
+export const SKIP = new Set([
+  '2016-03-17_hombre_mcsteez_o47b7v1.jpg',
+  '2016-03-17_hombre_mcsteez_o47b7v2.jpg',
+  '2016-03-17_hombre_mcsteez_o47b7v3.jpg',
+  '2016-03-17_sashabarr_o46vqu1.jpg',
+  '2016-03-17_tatiana_mc_garry_o46mee1.jpg',
+  '2016-03-18_instagram_o4975s1.jpg',
+  '2016-03-18_theoregonduck_o48lze3.jpg',
+  '2016-03-19_mangaday_o4ap062.jpg',
+  '2016-03-19_mangaday_o4ap063.jpg',
+  '2016-03-28_instagram_o4rqxh1.jpg',
+  '2016-03-30_pondlife_pondlife_o4ua3u1.jpg',
+  '2016-03-30_pondlife_pondlife_o4ua3u2.jpg',
+  '2016-03-30_pondlife_pondlife_o4ua3u3.jpg',
+  '2016-03-30_pondlife_pondlife_o4ua3u4.jpg',
+  '2016-04-06_mayaraefe_o58doo3.jpg',
+  '2016-04-09_chefyash_o5df2p1.jpg',
+  '2016-04-09_chefyash_o5df2p2.jpg',
+  '2016-04-09_mayaraefe_o5dirq1.jpg',
+  '2016-04-10_otntty_o5fqsc5.jpg',
+  '2016-04-17_hummingbirdsxoxo_o5so7x1.jpg',
+  '2016-04-17_hummingbirdsxoxo_o5so7x3.jpg',
+  '2016-04-18_instagram_o5uowo1.jpg',
+  '2016-04-18_instagram_o5uowo2.jpg',
+  '2016-04-18_instagram_o5uowo3.jpg',
+  '2016-04-19_jacobwhitesides_o5w16j1.jpg',
+  '2016-04-29_instagram_o6evyy1.jpg',
+  '2016-04-29_instagram_o6evyy2.jpg',
+  '2016-04-29_kuraevaolga_o6ehel1.jpg',
+  '2016-05-06_instagram_o6rws92.jpg',
+  '2016-05-09_instagram_o6xlga1.jpg',
+  '2016-05-09_instagram_o6xlga2.jpg',
+  '2016-05-09_jhnmclghln_o6x0cl1.jpg',
+  '2016-05-09_jhnmclghln_o6x0cl2.jpg',
+  '2016-05-09_jhnmclghln_o6x0cl3.jpg',
+  '2016-11-21_instagram_oh0qha3.jpg',
+  '2016-11-28_instagram_ohdn9y1.jpg',
+])

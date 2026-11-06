@@ -81,3 +81,10 @@ Names and bios paraphrase each blog story; captions are written for the level.
 
 Used in: 8 posts woven into the home feed, the Explore grid and trending tags,
 real-account profiles, and activity thumbnails.
+
+**Nov 2026 update.** The level no longer loads `explore/` or the top-level
+`post-*.jpg` files (those were copies of library photos). Every photo comes
+from `library/`, with one rule: nothing under 640px wide
+(`src/components/feed/libraryQuality.js`). Invented friends each post from one
+reserved photo set that matches their subject (`FRIEND_SETS` in
+`libraryData.js`); reserved photos never appear under a real account.

@@ -8,7 +8,7 @@
 import { useState, useRef, useCallback, useMemo } from 'react'
 import NavBar from './NavBar'
 import PhotoGrid from './PhotoGrid'
-import { TRENDING_TAGS, exploreImage, exploreTile } from './feedData'
+import { TRENDING_TAGS, exploreTile } from './feedData'
 import { SearchFieldIcon, PlayCircleIcon, ChevronRightIcon } from './icons'
 
 const PAGE = 15
@@ -75,7 +75,7 @@ export default function ExploreTab({ onOpenPost }) {
           {TRENDING_TAGS.map(t => (
             <button key={t.tag} className="tagCard">
               <div className="tagThumb">
-                <img src={t.src || exploreImage(t.image)} alt="" draggable={false} />
+                <img src={t.src} alt="" draggable={false} />
               </div>
               <div className="tagLabel">{t.tag}</div>
             </button>

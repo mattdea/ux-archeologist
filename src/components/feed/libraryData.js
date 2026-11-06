@@ -15,6 +15,11 @@
 //
 // Names and bios paraphrase each account's blog story. Captions are short,
 // generic lines written for the level, not the accounts' real captions.
+//
+// Some sets are reserved for the invented friends (FRIEND_SETS below) and for
+// the ads; those never appear under a real account's name.
+
+import { SKIP } from './libraryQuality'
 
 const FILES = import.meta.glob('../../../assets/feed/library/*.jpg', {
   eager: true,
@@ -266,17 +271,76 @@ export const ACCOUNTS = {
   },
 }
 
-// ── Photos ──────────────────────────────────────────────────────────────────
+// ── Invented friends' photo sets ─────────────────────────────────────────
+// Each invented friend posts from one photo set whose subject matches theirs,
+// so their feed post and profile grid look like one person's account. A set
+// is an account name or a blog-post prefix (date_account). Sets are reserved:
+// their photos never appear under a real account. `lead` picks the photo
+// used for the friend's feed post (default: the set's first photo).
+
+export const FRIEND_SETS = {
+  'marcus.h':       { from: ['christian_foto'] },
+  'julia.creates':  { from: ['jadeantoine'] },
+  'alex.wanderer':  { from: ['chefyash'] },
+  'sarah.moments':  { from: ['liaselina'], lead: '2016-05-01_liaselina_o6ifm73.jpg' },
+  'mike.film':      { from: ['danoziontifik'], lead: '2016-03-30_danoziontifik_o4uz4l5.jpg' },
+  'outdoor.vibes':  { from: ['ssazanovich'], lead: '2016-04-19_ssazanovich_o5w8f63.jpg' },
+  'studio.light':   { from: ['bali_ayu'] },
+  'city.frames':    { from: ['corasacher'], lead: '2016-03-28_corasacher_o4r60j4.jpg' },
+  'lens.folk':      { from: ['asmitaparelkar'] },
+  // #WHPfamilyfeast, Nov 2016: food and family meals
+  'bakes.and.more': { from: ['2016-11-18_instagram', '2016-11-21_instagram'] },
+  // #WHPthisishome, Nov 2016: home life; the lead is the empty living room
+  'daniela.reyes':  { from: ['2016-11-25_instagram', '2016-11-28_instagram'] },
+  // #WHPescape, Nov 2016: getaways
+  'travel.tales':   { from: ['2016-11-04_instagram'] },
+}
+
+// Single photos reserved for the two ads.
+export const AD_PHOTOS = {
+  airbnb: '2016-04-19_ssazanovich_o5w8f65.jpg',
+}
+
+// ── Photos ────────────────────────────────────────────────────────────────
 
 const NAME_RE = /(\d{4}-\d{2}-\d{2})_(.+)_[a-z0-9]+\.jpg$/
+const fileName = path => path.split('/').pop()
 
-/** Every usable library photo: { url, account, date }, oldest first. */
-export const LIBRARY = Object.entries(FILES)
+const ALL = Object.entries(FILES)
   .map(([path, url]) => {
-    const m = path.match(NAME_RE)
-    return m ? { url, date: m[1], account: m[2] } : null
+    const name = fileName(path)
+    const m = name.match(NAME_RE)
+    return m && !SKIP.has(name) ? { url, name, date: m[1], account: m[2] } : null
   })
-  .filter(p => p && p.date <= CUTOFF && ACCOUNTS[p.account])
+  .filter(Boolean)
+  .sort((a, b) => a.name.localeCompare(b.name))
+
+const inSet = (p, entry) => p.account === entry || p.name.startsWith(entry + '_')
+const AD_FILES = new Set(Object.values(AD_PHOTOS))
+const isReserved = p => AD_FILES.has(p.name) ||
+  Object.values(FRIEND_SETS).some(set => set.from.some(e => inSet(p, e)))
+
+/** A friend's photo URLs, lead photo first. Excludes ad photos. */
+export function friendPhotos(username) {
+  const set = FRIEND_SETS[username]
+  if (!set) return []
+  const photos = ALL.filter(p => set.from.some(e => inSet(p, e)) && !AD_FILES.has(p.name))
+  const lead = set.lead ? photos.findIndex(p => p.name === set.lead) : 0
+  if (lead > 0) photos.unshift(photos.splice(lead, 1)[0])
+  return photos.map(p => p.url)
+}
+
+/** URL of an ad's reserved photo. */
+export function adPhoto(username) {
+  const name = AD_PHOTOS[username]
+  const p = name && ALL.find(x => x.name === name)
+  return p ? p.url : null
+}
+
+/** Every photo usable for real accounts: { url, account, date }, oldest
+    first. Skips sub-640px photos and anything reserved for friends or ads. */
+export const LIBRARY = ALL
+  .filter(p => p.date <= CUTOFF && ACCOUNTS[p.account] && !isReserved(p))
   .sort((a, b) => (a.date + a.url).localeCompare(b.date + b.url))
 
 // Per account: newest blog post first, and within a post the blog's own
