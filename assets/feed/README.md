@@ -1,9 +1,12 @@
 # Level 4 feed assets
 
-Everything in this folder except this file, `SOURCES.md` and `imani/` is **gitignored**:
-real Instagram photos and account data, kept on this machine only. The public
-repository and the Netlify site build without them and show plain color blocks
-instead. Never commit them.
+The real Instagram photos and account data here are **committed**, so the
+public site shows the same feed as this machine. They are used non-commercially
+for education (see the repository's note on fair use). Only raw downloads and
+unused crops stay gitignored: `profiles/<account>/` dumps from SodaFox,
+`profiles/imani brooks/` (full-size Unsplash originals), `explore/`, `period/`,
+`post-*.jpg` and `archive/*/profile.json.bak`. The level still falls back to
+plain color blocks when a photo is missing.
 
 ## What the level loads, in order of preference
 
@@ -70,6 +73,5 @@ Four invented accounts carry the level's objectives. marcus.h, julia.creates
 and sarah.moments post from reserved library sets (`FRIEND_SETS` in
 `libraryData.js`). imani.brooks, whose post is the one the player has to
 find, is a portrait and fashion photographer whose 21 photos (plus avatar)
-are by @aliounepic on Unsplash (Unsplash License): the one committed folder
-here, `imani/`. The full-size originals sit in `profiles/imani brooks/`
-(gitignored).
+are by @aliounepic on Unsplash (Unsplash License), in `imani/`. The full-size
+originals sit in `profiles/imani brooks/` (gitignored).

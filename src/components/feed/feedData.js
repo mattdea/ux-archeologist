@@ -2,19 +2,18 @@
 // Content for the 2016 Instagram feed.
 //
 // Photos come from three places:
-//   - assets/feed/archive (gitignored): the Wayback-archived real accounts
+//   - assets/feed/archive: the Wayback-archived real accounts
 //     (celebrities, brands, publishers) in the home feed, Explore and profiles.
-//   - assets/feed/library (gitignored): the blog-library accounts, which also
+//   - assets/feed/library: the blog-library accounts, which also
 //     supply the three library-backed friends, the ads and Explore.
-//   - assets/feed/imani (committed): Imani Brooks's set, so the buried friend
-//     post works on the public build.
+//   - assets/feed/imani: Imani Brooks's set (Unsplash, free licence).
 // A photo that is missing on this machine falls back to the post's gradient.
 
 import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
 import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile, gridTime } from './archiveData'
 
-// Imani's photos are committed (Unsplash License, @aliounepic), so her post
-// works on the public site that ships without the gitignored photo folders.
+// Imani's photos are Unsplash (Unsplash License, @aliounepic), the one set
+// in the feed under a free licence.
 import imaniAvatar from '../../../assets/feed/imani/avatar.jpg'
 import imaniPost from '../../../assets/feed/imani/post.jpg'
 const IMANI_GRID = import.meta.glob('../../../assets/feed/imani/grid-*.jpg', { eager: true, import: 'default' })

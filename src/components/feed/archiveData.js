@@ -1,14 +1,14 @@
 // src/components/feed/archiveData.js
 // Real Instagram accounts as they were in spring 2016, recovered from the
 // Wayback Machine by scripts/recover-instagram-2016.py into
-// assets/feed/archive/<handle>/ (gitignored, local only):
+// assets/feed/archive/<handle>/ (committed; raw downloads stay local):
 //   profile.json  bio, counts, and posts with real captions, likes, dates
 //   <code>.jpg    the post's photo
 //   avatar.jpg    profile picture (often not archived; falls back to
 //                 assets/feed/profiles/avatars/<handle>.jpg)
 //
-// Builds without the folder (the public site) get an empty ARCHIVE and the
-// level falls back to the blog library, then to plain color blocks.
+// A build without the folder gets an empty ARCHIVE and the level falls
+// back to the blog library, then to plain color blocks.
 // No date cutoff: everything in the folder loads.
 
 const MANIFESTS = import.meta.glob('../../../assets/feed/archive/*/profile.json', {
