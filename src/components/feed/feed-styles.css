@@ -868,6 +868,12 @@
   flex-direction: column;
 }
 
+/* Rows keep their natural height; without this a tall grid squashes the
+   header and mode row to fit the scroller. */
+.profileScroll > * {
+  flex-shrink: 0;
+}
+
 .profileTop {
   display: flex;
   align-items: center;
