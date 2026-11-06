@@ -362,6 +362,15 @@ export const POSTS = BASE_POSTS.flatMap(post => {
   return [post, ...real]
 })
 
+// ── Who the player follows ──────────────────────────────────────────────────
+// Everyone whose posts reach the home feed, except the ads.
+
+export const FOLLOWING = new Set(POSTS.filter(p => !p.isSponsored).map(p => p.username))
+
+export function isFollowing(username) {
+  return FOLLOWING.has(username)
+}
+
 /** A friend's feed photo, by username (for activity thumbnails). */
 function friendPhoto(username) {
   const p = BASE_POSTS.find(x => x.username === username)
@@ -393,7 +402,7 @@ export const ME = {
   name: 'Sam Taylor',
   posts: 0,
   followers: 2,
-  following: 18,
+  following: FOLLOWING.size,
 }
 
 // ── Explore ────────────────────────────────────────────────────────────────
@@ -512,6 +521,11 @@ const FEED_PROFILES = {
   'cafe.list': { name: 'The Cafe List', bio: 'Every cafe worth the walk.' },
 }
 
+// Reference crops with no identifiable people (numbers from SOURCES.md):
+// places, food, objects, skies. Used to fill invented accounts' grids.
+const SCENERY = [2, 4, 5, 6, 8, 9, 11, 12, 13, 14, 15, 19, 20, 21, 23, 26, 28, 29,
+  33, 35, 36, 37, 39, 40, 41, 42, 43, 45, 47]
+
 function avatarFor(username) {
   if (isLibraryAccount(username)) return { avatar: libraryAvatar(username), avatarColor: '#dddddd', initial: username[0] }
   const fromFeed = POSTS.find(p => p.username === username)
@@ -547,8 +561,9 @@ export function getProfile(username) {
   const feedPosts = POSTS.filter(p => p.username === username)
   const isBrand = feedPosts.some(p => p.isSponsored)
 
-  const postCount = isBrand ? 240 + (h % 900) : 24 + (h % 310)
-  const gridLen = Math.min(postCount, 21)
+  // Friends are casual accounts: a few dozen posts, a short grid.
+  const postCount = isBrand ? 240 + (h % 900) : 14 + (h % 60)
+  const gridLen = Math.min(postCount, isBrand ? 21 : 12)
   const grid = []
   feedPosts.forEach(p => {
     grid.push({
@@ -559,8 +574,8 @@ export function getProfile(username) {
     })
   })
   for (let i = grid.length; i < gridLen; i++) {
-    const idx = EXPLORE_IMAGES.length ? (h + i * 7) % EXPLORE_IMAGES.length : 0
-    const image = EXPLORE_IMAGES[idx] || null
+    // Only people-free photos, so a friend's grid never shows a stranger's face.
+    const image = exploreImage(SCENERY[(h + i * 7) % SCENERY.length])
     const ph = hashString(username + i)
     grid.push({
       id: `grid-${username}-${i}`,

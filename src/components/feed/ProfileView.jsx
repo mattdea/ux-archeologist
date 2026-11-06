@@ -14,7 +14,7 @@ import { useState } from 'react'
 import NavBar from './NavBar'
 import Avatar from './Avatar'
 import PhotoGrid from './PhotoGrid'
-import { ME, getProfile } from './feedData'
+import { ME, getProfile, isFollowing } from './feedData'
 import {
   BackChevronIcon, GearIcon, GridModeIcon, ListModeIcon, PinModeIcon, TaggedModeIcon, DownArrowIcon,
 } from './icons'
@@ -41,7 +41,7 @@ function ModeRow() {
 
 export default function ProfileView({ username, onBack, onOpenPost }) {
   const own = !username
-  const [following, setFollowing] = useState(false)
+  const [following, setFollowing] = useState(() => !!username && isFollowing(username))
   const profile = own ? null : getProfile(username)
   const title = (own ? ME.username : username).toUpperCase()
 
