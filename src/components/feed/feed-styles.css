@@ -116,9 +116,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
   color: #ffffff;
   line-height: 1;
   pointer-events: none;
@@ -540,7 +540,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  font-size: 14px;
+  font-size: 15px;
   user-select: none;
 }
 
@@ -586,14 +586,14 @@
 }
 
 .exploreHeroTitle {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: 2.6px;
   line-height: 1;
 }
 
 .exploreHeroSub {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 500;
   letter-spacing: 1.6px;
   color: rgba(255, 255, 255, 0.85);
@@ -615,7 +615,7 @@
 }
 
 .sectionLabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.6px;
   color: var(--ig-muted);
@@ -629,7 +629,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ig-link-blue);
 }
 
@@ -649,7 +649,7 @@
 
 .tagCard {
   flex: 0 0 auto;
-  width: 94px;
+  width: 100px;
   background: none;
   border: none;
   padding: 0;
@@ -658,8 +658,8 @@
 }
 
 .tagThumb {
-  width: 94px;
-  height: 94px;
+  width: 100px;
+  height: 100px;
   overflow: hidden;
   background: #efefef;
 }
@@ -673,7 +673,7 @@
 
 .tagLabel {
   margin-top: 7px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ig-text);
   white-space: nowrap;
   overflow: hidden;
@@ -718,7 +718,7 @@
 .activityToggle {
   flex: 0 0 auto;
   display: flex;
-  height: 38px;
+  height: 42px;
   border-bottom: 1px solid #dbdbdb;
   background: #ffffff;
 }
@@ -729,9 +729,9 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
   color: var(--ig-text);
   position: relative;
 }
@@ -751,7 +751,7 @@
 }
 
 .activityRow {
-  padding: 9px 12px 9px 10px;
+  padding: 10px 12px 10px 10px;
   border-bottom: 1px solid var(--ig-hairline);
   animation: igRowIn 250ms ease-out both;
 }
@@ -779,8 +779,8 @@
 .activityText {
   flex: 1;
   min-width: 0;
-  font-size: 12px;
-  line-height: 15px;
+  font-size: 13px;
+  line-height: 16px;
   color: var(--ig-text);
   overflow-wrap: anywhere;
 }
@@ -790,8 +790,8 @@
 }
 
 .activityThumb {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   overflow: hidden;
   background: #efefef;
@@ -807,18 +807,18 @@
 .activityThumbRow {
   display: flex;
   gap: 2px;
-  margin: 8px 0 0 40px;
+  margin: 8px 0 0 48px;
 }
 
 .followBtnSmall {
   flex-shrink: 0;
-  height: 24px;
+  height: 26px;
   padding: 0 10px;
   border: 1px solid var(--ig-link-blue);
   border-radius: 3px;
   background: #ffffff;
   color: var(--ig-link-blue);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.3px;
   text-transform: uppercase;
@@ -842,14 +842,14 @@
 }
 
 .activityEmptyTitle {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   margin-bottom: 6px;
 }
 
 .activityEmptyBody {
-  font-size: 11px;
-  line-height: 15px;
+  font-size: 13px;
+  line-height: 17px;
   color: #555555;
 }
 
@@ -893,24 +893,24 @@
 }
 
 .profileStatNum {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
-  line-height: 20px;
+  line-height: 22px;
   color: var(--ig-text);
 }
 
 .profileStatLabel {
-  font-size: 12px;
+  font-size: 13px;
   color: #8e8e8e;
-  line-height: 14px;
+  line-height: 16px;
 }
 
 .editProfileBtn,
 .followBtn {
   width: 100%;
-  height: 27px;
+  height: 30px;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -933,9 +933,9 @@
 }
 
 .profileBio {
-  padding: 0 12px 12px;
-  font-size: 13px;
-  line-height: 17px;
+  padding: 2px 12px 12px;
+  font-size: 14px;
+  line-height: 18px;
   color: var(--ig-text);
 }
 
@@ -992,16 +992,16 @@
 
 .profileEmptyTop {
   margin-top: 54px;
-  font-size: 12px;
+  font-size: 14px;
   color: #8e8e8e;
 }
 
 .profileEmptyBottom {
   margin-top: auto;
   padding-bottom: 10px;
-  font-size: 12px;
-  line-height: 15px;
-  width: 220px;
+  font-size: 14px;
+  line-height: 18px;
+  width: 250px;
 }
 
 .profileEmptyArrow {

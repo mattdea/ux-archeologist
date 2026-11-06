@@ -32,7 +32,7 @@ function Row({ row, onOpenProfile }) {
     <div className="activityRow">
       <div className="activityMain">
         <button className="activityAvatarBtn" onClick={() => onOpenProfile(row.actor)} aria-label={row.actor}>
-          <Avatar photo={profile.avatar} color={profile.avatarColor} initial={profile.initial} size={30} />
+          <Avatar photo={profile.avatar} color={profile.avatarColor} initial={profile.initial} size={38} />
         </button>
         <div className="activityText">
           <span className="postUser" onClick={() => onOpenProfile(row.actor)}>{row.actor}</span>
