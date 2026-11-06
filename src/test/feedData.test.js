@@ -126,3 +126,11 @@ describe('activity rows', () => {
     for (const u of new Set(names)) expect(getProfile(u).name, u).not.toBe(u)
   })
 })
+
+describe('the sponsored post', () => {
+  it('carries the ad destination its overlay and in-app browser use', () => {
+    const ad = POSTS.find(p => p.username === 'airbnb').ad
+    expect(ad).toMatchObject({ name: 'Airbnb', domain: 'airbnb.com', page: 'airbnb-live-there' })
+    expect(ad.url).toMatch(/^https:\/\/www\.airbnb\.com\//)
+  })
+})

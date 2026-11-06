@@ -26,6 +26,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import useDragScroll from './useDragScroll'
 import { resetFollows } from './followStore'
 import './feed-styles.css'
+import './ad-browser.css'
 import { buildFeed, randomSeed, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
 import NavBar from './NavBar'
 import Post from './Post'
@@ -33,11 +34,16 @@ import ExploreTab from './ExploreTab'
 import ActivityTab from './ActivityTab'
 import ProfileView from './ProfileView'
 import PostDetailView from './PostDetailView'
+import InAppBrowser, { BROWSER_CHROME } from './InAppBrowser'
+import AirbnbLiveThere from './AirbnbLiveThere'
 import {
   InboxIcon, TabHomeIcon, TabSearchIcon, TabCameraIcon, TabActivityIcon, TabProfileIcon,
 } from './icons'
 
 const TABS = ['home', 'explore', 'activity', 'profile']
+
+// Locally built advertiser pages, by the `page` key on a post's `ad`.
+const AD_PAGES = { 'airbnb-live-there': AirbnbLiveThere }
 const NAV_MS = 500
 const LOAD_MORE_MS = 650       // spinner time before the next page of older posts
 const LOAD_MORE_PX = 240       // how close to the bottom before loading
@@ -158,6 +164,22 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     if (onCompleteObjective) onCompleteObjective('tapSponsored')
   }, [onCompleteObjective])
 
+  // In-app browser over the whole app. The feed underneath stays mounted
+  // and keeps its scroll; the objective counts when the browser opens.
+  const [browser, setBrowser] = useState(null)   // { ad, closing }
+  const browserTimer = useRef(null)
+  useEffect(() => () => clearTimeout(browserTimer.current), [])
+  const openAd = useCallback((ad) => {
+    if (browser) return
+    setBrowser({ ad: { ...ad, Page: AD_PAGES[ad.page] || (() => null) }, closing: false })
+    if (onCompleteObjective) onCompleteObjective('tapSponsored')
+  }, [browser, onCompleteObjective])
+  const closeAd = useCallback(() => {
+    setBrowser(b => b && !b.closing ? { ...b, closing: true } : b)
+    clearTimeout(browserTimer.current)
+    browserTimer.current = setTimeout(() => setBrowser(null), BROWSER_CHROME.slideMs + 20)
+  }, [])
+
   // ── Navigation ──
   const finishNav = useCallback((after) => {
     clearTimeout(navTimer.current)
@@ -230,6 +252,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
               containerRef={post.isTarget ? targetRef : undefined}
               onLike={handleLike}
               onSponsoredTap={post.isSponsored ? handleSponsoredTap : undefined}
+              onOpenAd={openAd}
               onOpenProfile={openProfile}
             />
           ))}
@@ -256,7 +279,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
             ...stacks[t].map(v => ({
               key: 'view-' + v.id,
               node: v.type === 'post'
-                ? <PostDetailView post={v.post} onBack={pop} onLike={handleLike} onOpenProfile={openProfile} />
+                ? <PostDetailView post={v.post} onBack={pop} onLike={handleLike} onOpenProfile={openProfile} onOpenAd={openAd} />
                 : <ProfileView username={v.username} onBack={pop} onOpenPost={openPost} />,
             })),
           ]
@@ -302,6 +325,8 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
           <TabProfileIcon />
         </button>
       </nav>
+
+      {browser && <InAppBrowser ad={browser.ad} closing={browser.closing} onClose={closeAd} />}
 
     </div>
   )

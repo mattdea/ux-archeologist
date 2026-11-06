@@ -108,6 +108,11 @@ const BASE_POSTS = [
     username: 'airbnb',
     isSponsored: true,
     ctaLabel: 'LEARN MORE',
+    // Where the ad goes: shown on the photo overlay (name, domain) and opened
+    // in the in-app browser. `page` names the locally built landing page in
+    // FeedApp's AD_PAGES; the original April 2016 destination URL was not
+    // recovered, so this one is a plausible campaign address.
+    ad: { name: 'Airbnb', domain: 'airbnb.com', url: 'https://www.airbnb.com/livethere', title: 'Live There', page: 'airbnb-live-there' },
     avatar: friendAvatar('airbnb'),
     imageGradient: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
     likes: '12,440',

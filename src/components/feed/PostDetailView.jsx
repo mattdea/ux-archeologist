@@ -11,7 +11,7 @@ import NavBar from './NavBar'
 import Post from './Post'
 import { BackChevronIcon } from './icons'
 
-export default function PostDetailView({ post, onBack, onLike, onOpenProfile }) {
+export default function PostDetailView({ post, onBack, onLike, onOpenProfile, onOpenAd }) {
   return (
     <>
       <NavBar
@@ -19,7 +19,7 @@ export default function PostDetailView({ post, onBack, onLike, onOpenProfile }) 
         left={<button className="feedNavBtn" onClick={onBack} aria-label="Back"><BackChevronIcon /></button>}
       />
       <div className="feedScroll">
-        <Post {...post} onLike={onLike} onOpenProfile={onOpenProfile} />
+        <Post {...post} onLike={onLike} onOpenProfile={onOpenProfile} onOpenAd={onOpenAd} />
       </div>
     </>
   )

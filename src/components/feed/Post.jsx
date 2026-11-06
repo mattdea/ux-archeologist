@@ -36,6 +36,7 @@ export default function Post({
   isSponsored,
   isTarget,
   ctaLabel,
+  ad,
   imageSrc,
   avatar,
   imageGradient,
@@ -49,6 +50,7 @@ export default function Post({
   containerRef,
   onLike,
   onSponsoredTap,
+  onOpenAd,
   onOpenProfile,
 }) {
   const [liked, setLiked] = useState(false)
@@ -96,12 +98,23 @@ export default function Post({
     if (onOpenProfile && hasProfile(name)) onOpenProfile(name)
   }, [onOpenProfile])
 
+  // Sponsored photos: a tap reveals the ad overlay (March 2016) instead of
+  // counting toward a double-tap like; a second tap anywhere but the arrow
+  // dismisses it. Learn More and the arrow open the advertiser's page.
+  const [adOverlay, setAdOverlay] = useState(false)
+  const openAd = useCallback((e) => {
+    e.stopPropagation()
+    setAdOverlay(false)
+    if (onOpenAd && ad) onOpenAd(ad)
+  }, [onOpenAd, ad])
+
   const handleImageClick = useCallback(() => {
+    if (isSponsored && ad) { setAdOverlay(v => !v); return }
     const now = Date.now()
     const elapsed = now - lastTapRef.current
     lastTapRef.current = now
     if (elapsed > 0 && elapsed < 300) handleDoubleTap()
-  }, [handleDoubleTap])
+  }, [handleDoubleTap, isSponsored, ad])
 
   // The heart button toggles; only double-tap is like-only.
   const handleHeartClick = useCallback((e) => {
@@ -129,7 +142,7 @@ export default function Post({
         <div className="postUsername" onClick={openProfile}>{username}</div>
         {isSponsored
           ? (
-            <button className="postSponsored" onClick={onSponsoredTap}>
+            <button className="postSponsored" onClick={ad ? openAd : onSponsoredTap}>
               <AdBadgeIcon />
               <span>Sponsored</span>
             </button>
@@ -145,6 +158,21 @@ export default function Post({
         {burstKey > 0 && (
           <div className="heartBurst" key={burstKey}>
             <BurstHeartIcon />
+          </div>
+        )}
+        {adOverlay && (
+          <div className="adOverlay" role="presentation">
+            {photoSrc && <img className="adOverlayBlur" src={photoSrc} alt="" aria-hidden="true" draggable={false} />}
+            <div className="adOverlayTint" />
+            <div className="adOverlayBody">
+              <button className="adOverlayCircle" onClick={openAd} aria-label={`Open ${ad.name}`}>
+                <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+                  <path d="M6 16L16 6M8 6h8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                </svg>
+              </button>
+              <div className="adOverlayName">{ad.name}</div>
+              <div className="adOverlayDomain">{ad.domain}</div>
+            </div>
           </div>
         )}
       </div>
@@ -164,7 +192,7 @@ export default function Post({
         </button>
         {isSponsored && ctaLabel
           ? (
-            <button className="ctaBtn" onClick={onSponsoredTap}>
+            <button className="ctaBtn" onClick={ad ? openAd : onSponsoredTap}>
               {ctaLabel}
             </button>
           )

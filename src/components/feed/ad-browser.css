@@ -1,0 +1,401 @@
+/* ad-browser.css — the sponsored-post overlay, the in-app browser and the
+   Airbnb landing page. Artifact layer only (spring 2016 Instagram iOS). */
+
+/* ─── Ad overlay on a sponsored photo (March 2016 feature) ───────────────
+   Reference: docs/reference/ads/InstagramAdOverlayLearnMore-300x225@2x.jpg —
+   the photo blurred hard and dimmed, an outlined circle with a ↗ arrow in the
+   middle, the advertiser's name under it and its domain in small caps. */
+
+.adOverlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.adOverlayBlur {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(14px) brightness(0.72);
+  transform: scale(1.12);        /* hides the blur's soft edges */
+}
+
+.adOverlayTint {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.adOverlayBody {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  text-align: center;
+  animation: adOverlayIn 180ms ease-out both;
+}
+
+@keyframes adOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+.adOverlayCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  padding: 0;
+  cursor: pointer;
+}
+
+.adOverlayName {
+  margin-top: 12px;
+  font-family: var(--ig-display-font);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.adOverlayDomain {
+  margin-top: 3px;
+  font-family: var(--ig-display-font);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ─── In-app browser (reconstructed chrome; values set by InAppBrowser.jsx) ── */
+
+.feedApp {
+  position: relative;            /* the browser layer covers the whole app */
+}
+
+.inAppBrowser {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  background: var(--browser-page-bg);
+  animation: browserUp var(--browser-slide-ms) var(--browser-slide-ease) both;
+}
+
+.inAppBrowserClosing {
+  animation: browserDown var(--browser-slide-ms) var(--browser-slide-ease) both;
+  pointer-events: none;
+}
+
+@keyframes browserUp   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes browserDown { from { transform: translateY(0); }    to { transform: translateY(100%); } }
+
+.browserTop {
+  flex: 0 0 auto;
+  background: var(--browser-bar-bg);
+  color: var(--browser-icon);
+}
+
+/* The status bar component paints white glyphs for the blue header; here it
+   sits on light grey, so recolor it. */
+.browserTop .iosStatusBar {
+  color: #000000;
+  background: var(--browser-bar-bg);
+}
+
+.browserBar {
+  height: var(--browser-bar-h);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  border-bottom: 1px solid var(--browser-hairline);
+}
+
+.browserBtn {
+  flex: 0 0 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--browser-icon);
+  cursor: pointer;
+}
+
+.browserTitle {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-family: var(--ig-display-font);
+  line-height: 1.2;
+}
+
+.browserTitleText {
+  font-size: var(--browser-title-size);
+  font-weight: 700;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browserDomain {
+  font-size: var(--browser-domain-size);
+  color: #8e8e93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browserProgressTrack {
+  height: var(--browser-progress-h);
+  background: transparent;
+}
+
+.browserProgress {
+  height: 100%;
+  background: var(--browser-progress);
+  animation: browserLoad var(--browser-progress-ms) cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes browserLoad {
+  0%   { width: 0; }
+  60%  { width: 72%; }
+  100% { width: 100%; }
+}
+
+.browserPage {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background: var(--browser-page-bg);
+}
+
+.browserBlank {
+  height: 100%;
+}
+
+.browserToast {
+  position: absolute;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  font-family: var(--ig-display-font);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+/* ─── iOS 9 action sheet ─────────────────────────────────────────────────── */
+
+.actionSheetBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+  animation: adOverlayIn 200ms ease-out both;
+}
+
+.actionSheet {
+  width: 100%;
+  font-family: var(--ig-display-font);
+  animation: browserUp 300ms var(--browser-slide-ease) both;
+}
+
+.actionSheetGroup {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 13px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.actionSheetBtn {
+  display: block;
+  width: 100%;
+  height: 57px;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(60, 60, 67, 0.2);
+  color: #007aff;
+  font-family: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.actionSheetBtn:first-child { border-top: none; }
+
+.actionSheetCancel {
+  font-weight: 600;
+}
+
+/* ─── Airbnb "Live There" landing page, 2016 mobile web (reconstruction) ──── */
+
+.abnbPage {
+  --abnb-rausch: #FF5A5F;
+  --abnb-text: #484848;
+  --abnb-muted: #767676;
+  --abnb-hairline: #dce0e0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--abnb-text);
+  background: #ffffff;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+.abnbHeader {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--abnb-hairline);
+  background: #ffffff;
+}
+
+.abnbWordmark {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--abnb-rausch);
+}
+
+.abnbLogin {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--abnb-text);
+}
+
+.abnbHero {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+  background: #222222;
+}
+
+.abnbHeroImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.78);
+}
+
+.abnbHeroFallback {
+  background: linear-gradient(160deg, #3d5a73, #1c2a36);
+}
+
+.abnbHeroText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.abnbHeroText h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.abnbIntro {
+  padding: 24px 20px 28px;
+  text-align: center;
+}
+
+.abnbIntro p {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--abnb-text);
+}
+
+.abnbCta {
+  display: inline-block;
+  min-width: 180px;
+  padding: 13px 24px;
+  background: var(--abnb-rausch);
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.abnbHomes {
+  padding: 0 16px 24px;
+  border-top: 1px solid var(--abnb-hairline);
+}
+
+.abnbHomes h2 {
+  margin: 22px 0 14px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.abnbGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.abnbCard {
+  margin: 0;
+  border: 1px solid var(--abnb-hairline);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.abnbCard img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.abnbCard figcaption {
+  padding: 8px 10px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--abnb-muted);
+}
+
+.abnbFooter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px 28px;
+  border-top: 1px solid var(--abnb-hairline);
+  font-size: 11px;
+  color: var(--abnb-muted);
+}
