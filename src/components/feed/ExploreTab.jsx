@@ -5,14 +5,15 @@
 // Props:
 //   onOpenPost — (post) => void
 
-import { useState, useRef, useCallback, useMemo } from 'react'
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import NavBar from './NavBar'
 import PhotoGrid from './PhotoGrid'
-import { TRENDING_TAGS, exploreTile } from './feedData'
+import { TRENDING_TAGS, exploreTile, randomSeed } from './feedData'
 import { SearchFieldIcon, PlayCircleIcon, ChevronRightIcon } from './icons'
 
 const PAGE = 15
 const INITIAL = 21
+const REFRESH_MS = 900
 
 // Deterministic star field for the hero: 70 points, drawn once.
 const STARS = Array.from({ length: 70 }, (_, i) => {
@@ -27,7 +28,36 @@ export default function ExploreTab({ onOpenPost }) {
   const loadingRef = useRef(false)
   const scrollRef = useRef(null)
 
-  const tiles = useMemo(() => Array.from({ length: count }, (_, i) => exploreTile(i)), [count])
+  // The grid starts somewhere different on every load, and again after a
+  // pull-to-refresh ('pullrefresh' from the drag hook), so Explore looks new.
+  const [seed, setSeed] = useState(() => randomSeed())
+  const [refreshing, setRefreshing] = useState(false)
+  const refreshTimer = useRef(null)
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const onPull = () => {
+      if (refreshTimer.current) return
+      setRefreshing(true)
+      refreshTimer.current = setTimeout(() => {
+        refreshTimer.current = null
+        setSeed(randomSeed())
+        setCount(INITIAL)
+        setRefreshing(false)
+        el.scrollTop = 0
+      }, REFRESH_MS)
+    }
+    el.addEventListener('pullrefresh', onPull)
+    return () => {
+      clearTimeout(refreshTimer.current)
+      refreshTimer.current = null
+      el.removeEventListener('pullrefresh', onPull)
+    }
+  }, [])
+
+  // exploreTile cycles through every photo, so any offset is a valid start.
+  const offset = seed % 997
+  const tiles = useMemo(() => Array.from({ length: count }, (_, i) => exploreTile(offset + i)), [count, offset])
 
   const handleScroll = useCallback(() => {
     const el = scrollRef.current
@@ -53,6 +83,11 @@ export default function ExploreTab({ onOpenPost }) {
       </NavBar>
 
       <div ref={scrollRef} className="feedScroll" onScroll={handleScroll}>
+        {refreshing && (
+          <div className="loadingArea">
+            <div className="spinner" />
+          </div>
+        )}
 
         {/* Hero banner */}
         <button className="exploreHero" aria-label="Explore videos">

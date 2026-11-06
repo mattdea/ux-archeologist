@@ -212,23 +212,61 @@ const FEED_COMMENTS = {
   kimkardashian: [{ username: 'mia.c', text: 'iconic' }],
 }
 
-export const POSTS = FEED.flatMap(([username, timestamp]) => {
-  const base = BASE_POSTS.find(p => p.username === username)
-  const post = base || archivePost(username, 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
-  return post ? [{ ...post, timestamp }] : []
-})
+// Slots that hold a real account (everything that is not a friend or an ad).
+const REAL_SLOTS = FEED.map(([u], i) => BASE_POSTS.some(p => p.username === u) ? -1 : i).filter(i => i >= 0)
 
-/** Older posts for the feed's n-th extra page (n ≥ 1): each real account's
-    n-th most recent post, in FEED order, labelled gridTime(n) by archivePost
-    so a page reads as one older day. Empty once every account has run out,
-    which is when the feed's spinner goes away. */
-export function feedPage(n) {
-  return FEED.flatMap(([username]) => {
+// Small seeded generator (LCG) so a refresh is random but repeatable.
+function rng(seed) {
+  let s = (seed >>> 0) || 1
+  return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296 }
+}
+
+/**
+ * The home feed for one load. Seed 0 is the canonical FEED: every account in
+ * its listed slot showing its newest post. Any other seed deals the real
+ * accounts into the real slots in a shuffled order and starts each on one of
+ * its three newest posts, so a reload or pull-to-refresh looks new. Friends,
+ * ads and the slot labels never move, so Imani stays buried where the level
+ * expects her.
+ *   posts    — the feed, in slot order
+ *   page(n)  — the n-th page of older posts (n ≥ 1): each real account's
+ *              next post after the ones already shown, labelled gridTime by
+ *              archivePost; [] once every account has run out
+ */
+export function buildFeed(seed = 0) {
+  const reals = REAL_SLOTS.map(i => FEED[i][0])
+  const start = {}
+  if (seed) {
+    const r = rng(seed)
+    for (let i = reals.length - 1; i > 0; i--) {
+      const j = Math.floor(r() * (i + 1))
+      ;[reals[i], reals[j]] = [reals[j], reals[i]]
+    }
+    reals.forEach(u => { start[u] = Math.floor(r() * 3) })
+  }
+  const slots = FEED.map(([u, t], i) => {
+    const k = REAL_SLOTS.indexOf(i)
+    return [k < 0 ? u : reals[k], t]
+  })
+  const posts = slots.flatMap(([username, timestamp]) => {
+    const base = BASE_POSTS.find(p => p.username === username)
+    const post = base || archivePost(username, start[username] || 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
+    return post ? [{ ...post, timestamp }] : []
+  })
+  const page = n => slots.flatMap(([username]) => {
     if (BASE_POSTS.some(p => p.username === username)) return []
-    const post = archivePost(username, n)
+    const post = archivePost(username, (start[username] || 0) + n)
     return post ? [post] : []
   })
+  return { posts, page }
 }
+
+const CANONICAL = buildFeed(0)
+export const POSTS = CANONICAL.posts
+export const feedPage = CANONICAL.page
+
+/** A fresh non-zero seed for buildFeed / Explore: new on every load and pull. */
+export const randomSeed = () => 1 + Math.floor(Math.random() * 0x7fffffff)
 
 // ── Who the player follows ──────────────────────────────────────────────────
 // Everyone whose posts reach the home feed, except the ads.

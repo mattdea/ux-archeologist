@@ -12,6 +12,8 @@
 //     and bounces softly if it runs into an edge
 //   • a drag of more than 6pt never counts as a tap, so it can't open a post
 //     or trigger a double-tap like
+//   • letting go after pulling a vertical list ≥ PULL_REFRESH past its top
+//     dispatches a 'pullrefresh' CustomEvent on that `.feedScroll`
 //
 // Usage: useDragScroll(rootRef) — rootRef is the app's root element.
 
@@ -23,6 +25,8 @@ const DECEL = 0.998           // per ms
 const MIN_SPEED = 0.02        // pt/ms; below this a fling stops
 const SNAP = 'transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
 const VELOCITY_WINDOW = 80    // ms of pointer history used for fling speed
+const PULL_REFRESH = 30       // pt of rubber-band overscroll at the top (≈100pt of
+                              // finger travel at 0.3×) that fires 'pullrefresh'
 
 export default function useDragScroll(rootRef) {
   useEffect(() => {
@@ -156,6 +160,10 @@ export default function useDragScroll(rootRef) {
 
         const { el, api, samples } = drag
         if (drag.over) {
+          // Pulled well past the top of a vertical list: ask it to refresh.
+          if (drag.axis === 'y' && api.get() === 0 && drag.over >= PULL_REFRESH) {
+            el.dispatchEvent(new CustomEvent('pullrefresh'))
+          }
           snapBack(el, api)
         } else if (samples.length >= 2) {
           const a = samples[0]

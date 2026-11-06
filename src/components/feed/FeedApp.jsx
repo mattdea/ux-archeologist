@@ -26,7 +26,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import useDragScroll from './useDragScroll'
 import { resetFollows } from './followStore'
 import './feed-styles.css'
-import { POSTS, feedPage, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
+import { buildFeed, randomSeed, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
 import NavBar from './NavBar'
 import Post from './Post'
 import ExploreTab from './ExploreTab'
@@ -41,6 +41,7 @@ const TABS = ['home', 'explore', 'activity', 'profile']
 const NAV_MS = 500
 const LOAD_MORE_MS = 650       // spinner time before the next page of older posts
 const LOAD_MORE_PX = 240       // how close to the bottom before loading
+const REFRESH_MS = 900         // spinner time after a pull-to-refresh
 const TRICKLE_FIRST_MS = 5000
 const TRICKLE_GAP_MS = 7000
 
@@ -100,10 +101,39 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     return () => clearTimeout(t)
   }, [inFeed, following])
 
-  // Older posts load as the player nears the bottom, a page per day back,
-  // until every real account has run out; then the spinner goes away.
-  const [pages, setPages] = useState([])
+  // The feed is dealt fresh on every load (a new seed) and again on
+  // pull-to-refresh, which the drag hook reports as a 'pullrefresh' event on
+  // the scroll element once the list is pulled well past its top.
+  const [feed, setFeed] = useState(() => buildFeed(randomSeed()))
+  const [pages, setPages] = useState([])          // older posts, a page per day back
   const [exhausted, setExhausted] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const refreshTimer = useRef(null)
+  useEffect(() => {
+    const el = feedScrollRef.current
+    if (!el) return
+    const onPull = () => {
+      if (refreshTimer.current) return
+      setRefreshing(true)
+      refreshTimer.current = setTimeout(() => {
+        refreshTimer.current = null
+        setFeed(buildFeed(randomSeed()))
+        setPages([])
+        setExhausted(false)
+        setRefreshing(false)
+        el.scrollTop = 0
+      }, REFRESH_MS)
+    }
+    el.addEventListener('pullrefresh', onPull)
+    return () => {
+      clearTimeout(refreshTimer.current)
+      refreshTimer.current = null
+      el.removeEventListener('pullrefresh', onPull)
+    }
+  }, [])
+
+  // Older posts load as the player nears the bottom until every real account
+  // has run out; then the spinner goes away.
   const loadingMore = useRef(false)
   const handleFeedScroll = useCallback(() => {
     const el = feedScrollRef.current
@@ -112,13 +142,13 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     loadingMore.current = true
     setTimeout(() => {
       setPages(prev => {
-        const next = feedPage(prev.length + 1)
+        const next = feed.page(prev.length + 1)
         if (!next.length) setExhausted(true)
         return next.length ? [...prev, next] : prev
       })
       loadingMore.current = false
     }, LOAD_MORE_MS)
-  }, [exhausted])
+  }, [exhausted, feed])
 
   const handleLike = useCallback(() => {
     if (onCompleteObjective) onCompleteObjective('likePost')
@@ -188,7 +218,12 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
           right={<button className="feedNavBtn" aria-label="Direct inbox"><InboxIcon /></button>}
         />
         <div ref={feedScrollRef} className="feedScroll" onScroll={handleFeedScroll}>
-          {[...POSTS, ...pages.flat()].map(post => (
+          {refreshing && (
+            <div className="loadingArea">
+              <div className="spinner" />
+            </div>
+          )}
+          {[...feed.posts, ...pages.flat()].map(post => (
             <Post
               key={post.id}
               {...post}
