@@ -8,14 +8,22 @@
 //   onCompleteObjective(key) — fires 'findFriend' | 'tapSponsored' | 'likePost'
 //
 // Navigation: `tab` picks the root screen; `stacks[tab]` holds pushed views
-// ({ type: 'post', post } | { type: 'profile', username }). Every tab root
-// stays mounted so scroll positions survive tab switches.
+// ({ id, type: 'post', post } | { id, type: 'profile', username }). Every tab
+// root and every pushed view stays mounted, so scroll positions survive tab
+// switches and going back.
+//
+// Push and pop follow the iOS 9 navigation controller: the incoming view
+// slides over from the right with a shadow on its leading edge, the view
+// underneath drifts 30% left and dims slightly, and the blue nav bar holds
+// still while its titles cross-fade. Pop is the exact reverse. Timing lives
+// in feed-styles.css (NAV_MS must match --nav-dur there).
 //
 // Activity: while the player is on the home feed, new likes from people they
 // follow trickle into the Following tab every few seconds, with a count badge
 // on the heart tab until it is opened.
 
 import { useState, useRef, useCallback, useEffect } from 'react'
+import useDragScroll from './useDragScroll'
 import './feed-styles.css'
 import { POSTS, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
 import NavBar from './NavBar'
@@ -29,6 +37,7 @@ import {
 } from './icons'
 
 const TABS = ['home', 'explore', 'activity', 'profile']
+const NAV_MS = 500
 const TRICKLE_FIRST_MS = 5000
 const TRICKLE_GAP_MS = 7000
 
@@ -41,6 +50,15 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
   const [following, setFollowing] = useState(FOLLOWING_ACTIVITY)
   const [unread, setUnread] = useState(0)
   const trickleIdx = useRef(0)
+  const appRef = useRef(null)
+  useDragScroll(appRef)
+
+  // Running push/pop: { kind: 'push' | 'pop', tab } while it animates.
+  const [nav, setNav] = useState(null)
+  const navBusy = useRef(false)
+  const viewId = useRef(0)
+  const navTimer = useRef(null)
+  useEffect(() => () => clearTimeout(navTimer.current), [])
 
   // IntersectionObserver: fires 'findFriend' when the friend's post is ≥40%
   // visible inside the feed's own scroll container.
@@ -87,13 +105,33 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
   }, [onCompleteObjective])
 
   // ── Navigation ──
-  const push = useCallback((view) => {
-    setStacks(prev => ({ ...prev, [tab]: [...prev[tab], view] }))
-  }, [tab])
+  const finishNav = useCallback((after) => {
+    clearTimeout(navTimer.current)
+    // A few ms past the CSS duration so the last frame has painted.
+    navTimer.current = setTimeout(() => {
+      if (after) after()
+      setNav(null)
+      navBusy.current = false
+    }, NAV_MS + 30)
+  }, [])
 
+  const push = useCallback((view) => {
+    if (navBusy.current) return
+    navBusy.current = true
+    viewId.current += 1
+    setStacks(prev => ({ ...prev, [tab]: [...prev[tab], { ...view, id: viewId.current }] }))
+    setNav({ kind: 'push', tab })
+    finishNav()
+  }, [tab, finishNav])
+
+  // Pop keeps the top view mounted while it slides off, then removes it.
   const pop = useCallback(() => {
-    setStacks(prev => ({ ...prev, [tab]: prev[tab].slice(0, -1) }))
-  }, [tab])
+    if (navBusy.current) return
+    navBusy.current = true
+    const t = tab
+    setNav({ kind: 'pop', tab: t })
+    finishNav(() => setStacks(prev => ({ ...prev, [t]: prev[t].slice(0, -1) })))
+  }, [tab, finishNav])
 
   const openPost = useCallback((post) => push({ type: 'post', post }), [push])
   const openProfile = useCallback((username) => push({ type: 'profile', username }), [push])
@@ -101,15 +139,16 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
   const selectTab = useCallback((next) => {
     if (next === 'activity') setUnread(0)
     if (next === tab) {
-      // Re-tapping the current tab pops to its root, like the real app.
-      setStacks(prev => ({ ...prev, [next]: [] }))
+      // Re-tapping the current tab pops to its root, like the real app:
+      // views in between drop out and the top one animates off over the root.
+      const st = stacks[next]
+      if (!st.length || navBusy.current) return
+      if (st.length > 1) setStacks(prev => ({ ...prev, [next]: [prev[next][prev[next].length - 1]] }))
+      pop()
       return
     }
     setTab(next)
-  }, [tab])
-
-  const stack = stacks[tab]
-  const top = stack[stack.length - 1]
+  }, [tab, stacks, pop])
 
   const appClass = [
     'feedApp',
@@ -147,22 +186,40 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
   }
 
   const app = (
-    <div className={appClass}>
+    <div className={appClass} ref={appRef}>
 
       <div className="feedScreens">
-        {TABS.map(t => (
-          <div key={t} className="feedScreen" style={{ display: t === tab ? 'flex' : 'none' }}>
-            {roots[t]}
-          </div>
-        ))}
-
-        {top && (
-          <div className="feedScreen feedScreenPushed" key={`${tab}-${stack.length}`}>
-            {top.type === 'post'
-              ? <PostDetailView post={top.post} onBack={pop} onLike={handleLike} onOpenProfile={openProfile} />
-              : <ProfileView username={top.username} onBack={pop} onOpenPost={openPost} />}
-          </div>
-        )}
+        {TABS.map(t => {
+          const layers = [
+            { key: 'root', node: roots[t] },
+            ...stacks[t].map(v => ({
+              key: 'view-' + v.id,
+              node: v.type === 'post'
+                ? <PostDetailView post={v.post} onBack={pop} onLike={handleLike} onOpenProfile={openProfile} />
+                : <ProfileView username={v.username} onBack={pop} onOpenPost={openPost} />,
+            })),
+          ]
+          const n = layers.length
+          const kind = nav && nav.tab === t ? nav.kind : null
+          return (
+            <div
+              key={t}
+              className={kind ? 'feedTab feedTabAnimating' : 'feedTab'}
+              style={{ display: t === tab ? 'block' : 'none' }}
+            >
+              {layers.map((layer, i) => {
+                let role = i === n - 1 ? '' : 'navHidden'
+                if (kind === 'push') role = i === n - 1 ? 'navPushIn' : i === n - 2 ? 'navPushOut' : 'navHidden'
+                if (kind === 'pop') role = i === n - 1 ? 'navPopOut' : i === n - 2 ? 'navPopIn' : 'navHidden'
+                return (
+                  <div key={layer.key} className={'feedScreen ' + role}>
+                    {layer.node}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })}
       </div>
 
       {/* Dark tab bar: home, search, camera (blue square), activity, profile */}

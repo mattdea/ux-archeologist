@@ -30,6 +30,8 @@ export default function TouchCursor({ containerRef }) {
       const y = (e.clientY - rect.top)  * scaleY
       if (posRef.current) {
         posRef.current.style.transform = `translate(${x}px, ${y}px)`
+        // Also show on move: the pointer may already be inside when this mounts
+        posRef.current.style.opacity = '1'
       }
     }
 

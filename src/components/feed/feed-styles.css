@@ -175,13 +175,43 @@
   line-height: 0;
 }
 
-/* ─── Screen stack ───────────────────────────────────────────────────────── */
+/* ─── Screen stack + iOS 9 navigation transitions ───────────────────────── */
+/*
+ * Each tab is a stack of full-screen layers (root, then pushed views). Only the
+ * top layer shows, except during a push or pop, when the top two animate:
+ *
+ *   push  navPushIn   slides in from the right, shadow on its leading edge
+ *         navPushOut  drifts 30% left and dims to 10% black
+ *   pop   navPopOut   slides off to the right
+ *         navPopIn    returns from 30% left, un-dimming
+ *
+ * The nav bar does not slide: each layer's header is counter-translated so it
+ * holds still, the top layer's header is see-through while it animates, and
+ * the titles and buttons cross-fade, as UINavigationBar does. 500ms on the
+ * decelerating curve iOS uses for navigation; keep in step with NAV_MS in
+ * FeedApp.jsx.
+ */
+
+.feedApp {
+  --nav-dur: 500ms;
+  --nav-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --nav-header-h: 64px;   /* status bar 20 + nav bar 44 */
+}
 
 .feedScreens {
   flex: 1;
   min-height: 0;
   position: relative;
   overflow: hidden;
+}
+
+.feedTab {
+  position: absolute;
+  inset: 0;
+}
+
+.feedTabAnimating {
+  pointer-events: none;
 }
 
 .feedScreen {
@@ -192,16 +222,96 @@
   background: #ffffff;
 }
 
-/* Pushed post / profile: iOS navigation push from the right */
-.feedScreenPushed {
-  z-index: 20;
-  animation: igPush 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.12);
+/* Kept mounted (scroll position survives) but not drawn */
+.navHidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
-@keyframes igPush {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+/* Body movement */
+.navPushIn  { animation: navFromRight var(--nav-dur) var(--nav-ease) both; }
+.navPushOut { animation: navToLeft    var(--nav-dur) var(--nav-ease) both; }
+.navPopOut  { animation: navToRight   var(--nav-dur) var(--nav-ease) both; }
+.navPopIn   { animation: navFromLeft  var(--nav-dur) var(--nav-ease) both; }
+
+/* Headers hold still: the exact inverse of the body movement */
+.navPushIn  > .feedHeader { animation: navHoldFromRight var(--nav-dur) var(--nav-ease) both; }
+.navPushOut > .feedHeader { animation: navHoldToLeft    var(--nav-dur) var(--nav-ease) both; }
+.navPopOut  > .feedHeader { animation: navHoldToRight   var(--nav-dur) var(--nav-ease) both; }
+.navPopIn   > .feedHeader { animation: navHoldFromLeft  var(--nav-dur) var(--nav-ease) both; }
+
+/* The top layer's bar is see-through while it moves, so the bar underneath
+   (same blue, same status bar) shows and the titles can cross-fade. */
+.navPushIn > .feedHeader,
+.navPopOut > .feedHeader {
+  background: transparent;
+}
+
+.navPushIn .iosStatusBar,
+.navPopOut .iosStatusBar {
+  visibility: hidden;
+}
+
+.navPushIn .feedNavBar > *,
+.navPopIn  .feedNavBar > * {
+  animation: navFadeIn var(--nav-dur) var(--nav-ease) both;
+}
+
+.navPushOut .feedNavBar > *,
+.navPopOut  .feedNavBar > * {
+  animation: navFadeOut var(--nav-dur) var(--nav-ease) both;
+}
+
+/* Leading-edge shadow on the moving top view (body only, not the bar) */
+.navPushIn::before,
+.navPopOut::before {
+  content: '';
+  position: absolute;
+  top: var(--nav-header-h);
+  bottom: 0;
+  left: -10px;
+  width: 10px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+/* Dim on the view underneath (body only) */
+.navPushOut::after,
+.navPopIn::after {
+  content: '';
+  position: absolute;
+  top: var(--nav-header-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  pointer-events: none;
+}
+
+.navPushOut::after { animation: navDimIn  var(--nav-dur) var(--nav-ease) both; }
+.navPopIn::after   { animation: navDimOut var(--nav-dur) var(--nav-ease) both; }
+
+@keyframes navFromRight     { from { transform: translateX(100%); }  to { transform: translateX(0); } }
+@keyframes navToLeft        { from { transform: translateX(0); }     to { transform: translateX(-30%); } }
+@keyframes navToRight       { from { transform: translateX(0); }     to { transform: translateX(100%); } }
+@keyframes navFromLeft      { from { transform: translateX(-30%); }  to { transform: translateX(0); } }
+@keyframes navHoldFromRight { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes navHoldToLeft    { from { transform: translateX(0); }     to { transform: translateX(30%); } }
+@keyframes navHoldToRight   { from { transform: translateX(0); }     to { transform: translateX(-100%); } }
+@keyframes navHoldFromLeft  { from { transform: translateX(30%); }   to { transform: translateX(0); } }
+@keyframes navFadeIn        { from { opacity: 0; } to { opacity: 1; } }
+@keyframes navFadeOut       { from { opacity: 1; } to { opacity: 0; } }
+@keyframes navDimIn         { from { opacity: 0; } to { opacity: 0.1; } }
+@keyframes navDimOut        { from { opacity: 0.1; } to { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .feedApp { --nav-dur: 1ms; }
+}
+
+/* An app, not a page: no text selection or image dragging */
+.feedApp {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ─── Feed scroll area ───────────────────────────────────────────────────── */

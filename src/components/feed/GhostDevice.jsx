@@ -14,8 +14,12 @@
 // Props:
 //   children — content rendered inside the screen slot
 //   lit      — true once the screen has powered on; fades the ghost in
+//   touch    — true to swap the system cursor for Level 3's fingertip
+//              TouchCursor inside the screen
 
+import { useRef } from 'react'
 import styles from './GhostDevice.module.css'
+import TouchCursor from '../phone/TouchCursor'
 
 export const BODY_W = 429
 export const BODY_H = 885
@@ -27,8 +31,9 @@ export const UNIT_H = BODY_H
 const CX = BODY_W / 2          // 214.5
 const R_BODY = 56              // body corner radius (≈ 8.7 mm)
 
-export default function GhostDevice({ children, lit = false }) {
+export default function GhostDevice({ children, lit = false, touch = false }) {
   const cls = [styles.unit, lit ? styles.unitLit : ''].join(' ')
+  const screenRef = useRef(null)
 
   return (
     <div className={cls}>
@@ -86,8 +91,9 @@ export default function GhostDevice({ children, lit = false }) {
       </svg>
 
       {/* Screen slot: square corners, exactly where the real display sat */}
-      <div className={styles.screen}>
+      <div ref={screenRef} className={touch ? `${styles.screen} ${styles.screenTouch}` : styles.screen}>
         {children}
+        {touch && <TouchCursor containerRef={screenRef} />}
       </div>
 
     </div>

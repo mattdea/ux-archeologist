@@ -140,7 +140,7 @@ export default function Level4() {
             style={{ width: UNIT_W * scale, height: UNIT_H * scale }}
           >
             <div className={styles.frameScaler} style={{ transform: `scale(${scale})` }}>
-              <GhostDevice lit={screen === 'playing'}>
+              <GhostDevice lit={screen === 'playing'} touch={screen === 'playing'}>
                 <FeedApp
                   framed
                   animated={screen === 'playing'}

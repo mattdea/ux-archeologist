@@ -82,6 +82,12 @@
   background: #000;
 }
 
+/* The fingertip TouchCursor replaces the system cursor on the glass */
+.screenTouch,
+.screenTouch * {
+  cursor: none !important;
+}
+
 /* ─── Boot: screen powers on first, then the room adjusts ───────────────── */
 
 .bloom,
