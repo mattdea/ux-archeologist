@@ -58,20 +58,21 @@ export default function Level4() {
     })
   }, [])
 
-  // Boot sequence: 800ms pause in 'booting' → 'playing'
+  // Boot sequence: 300ms pause after the modal closes, then 'playing' lights
+  // the screen (450ms), then the ghost outline and glow fade in around it.
   useEffect(() => {
     if (screen !== 'booting') return
-    const t = setTimeout(() => setScreen('playing'), 800)
+    const t = setTimeout(() => setScreen('playing'), 300)
     return () => clearTimeout(t)
   }, [screen])
 
-  // Notify SharedLayout and show tracker after feed-enter animation settles (~600ms)
+  // HUD and tracker arrive once the screen is fully lit (~450ms) plus a beat
   useEffect(() => {
     if (screen !== 'playing') return
     const t = setTimeout(() => {
       notifyArtifactReady()
       setTrackerVisible(true)
-    }, 600)
+    }, 700)
     return () => clearTimeout(t)
   }, [screen, notifyArtifactReady])
 
