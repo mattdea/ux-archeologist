@@ -6,6 +6,7 @@
 // so the feed renders either way.
 
 import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
+import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile } from './archiveData'
 
 // Every image in /assets/feed/, keyed by filename ("living-room.jpg" → URL).
 const FILES = import.meta.glob('../../../assets/feed/*.{jpg,jpeg,png,webp}', {
@@ -285,12 +286,29 @@ const BASE_POSTS = [
 
 ]
 
-// Point each friend's post at the lead photo of their set, and each ad at its
-// reserved photo. The old post-*.jpg files are no longer used.
+// Point each friend's post at the lead photo of their set, and each ad at a
+// real photo of that brand from the archive (else its reserved library
+// photo). The old post-*.jpg files are no longer used.
 BASE_POSTS.forEach(p => {
-  const src = FRIEND_PHOTO_LEAD(p.username) || adPhoto(p.username)
+  const ad = p.isSponsored && ARCHIVE[p.username] ? ARCHIVE[p.username].posts[0].url : null
+  const src = FRIEND_PHOTO_LEAD(p.username) || ad || adPhoto(p.username)
   if (src) p.imageSrc = src
 })
+
+// Real accounts in the home feed, from the Wayback archive when present:
+// a 2016 mix of friends-of-friends, brands, publishers and a few celebrities.
+// Each shows its most recent archived post with its real caption and likes.
+const REAL_FEED = [
+  'natgeo', 'humansofny', 'nasa', 'itsdougthepug', 'thefeedfeed', 'muradosmann',
+  'nala_cat', 'instagram', 'selenagomez', 'taylorswift', '9gag', 'voguemagazine',
+  'symmetrybreakfast', 'natgeotravel', 'jiffpom', 'nytimes', 'starbucks', 'everlane',
+]
+const REAL_FEED_COMMENTS = {
+  natgeo: [{ username: 'marcus.h', text: 'incredible' }],
+  itsdougthepug: [{ username: 'mia.c', text: '@daniela.reyes 😭😭' }],
+  thefeedfeed: [{ username: 'bakes.and.more', text: 'saving this' }],
+  humansofny: [{ username: 'sarah.moments', text: '❤️' }],
+}
 
 // Real accounts the player follows, placed after the friend post with `after`.
 // `photo` indexes the account's photos, newest first.
@@ -308,18 +326,26 @@ const FOLLOWED_REAL = [
   { after: 16, account: 'theoregonduck', photo: 0, timestamp: '17h' },
 ]
 
-export const POSTS = BASE_POSTS.flatMap(post => {
-  const real = FOLLOWED_REAL
-    .filter(r => r.after === post.id && isLibraryAccount(r.account))
-    .map(r => {
-      const url = libraryPhotos(r.account)[r.photo]
-      return libraryPost(r.account, url, {
-        timestamp: r.timestamp,
-        ...(r.comments ? { comments: r.comments } : {}),
-      })
-    })
-  return [post, ...real]
-})
+// Archive posts first (newest first), then the blog-library accounts, dealt
+// round-robin into the gaps after each friend's post.
+const ARCHIVE_FEED_POSTS = REAL_FEED
+  .filter(isArchiveAccount)
+  .map(h => archivePost(h, 0, REAL_FEED_COMMENTS[h] ? { comments: REAL_FEED_COMMENTS[h] } : {}))
+  .sort((a, b) => ARCHIVE[b.username].posts[0].date - ARCHIVE[a.username].posts[0].date)
+
+const LIBRARY_FEED_POSTS = FOLLOWED_REAL
+  .filter(r => isLibraryAccount(r.account) && !isArchiveAccount(r.account))
+  .map(r => libraryPost(r.account, libraryPhotos(r.account)[r.photo], {
+    timestamp: r.timestamp,
+    ...(r.comments ? { comments: r.comments } : {}),
+  }))
+
+const REAL_POSTS = [...ARCHIVE_FEED_POSTS, ...LIBRARY_FEED_POSTS]
+
+export const POSTS = BASE_POSTS.flatMap((post, i) => [
+  post,
+  ...REAL_POSTS.filter((_, k) => k % BASE_POSTS.length === i),
+])
 
 // ── Who the player follows ──────────────────────────────────────────────────
 // Everyone whose posts reach the home feed, except the ads.
@@ -398,18 +424,30 @@ const EXPLORE_CAPTIONS = [
 
 /** The n-th explore tile (0-based). Infinite: cycles the library, taking
     each next tile from a different account. */
+// Every real account's photos, round-robin so neighbouring tiles come from
+// different accounts: archive accounts first, then the blog library.
+const EXPLORE_ALL = (() => {
+  const queues = [
+    ...ARCHIVE_HANDLES.map(h => ARCHIVE[h].posts.map((p, i) => ({ url: p.url, account: h, post: archivePost(h, i) }))),
+    EXPLORE_ORDER.map(item => ({ ...item, post: null })),
+  ]
+  const out = []
+  while (queues.some(q => q.length)) queues.forEach(q => { if (q.length) out.push(q.shift()) })
+  return out
+})()
+
 export function exploreTile(n) {
   // Public builds ship without the photo library: plain tiles instead.
-  if (!EXPLORE_ORDER.length) {
+  if (!EXPLORE_ALL.length) {
     const hues = ['#d8d2c8', '#c9d3d8', '#d6cfd9', '#cfd8cc', '#ddd3c6', '#c8ccd6']
     return { id: 'explore-' + n, image: null, gradient: hues[n % hues.length], isVideo: false, post: null }
   }
-  const item = EXPLORE_ORDER[n % EXPLORE_ORDER.length]
-  // Video tiles already carry Instagram's camcorder badge in the image.
-  const post = isLibraryAccount(item.account)
+  const item = EXPLORE_ALL[n % EXPLORE_ALL.length]
+  // Library video tiles already carry Instagram's camcorder badge in the image.
+  const post = item.post || (isLibraryAccount(item.account)
     ? libraryPost(item.account, item.url)
-    : getProfile(item.account).grid.find(t => t.image === item.url)?.post
-  return { id: 'explore-' + n, image: item.url, isVideo: false, post }
+    : getProfile(item.account).grid.find(t => t.image === item.url)?.post)
+  return { id: 'explore-' + n, image: item.url, isVideo: !!(item.post && item.post.isVideo), post }
 }
 
 // ── Profiles ───────────────────────────────────────────────────────────────
@@ -441,6 +479,7 @@ const FEED_PROFILES = {
 }
 
 function avatarFor(username) {
+  if (isArchiveAccount(username)) return { avatar: ARCHIVE[username].avatar, avatarColor: '#dddddd', initial: username[0] }
   if (isLibraryAccount(username)) return { avatar: libraryAvatar(username), avatarColor: '#dddddd', initial: username[0] }
   const fromFeed = POSTS.find(p => p.username === username)
   if (fromFeed) return { avatar: fromFeed.avatar, avatarColor: fromFeed.avatarColor, initial: fromFeed.initial }
@@ -453,6 +492,9 @@ function avatarFor(username) {
 /** Full profile for any username: name, bio, counts, avatar, and a photo grid. */
 export function getProfile(username) {
   const h = hashString(username)
+
+  // Archived real accounts: everything as it was in spring 2016.
+  if (isArchiveAccount(username)) return archiveProfile(username)
 
   // Real accounts: their own photos, in the order they posted them.
   if (isLibraryAccount(username)) {
@@ -521,9 +563,19 @@ export function getProfile(username) {
 
 /** Photos from a real account, newest first: lib('otntty', 0, 1). */
 function lib(account, ...idx) {
-  const photos = ownedPhotos(account)
+  const photos = getProfile(account).grid.map(t => t.image)
   return idx.map(i => photos[i]).filter(Boolean)
 }
+
+/** The first of these accounts that exists with photos (archive, else library). */
+function pick(...handles) {
+  return handles.find(h => isArchiveAccount(h) || isLibraryAccount(h)) || handles[handles.length - 1]
+}
+const NATURE = pick('natgeo', 'acacia.johnson')
+const PETS = pick('itsdougthepug', 'hummingbirdsxoxo')
+const SPACE = pick('nasa', 'sfmoma')
+const FOOD = pick('thefeedfeed', 'lucacappuccinodonofrio')
+const HOME = pick('muradosmann', 'thejoshuatreehouse')
 
 /** A friend's own feed photo, as a one-thumbnail list. */
 function friend(username) {
@@ -533,13 +585,13 @@ function friend(username) {
 export const FOLLOWING_ACTIVITY = [
   { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: friend('julia.creates') },
   { id: 'f2', actor: 'daniela.reyes', segments: ['started following ', { user: 'j.okafor' }, ', ', { user: 'mia.c' }, ' and 3 others.'], time: '26m' },
-  { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib('julia.creates', 1), ...lib('lens.folk', 1), ...lib('sfmoma', 2)] },
-  { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: 'hummingbirdsxoxo' }, "'s video."], time: '55m', thumbs: lib('hummingbirdsxoxo', 1) },
-  { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: 'thejoshuatreehouse' }, '.'], time: '1h' },
+  { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib(NATURE, 1), ...lib('lens.folk', 1), ...lib(SPACE, 2)] },
+  { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: PETS }, "'s photo."], time: '55m', thumbs: lib(PETS, 1) },
+  { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: HOME }, '.'], time: '1h' },
   { id: 'f6', actor: 'alex.wanderer', segments: ['liked 2 photos.'], time: '2h', thumbs: [...friendPhotos('city.frames').slice(1, 2), ...friendPhotos('outdoor.vibes').slice(1, 2)] },
-  { id: 'f7', actor: 'outdoor.vibes', segments: ['liked ', { user: 'acacia.johnson' }, "'s photo."], time: '3h', thumbs: lib('acacia.johnson', 1) },
+  { id: 'f7', actor: 'outdoor.vibes', segments: ['liked ', { user: NATURE }, "'s photo."], time: '3h', thumbs: lib(NATURE, 2) },
   { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: 'otntty' }, '.'], time: '5h' },
-  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib('sfmoma', 1, 3), ...lib('otntty', 1), ...lib('acacia.johnson', 2)] },
+  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib(SPACE, 1, 3), ...lib(HOME, 1), ...lib(NATURE, 3)] },
 ]
 
 export const YOU_ACTIVITY = [
@@ -551,7 +603,7 @@ export const YOU_ACTIVITY = [
 export const TRICKLE_ACTIVITY = [
   { id: 't1', actor: 'daniela.reyes', segments: ['liked ', { user: 'marcus.h' }, "'s photo."], time: '1m', thumbs: friend('marcus.h') },
   { id: 't2', actor: 'julia.creates', segments: ['liked 2 photos.'], time: '1m', thumbs: lib('otntty', 0, 1) },
-  { id: 't3', actor: 'nadia_s', segments: ['liked ', { user: 'lucacappuccinodonofrio' }, "'s photo."], time: '1m', thumbs: lib('lucacappuccinodonofrio', 1) },
-  { id: 't4', actor: 'mike.film', segments: ['liked ', { user: 'sfmoma' }, "'s photo."], time: '1m', thumbs: lib('sfmoma', 0) },
-  { id: 't5', actor: 'outdoor.vibes', segments: ['liked 3 photos.'], time: '1m', thumbs: lib('thejoshuatreehouse', 0, 1, 2) },
+  { id: 't3', actor: 'nadia_s', segments: ['liked ', { user: FOOD }, "'s photo."], time: '1m', thumbs: lib(FOOD, 1) },
+  { id: 't4', actor: 'mike.film', segments: ['liked ', { user: SPACE }, "'s photo."], time: '1m', thumbs: lib(SPACE, 0) },
+  { id: 't5', actor: 'outdoor.vibes', segments: ['liked 3 photos.'], time: '1m', thumbs: lib(HOME, 0, 1, 2) },
 ]

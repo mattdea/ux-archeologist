@@ -150,7 +150,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 | 1 | 1984 | Beige CRT monitor bezel (780×755px) |
 | 2 | 1995 | Browser chrome — no device bezel |
 | 3 | 2007 | iPhone silhouette (385×735px bezel, 320×480px screen) |
-| 4 | 2015 | Floating app viewport — no bezel |
+| 4 | 2015 | Ghost iPhone 6: hairline outline + screen glow, 375×667px screen (`GhostDevice`) |
 | 5 | 2023 | Full-width chat panel — no device, no chrome, no frame |
 
 ---
@@ -326,43 +326,77 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 ---
 
 ### Level 4: 2015 — The Feed
-**Status: Stub (not yet implemented)**
+**Status: Complete**
 
-**Artifact:** Social media feed app (Instagram-like)
-**Discovery:** Infinite Scroll
-**Container:** Floating app viewport, no device bezel (hardware has disappeared)
+**Artifact:** Instagram for iOS, spring 2016 (blue header, dark tab bar: the UI just before the May 2016 redesign)
+**Discovery:** Algorithmic Feed
+**Container:** `src/components/feed/GhostDevice.jsx` — hairline iPhone 6 outline and screen glow, 375×667px screen; no solid bezel (the hardware is fading out between Level 3 and Level 5)
 **Route:** `/level/4`
 
-**IntroModal (planned):**
+**IntroModal:**
 - Era: `2015`
 - Title: `The Feed`
 - Description: "The interface stopped waiting for you. It started optimizing for your attention."
 
 **Visual Palette:**
-- Clean flat design, white backgrounds
-- Gradient story rings
-- Card-based post layout
-- Subtle shadows, rounded corners
-- Colorful photo placeholders
+- Header blue `#12558a`; status bar 20pt + nav bar 44pt; white script wordmark
+- Dark tab bar `#26272b`, selected tab a slightly lighter tile `#313236`, camera tab in header blue
+- Body text Helvetica Neue 13pt; nav titles, FOLLOWING / YOU toggle, section labels and the Explore hero in Proxima Nova (Montserrat fallback, loaded in `index.html`)
+- Links, usernames and likes in header blue; `#4090db` for the selected grid icon, Follow button and empty-state arrow
+- Laid out at the 4-inch size (320×568pt) and scaled ×1.171875 to fill the iPhone 6 screen, as the iPhone 6 Display Zoom setting did (`.feedZoom`), so type reads at the size of the 320pt reference screenshots
+- Reference screenshots: `docs/reference/`
 
-**Planned Interactive Elements:**
-- Scrollable feed (posts never end)
-- Story bar at top (visual only)
-- Notification toasts appearing OUTSIDE the app frame, into museum space
-- Notification badge on frame edge
-- Sponsored posts blended into feed
-- Target post player must find
+**Screens:**
+- Home: feed of posts (header, square photo, action row, likes, caption, comments); infinite spinner at the bottom
+- Explore (search tab): dark-blue Search field, PRESS PLAY / EXPLORE VIDEOS hero, sideways TRENDING TAGS row, 3-column EXPLORE POSTS grid that keeps loading
+- Activity (heart tab): FOLLOWING / YOU toggle, notification rows (avatar, blue usernames, grey time, thumbnails); new likes trickle into Following while the player is in the feed, with a count badge on the tab
+- Profile: username title (gear on your own, back chevron on others), avatar, posts / followers / following, Edit Profile or Follow, grid / list / pin / tagged row, 3-column grid; your own profile is the 2016 first-run empty state with a blue arrow toward the camera tab; verified accounts show the blue check by their name
+- Post detail (PHOTO / VIDEO): the same post card, pushed over any tab
 
-**Planned Objectives:**
-1. Scroll the feed to find a specific target post
-2. Dismiss 3 notification interruptions
-3. Spot the sponsored content (or get fooled by it)
+**Interactive Elements:**
+- Tab bar switches tabs; re-tapping the current tab pops to its root
+- Tapping a username or avatar opens that profile; tapping a grid tile opens the post; Back pops
+- Double-tap a photo: big white heart springs in (~250ms), holds, fades by ~900ms; action-row heart fills red and bounces; like count moves by one. The heart button toggles like / unlike
+- Follow / Unfollow on a profile or Activity row updates everywhere (`followStore.js`): exact follower counts move by one, abbreviated ones stay put
+- Press-and-drag scrolling with iOS fling (0.998/ms deceleration), 0.3× rubber band and snap-back; mouse wheel also works; a drag never counts as a tap (`useDragScroll.js`)
+- Level 3's fingertip TouchCursor replaces the system cursor on the screen
 
-**Key Mechanic:** Notifications break into the museum HUD space — the fourth wall. Demonstrates that the interface now has its own agenda.
+**Data:**
+Accounts come from three sources, in order of preference, each falling back to the next:
+1. `assets/feed/archive/` — real accounts as archived by the Wayback Machine in spring 2016 (bio, counts, posts with real captions, like counts, dates and photos), recovered by `scripts/recover-instagram-2016.py`; read by `archiveData.js`
+2. `assets/feed/library/` — real accounts and photos from Instagram's own blog, Jan–May 2016, each photo owned by exactly one account; read by `libraryData.js`
+3. Plain color blocks, when neither folder is present
 
-**Discovery Card (planned):**
-- Artifact: `Attention Economy Interface`
-- Text: "The interface learned to want your attention. Algorithms decided what you saw. Notifications interrupted what you were doing. The scroll never ended. For the first time, the interface had its own goals — and they weren't yours."
+The 12 invented friends (Marcus, Julia, Daniela with the house, two ads…) carry the objectives and post from reserved photo sets that match their subject. All real photos and account data are gitignored and live only on the author's machine; the public site and repository build without them. See `assets/feed/README.md`.
+
+**Objectives (3, independent):**
+1. Find your friend's post (daniela.reyes's "we bought a house!!", buried about 20 posts down)
+2. Learn more about a sponsored post (tap Sponsored, LEARN MORE or SHOP NOW)
+3. Like a post
+
+**Discovery Card:**
+- Artifact: `Algorithmic Feed`
+- Text: "Earlier feeds showed you everything your friends posted, newest first. By 2016, an algorithm ranked the feed instead, ordering each post by how likely it was to keep you scrolling. Your closest friend's biggest news could sit beneath three strangers and an ad. The order was chosen for you, tuned to hold your attention, by a system whose goals were not your own."
+
+**File Structure:**
+```
+scripts/recover-instagram-2016.py      # Wayback recovery of 2016 profiles + photos
+src/levels/Level4.jsx                  # Screen state machine, museum wiring
+src/levels/Level4.module.css           # Three-zone layout
+src/components/feed/
+  GhostDevice.jsx + .module.css        # Ghost iPhone 6 outline, glow, screen slot, TouchCursor
+  FeedApp.jsx                          # Tabs, pushed-screen stack, nav transitions, trickle
+  NavBar.jsx, StatusBar.jsx            # Blue header
+  Post.jsx                             # Post card, double-tap like
+  ExploreTab.jsx, ActivityTab.jsx, ProfileView.jsx, PostDetailView.jsx, PhotoGrid.jsx
+  Avatar.jsx, icons.jsx                # Traced 2015 glyphs
+  feed-styles.css                      # Artifact styles, tokens, nav transitions
+  feedData.js                          # Friends, feed assembly, profiles, activity
+  archiveData.js                       # Wayback archive accounts
+  libraryData.js, libraryQuality.js    # Blog library accounts and photo ownership
+  followStore.js                       # Shared follow state
+  useDragScroll.js                     # Touch-style scrolling
+```
 
 ---
 
@@ -465,7 +499,7 @@ src/components/chat/
 | 1 | Chicago / Courier New | 1-bit only, no anti-aliasing |
 | 2 | Times New Roman (body), Courier New (URLs), Comic Sans (banners) | |
 | 3 | -apple-system / Helvetica Neue | Defined in phone-theme.css |
-| 4 | System sans-serif | Clean, flat |
+| 4 | Helvetica Neue (body), Proxima Nova (nav titles, labels) | Montserrat stands in for Proxima Nova on machines without it |
 | 5 | System sans-serif | Clean, minimal — this is the present |
 
 ---
@@ -523,8 +557,11 @@ Era-authentic only. Never use museum-layer easing inside the artifact.
 - Sound effects: `audio.volume = 0.5` for all sounds
 
 **Level 4 — 2015:**
-- Smooth scroll (planned)
-- Notification slide-in from right, into museum space
+- Boot: nothing drawn during the intro; 300ms pause → screen fades up in place (450ms) with content already there → ghost outline and glow fade in (800ms) → HUD
+- Navigation push/pop like iOS 9: incoming view slides from the right with a leading-edge shadow, the view beneath drifts 30% left and dims 10%, the blue bar holds still while titles cross-fade; pop is the reverse. 500ms, `cubic-bezier(0.32, 0.72, 0, 1)`
+- Double-tap heart: spring in with overshoot (~250ms), hold, fade by 900ms; small heart bounce 320ms
+- Scrolling: 1:1 drag, fling at 0.998/ms deceleration, 0.3× rubber band, 300ms `cubic-bezier(0.25, 0.46, 0.45, 0.94)` snap
+- Activity rows fade in 250ms; tab badge pops in 200ms
 
 **Level 5 — 2023:**
 - Boot: 1s pause → input bar slides up from bottom (translateY(100%) → translateY(0), 300ms ease-out, @keyframes)

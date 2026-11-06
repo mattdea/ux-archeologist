@@ -8,6 +8,7 @@
 - Don't modify files you weren't asked to touch.
 - Always: `git add -A && git commit -m "msg" && git push`
 - The museum layer (shared UI) and artifact layer (era-specific) never cross-contaminate styles.
+- `assets/feed/` holds real Instagram photos and account data for Level 4. They are gitignored and local-only: never `git add -f` them, and keep the level working when they are absent (color-block fallbacks). See `assets/feed/README.md`.
 
 ## Level conventions (apply to every level without being asked)
 

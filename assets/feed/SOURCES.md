@@ -88,3 +88,12 @@ from `library/`, with one rule: nothing under 640px wide
 (`src/components/feed/libraryQuality.js`). Invented friends each post from one
 reserved photo set that matches their subject (`FRIEND_SETS` in
 `libraryData.js`); reserved photos never appear under a real account.
+
+## `archive/` — Wayback Machine captures of real profiles, spring 2016
+
+Recovered by `scripts/recover-instagram-2016.py`: for each account, every
+archived capture of its profile page between 1 March and 10 May 2016, with the
+24 posts each capture showed (real captions, like and comment counts, dates)
+and the archived photo files. `archive/<handle>/profile.json` records the
+captures used and a `source` link to the archived page. Avatars not archived
+fall back to `profiles/avatars/`. Gitignored; local only.

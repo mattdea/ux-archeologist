@@ -287,3 +287,13 @@ export function ActivityEmptyIcon() {
     </svg>
   )
 }
+
+/** Verified badge, 2016 style: blue circle with a white check, 14 × 14. */
+export function VerifiedIcon() {
+  return (
+    <svg className="verifiedBadge" width="14" height="14" viewBox="0 0 14 14" aria-label="Verified">
+      <circle cx="7" cy="7" r="7" fill="#3897f0" />
+      <path d="M3.6 7.2l2.2 2.2 4.6-4.6" fill="none" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}

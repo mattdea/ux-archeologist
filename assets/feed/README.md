@@ -1,53 +1,55 @@
-# Level 4 feed photos
+# Level 4 feed assets
 
-Drop JPGs into this folder and the feed picks them up by filename (see
-`src/components/feed/feedData.js`). Nothing else to wire up. Any file that is
-missing falls back to a flat color block, so partial sets are fine.
+Everything in this folder except this file and `SOURCES.md` is **gitignored**:
+real Instagram photos and account data, kept on this machine only. The public
+repository and the Netlify site build without them and show plain color blocks
+instead. Never commit them.
 
-Keep post photos square (1080 × 1080 is the 2016 upload size; 640 × 640 is
-plenty for the 375px feed). Avatars can be any square crop, 150 × 150 or so.
-Unsplash / Pexels-style photos with a 2016 phone-camera feel work best; avoid
-anything with a modern phone, car, or UI visible.
+## What the level loads, in order of preference
 
-## Post photos (18)
+| Folder | What it is | Read by |
+| --- | --- | --- |
+| `archive/<handle>/` | Real accounts as the Wayback Machine captured them in spring 2016: `profile.json` (bio, counts, posts with real captions, like counts, dates) plus one JPG per post and, when archived, `avatar.jpg` | `src/components/feed/archiveData.js` |
+| `library/` | Real accounts and photos from Instagram's own blog, Jan–May 2016 (`index.csv` has the sources). Each photo is owned by exactly one account; some sets are reserved for the invented friends | `libraryData.js`, `libraryQuality.js` |
+| `profiles/` | Wayback profile captures of 40 big accounts (counts, bios, post links) and their avatars, pulled by an earlier session. The archive falls back to `profiles/avatars/<handle>.jpg` when a profile picture was not archived | `archiveData.js` (avatars only) |
+| `explore/`, `period/`, `*.jpg` | Older crops from the reference screenshots. No longer used | — |
 
-| File | What it should show |
-| --- | --- |
-| `post-marcus-studio.jpg` | Warm window light in a small art or photo studio |
-| `post-airbnb-cabin.jpg` | Ad: a cozy cabin or stylish rental interior |
-| `post-julia-ceramics.jpg` | Handmade ceramics or paintings on a table |
-| `post-alex-lisbon.jpg` | Lisbon street, tram, or tiled facade |
-| `post-sarah-coffee.jpg` | Coffee mug on a bed or sofa, lazy morning |
-| `post-mike-35mm.jpg` | Grainy film photo, any subject, slightly faded |
-| `post-warbyparker-frames.jpg` | Ad: eyeglasses on a flat surface, product shot |
-| `post-coffee-pour.jpg` | Barista pouring latte art |
-| `post-outdoor-trail.jpg` | Forest trail with hikers or a dog |
-| `post-studio-minimal.jpg` | Minimal still life, plant or chair, lots of white |
-| `post-city-geometry.jpg` | Modern building facade, strong lines, dawn light |
-| `post-bakes-sourdough.jpg` | Sourdough loaf, scored top, on a board |
-| `post-daniela-house.jpg` | **The friend's post:** empty living room, bare floor, keys or boxes; feels like move-in day |
-| `post-travel-santorini.jpg` | Santorini white walls and blue domes |
-| `post-morning-run.jpg` | Runner's shoes or a road at sunrise |
-| `post-lens-analog.jpg` | Film camera or rolls of film |
-| `post-home-books.jpg` | Reading nook with full bookshelves |
-| `post-pnw-forest.jpg` | Pacific Northwest forest or coastline |
+An account in `archive/` wins over the same account in `library/`.
 
-## Avatars (30)
+## Recovering more real accounts
 
-Faces, pets, or objects; a mix is more convincing than all portraits.
+```bash
+scripts/recover-instagram-2016.py natgeo humansofny nasa
+scripts/recover-instagram-2016.py --list handles.txt
+```
 
-Stories tray: `avatar-j-okafor.jpg`, `avatar-mia-c.jpg`, `avatar-sunrise.jpg`,
-`avatar-cafe-list.jpg`, `avatar-nadia-s.jpg`, `avatar-pete-photo.jpg`,
-`avatar-lena-out.jpg`
+For each handle the script finds archived captures of `instagram.com/<handle>/`
+between 1 March and 10 May 2016 (the day before the redesign), reads the
+account and its 24 most recent posts from each capture, unions the posts, and
+downloads the photos from the archive at full size. Re-running is safe: files
+already on disk are kept.
 
-Posts: `avatar-marcus-h.jpg`, `avatar-airbnb.jpg` (logo-like, red),
-`avatar-julia-creates.jpg`, `avatar-alex-wanderer.jpg`, `avatar-sarah-moments.jpg`,
-`avatar-mike-film.jpg`, `avatar-warbyparker.jpg` (logo-like, navy),
-`avatar-coffee-culture.jpg`, `avatar-outdoor-vibes.jpg`, `avatar-studio-light.jpg`,
-`avatar-city-frames.jpg`, `avatar-bakes-and-more.jpg`, `avatar-daniela-reyes.jpg`
-(a warm, friendly portrait; this is the friend), `avatar-travel-tales.jpg`,
-`avatar-morning-run.jpg`, `avatar-lens-folk.jpg`, `avatar-home-spaces.jpg`,
-`avatar-pnw-shots.jpg`
+What to expect:
 
-Suggested-for-you cards: `avatar-travel-scope.jpg`, `avatar-foodie-journal.jpg`,
-`avatar-natgeo.jpg` (yellow rectangle logo), `avatar-humansofny.jpg`
+- The Wayback Machine serves about one request per second and stalls parallel
+  connections, so downloads run one at a time. Budget about two minutes per
+  account. It also stalls requests with a custom User-Agent, so the script uses
+  curl's default.
+- Big accounts (natgeo, nasa, humansofny, brands) have many captures and
+  archived photos. Many celebrity accounts' photos were never archived; the
+  script notices after six misses and moves on with just the account data.
+- Only the first 24 posts of each capture are available, so an account's grid
+  holds the union of its captures: usually 24–60 posts.
+- `archive/recover.log` has the last run's output; `archive/index.json` lists
+  what was recovered.
+
+To put a recovered account in the home feed, add its handle to `REAL_FEED` in
+`src/components/feed/feedData.js`. Every recovered account already appears in
+Explore and can be opened as a profile.
+
+## Invented friends
+
+Twelve invented accounts (marcus.h, julia.creates, daniela.reyes…) carry the
+level's objectives. Each posts from a reserved set of library photos matching
+its subject (`FRIEND_SETS` in `libraryData.js`), so their feed post and profile
+grid look like one person's account.

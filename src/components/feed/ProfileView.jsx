@@ -16,7 +16,7 @@ import PhotoGrid from './PhotoGrid'
 import { ME, getProfile, isFollowing } from './feedData'
 import { useIsFollowing, useFollowingCount, toggleFollow, adjustCount } from './followStore'
 import {
-  BackChevronIcon, GearIcon, GridModeIcon, ListModeIcon, PinModeIcon, TaggedModeIcon, DownArrowIcon,
+  BackChevronIcon, GearIcon, GridModeIcon, ListModeIcon, PinModeIcon, TaggedModeIcon, DownArrowIcon, VerifiedIcon,
 } from './icons'
 
 function Stat({ n, label }) {
@@ -85,7 +85,7 @@ export default function ProfileView({ username, onBack, onOpenPost }) {
 
         {!own && (
           <div className="profileBio">
-            <div className="profileName">{profile.name}</div>
+            <div className="profileName">{profile.name}{profile.verified && <VerifiedIcon />}</div>
             {profile.bio && <div className="profileBioText">{profile.bio}</div>}
             {profile.website && <div className="profileWebsite">{profile.website}</div>}
           </div>

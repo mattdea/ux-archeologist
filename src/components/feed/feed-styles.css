@@ -1096,6 +1096,11 @@
   font-weight: 700;
 }
 
+.verifiedBadge {
+  vertical-align: -2px;
+  margin-left: 4px;
+}
+
 .profileBioText {
   white-space: pre-line;
 }
