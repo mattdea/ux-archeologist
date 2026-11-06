@@ -174,13 +174,19 @@
   user-select: none;
 }
 
+/* Nav buttons get the full 44pt bar height and 10pt either side as tap area;
+   the negative margin cancels the padding so the glyph stays where it was. */
 .feedNavBtn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px 0;
+  height: 44px;
+  min-width: 44px;
+  padding: 0 10px;
+  margin: 0 -10px;
   display: flex;
   align-items: center;
+  justify-content: center;
   line-height: 0;
 }
 
