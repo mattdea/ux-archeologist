@@ -18,7 +18,7 @@ export default function PhotoGrid({ tiles, onOpenPost }) {
           onClick={() => onOpenPost && onOpenPost(tile.post)}
           aria-label={`Photo by ${tile.post?.username || 'user'}`}
         >
-          {tile.image && <img src={tile.image} alt="" draggable={false} />}
+          {tile.image && <img src={tile.image} alt="" loading="lazy" draggable={false} />}
           {tile.isVideo && <span className="gridVideoBadge"><VideoBadgeIcon /></span>}
         </button>
       ))}

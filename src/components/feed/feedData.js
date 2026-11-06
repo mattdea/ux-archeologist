@@ -5,6 +5,8 @@
 // `photo` / `avatar`. Missing files fall back to the gradient / color below,
 // so the feed renders either way.
 
+import { ACCOUNTS, EXPLORE_ORDER, isLibraryAccount, libraryAvatar, libraryPhotos } from './libraryData'
+
 // Every image in /assets/feed/, keyed by filename ("living-room.jpg" → URL).
 const FILES = import.meta.glob('../../../assets/feed/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -19,10 +21,48 @@ export function feedImage(name) {
   return name && IMAGES[name] ? IMAGES[name] : null
 }
 
+// Small deterministic hash so every generated value is stable across renders.
+export function hashString(s) {
+  let h = 2166136261
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i)
+    h = Math.imul(h, 16777619) >>> 0
+  }
+  return h
+}
+
+// ── Real-account posts (assets/feed/library) ─────────────────────────────────
+
+const EXPLORE_TIMES = ['3m', '12m', '28m', '41m', '1h', '2h', '3h', '5h', '6h', '9h', '14h', '1d']
+
+/** A post by a real library account. Deterministic per photo, so the same
+    photo shows the same likes and caption in the feed, Explore and profile. */
+export function libraryPost(account, url, overrides = {}) {
+  const meta = ACCOUNTS[account]
+  const h = hashString(url)
+  const big = /m$|k$/.test(meta.followers)
+  return {
+    id: 'lib-' + h,
+    username: account,
+    imageSrc: url,
+    avatar: libraryAvatar(account),
+    avatarColor: '#dddddd',
+    initial: account[0],
+    likes: (big ? 4000 + (h % 90000) : 150 + (h % 3800)).toLocaleString('en-US'),
+    caption: meta.captions[h % meta.captions.length],
+    commentCount: big ? 60 + (h % 900) : 4 + (h % 80),
+    comments: [],
+    timestamp: EXPLORE_TIMES[h % EXPLORE_TIMES.length],
+    ...overrides,
+  }
+}
+
 // ── Posts ──────────────────────────────────────────────────────────────────
 // `timestamp` is the 2015 short form shown at the right of the post header.
+// BASE_POSTS are the player's (invented) friends and two ads; real accounts
+// they follow are woven in below as POSTS.
 
-export const POSTS = [
+const BASE_POSTS = [
   {
     id: 1,
     username: 'marcus.h',
@@ -293,6 +333,41 @@ export const POSTS = [
   },
 ]
 
+// Real accounts the player follows, placed after the friend post with `after`.
+// `photo` indexes the account's photos, newest first.
+const FOLLOWED_REAL = [
+  { after: 1, account: 'sfmoma', photo: 0, timestamp: '2h',
+    comments: [{ username: 'julia.creates', text: 'can’t wait 😍' }] },
+  { after: 3, account: 'hummingbirdsxoxo', photo: 0, timestamp: '4h' },
+  { after: 5, account: 'thejoshuatreehouse', photo: 0, timestamp: '6h',
+    comments: [{ username: 'alex.wanderer', text: 'adding this to the list' }] },
+  { after: 8, account: 'acacia.johnson', photo: 0, timestamp: '9h' },
+  { after: 10, account: 'instagram', photo: 0, timestamp: '11h' },
+  { after: 12, account: 'lucacappuccinodonofrio', photo: 0, timestamp: '13h',
+    comments: [{ username: 'bakes.and.more', text: 'teach me 🙏' }] },
+  { after: 14, account: 'otntty', photo: 0, timestamp: '15h' },
+  { after: 16, account: 'theoregonduck', photo: 0, timestamp: '17h' },
+]
+
+export const POSTS = BASE_POSTS.flatMap(post => {
+  const real = FOLLOWED_REAL
+    .filter(r => r.after === post.id && isLibraryAccount(r.account))
+    .map(r => {
+      const url = libraryPhotos(r.account)[r.photo]
+      return libraryPost(r.account, url, {
+        timestamp: r.timestamp,
+        ...(r.comments ? { comments: r.comments } : {}),
+      })
+    })
+  return [post, ...real]
+})
+
+/** A friend's feed photo, by username (for activity thumbnails). */
+function friendPhoto(username) {
+  const p = BASE_POSTS.find(x => x.username === username)
+  return (p && feedImage(p.photo)) || null
+}
+
 // ── Explore / profile grid photos ──────────────────────────────────────────
 // Tiles cropped from the period screenshots in docs/reference/ (see
 // assets/feed/SOURCES.md). Sorted by filename so indices are stable.
@@ -311,16 +386,6 @@ export function exploreImage(n) {
   return EXPLORE_IMAGES[(n - 1 + EXPLORE_IMAGES.length) % EXPLORE_IMAGES.length]
 }
 
-// Small deterministic hash so every generated value is stable across renders.
-export function hashString(s) {
-  let h = 2166136261
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i)
-    h = Math.imul(h, 16777619) >>> 0
-  }
-  return h
-}
-
 // ── The player ─────────────────────────────────────────────────────────────
 
 export const ME = {
@@ -333,18 +398,26 @@ export const ME = {
 
 // ── Explore ────────────────────────────────────────────────────────────────
 
+// Real spring-2016 hashtags, each shown with a photo from the account that
+// featured it on Instagram's blog.
 export const TRENDING_TAGS = [
-  { tag: '#startofsummer', image: 7 },
-  { tag: '#coachella', image: 3 },
-  { tag: '#mothersday', image: 38 },
-  { tag: '#earthday', image: 36 },
-  { tag: '#tbt', image: 30 },
-  { tag: '#nofilter', image: 5 },
-  { tag: '#vscocam', image: 45 },
-  { tag: '#foodporn', image: 39 },
-  { tag: '#sunset', image: 41 },
-  { tag: '#nyc', image: 33 },
+  { tag: '#WHPidentity', account: 'instagram', post: '2016-03-07' },
+  { tag: '#hiphopart', account: '8bithiphop' },
+  { tag: '#MarchMadness', account: 'theoregonduck' },
+  { tag: '#KentuckyDerby', account: 'thehatgirls' },
+  { tag: '#MHPsoundandstyle', account: 'music' },
+  { tag: '#newSFMOMA', account: 'sfmoma', photo: 1 },
+  { tag: '#PFW', account: 'patmcgrathreal' },
+  { tag: '#stpatricksday', account: 'tatiana_mc_garry' },
+  { tag: '#easter', account: 'wolfordroger' },
+  { tag: '#mothersday', account: 'soraceballos' },
 ]
+  .map(t => {
+    const photos = libraryPhotos(t.account)
+    const src = t.post ? photos.find(u => u.includes(t.post + '_')) : photos[t.photo || 0]
+    return { tag: t.tag, src: src || null }
+  })
+  .filter(t => t.src)
 
 const EXPLORE_USERS = [
   { username: 'sunset.chaser', name: 'Kelsey Moran', color: '#e67e22', bio: 'chasing light. SF ↔ LA' },
@@ -379,10 +452,14 @@ const EXPLORE_CAPTIONS = [
   'friday feeling',
 ]
 
-const EXPLORE_TIMES = ['3m', '12m', '28m', '41m', '1h', '2h', '3h', '5h', '6h', '9h', '14h', '1d']
-
-/** The n-th explore tile (0-based). Infinite: wraps around the image pool. */
+/** The n-th explore tile (0-based). Infinite: wraps around the image pool.
+    Uses the real-account library when present, else the reference crops. */
 export function exploreTile(n) {
+  if (EXPLORE_ORDER.length) {
+    const item = EXPLORE_ORDER[n % EXPLORE_ORDER.length]
+    // Video tiles already carry Instagram's camcorder badge in the image.
+    return { id: 'explore-' + n, image: item.url, isVideo: false, post: libraryPost(item.account, item.url) }
+  }
   const h = hashString('tile' + n)
   const user = EXPLORE_USERS[n % EXPLORE_USERS.length]
   const isVideo = n % 7 === 3
@@ -436,6 +513,7 @@ const FEED_PROFILES = {
 }
 
 function avatarFor(username) {
+  if (isLibraryAccount(username)) return { avatar: libraryAvatar(username), avatarColor: '#dddddd', initial: username[0] }
   const fromFeed = POSTS.find(p => p.username === username)
   if (fromFeed) return { avatar: fromFeed.avatar, avatarColor: fromFeed.avatarColor, initial: fromFeed.initial }
   const explore = EXPLORE_USERS.find(u => u.username === username)
@@ -447,6 +525,24 @@ function avatarFor(username) {
 /** Full profile for any username: name, bio, counts, avatar, and a photo grid. */
 export function getProfile(username) {
   const h = hashString(username)
+
+  // Real accounts: their own photos, in the order they posted them.
+  if (isLibraryAccount(username)) {
+    const meta = ACCOUNTS[username]
+    const photos = libraryPhotos(username)
+    return {
+      username,
+      name: meta.name,
+      bio: meta.bio,
+      website: meta.website || null,
+      posts: (photos.length + 180 + (h % 1400)).toLocaleString('en-US'),
+      followers: meta.followers,
+      following: meta.following,
+      ...avatarFor(username),
+      grid: photos.map(url => ({ id: 'grid-' + url, image: url, post: libraryPost(username, url) })),
+    }
+  }
+
   const known = FEED_PROFILES[username] || EXPLORE_USERS.find(u => u.username === username) || {}
   const feedPosts = POSTS.filter(p => p.username === username)
   const isBrand = feedPosts.some(p => p.isSponsored)
@@ -457,9 +553,9 @@ export function getProfile(username) {
   feedPosts.forEach(p => {
     grid.push({
       id: 'grid-' + p.id,
-      image: feedImage(p.photo),
+      image: p.imageSrc || feedImage(p.photo),
       gradient: p.imageGradient,
-      post: { ...p, imageSrc: feedImage(p.photo) },
+      post: { ...p, imageSrc: p.imageSrc || feedImage(p.photo) },
     })
   })
   for (let i = grid.length; i < gridLen; i++) {
@@ -507,16 +603,27 @@ function thumbs(...nums) {
   return nums.map(n => exploreImage(n))
 }
 
+/** Photos from a real account, newest first: lib('otntty', 0, 1). */
+function lib(account, ...idx) {
+  const photos = libraryPhotos(account)
+  return idx.map(i => photos[i]).filter(Boolean)
+}
+
+/** A friend's own feed photo, falling back to a reference crop. */
+function friend(username, fallback) {
+  return [friendPhoto(username) || exploreImage(fallback)]
+}
+
 export const FOLLOWING_ACTIVITY = [
-  { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: thumbs(29) },
+  { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: friend('julia.creates', 29) },
   { id: 'f2', actor: 'daniela.reyes', segments: ['started following ', { user: 'j.okafor' }, ', ', { user: 'mia.c' }, ' and 3 others.'], time: '26m' },
-  { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: thumbs(30, 22, 17) },
-  { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: 'lens.folk' }, "'s photo."], time: '55m', thumbs: thumbs(26) },
-  { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: 'coffee.culture' }, '.'], time: '1h' },
-  { id: 'f6', actor: 'alex.wanderer', segments: ['liked 2 photos.'], time: '2h', thumbs: thumbs(45, 9) },
-  { id: 'f7', actor: 'outdoor.vibes', segments: ['liked ', { user: 'pnw.shots' }, "'s video."], time: '3h', thumbs: thumbs(14) },
-  { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: 'bakes.and.more' }, '.'], time: '5h' },
-  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: thumbs(20, 33, 4, 2) },
+  { id: 'f3', actor: 'mike.film', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib('p.hil', 0), ...lib('honoluluchris', 0), ...lib('savagesband', 0)] },
+  { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: 'hummingbirdsxoxo' }, "'s video."], time: '55m', thumbs: lib('hummingbirdsxoxo', 1) },
+  { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: 'thejoshuatreehouse' }, '.'], time: '1h' },
+  { id: 'f6', actor: 'alex.wanderer', segments: ['liked 2 photos.'], time: '2h', thumbs: [...lib('corasacher', 0), ...lib('ssazanovich', 0)] },
+  { id: 'f7', actor: 'outdoor.vibes', segments: ['liked ', { user: 'acacia.johnson' }, "'s photo."], time: '3h', thumbs: lib('acacia.johnson', 1) },
+  { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: 'otntty' }, '.'], time: '5h' },
+  { id: 'f9', actor: 'city.frames', segments: ['liked 4 photos.'], time: '6h', thumbs: lib('corasacher', 1, 2, 3, 4) },
 ]
 
 export const YOU_ACTIVITY = [
@@ -526,9 +633,9 @@ export const YOU_ACTIVITY = [
 
 /** New likes that arrive while the player scrolls the feed, in order. */
 export const TRICKLE_ACTIVITY = [
-  { id: 't1', actor: 'daniela.reyes', segments: ['liked ', { user: 'marcus.h' }, "'s photo."], time: '1m', thumbs: thumbs(29) },
-  { id: 't2', actor: 'julia.creates', segments: ['liked 2 photos.'], time: '1m', thumbs: thumbs(23, 19) },
-  { id: 't3', actor: 'nadia_s', segments: ['liked ', { user: 'daniela.reyes' }, "'s photo."], time: '1m', thumbs: thumbs(21) },
-  { id: 't4', actor: 'mike.film', segments: ['liked ', { user: 'city.frames' }, "'s photo."], time: '1m', thumbs: thumbs(28) },
-  { id: 't5', actor: 'outdoor.vibes', segments: ['liked 3 photos.'], time: '1m', thumbs: thumbs(36, 8, 47) },
+  { id: 't1', actor: 'daniela.reyes', segments: ['liked ', { user: 'marcus.h' }, "'s photo."], time: '1m', thumbs: friend('marcus.h', 29) },
+  { id: 't2', actor: 'julia.creates', segments: ['liked 2 photos.'], time: '1m', thumbs: lib('otntty', 0, 1) },
+  { id: 't3', actor: 'nadia_s', segments: ['liked ', { user: 'lucacappuccinodonofrio' }, "'s photo."], time: '1m', thumbs: lib('lucacappuccinodonofrio', 1) },
+  { id: 't4', actor: 'mike.film', segments: ['liked ', { user: 'sfmoma' }, "'s photo."], time: '1m', thumbs: lib('sfmoma', 0) },
+  { id: 't5', actor: 'outdoor.vibes', segments: ['liked 3 photos.'], time: '1m', thumbs: lib('thejoshuatreehouse', 0, 1, 2) },
 ]

@@ -75,7 +75,7 @@ export default function ExploreTab({ onOpenPost }) {
           {TRENDING_TAGS.map(t => (
             <button key={t.tag} className="tagCard">
               <div className="tagThumb">
-                <img src={exploreImage(t.image)} alt="" draggable={false} />
+                <img src={t.src || exploreImage(t.image)} alt="" draggable={false} />
               </div>
               <div className="tagLabel">{t.tag}</div>
             </button>

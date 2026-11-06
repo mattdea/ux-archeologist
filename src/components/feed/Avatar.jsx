@@ -5,7 +5,8 @@
 import { feedImage } from './feedData'
 
 export default function Avatar({ photo, color, initial, size = 32, className = '' }) {
-  const src = feedImage(photo)
+  // `photo` is a filename in /assets/feed/ or an already-resolved image URL
+  const src = feedImage(photo) || (typeof photo === 'string' && photo.includes('/') ? photo : null)
   const style = { width: size, height: size }
 
   if (src) {

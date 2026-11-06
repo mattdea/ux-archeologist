@@ -69,3 +69,15 @@ Project posts (the photos themselves show no UI).
 
 Still empty (fall back to color blocks): `post-warbyparker-frames.jpg`, and the logo avatars
 `avatar-airbnb.jpg`, `avatar-warbyparker.jpg`, `avatar-natgeo.jpg`, `avatar-humansofny.jpg`.
+
+## `library/` — real accounts from Instagram's blog, Jan–May 2016
+
+348 photos from posts on Instagram's official blog, with archive.org sources in
+`library/index.csv`. Loaded by `src/components/feed/libraryData.js`, which uses
+only the accounts listed in its `ACCOUNTS` table and only photos dated on or
+before 10 May 2016 (the day before the redesign). Excluded: later posts,
+celebrities, crisis photojournalism, and a minor (reasons in libraryData.js).
+Names and bios paraphrase each blog story; captions are written for the level.
+
+Used in: 8 posts woven into the home feed, the Explore grid and trending tags,
+real-account profiles, and activity thumbnails.
