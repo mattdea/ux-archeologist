@@ -1,7 +1,7 @@
 // src/test/feedData.test.js
 // The real-account photos are gitignored, so these tests only assert on what
 // holds with or without them: the invented friends, the ads, and the ordering.
-import { POSTS, FEED_ORDER, FEED_TIMES, getProfile } from '../components/feed/feedData'
+import { POSTS, FEED, FEED_ORDER, FEED_TIMES, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
 
 describe('home feed', () => {
   it('has one timestamp slot per FEED_ORDER entry', () => {
@@ -33,9 +33,22 @@ describe('home feed', () => {
 
   it('gives ads no timestamp and everything else one', () => {
     for (const p of POSTS) {
-      if (p.isSponsored) expect(p.timestamp).toBeUndefined()
+      if (p.isSponsored) expect(p.timestamp).toBeNull()
       else expect(p.timestamp).toMatch(/^\d+[mhdw]$/)
     }
+  })
+
+  it('has null exactly at the ad slots', () => {
+    FEED.forEach(([username, time]) => {
+      const ad = ['airbnb', 'warbyparker'].includes(username)
+      expect(time === null).toBe(ad)
+    })
+  })
+
+  it('names only real archive handles or base posts', () => {
+    const REAL = ['kimkardashian', 'selenagomez', 'cristiano', 'justinbieber', 'natgeo', 'kyliejenner', 'beyonce', 'gigihadid', 'therock', 'leomessi', 'nasa', 'kevinhart4real', 'instagram', 'badgalriri', 'humansofny', 'neymarjr', 'theellenshow', '9gag']
+    const BASE = ['marcus.h', 'julia.creates', 'sarah.moments', 'imani.brooks', 'airbnb', 'warbyparker']
+    for (const u of FEED_ORDER) expect([...REAL, ...BASE]).toContain(u)
   })
 })
 
@@ -48,5 +61,13 @@ describe("Imani's profile", () => {
     expect(profile.grid[1].image).toMatch(/imani\/grid-01/)
     expect(profile.grid[0].post.caption).toMatch(/my first editorial/)
     expect(profile.website).toBe('imanibrooks.com')
+  })
+})
+
+describe('activity rows', () => {
+  it('only name accounts that have a profile with a display name', () => {
+    const rows = [...FOLLOWING_ACTIVITY, ...YOU_ACTIVITY, ...TRICKLE_ACTIVITY]
+    const names = rows.flatMap(r => [r.actor, ...r.segments.filter(s => typeof s === 'object').map(s => s.user)])
+    for (const u of new Set(names)) expect(getProfile(u).name, u).not.toBe(u)
   })
 })

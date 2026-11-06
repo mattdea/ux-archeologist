@@ -1,9 +1,14 @@
 // src/components/feed/feedData.js
 // Content for the 2016 Instagram feed.
 //
-// Photos: drop files into /assets/feed/ and reference them by filename in
-// `photo` / `avatar`. Missing files fall back to the gradient / color below,
-// so the feed renders either way.
+// Photos come from three places:
+//   - assets/feed/archive (gitignored): the Wayback-archived real accounts
+//     (celebrities, brands, publishers) in the home feed, Explore and profiles.
+//   - assets/feed/library (gitignored): the blog-library accounts, which also
+//     supply the three library-backed friends, the ads and Explore.
+//   - assets/feed/imani (committed): Imani Brooks's set, so the buried friend
+//     post works on the public build.
+// A photo that is missing on this machine falls back to the post's gradient.
 
 import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
 import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile } from './archiveData'
@@ -189,24 +194,17 @@ BASE_POSTS.forEach(p => {
 // news (imani.brooks) under three celebrities and the second ad. Real
 // accounts show their newest archived post with its real caption and likes;
 // one that has no photos on this machine is skipped, so the public build
-// still gets the friends and the ads.
-export const FEED_ORDER = [
-  'kimkardashian', 'marcus.h', 'selenagomez', 'cristiano', 'airbnb',
-  'justinbieber', 'julia.creates', 'natgeo', 'kyliejenner', 'beyonce',
-  'gigihadid', 'therock', 'warbyparker', 'imani.brooks', 'leomessi',
-  'sarah.moments', 'nasa', 'kevinhart4real', 'instagram', 'badgalriri',
-  'humansofny', 'neymarjr', 'theellenshow', '9gag',
+// still gets the friends and the ads. 24 slots, each with the label its post
+// shows, written to read like a ranked feed (not sorted); ads carry null.
+export const FEED = [
+  ['kimkardashian', '2h'], ['marcus.h', '1h'], ['selenagomez', '5h'], ['cristiano', '3h'], ['airbnb', null],
+  ['justinbieber', '45m'], ['julia.creates', '8h'], ['natgeo', '2h'], ['kyliejenner', '4h'], ['beyonce', '11h'],
+  ['gigihadid', '6h'], ['therock', '1h'], ['warbyparker', null], ['imani.brooks', '14h'], ['leomessi', '9h'],
+  ['sarah.moments', '7h'], ['nasa', '3h'], ['kevinhart4real', '12h'], ['instagram', '5h'], ['badgalriri', '16h'],
+  ['humansofny', '8h'], ['neymarjr', '1d'], ['theellenshow', '10h'], ['9gag', '19h'],
 ]
-
-// One label per slot, written to read like a ranked feed (not sorted).
-// Ads carry no timestamp.
-export const FEED_TIMES = [
-  '2h', '1h', '5h', '3h', null,
-  '45m', '8h', '2h', '4h', '11h',
-  '6h', '1h', null, '14h', '9h',
-  '7h', '3h', '12h', '5h', '16h',
-  '8h', '1d', '10h', '19h',
-]
+export const FEED_ORDER = FEED.map(([username]) => username)
+export const FEED_TIMES = FEED.map(([, time]) => time)
 
 const FEED_COMMENTS = {
   natgeo: [{ username: 'marcus.h', text: 'incredible' }],
@@ -214,11 +212,10 @@ const FEED_COMMENTS = {
   kimkardashian: [{ username: 'mia.c', text: 'iconic' }],
 }
 
-export const POSTS = FEED_ORDER.flatMap((username, i) => {
+export const POSTS = FEED.flatMap(([username, timestamp]) => {
   const base = BASE_POSTS.find(p => p.username === username)
   const post = base || archivePost(username, 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
-  if (!post) return []
-  return [post.isSponsored ? post : { ...post, timestamp: FEED_TIMES[i] }]
+  return post ? [{ ...post, timestamp }] : []
 })
 
 // ── Who the player follows ──────────────────────────────────────────────────
@@ -228,11 +225,6 @@ export const FOLLOWING = new Set(POSTS.filter(p => !p.isSponsored).map(p => p.us
 
 export function isFollowing(username) {
   return FOLLOWING.has(username)
-}
-
-/** A friend's feed photo, by username (for activity thumbnails). */
-function friendPhoto(username) {
-  return FRIEND_PHOTO_LEAD(username)
 }
 
 // ── The player ─────────────────────────────────────────────────────────────
@@ -377,15 +369,14 @@ export function getProfile(username) {
     }
   }
 
-  const known = FEED_PROFILES[username] || EXPLORE_USERS.find(u => u.username === username) || {}
+  const known = FEED_PROFILES[username] || ACCOUNTS[username] || EXPLORE_USERS.find(u => u.username === username) || {}
   const feedPosts = POSTS.filter(p => p.username === username)
   const isBrand = feedPosts.some(p => p.isSponsored)
 
   // Invented accounts: a friend's own set first (lead photo is their feed
   // post), filled out with same-subject photos; an ad shows its one photo.
   const set = isBrand ? feedPosts.map(p => p.imageSrc).filter(Boolean) : friendSet(username)
-  const own = set
-  const grid = own.map((image, i) => {
+  const grid = set.map((image, i) => {
     const feedPost = feedPosts.find(p => p.imageSrc === image)
     const ph = hashString(username + i)
     return {
@@ -429,19 +420,19 @@ function lib(account, ...idx) {
   return idx.map(i => photos[i]).filter(Boolean)
 }
 
-/** The first of these accounts that exists with photos (archive, else library). */
+/** First handle with photos on this machine; else the last one, which must be an account with a profile in every build (a kept friend or a library account). */
 function pick(...handles) {
   return handles.find(h => isArchiveAccount(h) || isLibraryAccount(h)) || handles[handles.length - 1]
 }
 const NATURE = pick('natgeo', 'acacia.johnson')
 const PETS = pick('itsdougthepug', 'hummingbirdsxoxo')
 const SPACE = pick('nasa', 'sfmoma')
-const FOOD = pick('thefeedfeed', 'bakes.and.more')
+const FOOD = pick('thefeedfeed', 'sarah.moments')
 const HOME = pick('muradosmann', 'otntty')
 
 /** A friend's own feed photo, as a one-thumbnail list. */
 function friend(username) {
-  return [friendPhoto(username)].filter(Boolean)
+  return [FRIEND_PHOTO_LEAD(username)].filter(Boolean)
 }
 
 export const FOLLOWING_ACTIVITY = [
@@ -450,7 +441,7 @@ export const FOLLOWING_ACTIVITY = [
   { id: 'f3', actor: 'j.okafor', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib(NATURE, 1), ...lib(PETS, 1), ...lib(SPACE, 2)] },
   { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: PETS }, "'s photo."], time: '55m', thumbs: lib(PETS, 1) },
   { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: HOME }, '.'], time: '1h' },
-  { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: 'otntty' }, '.'], time: '5h' },
+  { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: SPACE }, '.'], time: '5h' },
   { id: 'f9', actor: 'mia.c', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib(SPACE, 1, 3), ...lib(HOME, 1), ...lib(NATURE, 3)] },
 ]
 
