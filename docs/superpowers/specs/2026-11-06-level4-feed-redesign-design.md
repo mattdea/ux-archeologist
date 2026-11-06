@@ -45,8 +45,7 @@ feed must stay *ranked*, not chronological. The discovery copy and the
   and one very patient landlord. housewarming soon 😭". Likes "847" and
   comment count 134 stay.
   Comments: j.okafor "CONGRATS!!! 🎉🎉" (unchanged), mia.c "@imani.brooks
-  housewarming when??" (handle updated). Bio: "new place, who dis 🏡\nOakland,
-  CA".
+  housewarming when??" (handle updated). Bio: "eight months of paint samples later 🏡\nOakland, CA".
 - Objective 1 becomes **"Find Imani's post — she has news"**. The Activity
   tab's "imani.brooks started following you" row (`y1`) is the trail. Objectives
   2 and 3 ("Learn more about a sponsored post", "Like a post") are unchanged.
