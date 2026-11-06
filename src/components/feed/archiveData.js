@@ -9,6 +9,7 @@
 //
 // Builds without the folder (the public site) get an empty ARCHIVE and the
 // level falls back to the blog library, then to plain color blocks.
+// No date cutoff: everything in the folder loads.
 
 const MANIFESTS = import.meta.glob('../../../assets/feed/archive/*/profile.json', {
   eager: true,
@@ -23,11 +24,10 @@ const FALLBACK_AVATARS = import.meta.glob('../../../assets/feed/profiles/avatars
   import: 'default',
 })
 
-// The level's "today": 6 pm Pacific on 10 May 2016, the last evening before
-// Instagram's 11 May redesign. Fixed, so adding accounts never moves the
-// clock. Posts after it are ignored; libraryData.js uses the same date as
-// its CUTOFF.
-export const LEVEL_NOW = Date.UTC(2016, 4, 11, 1, 0) / 1000
+// Dates are not filtered: every archived post with a photo loads, whatever
+// its real date. The feed and grids label posts by position (gridTime,
+// FEED_TIMES in feedData.js), not by real age, so the level always reads
+// as "today" however old the captures are.
 
 const photoUrl = (handle, file) => PHOTOS[`../../../assets/feed/archive/${handle}/${file}`] || null
 const fallbackAvatar = handle => FALLBACK_AVATARS[`../../../assets/feed/profiles/avatars/${handle}.jpg`] || null
@@ -40,7 +40,7 @@ export const ARCHIVE = Object.fromEntries(
     // the account's folder (for accounts whose photos were never archived).
     const posts = (m.posts || [])
       .map(p => ({ ...p, file: (p.file && photoUrl(handle, p.file)) ? p.file : (photoUrl(handle, `${p.code}.jpg`) ? `${p.code}.jpg` : null) }))
-      .filter(p => p.file && p.date <= LEVEL_NOW)
+      .filter(p => p.file)
       .map(p => ({
         code: p.code,
         date: p.date,
@@ -73,16 +73,13 @@ export function isArchiveAccount(handle) {
   return !!ARCHIVE[handle]
 }
 
-// "Now" for relative timestamps (3h, 6d, 2w) is ARCHIVE_NOW = LEVEL_NOW.
-export const ARCHIVE_NOW = LEVEL_NOW
+// Grid labels by position, so any grid reads newest-first: the top row is
+// hours and days, then days, then weeks.
+const GRID_LADDER = ['3h', '1d', '2d', '4d', '6d', '1w', '1w', '2w', '2w', '3w', '3w', '4w', '5w']
 
-/** 2016 short relative time: 3m, 5h, 2d, 3w. */
-export function relativeTime(dateSec, now = ARCHIVE_NOW) {
-  const s = Math.max(60, now - dateSec)
-  if (s < 3600) return `${Math.floor(s / 60)}m`
-  if (s < 86400) return `${Math.floor(s / 3600)}h`
-  if (s < 7 * 86400) return `${Math.floor(s / 86400)}d`
-  return `${Math.floor(s / (7 * 86400))}w`
+/** 2016 short timestamp for the post at grid index i (0 = newest). */
+export function gridTime(i) {
+  return GRID_LADDER[i] || `${i - 7}w`
 }
 
 const fmt = n => Number(n).toLocaleString('en-US')
@@ -113,7 +110,7 @@ export function archivePost(handle, index = 0, overrides = {}) {
     caption: p.caption,
     commentCount: p.comments,
     comments: [],
-    timestamp: relativeTime(p.date),
+    timestamp: gridTime(index),
     isVideo: p.isVideo,
     ...overrides,
   }
