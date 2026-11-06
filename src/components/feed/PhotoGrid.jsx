@@ -15,7 +15,7 @@ export default function PhotoGrid({ tiles, onOpenPost }) {
           key={tile.id}
           className="gridTile"
           style={tile.image ? undefined : { background: tile.gradient }}
-          onClick={() => onOpenPost && onOpenPost(tile.post)}
+          onClick={() => onOpenPost && tile.post && onOpenPost(tile.post)}
           aria-label={`Photo by ${tile.post?.username || 'user'}`}
         >
           {tile.image && <img src={tile.image} alt="" loading="lazy" draggable={false} />}

@@ -362,7 +362,6 @@ export const TRENDING_TAGS = [
   { tag: '#mothersday', account: 'soraceballos' },
 ]
   .map(t => ({ tag: t.tag, src: sourcePhoto(t.account, t.post) }))
-  .filter(t => t.src)
 
 const EXPLORE_USERS = [
   { username: 'sunset.chaser', name: 'Kelsey Moran', color: '#e67e22', bio: 'chasing light. SF ↔ LA' },
@@ -400,6 +399,11 @@ const EXPLORE_CAPTIONS = [
 /** The n-th explore tile (0-based). Infinite: cycles the library, taking
     each next tile from a different account. */
 export function exploreTile(n) {
+  // Public builds ship without the photo library: plain tiles instead.
+  if (!EXPLORE_ORDER.length) {
+    const hues = ['#d8d2c8', '#c9d3d8', '#d6cfd9', '#cfd8cc', '#ddd3c6', '#c8ccd6']
+    return { id: 'explore-' + n, image: null, gradient: hues[n % hues.length], isVideo: false, post: null }
+  }
   const item = EXPLORE_ORDER[n % EXPLORE_ORDER.length]
   // Video tiles already carry Instagram's camcorder badge in the image.
   const post = isLibraryAccount(item.account)
