@@ -368,12 +368,12 @@ Accounts come from three sources, in order of preference, each falling back to t
 2. `assets/feed/library/` — real accounts and photos from Instagram's own blog, Jan–May 2016, each photo owned by exactly one account; read by `libraryData.js`
 3. Plain color blocks, when neither folder is present
 
-**Content date:** the level's "today" is 6 pm Pacific on 10 May 2016, the last evening before the 11 May redesign (`LEVEL_NOW` in `archiveData.js`). It is fixed, so adding accounts never moves the clock. Nothing dated after it is shown: archived posts past it are dropped, and library photos past it are never loaded (`CUTOFF` in `libraryData.js`). Real posts show their true age against that evening; the newest recovered photo is from 4 May, so real accounts read 6 days old or more.
+**Dates:** nothing is filtered by date. Every photo on disk loads, and timestamps are labels by position: the feed's come from the hand-ranked `FEED` list in `feedData.js` (one `[username, timestamp]` pair per slot; ads carry `null`), and profile grids use `gridTime(index)` in `archiveData.js` (3h, 1d, 2d … then weeks), so every surface reads as today regardless of when a capture was made.
 
-The 12 invented friends (Marcus, Julia, Daniela with the house, two ads…) carry the objectives and post from reserved photo sets that match their subject. All real photos and account data are gitignored and live only on the author's machine; the public site and repository build without them. See `assets/feed/README.md`.
+The home feed is 24 posts in a hand-ranked order (`FEED` in `feedData.js`): 18 recognisable real accounts, four invented friends (marcus.h, julia.creates, sarah.moments and imani.brooks, whose post is the target), and two ads. Imani's photos are Unsplash (free licence) and committed in `assets/feed/imani/`; all other real photos and account data are gitignored and live only on the author's machine. See `assets/feed/README.md`.
 
 **Objectives (3, independent):**
-1. Find your friend's post (daniela.reyes's "we bought a house!!", buried about 20 posts down)
+1. Find Imani's post — she has news (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)
 2. Learn more about a sponsored post (tap Sponsored, LEARN MORE or SHOP NOW)
 3. Like a post
 
