@@ -343,7 +343,8 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 - Dark tab bar `#26272b`, selected tab a slightly lighter tile `#313236`, camera tab in header blue
 - Body text Helvetica Neue 13pt; nav titles, FOLLOWING / YOU toggle, section labels and the Explore hero in Proxima Nova (Montserrat fallback, loaded in `index.html`)
 - Links, usernames and likes in header blue; `#4090db` for the selected grid icon, Follow button and empty-state arrow
-- Laid out at the 4-inch size (320×568pt) and scaled ×1.171875 to fill the iPhone 6 screen, as the iPhone 6 Display Zoom setting did (`.feedZoom`), so type reads at the size of the 320pt reference screenshots
+- Laid out at the 4-inch size (320×568pt) and scaled ×1.18125 to fill the iPhone 6 screen, as the iPhone 6 Display Zoom setting did (`.feedZoom`), so type reads at the size of the 320pt reference screenshots
+- Overscan, never flush edges: the app is drawn 1.5px past the glass on every side and the screen clips it. The unit sits at fractional pixels, so an app edge exactly on the glass edge leaves a part-covered pixel where lower layers show as a light hairline (this happened at the tab bar). Don't size the app to exactly 375×667
 - Reference screenshots: `docs/reference/`
 
 **Screens:**

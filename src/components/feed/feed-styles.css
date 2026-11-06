@@ -24,13 +24,22 @@
 /* ─── App shell ──────────────────────────────────────────────────────────── */
 /* The app lays out at the 4-inch iPhone size, 320 × 568pt, the size most of the
    reference screenshots were taken at. Inside the iPhone 6 frame, .feedZoom
-   scales it by 375 / 320 to fill the 375 × 667 screen, the way the iPhone 6's
-   Display Zoom setting did. Text, icons, and bars grow together. */
+   scales it by about 375 / 320 to fill the 375 × 667 screen, the way the
+   iPhone 6's Display Zoom setting did. Text, icons, and bars grow together. */
 
+/* Overscan: the app is drawn 1.5px past the glass on every side and the
+   screen's overflow clips it, like a real display's edge under the bezel.
+   The unit is scaled to fit the viewport, so the glass edge falls on a
+   fraction of a device pixel. If an app edge sat exactly on it, that pixel
+   would be only partly covered and whatever is under it would show as a
+   hairline: the compositor lets the white screen layers leak a pixel under
+   the tab bar, and the bar's edge pixel showed it. With overscan the edge
+   pixel is fully covered by the app and cut only once, by the glass. Never
+   size the app to exactly 375 × 667 again. */
 .feedZoom {
   width: 320px;
-  height: 569.1733px;          /* 667 / 1.171875 */
-  transform: scale(1.171875);  /* 375 / 320 */
+  height: 567.1958px;          /* (667 + 3) / 1.18125 */
+  transform: translate(-1.5px, -1.5px) scale(1.18125);  /* (375 + 3) / 320 */
   transform-origin: top left;
 }
 
