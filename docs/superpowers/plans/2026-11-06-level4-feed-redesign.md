@@ -32,42 +32,53 @@
 ### Task 1: Imani's photos
 
 **Files:**
-- Create: `assets/feed/imani/avatar.jpg`, `assets/feed/imani/post.jpg`, `assets/feed/imani/grid-1.jpg`, `assets/feed/imani/grid-2.jpg`, `assets/feed/imani/grid-3.jpg`
+- Create: `assets/feed/imani/avatar.jpg`, `assets/feed/imani/post.jpg`, `assets/feed/imani/grid-01.jpg` … `assets/feed/imani/grid-20.jpg`
 
-The two chosen photos are already downloaded at 1080px in the session scratchpad (`…/scratchpad/unsplash/XQBcBGWvxF4.jpg` = avatar source, 1080×1620; `…/scratchpad/unsplash/Hp2PFbBdg4w.jpg` = post source, 1080×752). If the scratchpad is gone, re-download with `curl -sL -o <id>.jpg "https://unsplash.com/photos/<id>/download?force=true&w=1080"` into a fresh empty directory (plain curl, no custom User-Agent).
+Sources:
+- The user saved 22 full-size Unsplash downloads by @aliounepic in
+  `assets/feed/profiles/imani brooks/` (note the space in the folder name;
+  quote the path). Files are named `alioune-seye-<id>-unsplash.jpg`.
+- The post is `alioune-seye-Hp2PFbBdg4w-unsplash.jpg` (3000×2090, woman in a
+  checkered dress on a sofa in a red room).
+- Leave out `alioune-seye-fII6JlDwkxI-unsplash.jpg` (a portrait of children).
+- The avatar photo (Unsplash id `XQBcBGWvxF4`, a smiling woman with striped
+  shadows, 1080×1620) is **not** in that folder. It is in the session
+  scratchpad at `/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad/unsplash/XQBcBGWvxF4.jpg`.
+  If that file is gone, re-download it into a fresh empty directory with
+  plain curl (no custom User-Agent):
+  `curl -sL -o XQBcBGWvxF4.jpg "https://unsplash.com/photos/XQBcBGWvxF4/download?force=true&w=1080"`.
 
-- [ ] **Step 1: Pick three more photos from @aliounepic**
+- [ ] **Step 1: Crop and save into the repo**
 
-Open https://unsplash.com/@aliounepic in the browser pane (`navigate`), then `get_page_text` / `read_page` to list photo links (`/photos/<slug>-<id>`). Pick three that read as one person's lifestyle account next to the red-room post: interiors, objects, a self-portrait at most. Avoid photos whose subject is someone else's face. Note their 11-character ids (the part after the last `-` in the slug).
-
-If the browser pane returns "Policy check temporarily unavailable", stop and ask the user to name three photos; do not scrape the page with a spoofed User-Agent.
-
-- [ ] **Step 2: Download them**
-
-```bash
-D=/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad/unsplash
-mkdir -p "$D" && cd "$D"
-for id in <ID1> <ID2> <ID3>; do curl -sL -o "$id.jpg" "https://unsplash.com/photos/$id/download?force=true&w=1080"; done
-file *.jpg
-```
-Expected: five JPEGs listed, each `JPEG image data … 1080x…`.
-
-- [ ] **Step 3: Crop and save into the repo**
-
-Feed photos are square; the avatar is a square crop on the face (the portrait is 1080×1620, face in the upper-middle third).
+Feed photos are square. Grid photos are centre-cropped; the avatar is cropped on the face (upper-middle of the portrait).
 
 ```bash
 cd /Users/matthewdea/Code/ux-archeologist
 mkdir -p assets/feed/imani
-S=/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad/unsplash
-magick "$S/XQBcBGWvxF4.jpg" -gravity north -crop 1080x1080+0+180 +repage -resize 320x320 -quality 85 assets/feed/imani/avatar.jpg
-magick "$S/Hp2PFbBdg4w.jpg" -gravity center -crop 752x752+0+0 +repage -resize 750x750 -quality 85 assets/feed/imani/post.jpg
-i=1; for id in <ID1> <ID2> <ID3>; do magick "$S/$id.jpg" -gravity center -extent 1:1 -resize 750x750 -quality 85 "assets/feed/imani/grid-$i.jpg"; i=$((i+1)); done
-magick identify assets/feed/imani/*.jpg
+SRC="assets/feed/profiles/imani brooks"
+AV=/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad/unsplash/XQBcBGWvxF4.jpg
+magick "$AV" -gravity north -crop 1080x1080+0+180 +repage -resize 320x320 -quality 85 assets/feed/imani/avatar.jpg
+magick "$SRC/alioune-seye-Hp2PFbBdg4w-unsplash.jpg" -resize 750x750^ -gravity center -extent 750x750 -quality 85 assets/feed/imani/post.jpg
+i=0
+for f in "$SRC"/alioune-seye-*-unsplash.jpg; do
+  case "$f" in *Hp2PFbBdg4w*|*fII6JlDwkxI*) continue;; esac
+  i=$((i+1))
+  magick "$f" -resize 750x750^ -gravity center -extent 750x750 -quality 85 "$(printf 'assets/feed/imani/grid-%02d.jpg' $i)"
+done
+echo "grid photos: $i"
+magick identify assets/feed/imani/*.jpg | awk '{print $1, $3}'
 ```
-Expected: `avatar.jpg JPEG 320x320`, the other four `750x750`. Open `assets/feed/imani/avatar.jpg` and `post.jpg` with the Read tool and check the avatar is centred on the face and the post keeps the woman and the painting (adjust the `+0+180` offset or the post's `-gravity` if not).
+Expected: `grid photos: 20`; `avatar.jpg 320x320`; `post.jpg` and `grid-01.jpg` … `grid-20.jpg` all `750x750`; 22 files in total.
 
-- [ ] **Step 4: Confirm they are not gitignored, then commit**
+- [ ] **Step 2: Check the crops**
+
+```bash
+S=/private/tmp/claude-501/-Users-matthewdea--claude-spares-spare-W9PGUo/f845af63-498c-4809-a0f9-8d52541b9e72/scratchpad
+magick montage -font /System/Library/Fonts/Supplemental/Arial.ttf -label '%f' assets/feed/imani/*.jpg -tile 6x -geometry 200x200+4+4 -pointsize 14 "$S/imani_crops.jpg"
+```
+Open `$S/imani_crops.jpg` with the Read tool. The avatar must be centred on the face (adjust the `+0+180` offset if not); the post must keep the woman and the painting above her; no grid photo may have its subject's head cut off. For any tall portrait that does, re-run that one file with `-gravity north` instead of `center` and check again.
+
+- [ ] **Step 3: Confirm they are not gitignored, then commit**
 
 ```bash
 git check-ignore -v assets/feed/imani/post.jpg; echo "exit $?"
@@ -313,12 +324,14 @@ describe('home feed', () => {
 })
 
 describe("Imani's profile", () => {
-  it('is exactly her four committed photos', () => {
+  it('is exactly her 21 committed photos, post first', () => {
     const profile = getProfile('imani.brooks')
     expect(profile.name).toBe('Imani Brooks')
-    expect(profile.grid).toHaveLength(4)
-    expect(profile.grid.map(t => t.image)).toEqual(expect.arrayContaining([expect.stringMatching(/imani\/post/)]))
-    expect(profile.grid[0].post.caption).toMatch(/living room is finally DONE/)
+    expect(profile.grid).toHaveLength(21)
+    expect(profile.grid[0].image).toMatch(/imani\/post/)
+    expect(profile.grid[1].image).toMatch(/imani\/grid-01/)
+    expect(profile.grid[0].post.caption).toMatch(/my first editorial/)
+    expect(profile.website).toBe('imanibrooks.com')
   })
 })
 ```
@@ -337,11 +350,10 @@ At the top of `src/components/feed/feedData.js`, after the two existing imports 
 // works on the public site that ships without the gitignored photo folders.
 import imaniAvatar from '../../../assets/feed/imani/avatar.jpg'
 import imaniPost from '../../../assets/feed/imani/post.jpg'
-import imaniGrid1 from '../../../assets/feed/imani/grid-1.jpg'
-import imaniGrid2 from '../../../assets/feed/imani/grid-2.jpg'
-import imaniGrid3 from '../../../assets/feed/imani/grid-3.jpg'
+const IMANI_GRID = import.meta.glob('../../../assets/feed/imani/grid-*.jpg', { eager: true, import: 'default' })
 
-const IMANI_PHOTOS = [imaniPost, imaniGrid1, imaniGrid2, imaniGrid3]
+// Her post first, then grid-01 … grid-20 in file order.
+const IMANI_PHOTOS = [imaniPost, ...Object.keys(IMANI_GRID).sort().map(k => IMANI_GRID[k])]
 
 /** A friend's photos, lead first: Imani's committed set, else the library set. */
 const friendSet = username => username === 'imani.brooks' ? IMANI_PHOTOS : friendPhotos(username)
@@ -453,11 +465,11 @@ const BASE_POSTS = [
     avatar: imaniAvatar,
     imageGradient: 'linear-gradient(135deg, #b23a2e 0%, #7a1f1a 100%)',
     likes: '847',
-    caption: 'the living room is finally DONE 🏡 eight months, three coats of red paint, and one very patient landlord. housewarming soon 😭',
+    caption: "it's OUT 🎉 my first editorial, shot in Dakar last spring. eight months of work for twelve pages 😭 link in bio",
     commentCount: 134,
     comments: [
       { username: 'j.okafor', text: 'CONGRATS!!! 🎉🎉' },
-      { username: 'mia.c', text: '@imani.brooks housewarming when??' },
+      { username: 'mia.c', text: '@imani.brooks framing every page' },
     ],
     avatarColor: '#b23a2e',
     initial: 'I',
@@ -518,10 +530,10 @@ Remove `libraryPhotos` and `libraryPost`'s feed use only if nothing else needs t
 In `FEED_PROFILES`, delete the entries for `alex.wanderer`, `mike.film`, `coffee.culture`, `outdoor.vibes`, `studio.light`, `city.frames`, `bakes.and.more`, `daniela.reyes`, `travel.tales`, `morning.run`, `lens.folk`, `home.spaces`, `pnw.shots`, and add:
 
 ```js
-  'imani.brooks': { name: 'Imani Brooks', bio: 'eight months of paint samples later 🏡\nOakland, CA' },
+  'imani.brooks': { name: 'Imani Brooks', bio: 'portraits + fashion 📷\nDakar 🇸🇳 ↔ Oakland\nnew work + bookings: link below', website: 'imanibrooks.com' },
 ```
 
-Keep `mia.c`'s bio ("housewarming committee chair, apparently") — it still lands.
+Change `mia.c`'s bio from `'housewarming committee chair, apparently'` to `'resident hype woman'` (the housewarming joke no longer lands).
 
 In `FOLLOWING_ACTIVITY`, replace the array with:
 
@@ -555,7 +567,7 @@ The `friend()` helper calls `friendPhoto(username)`, which calls `FRIEND_PHOTO_L
 - [ ] **Step 7: Run the tests**
 
 Run: `npx vitest run`
-Expected: all pass, including the 6 new feedData tests. If `getProfile('imani.brooks').grid` has length 1 instead of 4, `friendSet` is not being used in `getProfile` (Step 3).
+Expected: all pass, including the 6 new feedData tests. If `getProfile('imani.brooks').grid` has length 1 instead of 21, `friendSet` is not being used in `getProfile` (Step 3).
 
 Run: `grep -n "daniela\|REAL_FEED\|FOLLOWED_REAL\|alex.wanderer\|mike.film\|outdoor.vibes\|city.frames\|lens.folk\|bakes.and.more\|travel.tales\|studio.light" src/components/feed/feedData.js`
 Expected: no output.
@@ -626,7 +638,7 @@ The home feed is 24 posts in a hand-ranked order (`FEED_ORDER`): 18 recognisable
 Replace objective 1 (line 376) with:
 
 ```markdown
-1. Find Imani's post — she has news (imani.brooks's "the living room is finally DONE", slot 14, under three celebrities and the second ad)
+1. Find Imani's post — she has news (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)
 ```
 
 - [ ] **Step 2: README.md**
@@ -657,8 +669,9 @@ Replace the **Invented friends** section (lines 69–77) with:
 Four invented accounts carry the level's objectives. marcus.h, julia.creates
 and sarah.moments post from reserved library sets (`FRIEND_SETS` in
 `libraryData.js`). imani.brooks, whose post is the one the player has to
-find, uses five photos by @aliounepic on Unsplash (Unsplash License), the one
-committed folder here: `imani/`.
+find, is a portrait and fashion photographer whose 21 photos (plus avatar) are
+by @aliounepic on Unsplash (Unsplash License): the one committed folder here,
+`imani/`. The full-size originals sit in `profiles/imani brooks/` (gitignored).
 ```
 
 - [ ] **Step 3: Delete stale avatars (local only)**
@@ -707,7 +720,7 @@ Scroll the feed (`computer` scroll on the phone screen) until Imani's red-room p
 
 - [ ] **Step 4: Check profiles and activity**
 
-Tap `imani.brooks` → profile shows name "Imani Brooks", 4 posts, grid labels `3h, 1d, 2d, 4d` when a tile is opened. Tap `kimkardashian` → grid opens; first tile reads `3h`. Open the Activity tab → "imani.brooks started following you" in the You list; no row names a removed friend.
+Tap `imani.brooks` → profile shows name "Imani Brooks", 21 posts, the bio's three lines and website, grid labels `3h, 1d, 2d, 4d` when the first tiles are opened. Tap `kimkardashian` → grid opens; first tile reads `3h`. Open the Activity tab → "imani.brooks started following you" in the You list; no row names a removed friend.
 
 - [ ] **Step 5: Record proof**
 

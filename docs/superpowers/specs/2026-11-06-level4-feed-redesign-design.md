@@ -33,19 +33,27 @@ feed must stay *ranked*, not chronological. The discovery copy and the
   - Target post: [Hp2PFbBdg4w](https://unsplash.com/photos/woman-in-checkered-dress-on-sofa-Hp2PFbBdg4w)
     (woman in a checkered dress on a sofa in a red room), cropped to the
     feed's square, saved as `assets/feed/imani/post.jpg`.
-  - Grid: the post plus three more photos from the same account, chosen during
-    implementation for a consistent personal-account look (interiors, portraits,
-    no other people's faces as the subject where avoidable). Saved as
-    `assets/feed/imani/grid-1.jpg` … `grid-3.jpg`. Her grid is exactly these
-    four; no topic top-up from library pools (`FRIEND_SETS` entry gets no
-    `topic` and no `from`; her photos are listed explicitly).
-- The news: she finished doing up her apartment, and the photo is the reveal
-  (a room this styled is months of work, not a first night). Caption:
-  "the living room is finally DONE 🏡 eight months, three coats of red paint,
-  and one very patient landlord. housewarming soon 😭". Likes "847" and
-  comment count 134 stay.
+  - Grid: the post plus every other photo the user saved from the account in
+    `assets/feed/profiles/imani brooks/` (22 full-size Unsplash downloads),
+    except `alioune-seye-fII6JlDwkxI-unsplash.jpg`, a portrait of children,
+    which the level leaves out as it does every photo of a minor. That is 20
+    more photos: Senegalese portraits, fashion work, Dakar beaches and
+    streets. Saved square as `assets/feed/imani/grid-01.jpg` …
+    `grid-20.jpg`, 750 px. Her grid is exactly these 21; no topic top-up from
+    library pools (she has no `FRIEND_SETS` entry; `feedData.js` imports her
+    photos directly).
+- Who she is: the photos are a working photographer's portfolio, so Imani is
+  a portrait and fashion photographer between Dakar and the Bay Area. Bio, in
+  2016 style (short lines, emoji, a location, a link line):
+  "portraits + fashion 📷\nDakar 🇸🇳 ↔ Oakland\nnew work + bookings: link below",
+  website `imanibrooks.com`.
+- The news: her first magazine editorial is out, and the red-room photo is
+  from it. Caption: "it's OUT 🎉 my first editorial, shot in Dakar last
+  spring. eight months of work for twelve pages 😭 link in bio". Likes "847"
+  and comment count 134 stay.
   Comments: j.okafor "CONGRATS!!! 🎉🎉" (unchanged), mia.c "@imani.brooks
-  housewarming when??" (handle updated). Bio: "eight months of paint samples later 🏡\nOakland, CA".
+  framing every page". mia.c's own bio changes from "housewarming committee
+  chair, apparently" to "resident hype woman".
 - Objective 1 becomes **"Find Imani's post — she has news"**. The Activity
   tab's "imani.brooks started following you" row (`y1`) is the trail. Objectives
   2 and 3 ("Learn more about a sponsored post", "Like a post") are unchanged.
