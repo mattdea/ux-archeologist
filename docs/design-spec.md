@@ -9,6 +9,20 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 **Duration:** 5–8 minutes total, ~60–90 seconds per level
 **Audience:** Dual — works as a portfolio case study and a standalone shareable experience
 
+### Progress (7 Nov 2026)
+
+All six levels are complete and playable; nothing is gated. Recent work:
+- **Layout:** artifacts are sized by `useArtifactFit` around the HUD corners (up to 1.35×, always horizontally centred) instead of fixed 180px bands — devices are ~1.3–1.6× larger on a 14" laptop than before.
+- **Level 4:** objectives are now *Like Imani's post* / *Learn more about a sponsored post* / *Follow someone new*; every reload or pull-to-refresh reshuffles the feed (friends and real accounts trade slots, friends show a different photo, Imani lands in slots 10–18); the Airbnb ad carries the "Don't Go There. Live There." poster type and opens a rebuilt 2016 Airbnb mobile homepage set in Circular Air; the player (samtaylor) has an avatar and one post; the Activity tab's Following list only shows people the player follows.
+
+Open items, roughly in priority order:
+1. Check the deployed Netlify site actually serves the ~160 MB of committed photos.
+2. A "best experienced on a computer" notice for phone-width screens (small screens are not a target).
+3. The objectives list is ~330px wide, which limits how large the Mac can be while centred; a narrower tracker would help every level.
+4. The Circular Air font files are committed to the public repo (licence decision pending).
+5. The snowy-cabin library photo is reserved for the Airbnb ad but no longer used by it.
+6. `src/test/DesktopScene.test.jsx` has one pre-existing failing drag-drop test (Level 0).
+
 ---
 
 ## Routes
