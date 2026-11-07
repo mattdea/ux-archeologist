@@ -552,14 +552,16 @@ function friend(username) {
   return [FRIEND_PHOTO_LEAD(username)].filter(Boolean)
 }
 
+// Following tab: only people the player follows (ActivityTab also hides a
+// row once its actor is unfollowed).
 export const FOLLOWING_ACTIVITY = [
   { id: 'f1', actor: 'marcus.h', segments: ['liked ', { user: 'julia.creates' }, "'s photo."], time: '12m', thumbs: friend('julia.creates') },
   { id: 'f2', actor: 'imani.brooks', segments: ['started following ', { user: 'j.okafor' }, ', ', { user: 'mia.c' }, ' and 3 others.'], time: '26m' },
-  { id: 'f3', actor: 'j.okafor', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib(NATURE, 1), ...lib(PETS, 1), ...lib(SPACE, 2)] },
-  { id: 'f4', actor: 'nadia_s', segments: ['liked ', { user: PETS }, "'s photo."], time: '55m', thumbs: lib(PETS, 1) },
+  { id: 'f3', actor: 'sarah.moments', segments: ['liked 3 photos.'], time: '41m', thumbs: [...lib(NATURE, 1), ...lib(PETS, 1), ...lib(SPACE, 2)] },
+  { id: 'f4', actor: 'imani.brooks', segments: ['liked ', { user: PETS }, "'s photo."], time: '55m', thumbs: lib(PETS, 1) },
   { id: 'f5', actor: 'sarah.moments', segments: ['started following ', { user: HOME }, '.'], time: '1h' },
   { id: 'f8', actor: 'julia.creates', segments: ['started following ', { user: SPACE }, '.'], time: '5h' },
-  { id: 'f9', actor: 'mia.c', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib(SPACE, 1, 3), ...lib(HOME, 1), ...lib(NATURE, 3)] },
+  { id: 'f9', actor: 'marcus.h', segments: ['liked 4 photos.'], time: '6h', thumbs: [...lib(SPACE, 1, 3), ...lib(HOME, 1), ...lib(NATURE, 3)] },
 ]
 
 export const YOU_ACTIVITY = [
@@ -571,6 +573,6 @@ export const YOU_ACTIVITY = [
 export const TRICKLE_ACTIVITY = [
   { id: 't1', actor: 'imani.brooks', segments: ['liked ', { user: 'marcus.h' }, "'s photo."], time: '1m', thumbs: friend('marcus.h') },
   { id: 't2', actor: 'julia.creates', segments: ['liked 2 photos.'], time: '1m', thumbs: lib('otntty', 0, 1) },
-  { id: 't3', actor: 'nadia_s', segments: ['liked ', { user: FOOD }, "'s photo."], time: '1m', thumbs: lib(FOOD, 1) },
-  { id: 't4', actor: 'mia.c', segments: ['liked ', { user: SPACE }, "'s photo."], time: '1m', thumbs: lib(SPACE, 0) },
+  { id: 't3', actor: 'sarah.moments', segments: ['liked ', { user: FOOD }, "'s photo."], time: '1m', thumbs: lib(FOOD, 1) },
+  { id: 't4', actor: 'marcus.h', segments: ['liked ', { user: SPACE }, "'s photo."], time: '1m', thumbs: lib(SPACE, 0) },
 ]

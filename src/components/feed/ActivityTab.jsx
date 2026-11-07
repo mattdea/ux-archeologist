@@ -23,8 +23,9 @@ function Segments({ segments, onOpenProfile }) {
   )
 }
 
-function Row({ row, onOpenProfile }) {
+function Row({ row, onOpenProfile, onlyFollowed }) {
   const followed = useIsFollowing(row.actor)
+  if (onlyFollowed && !followed) return null
   const profile = getProfile(row.actor)
   const thumbs = row.thumbs || []
   const single = thumbs.length === 1
@@ -87,7 +88,7 @@ export default function ActivityTab({ following, you, onOpenProfile }) {
         </button>
       </div>
       <div className="feedScroll">
-        {rows.map(row => <Row key={row.id} row={row} onOpenProfile={onOpenProfile} />)}
+        {rows.map(row => <Row key={row.id} row={row} onOpenProfile={onOpenProfile} onlyFollowed={mode === 'following'} />)}
         {mode === 'you' && (
           <div className="activityEmpty">
             <ActivityEmptyIcon />
