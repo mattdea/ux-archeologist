@@ -250,8 +250,9 @@ function shuffle(list, r) {
  *   - ads and the slot time labels stay put.
  *   posts    — the feed, in slot order
  *   page(n)  — the n-th page of older posts (n ≥ 1): each real account's
- *              next post after the ones already shown, labelled gridTime by
- *              archivePost; [] once every account has run out
+ *              next post after the ones already shown, in a fresh order per
+ *              page, labelled gridTime by archivePost; [] once every account
+ *              has run out
  */
 export function buildFeed(seed = 0) {
   const users = FEED.map(([u]) => u)
@@ -290,8 +291,34 @@ export function buildFeed(seed = 0) {
     const post = archivePost(username, start[username] || 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
     return post ? [{ ...post, timestamp }] : []
   })
-  const page = n => users.flatMap(username => {
-    if (BASE_POSTS.some(p => p.username === username)) return []
+  // Older pages. Each one deals the real accounts that still have posts in a
+  // fresh order (seeded, so a given feed always pages the same way), so a
+  // page never mirrors the screen above it. It also never opens with the
+  // account that closed the page above, nor closes on the same account.
+  const real = users.filter(u => !BASE_POSTS.some(p => p.username === u))
+  const shownOrder = [real.filter(u => posts.some(p => p.username === u))]
+  const orderFor = n => {
+    while (shownOrder.length <= n) {
+      const k = shownOrder.length
+      const prevLast = shownOrder[k - 1].at(-1)
+      const pr = rng((Math.imul(seed ^ 0x9e3779b9, 31) + Math.imul(k, 0x85ebca6b)) >>> 0)
+      const order = shuffle(real.filter(u => archivePost(u, (start[u] || 0) + k)), pr)
+      const last = order.length - 1
+      if (last >= 2) {
+        if (order[last] === prevLast) {
+          const j = Math.floor(pr() * last)
+          ;[order[last], order[j]] = [order[j], order[last]]
+        }
+        if (order[0] === prevLast) {
+          const j = 1 + Math.floor(pr() * (last - 1))
+          ;[order[0], order[j]] = [order[j], order[0]]
+        }
+      }
+      shownOrder.push(order)
+    }
+    return shownOrder[n]
+  }
+  const page = n => orderFor(n).flatMap(username => {
     const post = archivePost(username, (start[username] || 0) + n)
     return post ? [post] : []
   })

@@ -46,14 +46,31 @@ describe('hasProfile', () => {
 })
 
 describe('older feed pages', () => {
-  it('hold only real accounts, in FEED order, labelled as one older day', () => {
+  it('hold only real accounts, labelled as one older day', () => {
     const friendsAndAds = ['imani.brooks', 'marcus.h', 'julia.creates', 'sarah.moments', 'airbnb', 'warbyparker']
     const page = feedPage(1)
-    const names = page.map(p => p.username)
-    expect(names).toEqual(FEED_ORDER.filter(u => names.includes(u)))
     for (const p of page) {
       expect(friendsAndAds).not.toContain(p.username)
       expect(p.timestamp).toBe('1d')
+    }
+  })
+  it('come in a fresh order each time, never echoing the page above', () => {
+    for (const seed of [0, 7, 99, 12345]) {
+      const f = buildFeed(seed)
+      const pages = [f.posts.filter(p => !p.isSponsored && !p.isTarget), f.page(1), f.page(2), f.page(3)]
+        .map(list => list.map(p => p.username))
+      for (let k = 1; k < pages.length; k++) {
+        const prev = pages[k - 1], cur = pages[k]
+        if (cur.length < 3) continue
+        // Not the order of the page above (among the accounts both show)
+        const shared = prev.filter(u => cur.includes(u))
+        expect(cur.filter(u => shared.includes(u))).not.toEqual(shared)
+        // No repeat across the boundary, and a different closing account
+        expect(cur[0]).not.toBe(prev.at(-1))
+        expect(cur.at(-1)).not.toBe(prev.at(-1))
+      }
+      // Same feed pages the same way every time (seeded)
+      expect(buildFeed(seed).page(2).map(p => p.id)).toEqual(f.page(2).map(p => p.id))
     }
   })
   it('run out eventually', () => {
