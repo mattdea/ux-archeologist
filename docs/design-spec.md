@@ -12,7 +12,7 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 ### Progress (7 Nov 2026)
 
 All six levels are complete and playable; nothing is gated. Recent work:
-- **Layout:** artifacts are sized by `useArtifactFit` around the HUD corners (up to 1.35×, always horizontally centred) instead of fixed 180px bands — devices are ~1.3–1.6× larger on a 14" laptop than before.
+- **Layout:** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, vertically centred in the free region) instead of fixed 180px bands — devices are ~1.3–1.6× larger on a 14" laptop than before.
 - **Level 4:** objectives are now *Like Imani's post* / *Learn more about a sponsored post* / *Follow someone new*; every reload or pull-to-refresh reshuffles the feed (friends and real accounts trade slots, friends show a different photo, Imani lands in slots 10–18); the Airbnb ad carries the "Don't Go There. Live There." poster type and opens a rebuilt 2016 Airbnb mobile homepage set in Circular Air; the player (samtaylor) has an avatar and one post; the Activity tab's Following list only shows people the player follows.
 
 Open items, roughly in priority order:
@@ -116,7 +116,7 @@ src/shared/SharedLayout.jsx
   Contexts: useArtifactReady(), useSetContinue(), useFadeNavigate()
 
 src/hooks/
-  useArtifactFit.js       fits the artifact around the HUD corners: returns { scale, left, top } (cap 1.35×)
+  useArtifactFit.js       fits the artifact below the top HUD band and around the bottom HUD: returns { scale, left, top } (cap 1.35×)
   useRubberBandScroll.js  iOS-style drag scroll: 0.3× rubber factor, cubic-bezier snap on release
 
 src/shared/museum-ui/AboutModal.jsx        no props — standalone modal, opened from TitleScreen
@@ -131,7 +131,7 @@ src/state/state.js
 
 ## Artifact Fit and the Three-Zone Layout (all levels)
 
-The artifact is **sized and placed by `useArtifactFit(nativeW, nativeH)`**, not by the flex layout. Every HUD block carries `data-hud` (the four SharedLayout corners and each level's `.bottomZone`); the hook measures them on mount and on resize, then tries, for each corner, clearing it vertically (artifact above/below) or horizontally (artifact beside), keeps the combination with the largest scale, caps it at 1.35×, and always centres the artifact horizontally (clearing a corner sideways costs the same clearance on both sides); vertically it centres as far as the free region allows. So a wide artifact (terminal, Mac, Netscape) takes the band between the top labels and the objectives list; a tall one (phone, ghost device) takes the column beside the objectives. The `.wrap` / `.frameWrap` is `position: absolute` with inline `left/top/width/height` from the hook; the `.scaler` inside applies `scale()`.
+The artifact is **sized and placed by `useArtifactFit(nativeW, nativeH)`**, not by the flex layout. Every HUD block carries `data-hud` (the four SharedLayout corners and each level's `.bottomZone`); the hook measures them on mount and on resize. The **top HUD (era label + progress dots) is always a full-width band**: the artifact never sits beside it, it always starts at least 32px below it. The **bottom HUD** (objectives tracker, Continue, back link) is cleared either vertically (artifact above it — wide terminal, Mac, Netscape) or horizontally (artifact beside it — phone, ghost device), whichever yields the larger artifact, capped at 1.35×. The artifact is always centred horizontally in the viewport (clearing the bottom HUD sideways costs the same clearance on both sides) and centred vertically **in the free region** between the top band and whatever bounds it below, so it sits balanced inside the frame the HUD draws. The `.wrap` / `.frameWrap` is `position: absolute` with inline `left/top/width/height` from the hook; the `.scaler` inside applies `scale()`.
 
 ```
 Zone 1 — topSpacer    flex: 0 0 auto; height: var(--bottom-zone-height)
