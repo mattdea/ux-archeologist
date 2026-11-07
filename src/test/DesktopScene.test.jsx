@@ -45,30 +45,37 @@ describe('DesktopScene', () => {
     expect(screen.getByText('Notes')).toBeInTheDocument()
   })
 
-  it('drag-drop: Notes dropped on Trash calls completeObjective trashFile', () => {
-    const completeObjective = vi.fn()
-    render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
-
-    // Find notes element — it should be the draggable element
-    const notesLabel = screen.getByText('Notes')
-    const notesEl = notesLabel.closest('[draggable="true"]') || notesLabel.closest('div')
-    const trashLabel = screen.getByText('Trash')
-    const trashEl = trashLabel.closest('div')
-
-    // Simulate the drag sequence
-    const dataTransferMock = {
+  // Drag an icon (by its label) onto the Trash with HTML5 drag events
+  const dropOnTrash = (label, item) => {
+    const el = screen.getByText(label).closest('[draggable="true"]')
+    const trashEl = screen.getByText('Trash').closest('[draggable="true"]')
+    const dataTransfer = {
       setData: vi.fn(),
-      getData: vi.fn(() => 'notes'),
+      getData: vi.fn(() => item),
       setDragImage: vi.fn(),
       effectAllowed: '',
       dropEffect: '',
     }
+    fireEvent.dragStart(el, { dataTransfer })
+    fireEvent.dragOver(trashEl, { dataTransfer })
+    fireEvent.drop(trashEl, { dataTransfer })
+    fireEvent.dragEnd(el, { dataTransfer })
+  }
 
-    fireEvent.dragStart(notesEl, { dataTransfer: dataTransferMock })
-    fireEvent.dragOver(trashEl, { preventDefault: vi.fn(), dataTransfer: dataTransferMock })
-    fireEvent.drop(trashEl, { preventDefault: vi.fn(), dataTransfer: dataTransferMock })
-
+  it('drag-drop: Projects dropped on Trash completes the trashFile objective', () => {
+    const completeObjective = vi.fn()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
+    dropOnTrash('Projects', 'projects')
     expect(completeObjective).toHaveBeenCalledWith('trashFile')
+    expect(screen.queryByText('Projects')).not.toBeInTheDocument()
+  })
+
+  it('drag-drop: Notes dropped on Trash is trashed but completes no objective', () => {
+    const completeObjective = vi.fn()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
+    dropOnTrash('Notes', 'notes')
+    expect(completeObjective).not.toHaveBeenCalledWith('trashFile')
+    expect(screen.queryByText('Notes')).not.toBeInTheDocument()
   })
 
   it('double-clicking Notes icon opens a notes window', async () => {
