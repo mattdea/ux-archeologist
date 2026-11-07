@@ -444,6 +444,48 @@
   object-fit: cover;
 }
 
+/* ─── Photo loading pie (slow connection, 2016) ─────────────────────────────
+   Gray square (.postImageWrap background) with a thin ring centred in it; a
+   pie fills the ring clockwise from 12 o'clock. The pie is a circle whose
+   stroke is as wide as its diameter: animating stroke-dashoffset sweeps it.
+   Circumference at r 6.25 = 39.27. Progress arrives in uneven bursts, the
+   way a photo downloads on a slow 3G connection. */
+.photoLoader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.photoLoaderRing {
+  fill: none;
+  stroke: #c7c7c7;
+  stroke-width: 1.5;
+}
+
+.photoLoaderPie {
+  fill: none;
+  stroke: #c7c7c7;
+  stroke-width: 12.5;
+  stroke-dasharray: 39.27;
+  stroke-dashoffset: 39.27;
+  animation: photoLoadPie 1700ms linear 400ms both;
+}
+
+@keyframes photoLoadPie {
+  0%   { stroke-dashoffset: 39.27; }
+  10%  { stroke-dashoffset: 35.5; }
+  22%  { stroke-dashoffset: 33.8; }
+  34%  { stroke-dashoffset: 26.0; }
+  48%  { stroke-dashoffset: 24.6; }
+  60%  { stroke-dashoffset: 15.0; }
+  74%  { stroke-dashoffset: 12.8; }
+  88%  { stroke-dashoffset: 3.5; }
+  100% { stroke-dashoffset: 0; }
+}
+
 /* Action row: heart, comment … "•••" or a CTA button; hairline beneath */
 .actionRow {
   display: flex;

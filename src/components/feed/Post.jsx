@@ -21,6 +21,27 @@ import {
   AdBadgeIcon, BurstHeartIcon,
 } from './icons'
 
+// Photo loading indicator, as on a slow connection in 2016: a pale gray
+// square with a thin ring in the middle that fills clockwise from 12 o'clock
+// like a pie chart, in uneven bursts as the download comes in. The photo
+// then appears at once. `running` holds the pie at 0 until the screen lights.
+function PhotoLoader({ running, onDone }) {
+  return (
+    <div className="photoLoader" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="32" height="32">
+        <circle className="photoLoaderRing" cx="16" cy="16" r="14.75" />
+        <circle
+          className="photoLoaderPie"
+          cx="16" cy="16" r="6.25"
+          transform="rotate(-90 16 16)"
+          style={{ animationPlayState: running ? 'running' : 'paused' }}
+          onAnimationEnd={e => { if (e.target === e.currentTarget) onDone?.() }}
+        />
+      </svg>
+    </div>
+  )
+}
+
 // Splits caption / comment text so #hashtags and @mentions render in blue.
 const LINK_RE = /([#@][\w.]+)/g
 
@@ -53,6 +74,8 @@ export default function Post({
   onSponsoredTap,
   onOpenAd,
   onOpenProfile,
+  photoLoading = null,   // { running } while the photo is still "downloading"
+  onPhotoLoaded,
 }) {
   const [liked, setLiked] = useState(false)
   const [burstKey, setBurstKey] = useState(0)      // > 0 while the big heart shows
@@ -154,8 +177,10 @@ export default function Post({
       {/* Square photo: double-tap target */}
       <div className="postImageWrap" onClick={handleImageClick}>
         {photoSrc
-          ? <img className="postImage" src={photoSrc} alt="" draggable={false} />
-          : <div className="postImage" style={{ background: imageGradient }} />}
+          ? <img className="postImage" src={photoSrc} alt="" draggable={false}
+              style={photoLoading ? { visibility: 'hidden' } : undefined} />
+          : <div className="postImage" style={{ background: imageGradient, visibility: photoLoading ? 'hidden' : undefined }} />}
+        {photoLoading && <PhotoLoader running={photoLoading.running} onDone={onPhotoLoaded} />}
         {ad?.poster && (
           <div className="adPoster" aria-label={ad.poster.flat().join(' ')}>
             <div className="adPosterInner">

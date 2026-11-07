@@ -122,6 +122,11 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     }
   }, [])
 
+  // The first photo "downloads" when the app boots (pie loader on its square);
+  // once it has appeared it stays loaded for the rest of the session.
+  const [firstPhotoReady, setFirstPhotoReady] = useState(false)
+  const markFirstPhotoReady = useCallback(() => setFirstPhotoReady(true), [])
+
   // Older posts load as the player nears the bottom until every real account
   // has run out; then the spinner goes away.
   const loadingMore = useRef(false)
@@ -231,10 +236,12 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
               <div className="spinner" />
             </div>
           )}
-          {[...feed.posts, ...pages.flat()].map(post => (
+          {[...feed.posts, ...pages.flat()].map((post, i) => (
             <Post
               key={post.id}
               {...post}
+              photoLoading={i === 0 && !firstPhotoReady ? { running: !!animated } : null}
+              onPhotoLoaded={i === 0 ? markFirstPhotoReady : undefined}
               onLike={() => handleLike(post)}
               onSponsoredTap={post.isSponsored ? handleSponsoredTap : undefined}
               onOpenAd={openAd}
