@@ -76,7 +76,7 @@ function playSound(src) {
 - CSS transitions require the element to already be at the start position — they fail on fresh mount.
 
 **bottomZone layout:**
-- `padding: 16px 24px 24px` — matches Level0, gives correct inset from viewport edge.
+- `padding: 0 24px 24px` — no top padding (the box must equal the visible box so `useArtifactFit` measures the real gap); 24px inset from the viewport edge.
 - Never add `min-height` to `.bottomZone` — it forces a blank gap above the tracker.
 - The artifact is placed by `useArtifactFit(W, H)` → `{ scale, left, top }` on an absolutely positioned `.wrap`; mark every HUD block (incl. `.bottomZone`) with `data-hud` so the hook avoids it. See design-spec "Artifact Fit".
 

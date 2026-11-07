@@ -3,44 +3,42 @@ import { useState, useLayoutEffect } from 'react'
 
 /**
  * Fits a native-size artifact (width × height) into the viewport around the
- * museum HUD, as large as the space allows, and centres it in the room that
- * is left.
+ * museum HUD, as large as the space allows, with EQUAL breathing room above
+ * and below it.
  *
- * The HUD lives in the four corners (era label, progress dots, objective
- * tracker, Continue / back link). Every element marked `data-hud` is a
- * rectangle the artifact must not overlap. The rule is:
+ * Every element marked `data-hud` is a rectangle the artifact must not
+ * overlap. HUD boxes must be their visible boxes (no invisible top padding),
+ * or the gaps measured here will not be the gaps the eye sees.
  *
- *  - The TOP HUD is always a full-width band. The artifact never sits
- *    beside the era label or the progress dots; it always starts below
- *    them, with `topGap` of breathing room. A device touching the top
- *    labels reads as a layout bug, so this is not negotiable.
+ *  - The TOP HUD (era label, progress dots) is always a full-width band.
+ *    The artifact starts `bandGap` below it, never beside it.
  *  - The BOTTOM HUD (objectives, Continue, back link) is cleared either
- *    vertically (artifact above it — what a wide terminal or browser wants)
- *    or horizontally (artifact beside it — what a tall phone wants). Both
- *    are tried and the one that yields the larger artifact wins.
- *  - The artifact is always centred horizontally in the viewport, so
- *    clearing the bottom HUD sideways costs the same clearance on both
- *    sides. Vertically it is centred on the viewport whenever the free
- *    region allows; otherwise it sits as close to centre as it can while
- *    still clearing the top band and the bottom HUD.
+ *    vertically (artifact above it, `bandGap` away — wide terminal, Mac,
+ *    Netscape) or horizontally (artifact beside it, `sideGap` away — phone).
+ *    Both are tried; the larger artifact wins.
+ *  - Vertical symmetry: when the artifact sits beside the bottom HUD, it is
+ *    kept as far from the bottom edge as from the top edge. When it sits
+ *    above the bottom HUD, it is centred between the top band and the
+ *    bottom HUD. Either way the gap above equals the gap below.
+ *  - Always centred horizontally in the viewport.
  *
  * Returns { scale, left, top } in viewport px for an absolutely positioned
  * wrapper of width*scale × height*scale. Recomputes on resize and once
  * after mount (so the tracker is measured once it has laid out).
  *
- * @param {number} width      Native artifact width
- * @param {number} height     Native artifact height
+ * @param {number} width      Native artifact width (must equal the frame's CSS width)
+ * @param {number} height     Native artifact height (must equal the frame's CSS height)
  * @param {object} [opts]
  * @param {number} [opts.maxScale=1.35]  Never enlarge past this
- * @param {number} [opts.gap=24]        Clearance from the bottom HUD and viewport edges
- * @param {number} [opts.topGap=32]     Clearance below the top HUD band
- * @param {number} [opts.sideGap=40]    Clearance when the artifact sits beside a bottom HUD block
+ * @param {number} [opts.bandGap=32]    Clearance from the top band and from a bottom HUD below
+ * @param {number} [opts.sideGap=40]    Clearance from a bottom HUD block beside the artifact
+ * @param {number} [opts.edgeGap=24]    Clearance from the viewport edges when no HUD is there
  */
-export default function useArtifactFit(width, height, { maxScale = 1.35, gap = 24, topGap = 32, sideGap = 40 } = {}) {
-  const [fit, setFit] = useState(() => computeFit(width, height, maxScale, gap, topGap, sideGap))
+export default function useArtifactFit(width, height, { maxScale = 1.35, bandGap = 32, sideGap = 40, edgeGap = 24 } = {}) {
+  const [fit, setFit] = useState(() => computeFit(width, height, { maxScale, bandGap, sideGap, edgeGap }))
 
   useLayoutEffect(() => {
-    const update = () => setFit(computeFit(width, height, maxScale, gap, topGap, sideGap))
+    const update = () => setFit(computeFit(width, height, { maxScale, bandGap, sideGap, edgeGap }))
     update()
     // Measure again once fonts/tracker have settled.
     const raf = requestAnimationFrame(update)
@@ -49,7 +47,7 @@ export default function useArtifactFit(width, height, { maxScale = 1.35, gap = 2
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', update)
     }
-  }, [width, height, maxScale, gap, topGap, sideGap])
+  }, [width, height, maxScale, bandGap, sideGap, edgeGap])
 
   return fit
 }
@@ -61,65 +59,57 @@ function layoutRect(el) {
   return { left: x, top: y, right: x + el.offsetWidth, bottom: y + el.offsetHeight }
 }
 
-export function computeFit(width, height, maxScale, gap, topGap = gap, sideGap = gap) {
+function union(a, b) {
+  return a
+    ? { left: Math.min(a.left, b.left), top: Math.min(a.top, b.top), right: Math.max(a.right, b.right), bottom: Math.max(a.bottom, b.bottom) }
+    : b
+}
+
+export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideGap = 40, edgeGap = 24 } = {}) {
   if (typeof document === 'undefined') return { scale: 1, left: 0, top: 0 }
   const W = window.innerWidth
   const H = window.innerHeight
 
-  // Top band: lowest edge of any HUD block in the upper half.
-  // Bottom blocks: kept per side so they can be cleared sideways.
   let bandBottom = 0
   const bottom = { L: null, R: null }
   document.querySelectorAll('[data-hud]').forEach(el => {
     if (!el.offsetWidth || !el.offsetHeight) return
     const r = layoutRect(el)
-    if (r.top + r.bottom < H) {
-      bandBottom = Math.max(bandBottom, r.bottom)
-    } else {
-      const side = r.left + r.right < W ? 'L' : 'R'
-      const c = bottom[side]
-      bottom[side] = c
-        ? { left: Math.min(c.left, r.left), top: Math.min(c.top, r.top), right: Math.max(c.right, r.right), bottom: Math.max(c.bottom, r.bottom) }
-        : r
-    }
+    if (r.top + r.bottom < H) bandBottom = Math.max(bandBottom, r.bottom)
+    else bottom[r.left + r.right < W ? 'L' : 'R'] = union(bottom[r.left + r.right < W ? 'L' : 'R'], r)
   })
 
-  const y0 = Math.max(gap, bandBottom + (bandBottom ? topGap : 0))
+  // Top of the free region: below the band. The bottom edge mirrors it so
+  // an artifact beside the bottom HUD never sits closer to the floor than
+  // to the ceiling.
+  const y0 = bandBottom ? bandBottom + bandGap : edgeGap
   const sides = Object.keys(bottom).filter(k => bottom[k])
 
   let best = null
-  // Each bottom block: cleared vertically (bit 0) or horizontally (bit 1).
   for (let mask = 0; mask < (1 << sides.length); mask++) {
-    let x0 = gap, x1 = W - gap, y1 = H - gap
+    let x0 = edgeGap, x1 = W - edgeGap, y1 = H - y0
     sides.forEach((side, i) => {
       const r = bottom[side]
       if ((mask >> i) & 1) {
         if (side === 'L') x0 = Math.max(x0, r.right + sideGap)
         else x1 = Math.min(x1, r.left - sideGap)
       } else {
-        y1 = Math.min(y1, r.top - gap)
+        y1 = Math.min(y1, r.top - bandGap)
       }
     })
-    // Horizontal room is symmetric about the viewport centre.
     const rw = 2 * Math.min(W / 2 - x0, x1 - W / 2), rh = y1 - y0
     if (rw <= 0 || rh <= 0) continue
     const scale = Math.min(rw / width, rh / height, maxScale)
     const sw = width * scale, sh = height * scale
-    const left = W / 2 - sw / 2
-    // Centre on the viewport; when the free region is too tight for that,
-    // slide just enough to stay below the top band / above the bottom HUD.
-    const top = clamp(H / 2 - sh / 2, y0, y1 - sh)
-    if (!best || scale > best.scale + 1e-6) best = { scale, left, top }
+    // Centred in the free region → gap above === gap below.
+    const fit = { scale, left: W / 2 - sw / 2, top: y0 + (rh - sh) / 2 }
+    if (!best || scale > best.scale + 1e-6) best = fit
   }
 
   if (!best) {
-    const rh = Math.max(1, H - gap - y0)
-    const scale = Math.min((W - 2 * gap) / width, rh / height, maxScale)
-    return { scale, left: W / 2 - width * scale / 2, top: clamp(H / 2 - height * scale / 2, y0, H - gap - height * scale) }
+    const rh = Math.max(1, H - 2 * y0)
+    const scale = Math.min((W - 2 * edgeGap) / width, rh / height, maxScale)
+    return { scale, left: W / 2 - width * scale / 2, top: y0 + (rh - height * scale) / 2 }
   }
   return best
-}
-
-function clamp(v, lo, hi) {
-  return hi < lo ? lo : Math.min(Math.max(v, lo), hi)
 }
