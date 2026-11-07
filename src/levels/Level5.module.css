@@ -11,15 +11,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  --bottom-zone-height: 180px;
   pointer-events: none;
 }
 
-/* Zone 1 — empty mirror of Zone 3; ensures vertical centering */
+/* Zone 1 — clears the top HUD band (era label + dots, bottom ≈ 52px) by the
+   same 32px every other artifact gets from useArtifactFit. Not a mirror of
+   Zone 3: the chat should fill the height, not float in the middle. */
 .topSpacer {
   flex: 0 0 auto;
-  height: var(--bottom-zone-height);
-  min-height: 80px;
+  height: 84px;
 }
 
 /* Zone 2 — expands to fill remaining height; holds the chat panel */
