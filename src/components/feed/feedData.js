@@ -283,12 +283,33 @@ export function isFollowing(username) {
 
 // ── The player ─────────────────────────────────────────────────────────────
 
+const ME_PHOTOS = Object.values(
+  import.meta.glob('../../../assets/feed/friends/samtaylor/*.jpg', { eager: true, import: 'default' }),
+)
+
 export const ME = {
   username: 'samtaylor',
   name: 'Sam Taylor',
-  posts: 0,
+  avatar: friendAvatar('samtaylor'),
+  posts: ME_PHOTOS.length,
   followers: 2,
   following: FOLLOWING.size,
+  // The player's own posts, newest first.
+  grid: ME_PHOTOS.map((image, i) => ({
+    id: `grid-samtaylor-${i}`,
+    image,
+    post: {
+      id: `me-post-${i}`,
+      username: 'samtaylor',
+      imageSrc: image,
+      avatar: friendAvatar('samtaylor'),
+      likes: '2',
+      caption: 'flower wall 💜',
+      commentCount: 0,
+      comments: [],
+      timestamp: gridTime(i + 6),
+    },
+  })),
 }
 
 // ── Explore ────────────────────────────────────────────────────────────────

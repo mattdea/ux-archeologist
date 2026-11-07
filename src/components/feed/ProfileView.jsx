@@ -62,7 +62,9 @@ export default function ProfileView({ username, onBack, onOpenPost }) {
       <div className={own ? 'feedScroll profileScroll profileScrollOwn' : 'feedScroll profileScroll'}>
         <div className="profileTop">
           {own
-            ? <div className="profileAvatarEmpty" aria-hidden="true" />
+            ? (ME.avatar
+              ? <Avatar photo={ME.avatar} size={77} />
+              : <div className="profileAvatarEmpty" aria-hidden="true" />)
             : <Avatar photo={profile.avatar} color={profile.avatarColor} initial={profile.initial} size={77} />}
           <div className="profileRight">
             <div className="profileStats">
@@ -93,8 +95,8 @@ export default function ProfileView({ username, onBack, onOpenPost }) {
 
         <ModeRow />
 
-        {own
-          ? (
+        {own && ME.grid.length > 0 && <PhotoGrid tiles={ME.grid} onOpenPost={onOpenPost} />}
+        {own && ME.grid.length === 0 && (
             <div className="profileEmpty">
               <div className="profileEmptyTop">Start capturing and sharing your moments.</div>
               <div className="profileEmptyBottom">
@@ -102,8 +104,8 @@ export default function ProfileView({ username, onBack, onOpenPost }) {
                 <div className="profileEmptyArrow"><DownArrowIcon /></div>
               </div>
             </div>
-          )
-          : <PhotoGrid tiles={profile.grid} onOpenPost={onOpenPost} />}
+        )}
+        {!own && <PhotoGrid tiles={profile.grid} onOpenPost={onOpenPost} />}
       </div>
     </>
   )
