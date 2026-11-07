@@ -4,8 +4,7 @@
 // spring-2016 Airbnb mobile page for the "Don't just go there. Live there."
 // campaign (launched April 2016): the original destination URL and page were
 // not recovered, so this uses what is documented — the campaign line, Airbnb's
-// 2016 identity (the Bélo wordmark, Rausch red #FF5A5F, Circular-like type
-// set here in Helvetica), the flat, bordered mobile-web style of the time — and
+// 2016 identity (the Bélo wordmark, Rausch red #FF5A5F, Circular Air type), the flat, bordered mobile-web style of the time — and
 // nothing that isn't (no banners, discounts or invented offers).
 // Photos: the ad's campaign photo and Airbnb's own archived April 2016 posts.
 
