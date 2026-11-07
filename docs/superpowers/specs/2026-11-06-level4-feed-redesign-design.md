@@ -56,7 +56,7 @@ feed must stay *ranked*, not chronological. The discovery copy and the
   Comments: j.okafor "CONGRATS!!! 🎉🎉" (unchanged), mia.c "@imani.brooks
   framing every page". mia.c's own bio changes from "housewarming committee
   chair, apparently" to "resident hype woman".
-- Objective 1 becomes **"Find Imani's post — she has news"**. The Activity
+- Objective 1 becomes **"Find Imani's post"**. The Activity
   tab's "imani.brooks started following you" row (`y1`) is the trail. Objectives
   2 and 3 ("Learn more about a sponsored post", "Like a post") are unchanged.
 

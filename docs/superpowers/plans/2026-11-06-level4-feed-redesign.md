@@ -24,7 +24,7 @@
 | `src/components/feed/archiveData.js` | real accounts from the archive | remove date cutoff; `gridTime(i)` replaces `relativeTime` |
 | `src/components/feed/libraryData.js` | blog photos, friend photo sets | remove `CUTOFF`; `FRIEND_SETS` trimmed to 3 friends |
 | `src/components/feed/feedData.js` | feed, profiles, activity | Imani; 6 `BASE_POSTS`; `FEED_ORDER` + `FEED_TIMES`; activity rows |
-| `src/levels/Level4.jsx` | objectives text | "Find Imani's post — she has news" |
+| `src/levels/Level4.jsx` | objectives text | "Find Imani's post" |
 | `src/test/feedData.test.js` | feed invariants | create |
 | `src/test/archiveData.test.js` | `gridTime` ladder | create |
 | `docs/design-spec.md`, `assets/feed/README.md` | docs | Level 4 section, README notes |
@@ -595,7 +595,7 @@ git push
 
 ```js
 const OBJECTIVES = [
-  "Find Imani's post — she has news",
+  "Find Imani's post",
   'Learn more about a sponsored post',
   'Like a post',
 ]
@@ -640,7 +640,7 @@ The home feed is 24 posts in a hand-ranked order (`FEED_ORDER`): 18 recognisable
 Replace objective 1 (line 376) with:
 
 ```markdown
-1. Find Imani's post — she has news (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)
+1. Find Imani's post (imani.brooks's "it's OUT 🎉 my first editorial", slot 14, under three celebrities and the second ad)
 ```
 
 - [x] **Step 2: README.md**
@@ -703,7 +703,7 @@ git push
 
 - [x] **Step 1: Open the level**
 
-`preview_start {name: "dev"}`. If port 8888 is held by another chat's server, `navigate` to http://localhost:8888/ instead (it serves this working tree). Click "Begin excavation", then the "2016" timeline entry, then "Begin excavation" in the intro modal. Confirm the modal lists "Find Imani's post — she has news".
+`preview_start {name: "dev"}`. If port 8888 is held by another chat's server, `navigate` to http://localhost:8888/ instead (it serves this working tree). Click "Begin excavation", then the "2016" timeline entry, then "Begin excavation" in the intro modal. Confirm the modal lists "Find Imani's post".
 
 - [x] **Step 2: Check the data**
 
