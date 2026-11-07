@@ -4,13 +4,11 @@
 // screenshot of Airbnb's mobile homepage during the "Live There" campaign:
 // white header (hamburger, centred Bélo wordmark), a full-bleed hero with
 // LIVE THERE and the campaign subhead, a "Where to?" search field, then the
-// dark footer. The hero was a video in 2016; here it's a still photo from
-// Airbnb's own archived spring-2016 posts, deliberately with no play button.
+// dark footer. The hero was a video in 2016; here it's a still campaign-style
+// photo (assets/feed/ads/airbnb-hero.jpg), deliberately with no play button.
 
 import wordmark from '../../../assets/feed/ads/airbnb-wordmark.png'
-import { ARCHIVE } from './archiveData'
-
-const HERO = ARCHIVE.airbnb?.posts.find(p => p.code === 'BCjmfE-y5jS')?.url
+import HERO from '../../../assets/feed/ads/airbnb-hero.jpg'
 
 const LINKS = ['About', 'Careers', 'Press', 'Blog', 'Terms & Privacy']
 const SOCIAL = ['f', 'g+', 't', 'in', 'p', '▶', 'ig']
@@ -24,7 +22,7 @@ export default function AirbnbLiveThere() {
       </header>
 
       <section className="abnbHero">
-        {HERO && <img className="abnbHeroImg" src={HERO} alt="" draggable={false} />}
+        <img className="abnbHeroImg" src={HERO} alt="" draggable={false} />
         <div className="abnbHeroText">
           <h1>LIVE THERE</h1>
           <p>Book homes from local hosts in 191+ countries and experience a place like you live there.</p>
