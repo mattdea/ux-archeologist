@@ -8,6 +8,8 @@
 //   time    12pt, weight 500, centered
 //   battery 24.5 × 9.5pt, 5.5pt from the right edge; outline + fill bar
 
+import { useCurrentTime, formatStatusTime } from '../../hooks/useCurrentTime'
+
 function SignalDots() {
   return (
     <svg width="34" height="6" viewBox="0 0 34 6" fill="currentColor" aria-hidden="true">
@@ -39,13 +41,15 @@ function BatteryIcon() {
 }
 
 export default function StatusBar() {
+  // Player's local time, same live clock as the Level 3 iPhone
+  const now = useCurrentTime()
   return (
     <div className="iosStatusBar" aria-hidden="true">
       <div className="iosStatusLeft">
         <SignalDots />
         <WifiIcon />
       </div>
-      <div className="iosStatusTime">9:41 AM</div>
+      <div className="iosStatusTime">{formatStatusTime(now)}</div>
       <div className="iosStatusRight">
         <BatteryIcon />
       </div>
