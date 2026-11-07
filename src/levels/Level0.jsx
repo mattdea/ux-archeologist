@@ -17,9 +17,9 @@ const OBJECTIVES = [
   'Look up a command in the manual',
 ]
 
-// Bezel pixel dimensions: screen(700×420) + screenBezel pad(12×2) + screenArea pad(28×2 / 16+8)
+// Bezel pixel dimensions — must match .bezel in TerminalBezel.module.css
 const BEZEL_W = 780
-const BEZEL_H = 540
+const BEZEL_H = 460   // must match TerminalBezel.module.css
 
 // Matches --bottom-zone-height in Level0.module.css
 

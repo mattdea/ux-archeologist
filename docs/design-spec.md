@@ -12,7 +12,7 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 ### Progress (7 Nov 2026)
 
 All six levels are complete and playable; nothing is gated. Recent work:
-- **Layout:** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, vertically centred in the free region) instead of fixed 180px bands — devices are ~1.3–1.6× larger on a 14" laptop than before.
+- **Layout:** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, vertically centred on the viewport) instead of fixed 180px bands — devices are ~1.3–1.6× larger on a 14" laptop than before.
 - **Level 4:** objectives are now *Like Imani's post* / *Learn more about a sponsored post* / *Follow someone new*; every reload or pull-to-refresh reshuffles the feed (friends and real accounts trade slots, friends show a different photo, Imani lands in slots 10–18); the Airbnb ad carries the "Don't Go There. Live There." poster type and opens a rebuilt 2016 Airbnb mobile homepage set in Circular Air; the player (samtaylor) has an avatar and one post; the Activity tab's Following list only shows people the player follows.
 
 Open items, roughly in priority order:
@@ -131,7 +131,7 @@ src/state/state.js
 
 ## Artifact Fit and the Three-Zone Layout (all levels)
 
-The artifact is **sized and placed by `useArtifactFit(nativeW, nativeH)`**, not by the flex layout. Every HUD block carries `data-hud` (the four SharedLayout corners and each level's `.bottomZone`); the hook measures them on mount and on resize. The **top HUD (era label + progress dots) is always a full-width band**: the artifact never sits beside it, it always starts at least 32px below it. The **bottom HUD** (objectives tracker, Continue, back link) is cleared either vertically (artifact above it — wide terminal, Mac, Netscape) or horizontally (artifact beside it — phone, ghost device), whichever yields the larger artifact, capped at 1.35×. The artifact is always centred horizontally in the viewport (clearing the bottom HUD sideways costs the same clearance on both sides) and centred vertically **in the free region** between the top band and whatever bounds it below, so it sits balanced inside the frame the HUD draws. The `.wrap` / `.frameWrap` is `position: absolute` with inline `left/top/width/height` from the hook; the `.scaler` inside applies `scale()`.
+The artifact is **sized and placed by `useArtifactFit(nativeW, nativeH)`**, not by the flex layout. Every HUD block carries `data-hud` (the four SharedLayout corners and each level's `.bottomZone`); the hook measures them on mount and on resize. The **top HUD (era label + progress dots) is always a full-width band**: the artifact never sits beside it, it always starts at least 32px below it. The **bottom HUD** (objectives tracker, Continue, back link) is cleared either vertically (artifact above it — wide terminal, Mac, Netscape) or horizontally (artifact beside it — phone, ghost device), whichever yields the larger artifact, capped at 1.35×. The artifact is always centred horizontally in the viewport (clearing the bottom HUD sideways costs the same clearance on both sides) and centred vertically **on the viewport** whenever the free region allows, otherwise as close to centre as it can get while still clearing the band and the bottom HUD. The native W/H constants passed to the hook **must equal the frame component's CSS size** (Terminal 780×460, Mac 780×755, Netscape 700×580, iPhone 385×735) or the fit box and the device drift apart. The `.wrap` / `.frameWrap` is `position: absolute` with inline `left/top/width/height` from the hook; the `.scaler` inside applies `scale()`.
 
 ```
 Zone 1 — topSpacer    flex: 0 0 auto; height: var(--bottom-zone-height)
@@ -162,7 +162,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 | Level | Era | Container |
 |-------|-----|-----------|
-| 0 | 1971 | Green-screen terminal bezel (780×540px) |
+| 0 | 1971 | Green-screen terminal bezel (780×460px) |
 | 1 | 1984 | Beige CRT monitor bezel (780×755px) |
 | 2 | 1995 | Browser chrome — no device bezel |
 | 3 | 2007 | iPhone silhouette (385×735px bezel, 320×480px screen) |
@@ -180,7 +180,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Artifact:** Unix terminal session
 **Discovery:** Command & Response
-**Container:** `src/components/terminal/` — TerminalBezel + TerminalScreen; 780×540px
+**Container:** `src/components/terminal/` — TerminalBezel + TerminalScreen; 780×460px
 **Route:** `/level/0`
 
 **IntroModal:**
@@ -247,7 +247,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Artifact:** Academic homepage viewed in Netscape Navigator
 **Discovery:** Hyperlink Navigation
-**Container:** `src/components/web/BrowserChrome.jsx` — no device bezel; 700×520px
+**Container:** `src/components/web/BrowserChrome.jsx` — no device bezel; 700×580px
 **Route:** `/level/2`
 
 **IntroModal:**

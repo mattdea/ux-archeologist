@@ -20,9 +20,9 @@ import { useState, useLayoutEffect } from 'react'
  *    are tried and the one that yields the larger artifact wins.
  *  - The artifact is always centred horizontally in the viewport, so
  *    clearing the bottom HUD sideways costs the same clearance on both
- *    sides. Vertically it is centred in the free region (between the top
- *    band and whatever bounds it below), not in the raw viewport, so it
- *    looks balanced inside the frame the HUD draws around it.
+ *    sides. Vertically it is centred on the viewport whenever the free
+ *    region allows; otherwise it sits as close to centre as it can while
+ *    still clearing the top band and the bottom HUD.
  *
  * Returns { scale, left, top } in viewport px for an absolutely positioned
  * wrapper of width*scale × height*scale. Recomputes on resize and once
@@ -106,15 +106,20 @@ export function computeFit(width, height, maxScale, gap, topGap = gap, sideGap =
     const scale = Math.min(rw / width, rh / height, maxScale)
     const sw = width * scale, sh = height * scale
     const left = W / 2 - sw / 2
-    // Centre in the free region, never above the top band.
-    const top = Math.max(y0, y0 + (rh - sh) / 2)
+    // Centre on the viewport; when the free region is too tight for that,
+    // slide just enough to stay below the top band / above the bottom HUD.
+    const top = clamp(H / 2 - sh / 2, y0, y1 - sh)
     if (!best || scale > best.scale + 1e-6) best = { scale, left, top }
   }
 
   if (!best) {
     const rh = Math.max(1, H - gap - y0)
     const scale = Math.min((W - 2 * gap) / width, rh / height, maxScale)
-    return { scale, left: W / 2 - width * scale / 2, top: y0 + Math.max(0, (rh - height * scale) / 2) }
+    return { scale, left: W / 2 - width * scale / 2, top: clamp(H / 2 - height * scale / 2, y0, H - gap - height * scale) }
   }
   return best
+}
+
+function clamp(v, lo, hi) {
+  return hi < lo ? lo : Math.min(Math.max(v, lo), hi)
 }

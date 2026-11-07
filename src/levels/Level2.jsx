@@ -33,7 +33,7 @@ const OBJ_KEY_INDEX = { navigate: 0, goBack: 1, findPaper: 2 }
 
 // BrowserChrome native dimensions
 const BROWSER_W = 700
-const BROWSER_H = 520
+const BROWSER_H = 580 // must match BrowserChrome.module.css
 
 // Loading delay (ms) — mimics mid-90s dial-up latency (page navigation)
 const LOAD_DELAY = 500
