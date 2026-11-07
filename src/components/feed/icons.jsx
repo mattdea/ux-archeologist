@@ -254,12 +254,12 @@ export function PinModeIcon() {
   )
 }
 
-/** Photos of you: a rounded square with a small folded tab on top and a person inside, 24 × 22, grey. */
+/** Photos of you: a rounded square with a pointed notch on top, an oval head and a person inside, 24 × 22, grey. */
 export function TaggedModeIcon() {
   return (
     <svg width="24" height="22" viewBox="0 0 24 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true">
-      <path d="M8.5 4.5L10 1.5h4l1.5 3H20a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3v-10a3 3 0 0 1 3-3z" />
-      <circle cx="12" cy="10" r="2.4" fill="currentColor" stroke="none" />
+      <path d="M9 4.5L12 1.3l3 3.2H20a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3v-10a3 3 0 0 1 3-3z" />
+      <ellipse cx="12" cy="9.9" rx="2.1" ry="2.7" fill="currentColor" stroke="none" />
       <path d="M7.5 17.5c0-2.6 2-4.2 4.5-4.2s4.5 1.6 4.5 4.2z" fill="currentColor" stroke="none" />
     </svg>
   )
