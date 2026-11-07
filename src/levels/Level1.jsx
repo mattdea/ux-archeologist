@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
-import useBezelScale from '../hooks/useBezelScale'
+import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
 import DesktopScene from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
@@ -26,7 +26,6 @@ const BEZEL_W = 780
 const BEZEL_H = 755
 
 // Matches --bottom-zone-height in Level1.module.css
-const BOTTOM_ZONE_H = 180
 
 export default function Level1() {
   // Skip intro+boot and go directly to 'playing' on replay (level already complete).
@@ -40,8 +39,9 @@ export default function Level1() {
       return saved ? JSON.parse(saved) : []
     } catch { return [] }
   })
-  // Symmetric margins match the equal topSpacer / bottomZone heights
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
+  // Fits the artifact around the HUD corners, as large as the viewport allows
+  const fit = useArtifactFit(BEZEL_W, BEZEL_H)
+  const scale = fit.scale
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -109,7 +109,7 @@ export default function Level1() {
         <div className={styles.artifactZone}>
           <div
             className={styles.wrap}
-            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
+            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <MonitorBezel>
@@ -130,7 +130,7 @@ export default function Level1() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
-        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+        <div data-hud className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}

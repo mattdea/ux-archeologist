@@ -41,6 +41,7 @@
 }
 
 .frameWrap {
+  position: absolute;          /* left/top from useArtifactFit */
   display: flex;
   align-items: center;
   justify-content: center;

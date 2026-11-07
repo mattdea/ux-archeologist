@@ -156,20 +156,20 @@ export default function SharedLayout({ children }) {
             {showHUD && (
               <>
                 {/* Top-left — era label + level title */}
-                <div className={styles.hudTopLeft} style={hudStyle('down', 0)}>
+                <div className={styles.hudTopLeft} data-hud style={hudStyle('down', 0)}>
                   <span className={styles.eraLabel}>{meta.era}</span>
                   <span className={styles.levelTitle}>{meta.title}</span>
                 </div>
 
                 {/* Top-right — progress dots */}
-                <div className={styles.hudTopRight} style={hudStyle('down', 0)}>
+                <div className={styles.hudTopRight} data-hud style={hudStyle('down', 0)}>
                   {LEVEL_NUMBERS.map(n => (
                     <span key={n} className={dotClass(n, activeLevel)} onClick={() => fadeNavigate('/level/' + n)} style={{ cursor: 'pointer' }} />
                   ))}
                 </div>
 
                 {/* Bottom-right — Continue (when objectives done) + back to timeline */}
-                <div className={styles.hudBottomRight} style={hudStyle('up', 200)}>
+                <div className={styles.hudBottomRight} data-hud style={hudStyle('up', 200)}>
                   <div className={`${styles.hudContinueBtnWrap} ${continueAction ? styles.hudContinueBtnWrapVisible : ''}`}>
                     <button className={styles.hudContinueBtn} onClick={continueAction ?? undefined}>
                       Continue

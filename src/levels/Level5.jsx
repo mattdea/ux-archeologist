@@ -139,7 +139,7 @@ export default function Level5() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
-        <div className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
+        <div data-hud className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}

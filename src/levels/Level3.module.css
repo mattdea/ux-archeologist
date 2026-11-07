@@ -34,6 +34,7 @@
 /* Outer wrapper — explicit width/height set via inline style to the
    scaled bezel footprint. overflow:visible so drop-shadow renders fully. */
 .wrap {
+  position: absolute;          /* left/top from useArtifactFit */
   display: flex;
   align-items: center;
   justify-content: center;

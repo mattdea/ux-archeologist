@@ -39,6 +39,7 @@
  * drop-shadow renders fully.
  */
 .wrap {
+  position: absolute;          /* left/top from useArtifactFit */
   display: flex;
   align-items: center;
   justify-content: center;

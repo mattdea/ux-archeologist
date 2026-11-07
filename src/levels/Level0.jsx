@@ -4,7 +4,7 @@ import styles from './Level0.module.css'
 import TerminalBezel from '../components/terminal/TerminalBezel'
 import TerminalScreen from '../components/terminal/TerminalScreen'
 import useTerminal from '../components/terminal/useTerminal'
-import useBezelScale from '../hooks/useBezelScale'
+import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
@@ -22,7 +22,6 @@ const BEZEL_W = 780
 const BEZEL_H = 540
 
 // Matches --bottom-zone-height in Level0.module.css
-const BOTTOM_ZONE_H = 180
 
 const DISCOVERY_DESCRIPTION =
   'Every interaction you just had followed the same pattern: you typed a command, the machine responded, ' +
@@ -35,7 +34,8 @@ export default function Level0() {
   const [screen, setScreen] = useState(() => isLevelComplete(0) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(0) ? [0, 1, 2] : [])
 
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
+  const fit = useArtifactFit(BEZEL_W, BEZEL_H)
+  const scale = fit.scale
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -116,7 +116,7 @@ export default function Level0() {
         <div className={styles.artifactZone}>
           <div
             className={styles.wrap}
-            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale }}
+            style={{ width: BEZEL_W * scale, height: BEZEL_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <TerminalBezel>
@@ -134,7 +134,7 @@ export default function Level0() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker */}
-        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+        <div data-hud className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}

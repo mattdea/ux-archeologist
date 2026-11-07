@@ -102,7 +102,7 @@ src/shared/SharedLayout.jsx
   Contexts: useArtifactReady(), useSetContinue(), useFadeNavigate()
 
 src/hooks/
-  useBezelScale.js        scales artifact bezel to fit viewport with top/bottom margins
+  useArtifactFit.js       fits the artifact around the HUD corners: returns { scale, left, top } (cap 1.35×)
   useRubberBandScroll.js  iOS-style drag scroll: 0.3× rubber factor, cubic-bezier snap on release
 
 src/shared/museum-ui/AboutModal.jsx        no props — standalone modal, opened from TitleScreen
@@ -115,15 +115,17 @@ src/state/state.js
 
 ---
 
-## Three-Zone Layout (all levels)
+## Artifact Fit and the Three-Zone Layout (all levels)
+
+The artifact is **sized and placed by `useArtifactFit(nativeW, nativeH)`**, not by the flex layout. Every HUD block carries `data-hud` (the four SharedLayout corners and each level's `.bottomZone`); the hook measures them on mount and on resize, then tries, for each corner, clearing it vertically (artifact above/below) or horizontally (artifact beside), keeps the combination with the largest scale, caps it at 1.35×, and centres the artifact in the viewport as far as that region allows. So a wide artifact (terminal, Mac, Netscape) takes the band between the top labels and the objectives list; a tall one (phone, ghost device) takes the column beside the objectives. The `.wrap` / `.frameWrap` is `position: absolute` with inline `left/top/width/height` from the hook; the `.scaler` inside applies `scale()`.
 
 ```
 Zone 1 — topSpacer    flex: 0 0 auto; height: var(--bottom-zone-height)
-Zone 2 — artifactZone flex: 1; centers the scaled bezel
-Zone 3 — bottomZone   padding: 16px 24px 24px; visibility: hidden until playing
+Zone 2 — artifactZone flex: 1 (the artifact no longer flows here; its wrap is absolute)
+Zone 3 — bottomZone   padding: 16px 24px 24px; data-hud; visibility: hidden until playing
 ```
 
-`--bottom-zone-height: 180px` in each level's module.css. Never add `min-height` to `.bottomZone`.
+Level 5's chat panel has no device and still fills the artifact zone. Never add `min-height` to `.bottomZone`. Phone-width screens are not a target: the artifact shrinks to fit, and a "best on a computer" notice is planned.
 
 ---
 

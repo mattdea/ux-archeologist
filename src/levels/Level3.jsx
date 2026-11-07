@@ -15,7 +15,7 @@ import PhoneFrame from '../components/phone/PhoneFrame'
 import LockScreen from '../components/phone/LockScreen'
 import HomeScreen from '../components/phone/HomeScreen'
 import NotesApp from '../components/notes/NotesApp'
-import useBezelScale from '../hooks/useBezelScale'
+import useArtifactFit from '../hooks/useArtifactFit'
 import '../components/phone/phone-theme.css'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import unlockSoundSrc from '../../assets/phone/unlock.mp3'
@@ -43,7 +43,6 @@ const BEZEL_W = 385
 const BEZEL_H = 735
 
 // Matches --bottom-zone-height in Level3.module.css
-const BOTTOM_ZONE_H = 180
 
 const DISCOVERY_DESCRIPTION =
   'For thirty years, a layer of hardware stood between people and their software: a mouse, a keyboard, a stylus. ' +
@@ -95,10 +94,8 @@ export default function Level3() {
     }
   }, [])
 
-  const scale = useBezelScale(BEZEL_W, BEZEL_H, {
-    marginTop: BOTTOM_ZONE_H,
-    marginBottom: BOTTOM_ZONE_H,
-  })
+  const fit = useArtifactFit(BEZEL_W, BEZEL_H)
+  const scale = fit.scale
 
   // ── Boot animation: 'intro' → 'booting' → 'playing' ─────────────────────
   // Called when "Begin Excavation" is clicked.
@@ -304,6 +301,8 @@ export default function Level3() {
             style={{
               width: BEZEL_W * scale,
               height: BEZEL_H * scale,
+              left: fit.left,
+              top: fit.top,
               pointerEvents: phonePointerEvents,
             }}
           >
@@ -355,7 +354,7 @@ export default function Level3() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
-        <div className={`${styles.bottomZone} ${museumScreen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+        <div data-hud className={`${styles.bottomZone} ${museumScreen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}

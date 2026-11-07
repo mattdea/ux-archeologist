@@ -6,7 +6,7 @@ import YahooDirectory from '../components/web/pages/YahooDirectory'
 import YahooComputers from '../components/web/pages/YahooComputers'
 import ValleyComputer from '../components/web/pages/ValleyComputer'
 import VintageArchive from '../components/web/pages/VintageArchive'
-import useBezelScale from '../hooks/useBezelScale'
+import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
@@ -39,7 +39,6 @@ const BROWSER_H = 520
 const LOAD_DELAY = 500
 
 // Matches --bottom-zone-height in Level2.module.css
-const BOTTOM_ZONE_H = 180
 
 export default function Level2() {
   // ── Museum screen state ─────────────────────────────────────────
@@ -68,8 +67,9 @@ export default function Level2() {
   const [hoverUrl, setHoverUrl]         = useState(null)
 
   // ── Responsive scaling ──────────────────────────────────────────
-  // Symmetric margins match the equal topSpacer / bottomZone heights
-  const scale = useBezelScale(BROWSER_W, BROWSER_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
+  // Fits the artifact around the HUD corners, as large as the viewport allows
+  const fit = useArtifactFit(BROWSER_W, BROWSER_H)
+  const scale = fit.scale
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -234,7 +234,7 @@ export default function Level2() {
         <div className={styles.artifactZone}>
           <div
             className={styles.wrap}
-            style={{ width: BROWSER_W * scale, height: BROWSER_H * scale }}
+            style={{ width: BROWSER_W * scale, height: BROWSER_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <BrowserChrome
@@ -253,7 +253,7 @@ export default function Level2() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
-        <div className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
+        <div data-hud className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}

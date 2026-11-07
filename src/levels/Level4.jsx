@@ -16,9 +16,8 @@ import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import FeedApp from '../components/feed/FeedApp'
 import GhostDevice, { UNIT_W, UNIT_H } from '../components/feed/GhostDevice'
-import useBezelScale from '../hooks/useBezelScale'
+import useArtifactFit from '../hooks/useArtifactFit'
 
-const BOTTOM_ZONE_H = 180
 
 const OBJECTIVES = [
   "Like Imani's post",
@@ -39,7 +38,8 @@ export default function Level4() {
   const setContinue = useSetContinue()
   // Same fit as Level 3's phone: the ghost body fills the artifact zone height
   // between the top spacer and bottom zone, never larger than 1×.
-  const scale = useBezelScale(UNIT_W, UNIT_H, { marginTop: BOTTOM_ZONE_H, marginBottom: BOTTOM_ZONE_H })
+  const fit = useArtifactFit(UNIT_W, UNIT_H)
+  const scale = fit.scale
 
   // Replay: skip 'intro', start at 'booting' (boot → playing in useEffect below)
   const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
@@ -138,7 +138,7 @@ export default function Level4() {
         >
           <div
             className={styles.frameWrap}
-            style={{ width: UNIT_W * scale, height: UNIT_H * scale }}
+            style={{ width: UNIT_W * scale, height: UNIT_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.frameScaler} style={{ transform: `scale(${scale})` }}>
               <GhostDevice lit={screen === 'playing'} touch={screen === 'playing'}>
@@ -153,7 +153,7 @@ export default function Level4() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
-        <div className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
+        <div data-hud className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
             completedIndices={completedIndices}

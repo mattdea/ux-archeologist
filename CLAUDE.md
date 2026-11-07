@@ -78,7 +78,7 @@ function playSound(src) {
 **bottomZone layout:**
 - `padding: 16px 24px 24px` — matches Level0, gives correct inset from viewport edge.
 - Never add `min-height` to `.bottomZone` — it forces a blank gap above the tracker.
-- The top spacer (`height: var(--bottom-zone-height)`) mirrors bottomZone height to keep the artifact centered.
+- The artifact is placed by `useArtifactFit(W, H)` → `{ scale, left, top }` on an absolutely positioned `.wrap`; mark every HUD block (incl. `.bottomZone`) with `data-hud` so the hook avoids it. See design-spec "Artifact Fit".
 
 **File structure for a new level:**
 - `src/levels/LevelN.jsx` — screen state machine, museum wiring, artifact composition
