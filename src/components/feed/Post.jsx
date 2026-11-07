@@ -15,7 +15,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { hasProfile } from './feedData'
 import Avatar from './Avatar'
-import wordmark from '../../../assets/feed/ads/airbnb-wordmark.png'
+import posterLogo from '../../../assets/feed/ads/airbnb-logo-white.png'
 import {
   HeartOutlineIcon, CommentOutlineIcon, MoreDotsIcon, LikesHeartIcon,
   AdBadgeIcon, BurstHeartIcon,
@@ -159,7 +159,7 @@ export default function Post({
         {ad?.poster && (
           <div className="adPoster" aria-label={ad.poster.flat().join(' ')}>
             <div className="adPosterInner">
-              <img className="adPosterLogo" src={wordmark} alt="" draggable={false} />
+              <img className="adPosterLogo" src={posterLogo} alt="" draggable={false} />
               {ad.poster.map((line, i) => (
                 <div key={i} className={i === 0 ? 'adPosterLine' : 'adPosterLine adPosterAccent'}>
                   {line.map(w => <span key={w}>{w}</span>)}

@@ -9,6 +9,7 @@
 //   - assets/feed/imani: Imani Brooks's set (Unsplash, free licence).
 // A photo that is missing on this machine falls back to the post's gradient.
 
+import AIRBNB_AD from '../../../assets/feed/ads/airbnb-ad.jpg'
 import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
 import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile, gridTime } from './archiveData'
 
@@ -115,6 +116,7 @@ const BASE_POSTS = [
     ad: { name: 'Airbnb', domain: 'airbnb.com', url: 'https://www.airbnb.com/livethere', title: 'Live There', page: 'airbnb-live-there',
       // Campaign poster type over the photo (spring 2016 'Live There' creative).
       poster: [["Don’t", 'Go', 'There.'], ['Live', 'There.']] },
+    imageSrc: AIRBNB_AD,          // the campaign photo the poster type sits on
     avatar: friendAvatar('airbnb'),
     imageGradient: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
     likes: '12,440',
@@ -187,7 +189,7 @@ const BASE_POSTS = [
 BASE_POSTS.forEach(p => {
   const ad = p.isSponsored && ARCHIVE[p.username] ? ARCHIVE[p.username].posts[0].url : null
   const src = FRIEND_PHOTO_LEAD(p.username) || ad || adPhoto(p.username)
-  if (src) p.imageSrc = src
+  if (src && !p.imageSrc) p.imageSrc = src
 })
 
 // ── The home feed ──────────────────────────────────────────────────────────

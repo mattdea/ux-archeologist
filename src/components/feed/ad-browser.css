@@ -266,7 +266,8 @@
   padding: 6cqw 7cqw;
   font-family: "Circular Air", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 700;
-  font-size: 12cqw;
+  font-size: 13.5cqw;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 12px rgba(0, 0, 0, 0.2);
   line-height: 0.98;
   letter-spacing: -0.02em;
   color: #ffffff;
@@ -280,11 +281,8 @@
   position: absolute;
   top: 6cqw;
   right: 6cqw;
-  width: 20cqw;
-  /* The PNG is red on opaque white: turn it white-on-black, then screen it
-     so the black drops out. */
-  filter: grayscale(1) invert(1) contrast(4);
-  mix-blend-mode: screen;
+  width: 13cqw;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
 }
 
 /* ─── Airbnb mobile homepage, spring 2016 ("LIVE THERE") ─────────────────
