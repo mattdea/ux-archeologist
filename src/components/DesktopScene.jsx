@@ -5,6 +5,7 @@ import MenuBar from './MenuBar'
 import DesktopIcon from './DesktopIcon'
 import DraggableWindow from './DraggableWindow'
 import ScreenTexture from './ScreenTexture'
+import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
 
 // Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = Projects,
 // 3 = Notes, 4 = Trash (everything). The boot sequence steps this up so the
@@ -72,29 +73,66 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const draggingIcon  = useRef(null)   // which icon is being dragged
   const trackMouseRef = useRef(null)
 
-  const startDragOutline = (x, y) => {
-    const outline = document.createElement('div')
-    outline.style.cssText = `
-      position: fixed;
-      width: 48px;
-      height: 52px;
-      border: 1px dashed #000;
-      pointer-events: none;
-      z-index: 9999;
-      left: ${x - 24}px;
-      top: ${y - 26}px;
-      box-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff;
-    `
-    document.body.appendChild(outline)
-    dragOutline.current = outline
-    dragMousePos.current = { x, y }
+  // ── Icon drag outline ───────────────────────────────────────────────
+  // All in desktop coordinates (the Mac is scaled; see desktopDrag.js).
+  // The outline is the icon graphic's true box. iconGrab = icon position
+  // minus pointer, so the point you grabbed stays under the cursor and the
+  // icon lands exactly where its outline was.
+  const iconGrab      = useRef({ x: -70, y: -20 })
+  const graphicOffset = useRef({ x: 30, y: 0, w: 40, h: 40 })
+
+  // Icon graphic box relative to its icon element, in desktop px
+  const measureGraphic = (iconEl) => {
+    const desktop = desktopRef.current
+    const g = iconEl?.firstElementChild
+    if (!desktop || !g) return graphicOffset.current
+    const ir = iconEl.getBoundingClientRect(), gr = g.getBoundingClientRect()
+    const i = toLocal(desktop, ir.left, ir.top)
+    const a = toLocal(desktop, gr.left, gr.top)
+    const z = toLocal(desktop, gr.right, gr.bottom)
+    return { x: a.x - i.x, y: a.y - i.y, w: z.x - a.x, h: z.y - a.y }
+  }
+
+  // Icon position for a pointer (screen px), clamped to the desktop
+  const iconPosForPointer = (clientX, clientY) => {
+    const desktop = desktopRef.current
+    const m = toLocal(desktop, clientX, clientY)
+    return {
+      x: Math.max(4, Math.min(desktop.offsetWidth - 56, m.x + iconGrab.current.x)),
+      y: Math.max(34, Math.min(desktop.offsetHeight - 70, m.y + iconGrab.current.y)),
+    }
+  }
+
+  // iconEl: the desktop icon being dragged. Omitted for items dragged out of
+  // the Trash window; those get an icon-sized outline centred on the cursor.
+  const startDragOutline = (clientX, clientY, iconEl) => {
+    const desktop = desktopRef.current
+    if (!desktop) return
+    stopDragOutline()
+    const m = toLocal(desktop, clientX, clientY)
+    if (iconEl) {
+      graphicOffset.current = measureGraphic(iconEl)
+      const ir = iconEl.getBoundingClientRect()
+      const i = toLocal(desktop, ir.left, ir.top)
+      iconGrab.current = { x: i.x - m.x, y: i.y - m.y }
+    } else {
+      const g = graphicOffset.current = measureGraphic(trashRef.current)
+      iconGrab.current = { x: -(g.x + g.w / 2), y: -(g.y + g.h / 2) }
+    }
+    const g = graphicOffset.current
+    const place = (cx, cy) => {
+      const p = iconPosForPointer(cx, cy)
+      return { x: p.x + g.x, y: p.y + g.y }
+    }
+    const start = place(clientX, clientY)
+    dragOutline.current = createOutline(desktop, { ...start, w: g.w, h: g.h })
+    dragMousePos.current = { x: clientX, y: clientY }
 
     // Stutter: update position at ~10fps (every 100ms) like the 8MHz 68000
     dragInterval.current = setInterval(() => {
       if (!dragOutline.current) return
-      const { x: mx, y: my } = dragMousePos.current
-      dragOutline.current.style.left = `${mx - 24}px`
-      dragOutline.current.style.top = `${my - 26}px`
+      const { x, y } = place(dragMousePos.current.x, dragMousePos.current.y)
+      moveOutline(dragOutline.current, x, y)
     }, 100)
 
     const trackMouse = (e) => {
@@ -114,11 +152,10 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       document.removeEventListener('dragover', trackMouseRef.current)
       trackMouseRef.current = null
     }
-    if (dragOutline.current) {
-      document.body.removeChild(dragOutline.current)
-      dragOutline.current = null
-    }
+    removeOutline(dragOutline.current)
+    dragOutline.current = null
   }
+
 
   // Non-passive touchmove on projects icon to allow e.preventDefault()
   useEffect(() => {
@@ -152,19 +189,18 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     document.body.appendChild(ghost)
     e.dataTransfer.setDragImage(ghost, 0, 0)
     setTimeout(() => document.body.removeChild(ghost), 0)
-    startDragOutline(e.clientX, e.clientY)
+    startDragOutline(e.clientX, e.clientY, e.currentTarget)
   }
 
   const handleIconDragEnd = (iconName, e) => {
     stopDragOutline()
     if (dragResult.current === 'trashed') return  // position handled by trash drop
-    const rect = desktopRef.current?.getBoundingClientRect()
-    if (!rect) return
+    if (!desktopRef.current) return
+    // dragend's own coordinates are unreliable; use the last dragover point
     const mouseX = dragMousePos.current?.x ?? e.clientX
     const mouseY = dragMousePos.current?.y ?? e.clientY
-    const x = Math.max(4, Math.min(rect.width - 56, mouseX - rect.left - 24))
-    const y = Math.max(34, Math.min(rect.height - 70, mouseY - rect.top - 26))
-    setIconPositions(prev => ({ ...prev, [iconName]: { x, y } }))
+    const pos = iconPosForPointer(mouseX, mouseY)
+    setIconPositions(prev => ({ ...prev, [iconName]: pos }))
   }
 
   const handleTrashDragOver = (e) => {
@@ -393,17 +429,13 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     if (item === 'projects-restore') {
       stopDragOutline()
       setTrashContents(prev => prev.filter(x => x !== 'projects'))
-      const rect = desktopRef.current.getBoundingClientRect()
-      const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
-      const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
-      setIconPositions(prev => ({ ...prev, projects: { x, y } }))
+      const pos = iconPosForPointer(e.clientX, e.clientY)
+      setIconPositions(prev => ({ ...prev, projects: pos }))
     } else if (item === 'notes-restore') {
       stopDragOutline()
       setTrashContents(prev => prev.filter(x => x !== 'notes'))
-      const rect = desktopRef.current.getBoundingClientRect()
-      const x = Math.max(4, Math.min(rect.width - 56, e.clientX - rect.left - 24))
-      const y = Math.max(34, Math.min(rect.height - 70, e.clientY - rect.top - 26))
-      setIconPositions(prev => ({ ...prev, notes: { x, y } }))
+      const pos = iconPosForPointer(e.clientX, e.clientY)
+      setIconPositions(prev => ({ ...prev, notes: pos }))
     }
   }
 

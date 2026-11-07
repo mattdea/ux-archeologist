@@ -222,7 +222,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Checkered desktop pattern — drawn by `ScreenTexture`, which cancels the artifact scale so each square is always one CSS pixel on screen and snaps to device pixels (no moiré at any bezel size). Never put the checker directly on a scaled element.
 - Chicago monospace font
 - Striped window title bars
-- Dashed drag outlines (~10fps, authentic to 8MHz 68000)
+- Dashed drag outlines (~10fps, authentic to 8MHz 68000). Outlines are drawn inside the desktop in its own coordinates (`desktopDrag.js` `toLocal`), so at any bezel scale they are exactly the window or icon size, keep the grab point under the cursor, and the item drops where its outline was. Never mix `clientX` with desktop positions.
 
 **Interactive Elements:**
 - Documents folder icon (double-click to open text window)
