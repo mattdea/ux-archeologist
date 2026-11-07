@@ -216,8 +216,13 @@ const FEED_COMMENTS = {
   kimkardashian: [{ username: 'mia.c', text: 'iconic' }],
 }
 
-// Slots that hold a real account (everything that is not a friend or an ad).
-const REAL_SLOTS = FEED.map(([u], i) => BASE_POSTS.some(p => p.username === u) ? -1 : i).filter(i => i >= 0)
+// Slots that reshuffle on refresh: every real account and every friend.
+// Ads keep their slots; Imani moves too, but only within IMANI_RANGE so she
+// stays buried mid-feed under celebrities.
+const AD_USERS = new Set(BASE_POSTS.filter(p => p.isSponsored).map(p => p.username))
+const TARGET_USER = BASE_POSTS.find(p => p.isTarget).username
+const MOVABLE_SLOTS = FEED.map(([u], i) => AD_USERS.has(u) || u === TARGET_USER ? -1 : i).filter(i => i >= 0)
+const IMANI_RANGE = [9, 17]          // slot indexes (0-based) she may land in
 
 // Small seeded generator (LCG) so a refresh is random but repeatable.
 function rng(seed) {
@@ -225,39 +230,67 @@ function rng(seed) {
   return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296 }
 }
 
+function shuffle(list, r) {
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1))
+    ;[list[i], list[j]] = [list[j], list[i]]
+  }
+  return list
+}
+
 /**
  * The home feed for one load. Seed 0 is the canonical FEED: every account in
- * its listed slot showing its newest post. Any other seed deals the real
- * accounts into the real slots in a shuffled order and starts each on one of
- * its three newest posts, so a reload or pull-to-refresh looks new. Friends,
- * ads and the slot labels never move, so Imani stays buried where the level
- * expects her.
+ * its listed slot showing its newest post. Any other seed reshuffles it so a
+ * reload or pull-to-refresh looks new:
+ *   - real accounts and friends are dealt into each other's slots;
+ *   - each real account starts on one of its three newest posts;
+ *   - each friend (marcus.h, julia.creates, sarah.moments) shows a random
+ *     photo from their set, with a fresh caption when it isn't their lead;
+ *   - Imani lands on a random slot in IMANI_RANGE, always with her news post;
+ *   - ads and the slot time labels stay put.
  *   posts    — the feed, in slot order
  *   page(n)  — the n-th page of older posts (n ≥ 1): each real account's
  *              next post after the ones already shown, labelled gridTime by
  *              archivePost; [] once every account has run out
  */
 export function buildFeed(seed = 0) {
-  const reals = REAL_SLOTS.map(i => FEED[i][0])
+  const users = FEED.map(([u]) => u)
   const start = {}
-  if (seed) {
-    const r = rng(seed)
-    for (let i = reals.length - 1; i > 0; i--) {
-      const j = Math.floor(r() * (i + 1))
-      ;[reals[i], reals[j]] = [reals[j], reals[i]]
-    }
-    reals.forEach(u => { start[u] = Math.floor(r() * 3) })
+  const r = seed ? rng(seed) : null
+  if (r) {
+    const dealt = shuffle(MOVABLE_SLOTS.map(i => users[i]), r)
+    MOVABLE_SLOTS.forEach((slot, k) => { users[slot] = dealt[k] })
+    // Swap Imani into a random non-ad slot within her range.
+    const home = users.indexOf(TARGET_USER)
+    const options = MOVABLE_SLOTS.filter(i => i >= IMANI_RANGE[0] && i <= IMANI_RANGE[1])
+    const to = options[Math.floor(r() * options.length)]
+    ;[users[home], users[to]] = [users[to], users[home]]
+    users.forEach(u => { if (!BASE_POSTS.some(p => p.username === u)) start[u] = Math.floor(r() * 3) })
   }
-  const slots = FEED.map(([u, t], i) => {
-    const k = REAL_SLOTS.indexOf(i)
-    return [k < 0 ? u : reals[k], t]
-  })
-  const posts = slots.flatMap(([username, timestamp]) => {
+  const posts = users.flatMap((username, i) => {
+    const timestamp = FEED[i][1]
     const base = BASE_POSTS.find(p => p.username === username)
-    const post = base || archivePost(username, start[username] || 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
+    if (base) {
+      if (!r || base.isSponsored || base.isTarget) return [{ ...base, timestamp }]
+      const set = friendSet(username)
+      const k = Math.floor(r() * set.length)
+      if (k === 0) return [{ ...base, timestamp }]
+      const h = hashString(username + k)
+      return [{
+        ...base,
+        id: `${base.id}-${k}`,
+        imageSrc: set[k],
+        caption: EXPLORE_CAPTIONS[h % EXPLORE_CAPTIONS.length],
+        likes: String(20 + (h % 180)),
+        commentCount: 0,
+        comments: [],
+        timestamp,
+      }]
+    }
+    const post = archivePost(username, start[username] || 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
     return post ? [{ ...post, timestamp }] : []
   })
-  const page = n => slots.flatMap(([username]) => {
+  const page = n => users.flatMap(username => {
     if (BASE_POSTS.some(p => p.username === username)) return []
     const post = archivePost(username, (start[username] || 0) + n)
     return post ? [post] : []

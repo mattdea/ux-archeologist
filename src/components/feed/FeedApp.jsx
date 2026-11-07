@@ -5,7 +5,7 @@
 //   animated           — true when screen === 'playing'; triggers feed-enter keyframe
 //   framed             — true inside GhostDevice: lays out at 320 × 568 and is
 //                        zoomed to fill the 375 × 667 slot (iPhone 6 Display Zoom)
-//   onCompleteObjective(key) — fires 'findFriend' | 'tapSponsored' | 'likePost'
+//   onCompleteObjective(key) — fires 'likeImani' | 'tapSponsored' | 'followNew'
 //
 // Navigation: `tab` picks the root screen; `stacks[tab]` holds pushed views
 // ({ id, type: 'post', post } | { id, type: 'profile', username }). Every tab
@@ -24,7 +24,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import useDragScroll from './useDragScroll'
-import { resetFollows } from './followStore'
+import { resetFollows, useFollowsSomeoneNew } from './followStore'
 import './feed-styles.css'
 import './ad-browser.css'
 import { buildFeed, randomSeed, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY } from './feedData'
@@ -53,7 +53,6 @@ const TRICKLE_GAP_MS = 7000
 
 export default function FeedApp({ onCompleteObjective, animated, framed = false }) {
   const feedScrollRef = useRef(null)
-  const targetRef = useRef(null)
 
   const [tab, setTab] = useState('home')
   const [stacks, setStacks] = useState({ home: [], explore: [], activity: [], profile: [] })
@@ -71,27 +70,12 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
   const navTimer = useRef(null)
   useEffect(() => () => clearTimeout(navTimer.current), [])
 
-  // IntersectionObserver: fires 'findFriend' when the friend's post is ≥40%
-  // visible inside the feed's own scroll container.
+  // 'followNew' fires the first time the player follows someone new
+  // (from Explore, a profile or an Activity row).
+  const followsNew = useFollowsSomeoneNew()
   useEffect(() => {
-    const scroll = feedScrollRef.current
-    const target = targetRef.current
-    if (!scroll || !target || !onCompleteObjective) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            onCompleteObjective('findFriend')
-            observer.disconnect()
-          }
-        })
-      },
-      { root: scroll, threshold: 0.4 }
-    )
-    observer.observe(target)
-    return () => observer.disconnect()
-  }, [onCompleteObjective])
+    if (followsNew && onCompleteObjective) onCompleteObjective('followNew')
+  }, [followsNew, onCompleteObjective])
 
   // New likes arrive while the player is in the feed (home tab, nothing pushed).
   const inFeed = animated && tab === 'home' && stacks.home.length === 0
@@ -156,8 +140,10 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
     }, LOAD_MORE_MS)
   }, [exhausted, feed])
 
-  const handleLike = useCallback(() => {
-    if (onCompleteObjective) onCompleteObjective('likePost')
+  // 'likeImani' fires when the liked post is Imani's news post (the target),
+  // from the feed, her profile or a post detail.
+  const handleLike = useCallback((post) => {
+    if (post?.isTarget && onCompleteObjective) onCompleteObjective('likeImani')
   }, [onCompleteObjective])
 
   const handleSponsoredTap = useCallback(() => {
@@ -249,8 +235,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
             <Post
               key={post.id}
               {...post}
-              containerRef={post.isTarget ? targetRef : undefined}
-              onLike={handleLike}
+              onLike={() => handleLike(post)}
               onSponsoredTap={post.isSponsored ? handleSponsoredTap : undefined}
               onOpenAd={openAd}
               onOpenProfile={openProfile}
@@ -279,7 +264,7 @@ export default function FeedApp({ onCompleteObjective, animated, framed = false 
             ...stacks[t].map(v => ({
               key: 'view-' + v.id,
               node: v.type === 'post'
-                ? <PostDetailView post={v.post} onBack={pop} onLike={handleLike} onOpenProfile={openProfile} onOpenAd={openAd} />
+                ? <PostDetailView post={v.post} onBack={pop} onLike={() => handleLike(v.post)} onOpenProfile={openProfile} onOpenAd={openAd} />
                 : <ProfileView username={v.username} onBack={pop} onOpenPost={openPost} />,
             })),
           ]

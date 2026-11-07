@@ -21,9 +21,9 @@ import useBezelScale from '../hooks/useBezelScale'
 const BOTTOM_ZONE_H = 180
 
 const OBJECTIVES = [
-  "Find Imani's post",
+  "Like Imani's post",
   'Learn more about a sponsored post',
-  'Like a post',
+  'Follow someone new',
 ]
 
 const DISCOVERY_DESCRIPTION =
@@ -48,7 +48,7 @@ export default function Level4() {
   // Independent objectives — all pre-completed on replay
   const [objectives, setObjectives] = useState(() => {
     const done = ALREADY_DONE
-    return { findFriend: done, tapSponsored: done, likePost: done }
+    return { likeImani: done, tapSponsored: done, followNew: done }
   })
 
   const completeObjective = useCallback((key) => {
@@ -77,7 +77,7 @@ export default function Level4() {
   }, [screen, notifyArtifactReady])
 
   // Continue button wiring (canonical pattern from CLAUDE.md)
-  const allComplete = objectives.findFriend && objectives.tapSponsored && objectives.likePost
+  const allComplete = objectives.likeImani && objectives.tapSponsored && objectives.followNew
   useEffect(() => {
     if (screen === 'playing' && allComplete) {
       setContinue(() => () => { completeLevel(4); setScreen('discovery') })
@@ -96,9 +96,9 @@ export default function Level4() {
   const handleBeginExcavation = () => setScreen('booting')
 
   const completedIndices = [
-    objectives.findFriend,
+    objectives.likeImani,
     objectives.tapSponsored,
-    objectives.likePost,
+    objectives.followNew,
   ].reduce((acc, done, i) => done ? [...acc, i] : acc, [])
 
   return (

@@ -4,24 +4,29 @@
 import { POSTS, FEED, FEED_ORDER, FEED_TIMES, feedPage, buildFeed, hasProfile, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
 
 describe('buildFeed(seed)', () => {
-  const fixed = ['imani.brooks', 'marcus.h', 'julia.creates', 'sarah.moments', 'airbnb', 'warbyparker']
+  const ads = ['airbnb', 'warbyparker']
+  const slotOf = (posts, u) => posts.findIndex(p => p.username === u)
   it('seed 0 is the canonical feed', () => {
     expect(buildFeed(0).posts.map(p => p.id)).toEqual(POSTS.map(p => p.id))
   })
-  it('a seed is repeatable and keeps friends, ads and the real-account set', () => {
+  it('a seed is repeatable, keeps ads in their slots and keeps the account set', () => {
     const a = buildFeed(12345).posts
     const b = buildFeed(12345).posts
     expect(a.map(p => p.id)).toEqual(b.map(p => p.id))
-    expect(a.filter(p => fixed.includes(p.username)).map(p => p.username))
-      .toEqual(POSTS.filter(p => fixed.includes(p.username)).map(p => p.username))
+    ads.forEach(u => expect(slotOf(a, u)).toBe(slotOf(POSTS, u)))
     expect(new Set(a.map(p => p.username))).toEqual(new Set(POSTS.map(p => p.username)))
   })
-  it('keeps Imani buried in slots 12–16 when every account is present', () => {
-    const posts = buildFeed(777).posts
-    if (posts.length === 24) {
-      const slot = posts.findIndex(p => p.username === 'imani.brooks') + 1
-      expect(slot).toBeGreaterThanOrEqual(12)
-      expect(slot).toBeLessThanOrEqual(16)
+  it('moves the friends between refreshes', () => {
+    const seen = new Set([1, 2, 3, 4, 5, 6, 7, 8].map(s => slotOf(buildFeed(s).posts, 'marcus.h')))
+    expect(seen.size).toBeGreaterThan(2)
+  })
+  it('keeps Imani buried in slots 10–18 with her news post', () => {
+    for (const seed of [7, 77, 777, 7777]) {
+      const posts = buildFeed(seed).posts
+      const slot = slotOf(posts, 'imani.brooks') + 1
+      expect(slot).toBeGreaterThanOrEqual(10)
+      expect(slot).toBeLessThanOrEqual(18)
+      expect(posts[slot - 1].isTarget).toBe(true)
     }
   })
   it('never repeats a post between the feed and its older pages', () => {

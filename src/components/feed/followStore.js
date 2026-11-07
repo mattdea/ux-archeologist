@@ -36,6 +36,11 @@ export function useIsFollowing(username) {
   return useSyncExternalStore(subscribe, () => !!username && following.has(username))
 }
 
+/** True once the player follows anyone they didn't follow at the start. */
+export function useFollowsSomeoneNew() {
+  return useSyncExternalStore(subscribe, () => [...following].some(u => !FOLLOWING.has(u)))
+}
+
 export function useFollowingCount() {
   return useSyncExternalStore(subscribe, () => following.size)
 }
