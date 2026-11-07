@@ -14,7 +14,8 @@
 .bg {
   position: absolute;
   inset: 0;
-  background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 2px 2px;
+  /* Pattern is <ScreenTexture> inside, drawn at fixed on-screen size */
+  overflow: hidden;
   /* Start fully clipped — nothing visible */
   clip-path: inset(0 0 100% 0);
 }
@@ -84,50 +85,4 @@
   color: #000;
   white-space: nowrap;
   text-align: center;
-}
-
-
-/* ─── Fake menu bar ──────────────────────────────────────────────── */
-
-.fakeMenuBar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--menu-bar-height);
-  background: #fff;
-  border-bottom: 1px solid #000;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 0 4px;
-}
-
-.menuApple {
-  font-family: var(--font-chicago);
-  font-size: 14px;
-  padding: 0 6px;
-}
-
-.menuItem {
-  font-family: var(--font-chicago);
-  font-size: 13px;
-  padding: 0 8px;
-}
-
-/* ─── Flash-in animation ─────────────────────────────────────────── */
-
-/* Digital blink: on → off → on (no smooth interpolation) */
-@keyframes flashIn {
-  0%    { opacity: 0; }
-  5%    { opacity: 1; }
-  40%   { opacity: 1; }
-  41%   { opacity: 0; }
-  70%   { opacity: 0; }
-  71%   { opacity: 1; }
-  100%  { opacity: 1; }
-}
-
-.flashIn {
-  animation: flashIn 380ms linear forwards;
 }

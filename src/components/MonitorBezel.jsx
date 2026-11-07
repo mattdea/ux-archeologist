@@ -48,7 +48,13 @@ function CrtOverlay() {
   )
 }
 
-export default function MonitorBezel({ children }) {
+/**
+ * @param {boolean} [driveBusy]  Lights the 400K drive's in-use LED, which
+ *   sat recessed just inside the floppy slot on the original 128K/512K.
+ *   There was no power light or other front indicator; the dark dot to the
+ *   right of the slot is the manual-eject pinhole.
+ */
+export default function MonitorBezel({ children, driveBusy = false }) {
   return (
     <div className={styles.monitor}>
 
@@ -63,9 +69,14 @@ export default function MonitorBezel({ children }) {
 
       {/* Interactive screen — overlaid on the SVG screen hole */}
       <div className={styles.screen}>
-        {children}
+        {/* Own stacking context, so nothing inside (boot overlay, menus,
+            windows) can paint over the glass. */}
+        <div className={styles.content}>{children}</div>
         <CrtOverlay />
       </div>
+
+      {/* Drive in-use LED, recessed inside the slot */}
+      <div className={`${styles.driveLed} ${driveBusy ? styles.driveLedOn : ''}`} aria-hidden="true" />
 
     </div>
   )

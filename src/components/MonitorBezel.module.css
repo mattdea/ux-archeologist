@@ -41,6 +41,16 @@
   z-index: 1;
 }
 
+/* Screen contents: isolated so z-indexes inside (boot overlay 50, menu
+   bar 50, dropdowns 200, windows 20+) stay below the glass reflection. */
+.content {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  z-index: 1;
+}
+
+/* Glass reflection: part of the hardware, always on top of the screen. */
 .crtOverlay {
   position: absolute;
   top: 0;
@@ -49,4 +59,28 @@
   height: 415px;
   pointer-events: none;
   z-index: 2;
+}
+
+/* ─── 400K drive in-use LED ──────────────────────────────────────────
+   Sits just inside the left end of the floppy slot (slot interior in the
+   SVG: x 411–607, y 674–686). Off it is a barely visible dark red lens;
+   on it glows while the disk is being read. Real LEDs switch instantly. */
+.driveLed {
+  position: absolute;
+  left: 416px;
+  top: 678.5px;
+  width: 7px;
+  height: 3px;
+  border-radius: 1.5px;
+  background: #2a0806;
+  z-index: 1;
+  pointer-events: none;
+  transition: background 40ms linear, box-shadow 40ms linear;
+}
+
+.driveLedOn {
+  background: #ff3a22;
+  box-shadow:
+    0 0 2px 0.5px rgba(255, 70, 40, 0.95),
+    0 0 7px 2px rgba(255, 40, 20, 0.45);
 }

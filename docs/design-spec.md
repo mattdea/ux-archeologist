@@ -219,7 +219,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Visual Palette:**
 - Pure 1-bit: black and white only inside screen
-- Checkered desktop pattern
+- Checkered desktop pattern — drawn by `ScreenTexture`, which cancels the artifact scale so each square is always one CSS pixel on screen and snaps to device pixels (no moiré at any bezel size). Never put the checker directly on a scaled element.
 - Chicago monospace font
 - Striped window title bars
 - Dashed drag outlines (~10fps, authentic to 8MHz 68000)
@@ -230,6 +230,13 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Trash icon (drop target, highlights on hover)
 - Menu bar: File menu (New Folder, Open, Close, About This System)
 - Windows: draggable by title bar with laggy outline, clamped to screen bounds
+
+**Hardware details (`MonitorBezel`):**
+- Glass reflection (`CrtOverlay`) is part of the hardware: always visible, in every state, above everything on the screen. Screen contents live in an isolated stacking context so no z-index inside can cover it.
+- No power light or other front indicator, as on the real 128K/512K. The dark dot right of the slot is the manual-eject pinhole.
+- Drive in-use LED: small red light recessed just inside the left end of the floppy slot (original 400K drive). Lit while booting from disk and for ~700ms whenever the Finder opens something (`driveBusy` prop).
+
+**Boot sequence (`BootSequence`):** black → gray pattern scans in → Happy Mac → "Welcome to Macintosh." → overlay removed, then the real `DesktopScene` reveals its own menu bar, Projects, Notes, Trash in place (`reveal` 1–4). No blink animation and no stand-in menu bar or icons, so nothing resizes or moves at the hand-off. Callbacks go through a ref so parent re-renders never restart the timeline.
 
 **Objectives (sequential):**
 1. Find the document on this computer

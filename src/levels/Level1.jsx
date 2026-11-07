@@ -1,10 +1,10 @@
 // src/levels/Level1.jsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './Level1.module.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
-import DesktopScene from '../components/DesktopScene'
+import DesktopScene, { REVEAL_ALL } from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
@@ -39,6 +39,20 @@ export default function Level1() {
       return saved ? JSON.parse(saved) : []
     } catch { return [] }
   })
+  // Boot reveal step for the real desktop (0 = bare gray, REVEAL_ALL = done).
+  const [reveal, setReveal] = useState(() => isLevelComplete(1) ? REVEAL_ALL : 0)
+  // Floppy in-use LED: on while booting from disk and briefly whenever the
+  // Finder reads the disk to open something.
+  const [driveBusy, setDriveBusy] = useState(false)
+  const driveTimer = useRef(null)
+  const pulseDrive = useCallback(() => {
+    clearTimeout(driveTimer.current)
+    setDriveBusy(true)
+    driveTimer.current = setTimeout(() => setDriveBusy(false), 700)
+  }, [])
+  useEffect(() => () => clearTimeout(driveTimer.current), [])
+  const finishBoot = useCallback(() => setScreen('playing'), [])
+
   // Fits the artifact around the HUD corners, as large as the viewport allows
   const fit = useArtifactFit(BEZEL_W, BEZEL_H)
   const scale = fit.scale
@@ -112,16 +126,22 @@ export default function Level1() {
             style={{ width: BEZEL_W * scale, height: BEZEL_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
-              <MonitorBezel>
+              <MonitorBezel driveBusy={driveBusy}>
                 <div className={styles.inner}>
                   {showDesktop && (
                     <DesktopScene
                       completeObjective={completeObjective}
                       active={screen === 'playing'}
+                      reveal={reveal}
+                      onDiskAccess={pulseDrive}
                     />
                   )}
                   {screen === 'booting' && (
-                    <BootSequence onComplete={() => setScreen('playing')} />
+                    <BootSequence
+                      onComplete={finishBoot}
+                      onReveal={setReveal}
+                      onDriveBusy={setDriveBusy}
+                    />
                   )}
                 </div>
               </MonitorBezel>

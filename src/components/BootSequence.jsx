@@ -1,28 +1,18 @@
 // src/components/BootSequence.jsx
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styles from './BootSequence.module.css'
-import DesktopIcon from './DesktopIcon'
+import ScreenTexture from './ScreenTexture'
 import bootupIconUrl from '../../assets/mac-bootup-icon.png'
 
-// Phases
+// Phases of the overlay. Once the desktop is up the overlay is gone and the
+// real DesktopScene underneath draws its own menu bar and icons (via
+// onReveal), so nothing is swapped, resized or moved at the hand-off.
 const P = {
   BLACK:    0,  // solid black
-  SCANNING: 1,  // bg reveals top→bottom
+  SCANNING: 1,  // gray desktop pattern reveals top→bottom
   HAPPY:    2,  // Happy Mac icon centered
   WELCOME:  3,  // Welcome to Macintosh dialog
-  DISMISS:  4,  // dialog gone, still black-ish
-  MENUBAR:  5,  // menu bar flashes in
-  ICONS:    6,  // icons flash in one-by-one
-  DONE:     7,  // sequence complete
-}
-
-// Desktop-relative icon positions (matching DesktopScene initialState)
-// Add MENU_BAR_H (30px) to convert to screen coords
-const MENU_BAR_H = 30
-const ICON_POS = {
-  projects: { left: 496, top: 40  + MENU_BAR_H },
-  notes:    { left: 496, top: 160 + MENU_BAR_H },
-  trash:    { left: 496, top: 300 + MENU_BAR_H },
+  DESKTOP:  4,  // overlay removed; DesktopScene shows through
 }
 
 function HappyMacSVG({ className }) {
@@ -61,36 +51,52 @@ function HappyMacSVG({ className }) {
   )
 }
 
-export default function BootSequence({ onComplete }) {
+/**
+ * @param {() => void}        onComplete   Boot finished; desktop is interactive.
+ * @param {(n: number) => void} [onReveal] Desktop reveal step: 1 menu bar,
+ *   2 Projects, 3 Notes, 4 Trash. Same order the Finder drew them in.
+ * @param {(busy: boolean) => void} [onDriveBusy] Floppy in-use LED.
+ */
+export default function BootSequence({ onComplete, onReveal, onDriveBusy }) {
   const [phase, setPhase] = useState(P.BLACK)
-  const [icons, setIcons] = useState([])   // which icons have appeared
+
+  // Callbacks via ref: the parent re-renders during boot (resize, reveal
+  // steps), and new function identities must not restart the timeline.
+  const cb = useRef({ onComplete, onReveal, onDriveBusy })
+  useLayoutEffect(() => { cb.current = { onComplete, onReveal, onDriveBusy } })
 
   useEffect(() => {
     const timers = []
     const at = (ms, fn) => timers.push(setTimeout(fn, ms))
+    const reveal = n => cb.current.onReveal?.(n)
+    const drive = on => cb.current.onDriveBusy?.(on)
 
     at(300,  () => setPhase(P.SCANNING))
-    at(1050, () => setPhase(P.HAPPY))
+    at(1050, () => { setPhase(P.HAPPY); drive(true) })   // reading the System disk
     at(2400, () => setPhase(P.WELCOME))
-    at(4100, () => setPhase(P.DISMISS))
-    at(4400, () => setPhase(P.MENUBAR))
-    at(4800, () => { setPhase(P.ICONS); setIcons(['projects']) })
-    at(5050, () => setIcons(['projects', 'notes']))
-    at(5300, () => setIcons(['projects', 'notes', 'trash']))
-    at(5750, () => setPhase(P.DONE))
-    at(5850, () => onComplete())
+    at(4100, () => setPhase(P.DESKTOP))                  // Finder takes over
+    at(4400, () => reveal(1))                            // menu bar
+    at(4800, () => reveal(2))                            // Projects
+    at(5050, () => reveal(3))                            // Notes
+    at(5300, () => reveal(4))                            // Trash
+    at(5450, () => drive(false))
+    at(5600, () => cb.current.onComplete())
 
-    return () => timers.forEach(clearTimeout)
-  }, [onComplete])
+    return () => { timers.forEach(clearTimeout); drive(false) }
+  }, [])
+
+  if (phase >= P.DESKTOP) return null
 
   return (
     <div className={styles.boot}>
 
-      {/* Checkered desktop background — revealed top-to-bottom via clip-path */}
-      <div className={`${styles.bg} ${phase >= P.SCANNING ? styles.bgReveal : ''}`} />
+      {/* Gray desktop pattern — revealed top-to-bottom via clip-path */}
+      <div className={`${styles.bg} ${phase >= P.SCANNING ? styles.bgReveal : ''}`}>
+        <ScreenTexture />
+      </div>
 
       {/* Happy Mac — centered standalone; gone once welcome dialog takes over */}
-      {phase >= P.HAPPY && phase < P.WELCOME && (
+      {phase === P.HAPPY && (
         <div className={styles.happyCenter}>
           <HappyMacSVG />
         </div>
@@ -105,32 +111,6 @@ export default function BootSequence({ onComplete }) {
           </div>
         </div>
       )}
-
-      {/* Menu bar */}
-      {phase >= P.MENUBAR && (
-        <div className={`${styles.fakeMenuBar} ${styles.flashIn}`}>
-          <span className={styles.menuApple}>&#63743;</span>
-          <span className={styles.menuItem}>File</span>
-          <span className={styles.menuItem}>Edit</span>
-          <span className={styles.menuItem}>View</span>
-          <span className={styles.menuItem}>Special</span>
-        </div>
-      )}
-
-      {/* Desktop icons — staggered flash-in */}
-      {icons.map(name => (
-        <DesktopIcon
-          key={name}
-          label={name.charAt(0).toUpperCase() + name.slice(1)}
-          icon={name === 'projects' ? 'folder' : name}
-          style={{
-            position: 'absolute',
-            left: ICON_POS[name].left,
-            top:  ICON_POS[name].top,
-          }}
-          className={styles.flashIn}
-        />
-      ))}
 
     </div>
   )

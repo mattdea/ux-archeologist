@@ -4,7 +4,14 @@ import styles from './DesktopScene.module.css'
 import MenuBar from './MenuBar'
 import DesktopIcon from './DesktopIcon'
 import DraggableWindow from './DraggableWindow'
-export default function DesktopScene({ completeObjective, active }) {
+import ScreenTexture from './ScreenTexture'
+
+// Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = Projects,
+// 3 = Notes, 4 = Trash (everything). The boot sequence steps this up so the
+// real menu bar and icons appear in place; nothing is swapped or moved.
+export const REVEAL_ALL = 4
+const shown = (on) => (on ? undefined : 'hidden')
+export default function DesktopScene({ completeObjective, active, reveal = REVEAL_ALL, onDiskAccess }) {
   // windows: [{ id: string, type: 'projects'|'notes'|'trash', pos: {x,y}, z: number }]
   const [windows, setWindows] = useState([])
   const [trashContents, setTrashContents] = useState([])  // [] | ['projects'] | ['notes'] | ['projects','notes']
@@ -31,6 +38,7 @@ export default function DesktopScene({ completeObjective, active }) {
   }, [notesOnDesktop])
 
   const openWindow = (type, defaultPos) => {
+    onDiskAccess?.()   // Finder reads the floppy to open anything
     const z = nextZ
     setNextZ(n => n + 1)
     setWindows(prev => {
@@ -411,6 +419,9 @@ export default function DesktopScene({ completeObjective, active }) {
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDesktopDrop}
     >
+      <ScreenTexture />
+
+      <div style={{ visibility: shown(reveal >= 1) }}>
       <MenuBar
         onMenuItemClick={handleMenuItemClick}
         canOpen={selectedIcon !== null && !windows.some(w => w.type === selectedIcon)}
@@ -418,13 +429,14 @@ export default function DesktopScene({ completeObjective, active }) {
         onOpen={handleMenuOpen}
         onClose={handleMenuClose}
       />
+      </div>
 
       {notesOnDesktop && (
         <DesktopIcon
           ref={notesRef}
           label="Notes"
           icon="notes"
-          style={{ position: 'absolute', left: iconPositions.notes.x, top: iconPositions.notes.y }}
+          style={{ position: 'absolute', left: iconPositions.notes.x, top: iconPositions.notes.y, visibility: shown(reveal >= 3) }}
           draggable={true}
           isSelected={selectedIcon === 'notes'}
           onClick={() => setSelectedIcon('notes')}
@@ -441,7 +453,7 @@ export default function DesktopScene({ completeObjective, active }) {
           ref={projectsRef}
           label="Projects"
           icon="folder"
-          style={{ position: 'absolute', left: iconPositions.projects.x, top: iconPositions.projects.y }}
+          style={{ position: 'absolute', left: iconPositions.projects.x, top: iconPositions.projects.y, visibility: shown(reveal >= 2) }}
           draggable={true}
           isSelected={selectedIcon === 'projects'}
           onClick={() => setSelectedIcon('projects')}
@@ -458,7 +470,7 @@ export default function DesktopScene({ completeObjective, active }) {
         label="Trash"
         icon="trash"
         isFull={trashContents.length > 0}
-        style={{ position: 'absolute', left: iconPositions.trash.x, top: iconPositions.trash.y }}
+        style={{ position: 'absolute', left: iconPositions.trash.x, top: iconPositions.trash.y, visibility: shown(reveal >= 4) }}
         isHighlighted={trashHighlighted}
         isSelected={selectedIcon === 'trash'}
         onClick={() => setSelectedIcon('trash')}

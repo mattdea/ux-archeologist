@@ -2,7 +2,7 @@
 .desktop {
   position: absolute;
   inset: 0;
-  background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 2px 2px;
+  background: #808080;      /* checker itself is <ScreenTexture>, drawn at fixed on-screen size */
   padding-top: var(--menu-bar-height);
 }
 
