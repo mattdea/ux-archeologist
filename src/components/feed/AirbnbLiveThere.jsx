@@ -1,63 +1,51 @@
 // src/components/feed/AirbnbLiveThere.jsx
 // The advertiser's landing page for the feed's Airbnb ad, built locally so
-// the in-app browser never loads today's airbnb.com. A *reconstruction* of a
-// spring-2016 Airbnb mobile page for the "Don't just go there. Live there."
-// campaign (launched April 2016): the original destination URL and page were
-// not recovered, so this uses what is documented — the campaign line, Airbnb's
-// 2016 identity (the Bélo wordmark, Rausch red #FF5A5F, Circular Air type), the flat, bordered mobile-web style of the time — and
-// nothing that isn't (no banners, discounts or invented offers).
-// Photos: the ad's campaign photo and Airbnb's own archived April 2016 posts.
+// the in-app browser never loads today's airbnb.com. Rebuilt from a 2016
+// screenshot of Airbnb's mobile homepage during the "Live There" campaign:
+// white header (hamburger, centred Bélo wordmark), a full-bleed hero with
+// LIVE THERE and the campaign subhead, a "Where to?" search field, then the
+// dark footer. The hero was a video in 2016; here it's a still photo from
+// Airbnb's own archived spring-2016 posts, deliberately with no play button.
 
-import { adPhoto } from './libraryData'
 import wordmark from '../../../assets/feed/ads/airbnb-wordmark.png'
 import { ARCHIVE } from './archiveData'
 
-const HERO = adPhoto('airbnb')
-const HOMES = (ARCHIVE.airbnb?.posts || []).slice(0, 4)
+const HERO = ARCHIVE.airbnb?.posts.find(p => p.code === 'BCjmfE-y5jS')?.url
+
+const LINKS = ['About', 'Careers', 'Press', 'Blog', 'Terms & Privacy']
+const SOCIAL = ['f', 'g+', 't', 'in', 'p', '▶', 'ig']
 
 export default function AirbnbLiveThere() {
   return (
     <div className="abnbPage">
       <header className="abnbHeader">
+        <button className="abnbMenu" type="button" aria-label="Menu" />
         <img className="abnbWordmark" src={wordmark} alt="Airbnb" draggable={false} />
-        <button className="abnbLogin" type="button">Log in</button>
       </header>
 
       <section className="abnbHero">
-        {HERO
-          ? <img className="abnbHeroImg" src={HERO} alt="" draggable={false} />
-          : <div className="abnbHeroImg abnbHeroFallback" />}
+        {HERO && <img className="abnbHeroImg" src={HERO} alt="" draggable={false} />}
         <div className="abnbHeroText">
-          <h1>Don’t just go there.<br />Live there.</h1>
+          <h1>LIVE THERE</h1>
+          <p>Book homes from local hosts in 191+ countries and experience a place like you live there.</p>
+        </div>
+        <div className="abnbSearch">
+          <div className="abnbSearchField">Where to?</div>
+          <button className="abnbSearchBtn" type="button" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.4" fill="none" />
+              <path d="M12.5 12.5L18 18" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
       </section>
 
-      <section className="abnbIntro">
-        <p>
-          Even if it’s just for a night, you can live in a home that’s truly
-          part of the place: a flat in the neighborhood locals love, a treehouse
-          in the woods, a room with a view you’d never find from a hotel.
-        </p>
-        <button className="abnbCta" type="button">Explore homes</button>
-      </section>
-
-      {HOMES.length > 0 && (
-        <section className="abnbHomes">
-          <h2>Live like a local</h2>
-          <div className="abnbGrid">
-            {HOMES.map(p => (
-              <figure key={p.code} className="abnbCard">
-                <img src={p.url} alt="" draggable={false} />
-                <figcaption>{p.caption.split(/[.!]/)[0]}.</figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      )}
-
       <footer className="abnbFooter">
-        <span>© 2016 Airbnb, Inc.</span>
-        <span>Terms · Privacy</span>
+        <div className="abnbSelect">English</div>
+        <div className="abnbSelect">USD</div>
+        <div className="abnbLinks">{LINKS.map(l => <span key={l}>{l}</span>)}</div>
+        <div className="abnbSocial" aria-hidden="true">{SOCIAL.map(s => <span key={s}>{s}</span>)}</div>
+        <div className="abnbCopyright">© Airbnb, Inc.</div>
       </footer>
     </div>
   )
