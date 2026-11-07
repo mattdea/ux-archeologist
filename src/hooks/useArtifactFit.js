@@ -11,9 +11,11 @@ import { useState, useLayoutEffect } from 'react'
  * artifact must not overlap. Each corner can be cleared either vertically
  * (the artifact sits above/below it — what a wide terminal wants) or
  * horizontally (the artifact sits beside it — what a tall phone wants); the
- * hook tries every combination, keeps the one that yields the largest
- * scale, and centres the artifact in the viewport as far as that region
- * allows.
+ * hook tries every combination and keeps the one that yields the largest
+ * scale. The artifact is always centred horizontally in the viewport (an
+ * off-centre device looks wrong), so clearing a corner horizontally costs
+ * the same clearance on both sides; vertically it centres as far as the
+ * free region allows.
  *
  * Returns { scale, left, top } in viewport px for a `position: fixed`
  * (or fixed-inset parent) wrapper of width*scale × height*scale.
@@ -83,14 +85,15 @@ export function computeFit(width, height, maxScale, gap) {
         else y1 = Math.min(y1, r.top - gap)
       }
     })
-    const rw = x1 - x0, rh = y1 - y0
+    // Horizontal room is symmetric about the viewport centre.
+    const rw = 2 * Math.min(W / 2 - x0, x1 - W / 2), rh = y1 - y0
     if (rw <= 0 || rh <= 0) continue
     const scale = Math.min(rw / width, rh / height, maxScale)
     const sw = width * scale, sh = height * scale
-    // Centre on the viewport when the region allows, else inside the region.
-    const left = clamp(W / 2 - sw / 2, x0, x1 - sw)
+    const left = W / 2 - sw / 2
+    // Centre vertically when the region allows, else inside the region.
     const top = clamp(H / 2 - sh / 2, y0, y1 - sh)
-    const offCentre = Math.hypot(left + sw / 2 - W / 2, top + sh / 2 - H / 2)
+    const offCentre = Math.abs(top + sh / 2 - H / 2)
     if (!best || scale > best.scale + 1e-6 || (Math.abs(scale - best.scale) < 1e-6 && offCentre < best.offCentre)) {
       best = { scale, left, top, offCentre }
     }
