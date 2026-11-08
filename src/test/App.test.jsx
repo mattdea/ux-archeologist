@@ -9,7 +9,7 @@ describe('App view system', () => {
   it('starts on the title-screen view', () => {
     render(<App />)
     expect(screen.getByText('Interface Artifacts')).toBeInTheDocument()
-    expect(screen.getByText('Begin excavation')).toBeInTheDocument()
+    expect(screen.getByText('Enter the exhibit')).toBeInTheDocument()
   })
 
   it('does not render any level HUD on the initial title view', () => {
