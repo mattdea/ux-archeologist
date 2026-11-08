@@ -1,6 +1,7 @@
 // src/levels/Level2.jsx
 import { useState, useCallback, useEffect } from 'react'
 import styles from './Level2.module.css'
+import '../components/era-cursors.css'
 import BrowserChrome from '../components/web/BrowserChrome'
 import YahooDirectory from '../components/web/pages/YahooDirectory'
 import YahooComputers from '../components/web/pages/YahooComputers'

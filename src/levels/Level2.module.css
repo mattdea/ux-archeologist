@@ -40,6 +40,12 @@
  */
 .wrap {
   position: absolute;          /* left/top from useArtifactFit */
+  cursor: var(--cursor-win-arrow);        /* Windows 95 arrow over the whole browser */
+  --cursor-link: var(--cursor-win-hand);  /* …and the system hand over links */
+}
+
+.wrap input {
+  cursor: text;                           /* I-beam over the Location field, as Win95 did */
   display: flex;
   align-items: center;
   justify-content: center;

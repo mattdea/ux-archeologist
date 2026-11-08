@@ -51,7 +51,7 @@
   font-size: 13px;
   text-decoration: underline;
   padding: 7px 10px;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   border-bottom: 1px solid #003838;
 }
 
@@ -190,11 +190,11 @@
 .link {
   color: #800080;
   text-decoration: underline;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
 .linkClickable {
-  cursor: pointer;
+  cursor: var(--cursor-link, pointer);
 }
 
 .linkClickable:hover {

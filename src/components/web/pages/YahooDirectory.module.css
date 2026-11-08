@@ -70,7 +70,7 @@
   font-weight: 700;
   color: #0000cc;
   text-decoration: underline;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
 .bannerImg {
@@ -106,7 +106,7 @@
   padding: 0 4px;
   border: 1px solid #888;
   outline: none;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
 .searchBtn {
@@ -116,7 +116,7 @@
   font-family: 'Times New Roman', Times, serif;
   font-size: 13px;
   color: #000;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   border: 2px solid;
   border-top-color:    #fff;
   border-left-color:   #fff;
@@ -145,7 +145,7 @@
 .navLink {
   color: #800080;
   text-decoration: underline;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
 /* ── Category directory ───────────────────────────────────────────── */
@@ -180,7 +180,7 @@
   font-weight: 700;
   color: #800080;
   text-decoration: underline;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
 /* "Computers and Internet" gets blue highlight */
@@ -190,7 +190,7 @@
 
 /* Clickable category */
 .catLinkClickable {
-  cursor: pointer;
+  cursor: var(--cursor-link, pointer);
 }
 
 .catLinkClickable:hover {

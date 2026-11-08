@@ -165,7 +165,7 @@
 .link {
   color: #88aaff;
   text-decoration: underline;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
 /* "A Brief History of the Web" — the objective target link */
@@ -176,7 +176,7 @@
 
 /* Target link is clickable (triggers objective) */
 .linkTargetClickable {
-  cursor: pointer;
+  cursor: var(--cursor-link, pointer);
 }
 
 .linkTargetClickable:hover {

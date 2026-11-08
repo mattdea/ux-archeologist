@@ -94,7 +94,7 @@
   font-size: 9px;
   font-family: 'Arial', sans-serif;
   color: #000000;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 
   border: 1.5px solid;
   border-top-color:    #ffffff;
@@ -131,7 +131,7 @@
   font-size: 12px;
   font-family: 'W95FA', 'Arial', sans-serif;
   color: #000000;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   white-space: nowrap;
   height: 100%;
   display: flex;
@@ -173,7 +173,7 @@
   padding: 4px 0;
   width: 48px;
   height: 40px;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   flex-shrink: 0;
 
   border-top: 1px solid #ffffff;
@@ -284,7 +284,7 @@
   font-family: 'W95FA', 'Arial', sans-serif;
   color: #000000;
   white-space: nowrap;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   flex-shrink: 0;
 }
 
@@ -324,7 +324,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 
   border-top: 1px solid #ffffff;
   border-left: 1px solid #808080;
@@ -371,7 +371,7 @@
   font-size: 11px;
   font-family: 'W95FA', 'Arial', sans-serif;
   color: #000000;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   white-space: nowrap;
   flex-shrink: 0;
 
@@ -449,7 +449,7 @@
   font-size: 7px;
   line-height: 1;
   color: #000000;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   user-select: none;
   background: #c0c0c0;
 
@@ -473,7 +473,7 @@
 .scrollTrack {
   flex: 1;
   position: relative;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   background-color: #808080;
   background-image:
     linear-gradient(45deg, #c0c0c0 25%, transparent 25%, transparent 75%, #c0c0c0 75%),
@@ -488,7 +488,7 @@
   left: 0;
   right: 0;
   background: #c0c0c0;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   box-sizing: border-box;
 
   border: 2px solid;
@@ -514,7 +514,7 @@
   font-size: 11px;
   font-family: 'W95FA', 'Arial', sans-serif;
   color: #000000;
-  cursor: default;
+  cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   padding: 1px 4px;
   width: 100%;
 

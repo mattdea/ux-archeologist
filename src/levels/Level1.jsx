@@ -1,6 +1,7 @@
 // src/levels/Level1.jsx
 import { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './Level1.module.css'
+import '../components/era-cursors.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
