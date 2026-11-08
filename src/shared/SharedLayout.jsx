@@ -83,6 +83,10 @@ export default function SharedLayout({ children }) {
   // null = hidden; fn = shown and wired to that callback
   const [continueAction, setContinueAction] = useState(null)
 
+  // Progress dot under the pointer, for the era tooltip (null = none)
+  const [hoverDot, setHoverDot] = useState(null)
+  const hoverMeta = hoverDot === null ? null : LEVEL_META['level' + hoverDot]
+
   const showHUD    = !HUD_HIDDEN_VIEWS.includes(view)
   const meta       = LEVEL_META[view] || {}
   const activeLevel = meta.level ?? null
@@ -162,10 +166,28 @@ export default function SharedLayout({ children }) {
                 </div>
 
                 {/* Top-right — progress dots */}
-                <div className={styles.hudTopRight} data-hud style={hudStyle('down', 0)}>
+                <div className={styles.hudTopRight} data-hud style={hudStyle('down', 0)} onMouseLeave={() => setHoverDot(null)}>
                   {LEVEL_NUMBERS.map(n => (
-                    <span key={n} className={dotClass(n, activeLevel)} onClick={() => fadeNavigate('/level/' + n)} style={{ cursor: 'pointer' }} />
+                    <button
+                      key={n}
+                      type="button"
+                      className={styles.dotHit}
+                      aria-label={`${LEVEL_META['level' + n].era} — ${LEVEL_META['level' + n].title}`}
+                      onMouseEnter={() => setHoverDot(n)}
+                      onFocus={() => setHoverDot(n)}
+                      onBlur={() => setHoverDot(null)}
+                      onClick={() => fadeNavigate('/level/' + n)}
+                    >
+                      <span className={dotClass(n, activeLevel)} />
+                    </button>
                   ))}
+                  {/* Era tooltip: hangs under the dot row, right-aligned, same
+                      type as the top-left label. Absolute, so it adds nothing
+                      to the data-hud box useArtifactFit measures. */}
+                  <div className={`${styles.dotTip} ${hoverMeta ? styles.dotTipVisible : ''}`} aria-hidden="true">
+                    <span className={styles.eraLabel}>{hoverMeta?.era}</span>
+                    <span className={styles.levelTitle}>{hoverMeta?.title}</span>
+                  </div>
                 </div>
 
                 {/* Bottom-right — Continue (when objectives done) + back to timeline */}

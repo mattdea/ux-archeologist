@@ -49,7 +49,49 @@
 .hudTopRight {
   top: 24px;
   right: 24px;
-  gap: 8px;
+  gap: 0;
+}
+
+/* Each dot sits in a larger invisible hit target so it is easy to hover and
+   reachable by keyboard. 8px between dots = 17px pitch − 9px dot. */
+.dotHit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 24px;
+  margin: -8px 0;         /* keep the row 9px tall for layout */
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dotHit:focus-visible .dot {
+  outline: 1.5px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Era tooltip under the dots */
+.dotTip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.dotTipVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hudBottomLeft {
@@ -120,12 +162,35 @@
 .hudContinueBtnWrap {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 300ms ease;
+  transition: opacity 200ms ease;
 }
 
+/* Appears once the last objective's strike has landed (~550ms): rises in
+   with a slight overshoot while a soft halo blooms off the border and fades. */
 .hudContinueBtnWrapVisible {
   opacity: 1;
   pointer-events: auto;
+  animation: continueRise 520ms cubic-bezier(0.22, 1.2, 0.36, 1) 550ms both;
+}
+
+.hudContinueBtnWrapVisible .hudContinueBtn {
+  animation: continueHalo 900ms ease-out 700ms both;
+}
+
+@keyframes continueRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes continueHalo {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35); border-color: #fff; }
+  100% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); border-color: #ccc; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudContinueBtnWrapVisible,
+  .hudContinueBtnWrapVisible .hudContinueBtn { animation: none; }
+  .dotTip { transition: none; }
 }
 
 .hudContinueBtn {
