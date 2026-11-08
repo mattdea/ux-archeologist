@@ -3,37 +3,26 @@ import styles from './DraggableWindow.module.css'
 import iconStyles from './DesktopIcon.module.css'
 import { FolderIcon, NotesIcon } from './DesktopIcon'
 
-function ProjectsIconSmall({ onDragStart, onDragEnd }) {
+// An item in the Trash: click selects it (File ▸ Put Back returns it),
+// drag takes it back out.
+function TrashItem({ id, label, Icon, selected, onSelect, onDragStart, onDragEnd }) {
   return (
     <div
-      className={iconStyles.icon}
+      className={`${iconStyles.icon} ${selected ? iconStyles.selected : ''}`}
+      data-trash-item={id}
       draggable={true}
+      onMouseDown={(e) => { e.stopPropagation(); onSelect?.(id) }}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
     >
-      <FolderIcon />
-      <span className={iconStyles.label}>Projects</span>
+      <Icon selected={selected} />
+      <span className={iconStyles.label}>{label}</span>
     </div>
   )
 }
 
-function NotesIconSmall({ onDragStart, onDragEnd }) {
-  return (
-    <div
-      className={iconStyles.icon}
-      draggable={true}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
-    >
-      <NotesIcon />
-      <span className={iconStyles.label}>Notes</span>
-    </div>
-  )
-}
-
-export default function TrashWindowContent({ contents = [], onRestoreNotes, onItemDragStart, onItemDragEnd }) {
+export default function TrashWindowContent({ contents = [], selected, onSelect, onRestoreNotes, onItemDragStart, onItemDragEnd }) {
   const count = contents.length
   const hasProjects = contents.includes('projects')
   const hasNotes    = contents.includes('notes')
@@ -74,16 +63,12 @@ export default function TrashWindowContent({ contents = [], onRestoreNotes, onIt
       </div>
       <div className={styles.trashBody}>
         {hasProjects && (
-          <ProjectsIconSmall
-            onDragStart={handleProjectsDragStart}
-            onDragEnd={handleProjectsDragEnd}
-          />
+          <TrashItem id="projects" label="Projects" Icon={FolderIcon} selected={selected === 'projects'} onSelect={onSelect}
+            onDragStart={handleProjectsDragStart} onDragEnd={handleProjectsDragEnd} />
         )}
         {hasNotes && (
-          <NotesIconSmall
-            onDragStart={handleNotesDragStart}
-            onDragEnd={handleNotesDragEnd}
-          />
+          <TrashItem id="notes" label="Notes" Icon={NotesIcon} selected={selected === 'notes'} onSelect={onSelect}
+            onDragStart={handleNotesDragStart} onDragEnd={handleNotesDragEnd} />
         )}
       </div>
     </>

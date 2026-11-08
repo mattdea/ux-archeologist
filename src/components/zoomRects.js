@@ -15,7 +15,11 @@ const NS = 'http://www.w3.org/2000/svg'
  * `parent`. Resolves when done. `steps` outlines in all, `trail` visible at
  * once, one step every `interval` ms.
  */
-export function zoomRects(parent, from, to, { steps = 12, trail = 3, interval = 24 } = {}) {
+// Apple's own later "Finder style" sample (ZoomRecter) uses 14 steps that
+// close 30% of the remaining distance each time, a few outlines visible at
+// once, the whole thing done in about a quarter of a second; the 1984
+// Finder's exact numbers are not documented, so those are used here.
+export function zoomRects(parent, from, to, { steps = 14, trail = 3, interval = 18, ratio = 0.7 } = {}) {
   return new Promise(resolve => {
     if (!parent || !from || !to) return resolve()
     const svg = document.createElementNS(NS, 'svg')
@@ -25,11 +29,12 @@ export function zoomRects(parent, from, to, { steps = 12, trail = 3, interval = 
 
     const rects = []
     const lerp = (a, b, t) => a + (b - a) * t
+    // Geometric steps: each outline covers `ratio` of what is left, so the
+    // run starts fast and settles on the destination; normalised so the
+    // last outline lands exactly.
+    const total = 1 - Math.pow(ratio, steps)
     const frame = (i) => {
-      // Ease so the outlines accelerate away from the start, as the
-      // Finder's did (it stepped the rectangle by a growing fraction).
-      const t = i / (steps - 1)
-      const e = t * t * (3 - 2 * t)
+      const e = i === steps - 1 ? 1 : (1 - Math.pow(ratio, i + 1)) / total
       return {
         x: Math.round(lerp(from.x, to.x, e)) + 0.5,
         y: Math.round(lerp(from.y, to.y, e)) + 0.5,

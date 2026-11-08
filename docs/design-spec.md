@@ -238,12 +238,25 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Striped window title bars
 - Dashed drag outlines (~10fps, authentic to 8MHz 68000). Outlines are drawn inside the desktop in its own coordinates (`desktopDrag.js` `toLocal`), so at any bezel scale they are exactly the window or icon size, keep the grab point under the cursor, and the item drops where its outline was. Never mix `clientX` with desktop positions.
 
-**Interactive Elements:**
-- Documents folder icon (double-click to open text window)
-- Projects folder icon (draggable to Trash)
-- Trash icon (drop target, highlights on hover)
-- Menu bar: File menu (New Folder, Open, Close, About This System)
-- Windows: draggable by title bar with laggy outline, clamped to screen bounds
+**Interactive Elements (Finder 1.1, as the 1984 manual and May-1984 screenshots describe it):**
+- Desktop: `System Disk` top right, `Trash` bottom right, `Projects` and `Notes` (items dragged out of the disk) between them. Icons sit on the Clean Up grid (`GRID` in `DesktopScene`: 80×76 from 510,40).
+- Selection: click, Shift-click, or drag a dotted marquee on the bare desktop; icons select when the button is released (manual p. 40), not as the box grows. A group drags in formation (one outline each).
+- Opening: double-click or File ▸ Open. **Zoom rectangles** (`zoomRects.js`): 14 dotted outlines growing from the icon to the window, each covering 30% of what is left, three visible at once, ~¼ s; the same run shrinks back on Close. The 1984 Finder's exact frame count/pattern is undocumented; these follow Apple's later "Finder style" ZoomRecter sample. Desk accessories don't zoom; they appear and "just disappear".
+- Disk window: `System Folder`, `Empty Folder` (Finder 1.0 had no New Folder; you duplicated Empty Folder). System Folder holds Finder, System, Imagewriter, Clipboard File, Note Pad File, Scrapbook File; opening one of those gives the Finder's alert "could not be opened/printed (the application is busy or missing)". Info line: "N items   NNNK in disk   NNNK available".
+- Menus (`MenuBar`), no separators: **Apple** About the Finder..., Scrapbook, Alarm Clock, Note Pad, Calculator, Key Caps, Control Panel, Puzzle · **File** Open, Duplicate ⌘D, Get Info ⌘I, Put Back, Close, Close All, Print, Eject ⌘E · **Edit** Undo ⌘Z, Cut ⌘X, Copy ⌘C, Paste ⌘V, Clear, Select All ⌘A, Show Clipboard · **View** by Icon ✓, by Name, by Date, by Size, by Kind · **Special** Clean Up, Empty Trash, Erase Disk, Set Startup. Shut Down, Use MiniFinder and New Folder are Finder 4.1 (1985) and are not here. Items with nothing behind them (Scrapbook, Key Caps, Control Panel, Duplicate, Print, Erase Disk, Set Startup, Undo/Cut/Copy/Paste/Clear, Show Clipboard) are dimmed.
+- **Menu blinking:** a chosen item inverts off/on three times (Control Panel default; `BLINKS`, 50 ms a phase) while the title stays highlighted, then the menu closes and the command runs (Inside Macintosh I, SetMenuFlash).
+- **Get Info:** window titled "Information about <name>", icon and name, Kind / Size ("1432 bytes, accounts for 2K on disk") / Where ("System Disk, internal drive") / Created / Modified ("Wednesday, January 25, 1984 at 9:14 AM"), a live `Locked` check box (an X in a square), an editable comment box. Not offered for the Trash. Notes starts locked.
+- **Put Back:** select an item in the Trash window; it flies back (zoom outline) to where its icon was. **Close All** zooms every Finder window shut. **Select All** selects every desktop icon. **Clean Up** snaps icons to the nearest free grid slot (the manual says "neat rows and columns"; snap vs re-pack is undocumented).
+- **Eject** (disk selected, or the disk dragged onto the Trash): the drive light pulses and a dimmed ghost of the disk stays on the desktop, as in 1.0; opening it asks "Please insert the disk: System Disk". With no second disk in the exhibit, the disk is "pushed back in" after 3 s.
+- **Desk accessories** (`src/components/da/`), opened from the Apple menu; opening a document (Notes) closes them all, as the manual says. Calculator, Puzzle and Alarm Clock use Inside Macintosh's `rDocProc` frame (`DraggableWindow` variant `rdoc`/`plain`: rounded 16px corners, black title bar, white title); Note Pad uses the striped document frame.
+  - *Calculator:* gray body, white display, 18 keys in Steve Jobs's layout — `C E = *` / `7 8 9 /` / `4 5 6 -` / `1 2 3 +`(tall) / `0`(wide) `.`; keyboard works.
+  - *Note Pad:* eight pages, Geneva text, page number by the turned-down corner at the bottom left (top half back, bottom half forward); saved for the session.
+  - *Puzzle:* 15 numbered tiles, click a tile beside the space to slide it; rescrambles whenever it is closed or chosen again; on solving it blinks and beeps.
+  - *Alarm Clock:* one line (time in Chicago, flag at right) that is the window's title bar; flag down opens a panel: the row shows alarm time (with its on/off switch and set arrows), time or date, under three icons — alarm clock, clock face, calendar. When the alarm goes off the Mac beeps once and the Apple in the menu bar blinks until the Alarm Clock is chosen again.
+  - *About the Finder...:* the 1.1g box — "The Macintosh™ Finder", lined sky, sun, mountains, "Version 1.1g ©1984 Apple Computer", "Bruce Horn and Steve Capps". Click to dismiss.
+- Windows: draggable by title bar with laggy outline, clamped to screen bounds.
+
+**Sources for the above:** Apple, *Macintosh* owner's manual (1984) pp. 18–111; *Inside Macintosh* Vol. I (1985) I-54, I-273, I-361; *The Easy Guide to Your Macintosh* (1984, Finder 1.1g screenshots); GUIdebook System 1.1 gallery; folklore.org (Puzzle, Calculator Construction Set, Desk Ornaments); Low End Mac on System 1.0. Reconstructed, not sourced: the locked-item Empty Trash alert wording, zoom-rect frame count, menu-blink tick timing, Clean Up's snap behaviour.
 
 **Hardware details (`MonitorBezel`):**
 - Glass reflection (`CrtOverlay`) is part of the hardware: always visible, in every state, above everything on the screen. Screen contents live in an isolated stacking context so no z-index inside can cover it.

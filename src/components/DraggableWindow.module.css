@@ -48,6 +48,30 @@
   padding: 0;
 }
 
+/* ── rDocProc: desk accessory frame ──
+   Rounded corners (16px diameter), a solid black title bar with the title
+   in white, no stripes, no grow box. */
+.rdoc, .plain {
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+.rdoc .titleBar {
+  background: var(--mac-black);
+  background-image: none;
+  border-bottom: none;
+}
+.rdoc .closeBtn { box-shadow: 0 0 0 1px var(--mac-white); }
+.rdoc .titleText {
+  background: transparent;
+  color: var(--mac-white);
+}
+.plain .titleBar {
+  background: var(--mac-white);
+  background-image: none;
+  height: 26px;
+  border-bottom: none;
+}
+
 /* Absolutely centered so pinstripes show on both left and right sides */
 .titleText {
   position: absolute;

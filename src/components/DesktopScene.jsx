@@ -15,7 +15,9 @@ import ScreenTexture from './ScreenTexture'
 import MacAlert from './MacAlert'
 import FolderWindowContent from './FolderWindowContent'
 import InfoWindowContent from './InfoWindowContent'
-import DeskAccessory, { DA_TITLES, DA_WIDTH } from './da/DeskAccessory'
+import DeskAccessory, { DA_TITLES, DA_WIDTH, DA_VARIANT } from './da/DeskAccessory'
+import AboutFinder from './da/AboutFinder'
+import { useAlarmClock, AlarmClockTitle } from './da/AlarmClock'
 import * as sfx from '../audio/sfx'
 import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
 import { zoomRects, localRect } from './zoomRects'
@@ -61,12 +63,16 @@ const SYSFOLDER_ITEMS = [
 ]
 const DISK_K = { inDisk: 216, available: 184 }
 
-// Get Info text for each item
+// Get Info text for each item, in the 1984 manual's formats
+// ("Size: 55248 bytes, accounts for 55K on disk"; "Where: Write/Paint,
+// internal drive"; "Created: Tuesday, January 24, 1984 at 10:05 AM")
 const INFO = {
-  disk: { kind: 'disk', size: '400K on disk', where: 'internal drive', created: 'Tue, Jan 24, 1984\n9:00 AM', modified: 'Wed, Jan 25, 1984\n4:02 PM', comment: '' },
-  projects: { kind: 'folder', size: '6K on disk (5,632 bytes), for 3 files', where: `${DISK_NAME}, internal drive`, created: 'Tue, Jan 24, 1984\n2:15 PM', modified: 'Wed, Jan 25, 1984\n11:40 AM', comment: 'Budget, letter and sketch for the partners meeting.' },
-  notes: { kind: 'document', size: '2K on disk (1,432 bytes)', where: `${DISK_NAME}, internal drive`, created: 'Wed, Jan 25, 1984\n9:14 AM', modified: 'Wed, Jan 25, 1984\n4:02 PM', comment: 'First day with the Macintosh.' },
-  trash: { kind: 'trash', size: '—', where: 'the desktop', created: '—', modified: '—', comment: '' },
+  disk: { kind: 'disk', size: '188416 bytes available, 221184 bytes used', where: 'internal drive',
+    created: 'Tuesday, January 24, 1984 at 9:00 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: '' },
+  projects: { kind: 'folder', size: '5632 bytes, accounts for 6K on disk', where: `${DISK_NAME}, internal drive`,
+    created: 'Tuesday, January 24, 1984 at 2:15 PM', modified: 'Wednesday, January 25, 1984 at 11:40 AM', comment: 'Budget, letter and sketch for the partners meeting.' },
+  notes: { kind: 'MacWrite document', size: '1432 bytes, accounts for 2K on disk', where: `${DISK_NAME}, internal drive`,
+    created: 'Wednesday, January 25, 1984 at 9:14 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: 'First day with the Macintosh.' },
 }
 
 const WINDOW_POS = {
@@ -169,6 +175,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     } else if (id === 'projects') {
       openWindow('projects', { title: 'Projects', from: iconRect('projects'), src: 'projects' })
     } else if (id === 'notes') {
+      // Opening a document from the Finder closed every desk accessory
+      setWindows(prev => prev.filter(w => !DA_TITLES[w.type]))
       openWindow('notes', { title: 'Notes', from: iconRect('notes'), src: 'notes' })
       completeObjective('openFolder')
     } else if (id === 'trash') {
@@ -203,6 +211,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   // touches are selected as it grows.
   const marqueeStart = useRef(null)
   const marqueeMoved = useRef(false)
+  const marqueeRect  = useRef(null)
   const handleDesktopMouseDown = (e) => {
     if (e.target !== e.currentTarget && !e.target.closest(`.${styles.bgLayer}`)) return
     if (e.button !== 0) return
@@ -210,7 +219,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     const start = toLocal(desktop, e.clientX, e.clientY)
     if (start.y < 30) return   // menu bar
     const base = e.shiftKey ? selected : []
-    if (!e.shiftKey) { setSelected([]); setFolderSel(null) }
+    if (!e.shiftKey) { setSelected([]); setFolderSel(null); setTrashSel(null) }
     marqueeStart.current = start
     marqueeMoved.current = false
 
@@ -222,18 +231,23 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       }
       if (r.w < 2 && r.h < 2) return
       marqueeMoved.current = true
+      marqueeRect.current = r
       setMarquee(r)
+    }
+    // "When you release the mouse button, the icons are selected" (1984 manual)
+    const up = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+      marqueeStart.current = null
+      const r = marqueeRect.current
+      marqueeRect.current = null
+      setMarquee(null)
+      if (!r) return
       const hit = desktopIds.filter(id => {
         const ir = iconRect(id)
         return ir && ir.x < r.x + r.w && ir.x + ir.w > r.x && ir.y < r.y + r.h && ir.y + ir.h > r.y
       })
       setSelected([...new Set([...base, ...hit])])
-    }
-    const up = () => {
-      document.removeEventListener('mousemove', move)
-      document.removeEventListener('mouseup', up)
-      marqueeStart.current = null
-      setMarquee(null)
     }
     document.addEventListener('mousemove', move)
     document.addEventListener('mouseup', up)
@@ -456,8 +470,9 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     const id = selected[0]
     if (!id) return
     const info = INFO[id]
+    if (!info) return
     openWindow('info', {
-      id: `info-${id}`, title: 'Info', from: iconRect(id), src: id,
+      id: `info-${id}`, title: `Information about ${ICONS[id].label}`, from: iconRect(id), src: id,
       item: { id, label: ICONS[id].label, icon: ICONS[id].icon, ...info },
       pos: { x: 150 + 20 * windows.length, y: 70 + 10 * windows.length },
     })
@@ -523,13 +538,49 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   }
   useEffect(() => () => clearTimeout(ejectTimer.current), [])
 
+  const [about, setAbout] = useState(false)
+  const [daInstance, setDaInstance] = useState({})
+  const [alarmRinging, setAlarmRinging] = useState(false)
+  const onRing = useCallback(() => setAlarmRinging(true), [])
+  const clock = useAlarmClock({ onRing })
   const handleDeskAccessory = (name) => {
+    if (name === 'about') { setAbout(true); return }
+    if (name === 'alarm') setAlarmRinging(false)   // choosing the Alarm Clock stops the blinking Apple
+    if (windows.some(w => w.id === name)) setDaInstance(d => ({ ...d, [name]: (d[name] || 0) + 1 }))
     openWindow(name, { title: DA_TITLES[name], pos: { x: 120 + 24 * windows.length, y: 60 + 16 * windows.length } })
+  }
+
+  // File ▸ Close All: Finder windows zoom back to their icons; desk
+  // accessories "just disappear".
+  const closeAll = () => {
+    setWindows(prev => prev.filter(w => !DA_TITLES[w.type]))
+    windows.filter(w => !DA_TITLES[w.type]).forEach(w => closeWindow(w.id))
+  }
+
+  // Edit ▸ Select All: every icon on the desktop (no directory window is
+  // the active one here; icons are selected where they live)
+  const selectAll = () => setSelected(desktopIds)
+
+  // File ▸ Put Back: the item selected in the Trash window returns home,
+  // an outline flying back to where its icon was.
+  const [trashSel, setTrashSel] = useState(null)
+  const putBack = () => {
+    const id = trashSel
+    if (!id || !trashContents.includes(id)) return
+    const desktop = desktopRef.current
+    const el = desktop?.querySelector(`[data-trash-item="${id}"]`)
+    const from = localRect(desktop, el)
+    const pos = iconPositions[id]
+    const to = { x: pos.x, y: pos.y, w: 100, h: 62 }
+    setTrashSel(null)
+    const finish = () => setTrashContents(prev => prev.filter(x => x !== id))
+    if (from) zoomRects(desktop, from, to).then(finish); else finish()
   }
 
   // ── Render ─────────────────────────────────────────────────────────
   const canOpen = selected.length > 0 && selected.some(id => !windows.some(w => w.id === id))
   const infoSelected = selected.length === 1 && !!INFO[selected[0]]
+  const daOf = (w) => DA_TITLES[w.type] ? w.type : null
 
   const windowTitle = (w) => w.title ?? ICONS[w.type]?.label ?? ''
   const windowContent = (w) => {
@@ -542,8 +593,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         return <FolderWindowContent items={[]} />
       case 'info':
         return <InfoWindowContent item={w.item} locked={!!locked[w.item.id]} onToggleLock={() => setLocked(l => ({ ...l, [w.item.id]: !l[w.item.id] }))} />
-      case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'about':
-        return <DeskAccessory name={w.type} onDiskAccess={onDiskAccess} />
+      case 'calculator': case 'notepad': case 'puzzle': case 'alarm':
+        return <DeskAccessory name={w.type} instance={daInstance[w.type] || 0} clock={clock} />
       default:
         return null   // projects / notes / trash: DraggableWindow's built-ins
     }
@@ -574,6 +625,11 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         canEject={selected.includes('disk') && !ejected}
         onEject={ejectDisk}
         onDeskAccessory={handleDeskAccessory}
+        canPutBack={!!trashSel && trashContents.includes(trashSel)}
+        onPutBack={putBack}
+        onCloseAll={closeAll}
+        onSelectAll={selectAll}
+        alarmRinging={alarmRinging}
       />
       </div>
 
@@ -616,9 +672,13 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           zIndex={win.z}
           hidden={win.hidden}
           width={DA_WIDTH[win.type] ?? (win.type === 'info' ? 300 : undefined)}
+          variant={DA_VARIANT[win.type] ?? 'doc'}
+          titleContent={win.type === 'alarm' ? <AlarmClockTitle clock={clock} /> : undefined}
           onClose={() => closeWindow(win.id)}
           onFocus={() => raise(win.id)}
           trashContents={win.type === 'trash' ? trashContents : undefined}
+          trashSelected={win.type === 'trash' ? trashSel : undefined}
+          onTrashSelect={win.type === 'trash' ? setTrashSel : undefined}
           onItemDragStart={win.type === 'trash' ? startDragOutline : undefined}
           onItemDragEnd={win.type === 'trash' ? stopDragOutline : undefined}
         >
@@ -633,6 +693,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         </svg>
       )}
 
+      {about && <AboutFinder onClose={() => setAbout(false)} />}
       {alertMsg && <MacAlert message={alertMsg} onOk={() => setAlertMsg(null)} />}
     </div>
   )

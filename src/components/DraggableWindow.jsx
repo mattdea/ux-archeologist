@@ -10,9 +10,14 @@ import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDra
 // zoom rectangles; `hidden` keeps it mounted but invisible while they draw.
 // `width` overrides the 340px document width (desk accessories are smaller);
 // `children` replaces the built-in content for the given `type`.
+// `variant`: 'doc' (striped title bar, the Finder's windows and Note Pad),
+// 'rdoc' (Inside Macintosh's rDocProc: rounded corners, a black title bar
+// with the name in white, used by desk accessories), 'plain' (rDocProc with
+// an empty title bar that `titleContent` fills: the Alarm Clock's one line).
 export default function DraggableWindow({
   id, title, type, initialPos, zIndex, onClose, onFocus, hidden = false, width,
-  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, children,
+  variant = 'doc', titleContent,
+  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, trashSelected, onTrashSelect, children,
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
   const dragging = useRef(false)
@@ -160,7 +165,7 @@ export default function DraggableWindow({
     <div
       ref={windowRef}
       data-win={id}
-      className={styles.window}
+      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''}`}
       style={{ left: pos.x, top: pos.y, zIndex, width, visibility: hidden ? 'hidden' : undefined }}
       onMouseDown={() => onFocus?.()}
     >
@@ -172,7 +177,7 @@ export default function DraggableWindow({
         onTouchEnd={handleTitleTouchEnd}
       >
         <button className={styles.closeBtn} onClick={onClose} title="Close" />
-        <span className={styles.titleText}>{title}</span>
+        {variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
       </div>
 
       <div className={type === 'notes' ? styles.scrollBody : children ? styles.custom : styles.body}>
@@ -182,6 +187,8 @@ export default function DraggableWindow({
         {type === 'trash'    && (
           <TrashWindowContent
             contents={trashContents}
+            selected={trashSelected}
+            onSelect={onTrashSelect}
             onRestoreNotes={onRestoreNotes}
             onItemDragStart={onItemDragStart}
             onItemDragEnd={onItemDragEnd}

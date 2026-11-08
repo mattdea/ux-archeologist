@@ -90,6 +90,13 @@
   color: var(--mac-gray);
 }
 
+/* The alarm has gone off: the Apple blinks until the Alarm Clock is chosen */
+.appleBlink { animation: appleBlink 1s steps(1, end) infinite; }
+@keyframes appleBlink {
+  0%, 49%  { background: var(--mac-black); color: var(--mac-white); }
+  50%, 100% { background: transparent; color: var(--mac-black); }
+}
+
 /* Menu blinking: the chosen item inverts off and on before the menu closes.
    These win over :hover so the flash shows under a still pointer. */
 .dropdownItem.blinkOn  { background: var(--mac-black); color: var(--mac-white); }

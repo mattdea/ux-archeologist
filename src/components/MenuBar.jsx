@@ -2,15 +2,16 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './MenuBar.module.css'
 
+// Apple menu, Finder 1.1 (Inside Macintosh I fig. 16; Easy Guide 1984): About,
+// then the desk accessories installed in the System file, in this order.
 const APPLE_ITEMS = [
   { label: 'About the Finder...', action: 'da', da: 'about' },
-  { dotSeparator: true },
-  { label: 'Scrapbook' },
+  { label: 'Scrapbook',    disabled: true },
   { label: 'Alarm Clock',  action: 'da', da: 'alarm' },
   { label: 'Note Pad',     action: 'da', da: 'notepad' },
   { label: 'Calculator',   action: 'da', da: 'calculator' },
-  { label: 'Key Caps' },
-  { label: 'Control Panel' },
+  { label: 'Key Caps',     disabled: true },
+  { label: 'Control Panel', disabled: true },
   { label: 'Puzzle',       action: 'da', da: 'puzzle' },
 ]
 
@@ -24,6 +25,7 @@ export default function MenuBar({
   onMenuItemClick, canOpen = false, canClose = false, onOpen, onClose,
   canEmptyTrash = false, onEmptyTrash, canGetInfo = false, onGetInfo,
   onCleanUp, canEject = false, onEject, onDeskAccessory,
+  canPutBack = false, onPutBack, onCloseAll, onSelectAll, alarmRinging = false,
 }) {
   const [openMenu, setOpenMenu] = useState(null)
   // Label of the item mid-blink and whether it is drawn inverted right now
@@ -32,23 +34,23 @@ export default function MenuBar({
   const menuBarRef = useRef(null)
   useEffect(() => () => clearTimeout(blinkTimer.current), [])
 
+  // Finder 1.1 menus, from Apple's 1984 manual (pp. 104–111) and the Easy
+  // Guide's May 1984 screenshots. No separators; New Folder, Shut Down and
+  // the MiniFinder came with Finder 4.1 in 1985. Only Duplicate, Get Info,
+  // Eject and the Edit items showed ⌘ keys.
   const MENUS = [
     {
       id: 'file',
       label: 'File',
       items: [
-        { label: 'New Folder',     shortcut: '⌘N' },
-        { label: 'Open',           action: 'open',  disabled: !canOpen },
-        { label: 'Print',          disabled: true },
-        { label: 'Close',          action: 'close', disabled: !canClose },
-        { dotSeparator: true },
-        { label: 'Get Info',       shortcut: '⌘I', action: 'getInfo', disabled: !canGetInfo },
-        { label: 'Duplicate',      shortcut: '⌘D',  disabled: true },
-        { dotSeparator: true },
-        { label: 'Page Setup',     disabled: true },
-        { label: 'Print Catalog',  disabled: true },
-        { dotSeparator: true },
-        { label: 'Eject',          shortcut: '⌘E', action: 'eject', disabled: !canEject },
+        { label: 'Open',       action: 'open',    disabled: !canOpen },
+        { label: 'Duplicate',  shortcut: '⌘D',   disabled: true },
+        { label: 'Get Info',   shortcut: '⌘I',   action: 'getInfo',  disabled: !canGetInfo },
+        { label: 'Put Back',   action: 'putBack', disabled: !canPutBack },
+        { label: 'Close',      action: 'close',   disabled: !canClose },
+        { label: 'Close All',  action: 'closeAll', disabled: !canClose },
+        { label: 'Print',      disabled: true },
+        { label: 'Eject',      shortcut: '⌘E',   action: 'eject',    disabled: !canEject },
       ],
     },
     {
@@ -56,15 +58,12 @@ export default function MenuBar({
       label: 'Edit',
       items: [
         { label: 'Undo',           shortcut: '⌘Z', disabled: true },
-        { dotSeparator: true },
         { label: 'Cut',            shortcut: '⌘X', disabled: true },
         { label: 'Copy',           shortcut: '⌘C', disabled: true },
         { label: 'Paste',          shortcut: '⌘V', disabled: true },
         { label: 'Clear',          disabled: true },
-        { dotSeparator: true },
-        { label: 'Select All',     shortcut: '⌘A' },
-        { dotSeparator: true },
-        { label: 'Show Clipboard' },
+        { label: 'Select All',     shortcut: '⌘A', action: 'selectAll' },
+        { label: 'Show Clipboard', disabled: true },
       ],
     },
     {
@@ -82,13 +81,10 @@ export default function MenuBar({
       id: 'special',
       label: 'Special',
       items: [
-        { label: 'Clean Up',           action: 'cleanUp' },
-        { label: 'Empty Trash',        action: 'emptyTrash', disabled: !canEmptyTrash },
-        { label: 'Erase Disk' },
-        { label: 'Set Startup',        disabled: true },
-        { label: 'Use MiniFinder...', disabled: true },
-        { dotSeparator: true },
-        { label: 'Shut Down' },
+        { label: 'Clean Up',    action: 'cleanUp' },
+        { label: 'Empty Trash', action: 'emptyTrash', disabled: !canEmptyTrash },
+        { label: 'Erase Disk',  disabled: true },
+        { label: 'Set Startup', disabled: true },
       ],
     },
   ]
@@ -121,6 +117,9 @@ export default function MenuBar({
       case 'getInfo':    onGetInfo?.(); break
       case 'cleanUp':    onCleanUp?.(); break
       case 'eject':      onEject?.(); break
+      case 'putBack':    onPutBack?.(); break
+      case 'closeAll':   onCloseAll?.(); break
+      case 'selectAll':  onSelectAll?.(); break
       case 'da':         onDeskAccessory?.(item.da); break
       default: break
     }
@@ -153,7 +152,7 @@ export default function MenuBar({
     <div className={styles.menuBar} ref={menuBarRef}>
       <div className={styles.menuItem}>
         <button
-          className={`${styles.apple} ${openMenu === 'apple' ? styles.appleActive : ''}`}
+          className={`${styles.apple} ${openMenu === 'apple' ? styles.appleActive : ''} ${alarmRinging && openMenu !== 'apple' ? styles.appleBlink : ''}`}
           onClick={() => setOpenMenu(o => o === 'apple' ? null : 'apple')}
           aria-label="Apple menu"
         >
@@ -171,7 +170,7 @@ export default function MenuBar({
               ) : (
                 <li key={item.label}>
                   <button
-                    className={itemClass(item, styles.dropdownItem)}
+                    className={itemClass(item, `${styles.dropdownItem} ${item.disabled ? styles.dropdownItemDisabled : ''}`)}
                     onClick={() => handleItemClick(item)}
                   >
                     <span className={styles.checkCol} />

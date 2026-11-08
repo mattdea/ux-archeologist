@@ -7,31 +7,39 @@ import Calculator from './Calculator'
 import NotePad from './NotePad'
 import Puzzle from './Puzzle'
 import AlarmClock from './AlarmClock'
-import AboutFinder from './AboutFinder'
 
 export const DA_TITLES = {
   calculator: 'Calculator',
   notepad:    'Note Pad',
   puzzle:     'Puzzle',
   alarm:      'Alarm Clock',
-  about:      'About the Finder',
 }
 
 export const DA_WIDTH = {
   calculator: 150,
   notepad:    230,
   puzzle:     130,
-  alarm:      180,
-  about:      380,
+  alarm:      170,
 }
 
-export default function DeskAccessory({ name }) {
+// Window frame per accessory: Inside Macintosh's rDocProc (rounded, black
+// title bar) for Calculator, Puzzle and the Alarm Clock; Note Pad used the
+// ordinary document frame.
+export const DA_VARIANT = {
+  calculator: 'rdoc',
+  notepad:    'doc',
+  puzzle:     'rdoc',
+  alarm:      'plain',
+}
+
+// `instance` changes when the DA is chosen again while open, which remounts
+// it (the Puzzle rescrambles). `clock` is the Alarm Clock's shared state.
+export default function DeskAccessory({ name, instance = 0, clock }) {
   switch (name) {
-    case 'calculator': return <Calculator />
+    case 'calculator': return <Calculator key={instance} />
     case 'notepad':    return <NotePad />
-    case 'puzzle':     return <Puzzle />
-    case 'alarm':      return <AlarmClock />
-    case 'about':      return <AboutFinder />
+    case 'puzzle':     return <Puzzle key={instance} />
+    case 'alarm':      return <AlarmClock clock={clock} />
     default:           return null
   }
 }

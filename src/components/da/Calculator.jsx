@@ -1,16 +1,20 @@
-// src/components/da/Calculator.jsx — the 1984 Calculator desk accessory.
-// A display across the top and a 4×5 keypad: C E = *, 7 8 9 /, 4 5 6 -,
-// 1 2 3 +, 0 . =. Type on the keyboard or click the keys.
+// src/components/da/Calculator.jsx — the 1984 Calculator desk accessory,
+// laid out as Steve Jobs chose it from Chris Espinosa's Calculator
+// Construction Set: a white display across the top of a gray body and 18
+// keys in four columns — C E = *, 7 8 9 /, 4 5 6 -, 1 2 3 and a tall +,
+// a wide 0 and the point. Type on the keyboard or click the keys.
 import { useEffect, useState } from 'react'
 import styles from './da.module.css'
 
+// [label, gridArea]
 const KEYS = [
-  'C', 'E', '=', '*',
-  '7', '8', '9', '/',
-  '4', '5', '6', '-',
-  '1', '2', '3', '+',
-  '0', '.', '=', null,
+  ['C', '1 / 1'], ['E', '1 / 2'], ['=', '1 / 3'], ['*', '1 / 4'],
+  ['7', '2 / 1'], ['8', '2 / 2'], ['9', '2 / 3'], ['/', '2 / 4'],
+  ['4', '3 / 1'], ['5', '3 / 2'], ['6', '3 / 3'], ['-', '3 / 4'],
+  ['1', '4 / 1'], ['2', '4 / 2'], ['3', '4 / 3'], ['+', '4 / 4 / span 2'],
+  ['0', '5 / 1 / auto / span 2'], ['.', '5 / 3'],
 ]
+const LABELS = KEYS.map(k => k[0])
 
 export default function Calculator() {
   const [display, setDisplay] = useState('0')
@@ -35,7 +39,6 @@ export default function Calculator() {
   }
 
   const press = (k) => {
-    if (k == null) return
     setPressed(k); setTimeout(() => setPressed(null), 80)
     if (k === 'C') { setDisplay('0'); setAcc(null); setOp(null); setFresh(true); return }
     if (k === 'E') { setDisplay('0'); setFresh(true); return }   // clear entry
@@ -52,7 +55,6 @@ export default function Calculator() {
       setFresh(true)
       return
     }
-    // operator
     if (op != null && acc != null && !fresh) {
       const r = apply(acc, cur, op); setDisplay(fmt(r)); setAcc(r)
     } else {
@@ -63,9 +65,9 @@ export default function Calculator() {
 
   useEffect(() => {
     const onKey = (e) => {
-      const map = { Enter: '=', Escape: 'C', Backspace: 'E', 'x': '*', 'X': '*' }
+      const map = { Enter: '=', Escape: 'C', Backspace: 'E', x: '*', X: '*' }
       const k = map[e.key] ?? e.key
-      if (KEYS.includes(k)) { e.preventDefault(); press(k) }
+      if (LABELS.includes(k)) { e.preventDefault(); press(k) }
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
@@ -75,10 +77,16 @@ export default function Calculator() {
     <div className={styles.calc}>
       <div className={styles.calcDisplay}>{display}</div>
       <div className={styles.calcKeys}>
-        {KEYS.map((k, i) => k == null
-          ? <span key={i} />
-          : <button key={i} type="button" className={`${styles.calcKey} ${pressed === k ? styles.calcKeyDown : ''}`} onMouseDown={(e) => e.preventDefault()} onClick={() => press(k)}>{k}</button>
-        )}
+        {KEYS.map(([k, area]) => (
+          <button
+            key={k}
+            type="button"
+            className={`${styles.calcKey} ${pressed === k ? styles.calcKeyDown : ''}`}
+            style={{ gridArea: area }}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => press(k)}
+          >{k}</button>
+        ))}
       </div>
     </div>
   )

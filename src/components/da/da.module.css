@@ -5,6 +5,9 @@
   padding: 8px;
   font-family: var(--font-chicago);
   color: var(--mac-black);
+  /* 50% gray body, as the real one */
+  background-image: repeating-conic-gradient(var(--mac-black) 0 25%, var(--mac-white) 0 50%);
+  background-size: 2px 2px;
 }
 .calcDisplay {
   height: 24px;
@@ -20,7 +23,7 @@
 .calcKeys {
   display: grid;
   grid-template-columns: repeat(4, 28px);
-  grid-auto-rows: 24px;
+  grid-template-rows: repeat(5, 24px);
   gap: 6px;
 }
 .calcKey {
@@ -33,7 +36,6 @@
   cursor: inherit;
   padding: 0;
 }
-.calcKey:nth-child(19) { grid-column: 3 / span 2; }   /* bottom "=" is wide */
 .calcKeyDown, .calcKey:active {
   background: var(--mac-black);
   color: var(--mac-white);
@@ -123,90 +125,112 @@
   cursor: inherit;
   padding: 0;
 }
-.puzzleGap { background: var(--mac-white); }
-.puzzleDone .puzzleTile { background: var(--mac-black); color: var(--mac-white); }
+.puzzleTile { box-shadow: inset -1px -1px 0 var(--mac-black), inset 1px 1px 0 var(--mac-white); }
+.puzzleGap {
+  background-image: repeating-conic-gradient(var(--mac-black) 0 25%, var(--mac-white) 0 50%);
+  background-size: 2px 2px;
+}
+.puzzleBlink .puzzleTile { background: var(--mac-black); color: var(--mac-white); }
 
 /* ── Alarm Clock ── */
+/* The clock row sits in the window's title bar (DraggableWindow 'plain') */
+.alarmTime {
+  flex: 1;
+  margin-left: 8px;
+  font-family: var(--font-chicago);
+  font-size: 15px;
+  color: var(--mac-black);
+  white-space: nowrap;
+  pointer-events: none;      /* drags on the time move the window */
+}
+.flag {
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: inherit;
+}
 .alarm {
   font-family: var(--font-chicago);
   font-size: 15px;
   color: var(--mac-black);
 }
-.alarmBar {
-  display: flex;
-  align-items: center;
-  height: 26px;
-  padding: 0 4px 0 10px;
-}
-.alarmTime { flex: 1; white-space: nowrap; }
-/* The lever: a knob on a short stem; down when the panel is open */
-.lever {
-  width: 18px;
-  height: 20px;
-  background: transparent;
-  border: none;
-  position: relative;
-  cursor: inherit;
-  padding: 0;
-}
-.lever span {
-  position: absolute;
-  left: 7px; top: 2px;
-  width: 4px; height: 12px;
-  background: var(--mac-black);
-}
-.lever span::after {
-  content: '';
-  position: absolute;
-  left: -3px; top: -2px;
-  width: 10px; height: 5px;
-  background: var(--mac-black);
-}
-.leverDown span { top: 6px; }
-.leverDown span::after { top: 9px; }
 .alarmMid {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 3px 10px;
+  gap: 8px;
+  padding: 0 8px;
+  height: 28px;
   border-top: var(--border);
-  height: 26px;
 }
+.alarmMidText { flex: 1; white-space: nowrap; }
 .alarmSwitch {
-  width: 12px; height: 20px;
+  width: 10px; height: 20px;
   border: var(--border);
   background: linear-gradient(to bottom, var(--mac-white) 50%, var(--mac-black) 50%);
   cursor: inherit;
   padding: 0;
 }
 .alarmSwitchOn { background: linear-gradient(to bottom, var(--mac-black) 50%, var(--mac-white) 50%); }
+.alarmArrows { display: flex; flex-direction: column; }
+.alarmArrows button {
+  background: var(--mac-white);
+  border: none;
+  padding: 0 2px;
+  font-size: 8px;
+  line-height: 11px;
+  color: var(--mac-black);
+  cursor: inherit;
+}
 .alarmIcons {
   display: flex;
   justify-content: space-around;
-  padding: 3px 10px 4px;
+  padding: 3px 8px 4px;
   border-top: var(--border);
 }
 .alarmIcon {
-  width: 32px; height: 26px;
+  width: 34px; height: 26px;
   background: var(--mac-white);
-  border: 1px solid transparent;
-  font-size: 15px;
+  border: none;
+  color: var(--mac-black);
   cursor: inherit;
   padding: 0;
-  filter: grayscale(1) contrast(2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.alarmIconOn { background: var(--mac-black); border-color: var(--mac-black); filter: grayscale(1) invert(1) contrast(2); }
+.alarmIconOn { background: var(--mac-black); color: var(--mac-white); }
 
 /* ── About the Finder ── */
+.aboutScrim {
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+}
 .about {
-  display: flex;
-  gap: 14px;
-  padding: 12px 14px 14px;
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: 364px;
+  padding: 10px 12px 10px;
+  background: var(--mac-white);
+  box-shadow: 0 0 0 1px #fff, 0 0 0 4px #000, 0 0 0 5px #fff, 0 0 0 6px #000;
   font-family: var(--font-chicago);
   font-size: 13px;
   color: var(--mac-black);
 }
-.aboutArt { width: 150px; height: 70px; flex-shrink: 0; }
-.aboutText p { margin: 0 0 4px; }
-.aboutTitle { font-size: 15px; }
-.aboutSmall { font-size: 11px; margin-top: 8px; }
+.aboutTitle { margin: 0 0 6px; font-size: 15px; }
+.aboutArt { display: block; width: 100%; height: 96px; }
+.aboutFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  white-space: pre;
+}

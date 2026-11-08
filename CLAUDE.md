@@ -95,6 +95,12 @@ function playSound(src) {
 - `src/components/[artifact]/` — all artifact-layer components and hooks, self-contained
 - Levels are not gated. All levels are accessible regardless of completion state.
 
+## Level 1 (1984 Mac) conventions
+
+- `DesktopScene` keeps a general icon model (`ICONS`, `iconPositions`, `selected[]`); add desktop items there, not as one-off state. Windows are `{ id, type, title, pos, z, hidden, src }`; open with `openWindow(type, { from, src })` so the zoom rectangles run, close with `closeWindow(id)`.
+- Everything on the Mac must be something Finder 1.0/1.1 did; design-spec "Level 1" lists the menus, DAs and sources. Mark anything reconstructed (alert wording, timings) as such in the spec.
+- Desk accessories live in `src/components/da/`; Calculator/Puzzle use `DraggableWindow` variant `rdoc`, the Alarm Clock `plain` with `titleContent`.
+
 ## Phone-layer pattern (Level3 / future phone levels)
 
 Level3 has a secondary `phonePower` state machine nested inside the museum state machine:

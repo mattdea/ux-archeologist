@@ -32,12 +32,40 @@ describe('DesktopScene', () => {
     expect(screen.queryByText('3 items')).not.toBeInTheDocument()
   })
 
+  it('double-clicking the disk opens the System Disk window with its folders', async () => {
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
+    await user.dblClick(screen.getByText('System Disk'))
+    expect(await screen.findByText('System Folder')).toBeInTheDocument()
+    expect(screen.getByText('Empty Folder')).toBeInTheDocument()
+  })
+
+  it('Get Info opens an "Information about" window with a Locked box', async () => {
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
+    await user.click(screen.getByText('Notes'))
+    await user.click(screen.getByText('File'))
+    await user.click(screen.getByText('Get Info'))
+    expect(await screen.findByText('Information about Notes')).toBeInTheDocument()
+    expect(screen.getByLabelText('Locked')).toBeChecked()
+  })
+
+  it('Apple menu opens the Calculator desk accessory', async () => {
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
+    await user.click(screen.getByLabelText('Apple menu'))
+    await user.click(screen.getByText('Calculator'))
+    // the menu item blinks first, then the window appears
+    expect(await screen.findByRole('button', { name: '7' })).toBeInTheDocument()
+    expect(screen.getByText('Calculator')).toBeInTheDocument()
+  })
+
   it('calls completeObjective useMenu when MenuBar item clicked', async () => {
     const completeObjective = vi.fn()
     const user = userEvent.setup()
     render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
-    await user.click(screen.getByText('File'))
-    await user.click(screen.getByText('New Folder'))
+    await user.click(screen.getByText('View'))
+    await user.click(screen.getByText('by Name'))
     await waitFor(() => expect(completeObjective).toHaveBeenCalledWith('useMenu'))
   })
 

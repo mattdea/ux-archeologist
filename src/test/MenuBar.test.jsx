@@ -14,34 +14,36 @@ describe('MenuBar', () => {
 
   it('dropdown is hidden initially', () => {
     render(<MenuBar onMenuItemClick={() => {}} />)
-    expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
+    expect(screen.queryByText('Duplicate')).not.toBeInTheDocument()
   })
 
-  it('opens dropdown on File click', async () => {
+  it('opens dropdown on File click, with the Finder 1.1 items', async () => {
     const user = userEvent.setup()
     render(<MenuBar onMenuItemClick={() => {}} />)
     await user.click(screen.getByText('File'))
-    expect(screen.getByText('New Folder')).toBeInTheDocument()
+    expect(screen.getByText('Duplicate')).toBeInTheDocument()
+    expect(screen.getByText('Put Back')).toBeInTheDocument()
+    expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
   })
 
   it('closes dropdown and calls onMenuItemClick when item clicked', async () => {
     const user = userEvent.setup()
     const onMenuItemClick = vi.fn()
     render(<MenuBar onMenuItemClick={onMenuItemClick} />)
-    await user.click(screen.getByText('File'))
-    await user.click(screen.getByText('New Folder'))
+    await user.click(screen.getByText('View'))
+    await user.click(screen.getByText('by Name'))
     // The item blinks three times (Control Panel default) before the menu closes
     await waitFor(() => expect(onMenuItemClick).toHaveBeenCalledTimes(1))
-    expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
+    expect(screen.queryByText('by Name')).not.toBeInTheDocument()
   })
 
   it('closes dropdown on Escape key', async () => {
     const user = userEvent.setup()
     render(<MenuBar onMenuItemClick={() => {}} />)
     await user.click(screen.getByText('File'))
-    expect(screen.getByText('New Folder')).toBeInTheDocument()
+    expect(screen.getByText('Duplicate')).toBeInTheDocument()
     await user.keyboard('{Escape}')
-    expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
+    expect(screen.queryByText('Duplicate')).not.toBeInTheDocument()
   })
 
   it('closes dropdown on outside click', async () => {
@@ -53,9 +55,9 @@ describe('MenuBar', () => {
       </div>
     )
     await user.click(screen.getByText('File'))
-    expect(screen.getByText('New Folder')).toBeInTheDocument()
+    expect(screen.getByText('Duplicate')).toBeInTheDocument()
     await user.click(screen.getByTestId('outside'))
-    expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
+    expect(screen.queryByText('Duplicate')).not.toBeInTheDocument()
   })
 
   it('File > Open is disabled when canOpen is false', async () => {
