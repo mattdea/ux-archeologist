@@ -6,6 +6,32 @@
   width: 320px;
 }
 
+/*
+ * One continuous line through every dot. It starts 64px above the first dot
+ * and fades in, stays solid through all the dots, then runs on past the last
+ * one and fades out — history continues in both directions.
+ *   left: 5.5px centres a 1px line on the 12px dots (centre = 6px).
+ *   top: -64px  → the fade ends at y = 0, just above the first dot (y 2–14).
+ *   bottom: -24px → the timeline box ends 40px below the last entry's text
+ *                   (every entry has padding-bottom: 40px), so the line runs
+ *                   ~60px past the last dot, fading over its final 64px.
+ * The dots are filled with the room colour so the line never shows inside a
+ * hollow ring.
+ */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 5.5px;
+  top: -64px;
+  bottom: -24px;
+  width: 1px;
+  background: #333;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+  pointer-events: none;
+  animation: fadeIn 600ms ease-out both;
+}
+
 /* ── Entry row ────────────────────────────────────────────────────── */
 .entry {
   position: relative;
@@ -17,30 +43,6 @@
   animation: entryIn 400ms ease-out both;
 }
 
-.entry:last-child {
-  padding-bottom: 0;
-}
-
-/*
- * Connecting line segment between circles.
- * top: 14px  = margin-top(2px) + dot-height(12px)  → starts at bottom edge of dot
- * bottom: 0  → ends at the boundary before next entry; next entry's dot has
- *              margin-top: 2px, leaving a ~2px natural gap before the next circle.
- * left: 5.5px centers a 1px line on the 12px dot (center = 6px).
- */
-.entry:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 5.5px;
-  top: 14px;
-  bottom: 0;
-  width: 1px;
-  background: #333;
-  z-index: 0;
-  animation: fadeIn 400ms ease-out both;
-  animation-delay: var(--entry-delay, 0ms);
-}
-
 /* ── Dot ──────────────────────────────────────────────────────────── */
 .dot {
   display: block;
@@ -50,7 +52,7 @@
   flex-shrink: 0;
   margin-top: 2px; /* align dot vertically with the year label */
   position: relative;
-  z-index: 1;      /* sit above the connecting line */
+  z-index: 1;      /* sit above the timeline line */
 }
 
 /* Complete: filled white */
@@ -59,9 +61,10 @@
   border: 1.5px solid #fff;
 }
 
-/* Incomplete: hollow, stroke #555 */
+/* Incomplete: hollow, stroke #555 (filled with the room colour so the
+   timeline line behind it doesn't show through the ring) */
 .dotIncomplete {
-  background: transparent;
+  background: #111;
   border: 1.5px solid #555;
 }
 
