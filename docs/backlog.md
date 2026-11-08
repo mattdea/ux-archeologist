@@ -12,8 +12,13 @@ _Proposals only. Nothing is ever built from this section. Historical claims carr
 
 **History, unconfirmed:**
 - Today the mobile feed shows about 125 characters or 3 lines, then "… more". Confidence **medium** for today; the sources are third-party guides, not Instagram ([textcaret](https://textcaret.com/content/why-is-my-instagram-caption-cut-off), [solsocialmedia](https://www.solsocialmedia.com/post/instagram-caption-length)).
-- That the spring-2016 iOS app (pre-May-2016 redesign) truncated feed captions with "… more": confidence **low**. It rests on recollection only. No dated source was found, and none of the `docs/reference/` screenshots show a long caption either way.
-- **To settle it:** find a dated screenshot or video of the iOS feed from late 2015 to spring 2016 showing a long caption (press coverage, YouTube app walkthroughs, Wayback Machine). Approve only if it shows truncation; if it shows full captions, drop this.
+- That the spring-2016 iOS app (pre-May-2016 redesign) truncated feed captions with "… more": confidence **low**, still unsettled after a second search (8 Nov 2026). Every dated 2015–16 feed image found has a caption of three lines or fewer (≤ ~125 characters), shown in full, so none shows either behaviour. Checked:
+  - Instagram's App Store page, Wayback snapshots Jan 2015 – Mar 2016 (v6.4.1 – v7.17.1): "What's New" notes never mention captions; the Mar 2016 screenshots show a one-line caption.
+  - Instagram blog, 1 Sep 2015 Direct announcement (feed screenshot, one-line caption) and 15 Mar 2016 ranked-feed announcement (no screenshot).
+  - business.instagram.com/advertising, Wayback 28 Feb 2016: sponsored-post mock-ups with captions up to three lines, shown in full.
+  - `docs/reference/` screenshots: captions of one to two lines.
+  - Web searches: only current-day guides, which disagree on today's cutoff (57–140 characters, or three lines) and give no start date.
+- **To settle it:** a 2015–16 screenshot of the iOS feed with a caption longer than about three lines — your own camera-roll screenshots from then, a YouTube app walkthrough from late 2015 / early 2016, or the caption strings in an archived 7.x Android APK. Approve only if it shows truncation; if it shows the full caption, drop this.
 
 **If confirmed:** match the period exactly — the cutoff (lines vs. characters), the ellipsis, the "more" colour and weight, and whether tapping expands in place or opens the post. Touch only `Post.jsx` and `feed-styles.css`.
 
