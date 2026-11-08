@@ -3,13 +3,18 @@
 **At the start of every session, read `docs/design-spec.md` in full before making any changes.** It is the single source of truth for all design decisions, architecture, visual tokens, and build conventions. Do not proceed without reading it.
 
 ## Quick rules
-- A prompt may carry several changes. Work through all of them in one go, verifying each as you finish it (browser preview for anything visible, `npx vitest run` before committing), and commit in coherent chunks — one commit per related group of changes, not one per prompt.
 - If the user sends a correction mid-task, fold it in before carrying on with the rest of the list.
 - Visuals first, logic second for new levels.
 - Don't modify files you weren't asked to touch.
 - Always: `git add -A && git commit -m "msg" && git push`
 - The museum layer (shared UI) and artifact layer (era-specific) never cross-contaminate styles.
 - `assets/feed/` holds real Instagram photos and account data for Level 4, committed for non-commercial educational use. Only raw downloads stay gitignored (see `.gitignore`); never `git add -f` those. Keep the level working when photos are absent (color-block fallbacks). See `assets/feed/README.md`.
+
+## Working rules
+- **Batching:** when a prompt asks for several features, build them one at a time and commit + push after each with a descriptive message, so each can be reverted on its own.
+- **Ideation sessions** (prompt starts with "Ideation"): edit no code. Write proposals to `docs/backlog.md` under **Ideas**. Every historical claim gets a source and a confidence level (high / medium / low).
+- **Unattended / overnight runs:** build only items under **Approved** in `docs/backlog.md`. If an item is ambiguous, skip it and leave a note on it in the backlog instead of guessing.
+- **Museum layer** (HUD, modals, objective tracker, discovery cards): before creating or changing any of it, read the existing implementation and reuse it; never invent new museum-layer patterns unless asked. Reference: `src/levels/Level4.jsx` with `src/shared/museum-ui/` and `src/shared/SharedLayout.jsx` — `screen` + `'discovery'`, replay starts at `'booting'`, keyed objectives → `completedIndices`, `useHint` + docked `HintPill`, canonical Continue wiring, `addArtifact` on discovery, `nextUrl="/timeline"`.
 
 ## Level conventions (apply to every level without being asked)
 
