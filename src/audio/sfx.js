@@ -13,8 +13,7 @@
 //   bell()              VT100 bell
 //   crtOn()             CRT power-on thump + warming hiss
 //   chime(src)          play a recording (Macintosh startup chime)
-//   floppy()            400K drive seeking; returns stop()
-//   modem()             28.8k handshake: dial, answer tone, warble, hiss; returns stop()
+//   dialup()            real dial-up recording if assets/web/dialup.* exists; returns stop()
 //   pop()               Instagram like
 //   send() / receive()  chat: message sent / reply finished
 
@@ -90,7 +89,6 @@ function filter(type, freq, q = 1) {
   return f
 }
 
-const jitter = (v, pct) => v * (1 + (Math.random() * 2 - 1) * pct)
 
 // ── 1971: VT100 ────────────────────────────────────────────────────
 
@@ -150,106 +148,24 @@ export function chime(src = macChimeSrc, volume = 0.22) {
   } catch { /* no audio */ }
 }
 
-/** 400K floppy reading: the Sony mechanism's motor whir with the head
- *  stepping underneath it — a soft, slightly uneven purr, not a crackle. */
-export function floppy() {
-  if (!ensure()) return () => {}
-  const t = now()
-  const bus = ctx.createGain()
-  bus.gain.setValueAtTime(0.0001, t)
-  bus.gain.exponentialRampToValueAtTime(0.6, t + 0.12)
-  bus.connect(master)
+// ── 1995: dial-up ──────────────────────────────────────────────────
+// A real recording only. Drop one in assets/web/ named dialup.(mp3|ogg|wav|m4a)
+// and it plays under the first page load of the session; with no file this
+// is silent. (A synthesised handshake was tried and sounded wrong.)
+const DIALUP = Object.values(import.meta.glob('../../assets/web/dialup.{mp3,ogg,wav,m4a}', {
+  eager: true, query: '?url', import: 'default',
+}))[0] || null
 
-  // Motor: a low hum with its harmonics, lightly wobbling
-  const hum = ctx.createOscillator()
-  hum.type = 'sawtooth'
-  hum.frequency.value = 98
-  const wob = ctx.createOscillator()
-  wob.frequency.value = 6.5
-  const wobG = ctx.createGain(); wobG.gain.value = 3
-  wob.connect(wobG).connect(hum.frequency)
-  const humG = ctx.createGain(); humG.gain.value = 0.09
-  hum.connect(filter('lowpass', 420)).connect(humG).connect(bus)
-  hum.start(t); wob.start(t)
-
-  // Airflow: band-limited hiss under the hum
-  const air = noise()
-  const airG = ctx.createGain(); airG.gain.value = 0.035
-  air.connect(filter('bandpass', 1400, 0.8)).connect(airG).connect(bus)
-  air.start(t)
-
-  // Head steps: soft, low thuds in short runs, like the drive seeking a track
-  let alive = true
-  let timer = null
-  const step = () => {
-    if (!alive) return
-    const at = now()
-    tone('sine', jitter(140, 0.2), 0.12, 0.003, 0.05, at, bus)
-    timer = setTimeout(step, Math.random() < 0.3 ? jitter(260, 0.4) : jitter(70, 0.3))
-  }
-  timer = setTimeout(step, 120)
-
-  return () => {
-    alive = false
-    clearTimeout(timer)
-    const at = now()
-    bus.gain.cancelScheduledValues(at)
-    bus.gain.setValueAtTime(bus.gain.value, at)
-    bus.gain.exponentialRampToValueAtTime(0.0001, at + 0.18)
-    hum.stop(at + 0.2); wob.stop(at + 0.2); air.stop(at + 0.2)
-  }
-}
-
-// ── 1995: 28.8k modem ──────────────────────────────────────────────
-
-export function modem() {
-  if (!ensure()) return () => {}
-  const t0 = now()
-  const bus = ctx.createGain()
-  bus.gain.value = 0.55
-  bus.connect(master)
-  const at = (dt) => t0 + dt
-
-  // Dial: DTMF pairs
-  const dtmf = [[697, 1209], [770, 1336], [852, 1477], [697, 1336], [941, 1336], [770, 1209], [852, 1336]]
-  dtmf.forEach(([a, b], i) => {
-    const s = at(0.15 + i * 0.11)
-    tone('sine', a, 0.12, 0.005, 0.07, s, bus)
-    tone('sine', b, 0.12, 0.005, 0.07, s, bus)
-  })
-  // Answer tone (2100 Hz), then the V.34 warble, then the training hiss
-  tone('sine', 2100, 0.1, 0.02, 0.55, at(1.2), bus)
-  const w = ctx.createOscillator()
-  w.type = 'square'
-  w.frequency.setValueAtTime(1200, at(1.85))
-  w.frequency.setValueAtTime(2400, at(1.95))
-  w.frequency.setValueAtTime(1200, at(2.05))
-  w.frequency.setValueAtTime(2400, at(2.15))
-  const wg = ctx.createGain()
-  wg.gain.setValueAtTime(0.0001, at(1.85))
-  wg.gain.exponentialRampToValueAtTime(0.07, at(1.87))
-  wg.gain.exponentialRampToValueAtTime(0.0001, at(2.3))
-  w.connect(wg).connect(bus)
-  w.start(at(1.85)); w.stop(at(2.35))
-
-  const n = noise()
-  const bp = filter('bandpass', 1200, 0.7)
-  bp.frequency.setValueAtTime(900, at(2.3))
-  bp.frequency.exponentialRampToValueAtTime(3200, at(3.4))
-  const ng = ctx.createGain()
-  ng.gain.setValueAtTime(0.0001, at(2.3))
-  ng.gain.exponentialRampToValueAtTime(0.16, at(2.5))
-  ng.gain.setValueAtTime(0.16, at(3.3))
-  ng.gain.exponentialRampToValueAtTime(0.0001, at(3.7))
-  n.connect(bp).connect(ng).connect(bus)
-  n.start(at(2.3)); n.stop(at(3.8))
-
-  return () => {
-    const s = now()
-    bus.gain.cancelScheduledValues(s)
-    bus.gain.setValueAtTime(bus.gain.value, s)
-    bus.gain.exponentialRampToValueAtTime(0.0001, s + 0.1)
-  }
+let dialupAudio = null
+export function dialup(volume = 0.25) {
+  if (!DIALUP) return () => {}
+  try {
+    dialupAudio?.pause()
+    dialupAudio = new Audio(DIALUP)
+    dialupAudio.volume = volume
+    dialupAudio.play().catch(() => {})
+  } catch { /* no audio */ }
+  return () => dialupAudio?.pause()
 }
 
 // ── 2016: Instagram ────────────────────────────────────────────────

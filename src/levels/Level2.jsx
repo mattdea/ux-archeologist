@@ -126,7 +126,7 @@ export default function Level2() {
   // slower trickle, as if the modem had just connected. On the first visit
   // it also ends the 'loading' screen.
   const fetchPage = useCallback((pageKey, { slow = false, boot = false } = {}) => {
-    if (slow) sfx.modem()   // dialling in: the handshake plays under the handshake
+    if (slow) sfx.dialup()   // real recording if one is in assets/web/, else silent
     netLoad.start(pageKey, {
       host: hostOf(PAGES[pageKey].url),
       kb: PAGES[pageKey].kb,
@@ -232,7 +232,7 @@ export default function Level2() {
         {/* Zone 2 — artifact, fills remaining height */}
         <div className={styles.artifactZone}>
           <div
-            className={styles.wrap}
+            className={`${styles.wrap} ${netLoad.loading ? styles.wrapBusy : ''}`}
             style={{ width: BROWSER_W * scale, height: BROWSER_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>

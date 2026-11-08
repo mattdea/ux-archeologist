@@ -16,6 +16,13 @@ import findIcon      from '../../assets/web/find.png'
 import stopIcon      from '../../assets/web/stop.png'
 import throbberIcon  from '../../assets/web/throbber.png'
 
+// The original Netscape meteor animation, if it has been added as
+// src/assets/web/throbber-anim.gif. It plays while a page loads; with no file,
+// CSS streaks stand in over the static N.
+const THROBBER_ANIM = Object.values(import.meta.glob('../../assets/web/throbber-anim.{gif,webp,png}', {
+  eager: true, query: '?url', import: 'default',
+}))[0] || null
+
 const SCROLL_STEP   = 20  // px per arrow-button tick
 const SCROLL_REPEAT = 60  // ms between repeat ticks while button held
 
@@ -238,13 +245,20 @@ export default function BrowserChrome({
         <span className={styles.toolbarSpacer} />
 
         {/* Throbber — Netscape N logo, top-right */}
-        <span className={`${styles.throbber} ${loading ? styles.throbberActive : ''}`}>
-          <img src={throbberIcon} className={styles.throbberImg} alt="" draggable="false" />
-          {/* Netscape 2's meteor shower: streaks fall across the N while loading */}
-          <span className={styles.throbberStar} />
-          <span className={styles.throbberStar} />
-          <span className={styles.throbberStar} />
-          <span className={styles.throbberStar} />
+        <span className={`${styles.throbber} ${loading && !THROBBER_ANIM ? styles.throbberActive : ''}`}>
+          <img
+            src={loading && THROBBER_ANIM ? THROBBER_ANIM : throbberIcon}
+            className={styles.throbberImg}
+            alt=""
+            draggable="false"
+          />
+          {/* Stand-in meteor streaks, only when the original animation is absent */}
+          {!THROBBER_ANIM && <>
+            <span className={styles.throbberStar} />
+            <span className={styles.throbberStar} />
+            <span className={styles.throbberStar} />
+            <span className={styles.throbberStar} />
+          </>}
         </span>
       </div>
 

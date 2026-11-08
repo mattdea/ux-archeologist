@@ -164,11 +164,11 @@ White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artif
 
 ## Sound
 
-`src/audio/sfx.js` synthesises every effect with Web Audio (the Macintosh chime is the one recording, `assets/mac-chime.mp3`). Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 key clack, VT100 bell on an unknown command, CRT power-on; 1984 startup chime, floppy seeking while the drive light is on; 1995 28.8k handshake under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
+`src/audio/sfx.js` synthesises every effect with Web Audio (the Macintosh chime is the one recording, `assets/mac-chime.mp3`). Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 VT100 keyclick and bell (one keyboard speaker ringing near 780 Hz: one pulse = click, ~200 = bell), CRT power-on; 1984 startup chime (volume 0.22), no drive sound; 1995 a real dial-up recording under the first page load if `assets/web/dialup.(mp3|ogg|wav|m4a)` exists, otherwise silent (a synthesised handshake sounded wrong); 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
 
 ## Period pointers
 
-`src/components/era-cursors.css` defines pixel-exact SVG cursors as data URIs: the 1984 Mac arrow (ROM `arrow` data + mask, hotspot 1,1), the Windows 95 arrow (0,0) and the Windows 95 link hand (fingertip 5,0). Level 1 sets the Mac arrow on `.inner`; Level 2 sets the Win95 arrow on `.wrap`, the hand via `--cursor-link` on clickable links and an I-beam on the Location field. Artifact CSS uses `cursor: inherit`. Cursors are screen-space and do not scale with the artifact.
+`src/components/era-cursors.css` defines pixel-exact SVG cursors as data URIs: the 1984 Mac arrow (ROM `arrow` data + mask, hotspot 1,1), the Windows 95 arrow (0,0) and the Windows 95 link hand (fingertip 5,0). Level 1 sets the Mac arrow on `.inner` and the wristwatch (`--cursor-mac-watch`, redrawn) while the drive light is on; Level 2 sets the Win95 arrow on `.wrap`, the arrow-with-hourglass (`--cursor-win-busy`) while a page loads, the hand via `--cursor-link` on clickable links and an I-beam on the Location field. Artifact CSS uses `cursor: inherit`. Cursors are screen-space and do not scale with the artifact.
 
 ## Container Progression
 
@@ -292,7 +292,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Interactive Elements:**
 - All sidebar/inline links navigate between pages
 - Back / Forward buttons in toolbar (functional)
-- Page loads run Netscape's stages (contact → reply → transfer → Document: Done) with a "47% of 23K (at 2.4K/sec)" counter; the old page stays up until bytes arrive, then the new page draws block by block (`useNetscapeLoad`, `ProgressiveReveal`); the N throbber animates meanwhile. First load of the session is slower, under a modem handshake.
+- Page loads run Netscape's stages (contact → reply → transfer → Document: Done) with a "47% of 23K (at 2.4K/sec)" counter; the old page stays up until bytes arrive, then the new page draws block by block (`useNetscapeLoad`, `ProgressiveReveal`); the N throbber animates meanwhile. The real throbber (Navigator 1.1 onward) was a monolithic N on a planet with meteors raining past; drop the original 60×60 GIF at `src/assets/web/throbber-anim.gif` and it replaces the CSS stand-in streaks. First load of the session is slower, under a modem handshake.
 
 **Objectives (sequential):**
 1. Navigate to a new page

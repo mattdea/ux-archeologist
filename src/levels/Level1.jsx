@@ -63,12 +63,6 @@ export default function Level1() {
   }, [])
   useEffect(() => () => clearTimeout(driveTimer.current), [])
 
-  // The drive seeks audibly whenever its light is on
-  useEffect(() => {
-    if (!driveBusy) return
-    return sfx.floppy()
-  }, [driveBusy])
-
   // Startup chime as the boot begins (replays start at 'playing', so no chime)
   useEffect(() => {
     if (screen === 'booting') sfx.chime()
@@ -151,7 +145,7 @@ export default function Level1() {
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <MonitorBezel driveBusy={driveBusy}>
-                <div className={styles.inner}>
+                <div className={`${styles.inner} ${driveBusy ? styles.innerBusy : ''}`}>
                   {showDesktop && (
                     <DesktopScene
                       completeObjective={completeObjective}

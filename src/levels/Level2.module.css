@@ -53,6 +53,11 @@
   cursor: text;                           /* I-beam over the Location field, as Win95 did */
 }
 
+/* Arrow + hourglass while a page loads; links keep the hand */
+.wrapBusy {
+  cursor: var(--cursor-win-busy);
+}
+
 /* Inner scaler — holds native-size BrowserChrome, scaled via transform. */
 .scaler {
   flex-shrink: 0;
