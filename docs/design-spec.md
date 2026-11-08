@@ -149,7 +149,7 @@ Level 5's chat panel has no device and still fills the artifact zone. Never add 
 White card, 2px black accent line, mono era label, serif title, sans body, objectives list, "Begin excavation" button (full-width black).
 
 ### HintPill + useHint
-Italic nudge in a dark pill, fixed at the bottom centre of the viewport (clear of the tracker, the Continue/back corner and the artifact above). `useHint(HINTS, { active, completedIndices })` returns the hint for the first unfinished objective after 20s without progress; any completion hides it and restarts the clock. Every level defines `HINTS` alongside `OBJECTIVES`. The pill is not `data-hud`, so it never moves the artifact.
+Nudge in a dark pill, fixed at the bottom centre of the viewport (clear of the tracker, the Continue/back corner and the artifact above). `useHint(HINTS, { active, completedIndices })` returns the hint for the first unfinished objective after 10s without progress; any completion hides it and restarts the clock. Every level defines `HINTS` alongside `OBJECTIVES`. The pill is not `data-hud`, so it never moves the artifact.
 
 ### Progress dots
 Each dot is a 17×24 button; hover or focus shows a tooltip under the row with the era and title in the HUD type. Click navigates.

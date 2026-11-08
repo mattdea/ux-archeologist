@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from 'react'
 
-export const HINT_DELAY_MS = 20000
+export const HINT_DELAY_MS = 10000
 
 export default function useHint(hints, { active, completedIndices, delay = HINT_DELAY_MS }) {
   const next = hints.findIndex((_, i) => !completedIndices.includes(i))
