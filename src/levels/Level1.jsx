@@ -11,12 +11,21 @@ import * as sfx from '../audio/sfx'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import HintPill from '../shared/museum-ui/HintPill'
+import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Find the document on this computer',
   'Delete the Projects folder',
   'Discover what commands are available',
+]
+
+// One nudge per objective, shown only after the player has stalled
+const HINTS = [
+  'Double-click the Notes icon',
+  'Drag the Projects folder onto the Trash',
+  'Click File in the menu bar at the top of the screen',
 ]
 
 // Maps DesktopScene's string keys → OBJECTIVES array indices
@@ -65,6 +74,8 @@ export default function Level1() {
     if (screen === 'booting') sfx.chime()
   }, [screen])
   const finishBoot = useCallback(() => setScreen('playing'), [])
+
+  const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
   // Fits the artifact around the HUD corners, as large as the viewport allows
   const fit = useArtifactFit(BEZEL_W, BEZEL_H)
@@ -163,6 +174,7 @@ export default function Level1() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <HintPill docked text={hint} />
         <div data-hud className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}

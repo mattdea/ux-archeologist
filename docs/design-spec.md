@@ -148,13 +148,27 @@ Level 5's chat panel has no device and still fills the artifact zone. Never add 
 ### IntroModal
 White card, 2px black accent line, mono era label, serif title, sans body, objectives list, "Begin excavation" button (full-width black).
 
+### HintPill + useHint
+Italic nudge in a dark pill, fixed at the bottom centre of the viewport (clear of the tracker, the Continue/back corner and the artifact above). `useHint(HINTS, { active, completedIndices })` returns the hint for the first unfinished objective after 20s without progress; any completion hides it and restarts the clock. Every level defines `HINTS` alongside `OBJECTIVES`. The pill is not `data-hud`, so it never moves the artifact.
+
+### Progress dots
+Each dot is a 17×24 button; hover or focus shows a tooltip under the row with the era and title in the HUD type. Click navigates.
+
 ### ObjectiveTracker
-Dark translucent card, "OBJECTIVES" label, checklist (unchecked = light, checked = strikethrough + muted). Slides up via `trackerSlideUp` keyframe when playing state begins.
+Dark translucent card, "OBJECTIVES" label, checklist (unchecked = light, checked = strikethrough + muted). Slides up via `trackerSlideUp` keyframe when playing state begins. Completing an item draws the tick (stroke-dashoffset, ~220ms), then a strike grows across the text from the left as it fades to grey. The HUD Continue button waits ~550ms for the last strike, then rises in with a slight overshoot and a soft halo that blooms off its border. All disabled under `prefers-reduced-motion`.
 
 ### DiscoveryCard
 White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artifact name, description, "Next excavation" button → `/timeline`.
 
 ---
+
+## Sound
+
+`src/audio/sfx.js` synthesises every effect with Web Audio (the Macintosh chime is the one recording, `assets/mac-chime.mp3`). Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 key clack, VT100 bell on an unknown command, CRT power-on; 1984 startup chime, floppy seeking while the drive light is on; 1995 28.8k handshake under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
+
+## Period pointers
+
+`src/components/era-cursors.css` defines pixel-exact SVG cursors as data URIs: the 1984 Mac arrow (ROM `arrow` data + mask, hotspot 1,1), the Windows 95 arrow (0,0) and the Windows 95 link hand (fingertip 5,0). Level 1 sets the Mac arrow on `.inner`; Level 2 sets the Win95 arrow on `.wrap`, the hand via `--cursor-link` on clickable links and an I-beam on the Location field. Artifact CSS uses `cursor: inherit`. Cursors are screen-space and do not scale with the artifact.
 
 ## Container Progression
 
@@ -278,7 +292,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Interactive Elements:**
 - All sidebar/inline links navigate between pages
 - Back / Forward buttons in toolbar (functional)
-- 500ms load delay simulating dial-up
+- Page loads run Netscape's stages (contact → reply → transfer → Document: Done) with a "47% of 23K (at 2.4K/sec)" counter; the old page stays up until bytes arrive, then the new page draws block by block (`useNetscapeLoad`, `ProgressiveReveal`); the N throbber animates meanwhile. First load of the session is slower, under a modem handshake.
 
 **Objectives (sequential):**
 1. Navigate to a new page
@@ -574,7 +588,7 @@ Era-authentic only. Never use museum-layer easing inside the artifact.
 
 **Level 2 — 1995:**
 - No CSS animations inside pages. Blinking text: step-end keyframes.
-- Page load: 500ms delay (simulated dial-up)
+- Page load: staged modem load, 1.5–2.5s (first load ~5s), see Level 2
 - Browser Back/Forward: instant page swap
 
 **Level 3 — 2007:**

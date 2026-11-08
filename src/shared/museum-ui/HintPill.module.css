@@ -20,3 +20,21 @@
 .hidden {
   opacity: 0;
 }
+
+/* Docked under the artifact, bottom centre. Rises 6px as it fades in. */
+.docked {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 6px);
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
+  z-index: 5;
+}
+
+.docked.visible {
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docked { transition: opacity 400ms ease-out; transform: translate(-50%, 0); }
+}

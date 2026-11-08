@@ -9,6 +9,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './Level5.module.css'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import HintPill from '../shared/museum-ui/HintPill'
+import useHint from '../shared/museum-ui/useHint'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete } from '../state/state'
@@ -18,6 +20,13 @@ const OBJECTIVES = [
   'Start a conversation',
   'Ask a follow-up question',
   'Regenerate a response',
+]
+
+// One nudge per objective, shown only after the player has stalled
+const HINTS = [
+  'Tap one of the suggestions, or type a question and press Enter',
+  'Ask about something the curator just said',
+  'Tap the circular arrow under a reply',
 ]
 
 const DISCOVERY_DESCRIPTION =
@@ -92,6 +101,7 @@ export default function Level5() {
     objectives.askFollowUp,
     objectives.regenerateResponse,
   ].reduce((acc, done, i) => (done ? [...acc, i] : acc), [])
+  const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
   return (
     <>
@@ -139,6 +149,7 @@ export default function Level5() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <HintPill docked text={hint} />
         <div data-hud className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}

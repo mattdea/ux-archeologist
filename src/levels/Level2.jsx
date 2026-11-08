@@ -15,6 +15,8 @@ import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import HintPill from '../shared/museum-ui/HintPill'
+import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 // ── Page metadata ───────────────────────────────────────────────────
@@ -32,6 +34,13 @@ const OBJECTIVES = [
   'Navigate to a new page',
   'Return to a previous page',
   "Find 'A Brief History of the Web'",
+]
+
+// One nudge per objective, shown only after the player has stalled
+const HINTS = [
+  'Click any underlined link',
+  'Use the Back button in the toolbar',
+  'Look under Computers and Internet for an archive of old machines',
 ]
 
 // Maps objective key → OBJECTIVES array index
@@ -58,6 +67,7 @@ export default function Level2() {
 
   // ── Completed objectives ────────────────────────────────────────
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(2) ? [0, 1, 2] : [])
+  const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
   // ── Browser navigation state ────────────────────────────────────
   const [history, setHistory]           = useState(['yahoo'])
@@ -243,6 +253,7 @@ export default function Level2() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <HintPill docked text={hint} />
         <div data-hud className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}

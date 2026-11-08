@@ -11,6 +11,8 @@ import { useState, useEffect, useCallback } from 'react'
 import styles from './Level4.module.css'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import HintPill from '../shared/museum-ui/HintPill'
+import useHint from '../shared/museum-ui/useHint'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
@@ -23,6 +25,13 @@ const OBJECTIVES = [
   "Like Imani's post",
   'Learn more about a sponsored post',
   'Follow someone new',
+]
+
+// One nudge per objective, shown only after the player has stalled
+const HINTS = [
+  'Scroll the feed until you find Imani Brooks, then double-tap her photo',
+  'Find a post marked Sponsored and tap its Learn More button',
+  'Tap a name to open a profile, then tap Follow',
 ]
 
 const DISCOVERY_DESCRIPTION =
@@ -100,6 +109,7 @@ export default function Level4() {
     objectives.tapSponsored,
     objectives.followNew,
   ].reduce((acc, done, i) => done ? [...acc, i] : acc, [])
+  const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
   return (
     <>
@@ -153,6 +163,7 @@ export default function Level4() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <HintPill docked text={hint} />
         <div data-hud className={`${styles.bottomZone} ${trackerVisible ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}

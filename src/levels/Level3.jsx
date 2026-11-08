@@ -29,12 +29,21 @@ function playSound(src) {
 }
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import HintPill from '../shared/museum-ui/HintPill'
+import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Slide to unlock',
   'Explore the Notes app',
   'Swipe between screens',
+]
+
+// One nudge per objective, shown only after the player has stalled
+const HINTS = [
+  'Drag the arrow all the way to the right',
+  'Tap the Notes icon on the home screen',
+  'Drag the home screen to the left to see the next page',
 ]
 
 // Native bezel dimensions derived from iphone.svg measurements.
@@ -264,6 +273,7 @@ export default function Level3() {
     objectives.exploreNotes,
     objectives.swipePage,
   ].reduce((acc, done, i) => done ? [...acc, i] : acc, [])
+  const hint = useHint(HINTS, { active: museumScreen === 'playing', completedIndices })
 
   return (
     <>
@@ -354,6 +364,7 @@ export default function Level3() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
+        <HintPill docked text={hint} />
         <div data-hud className={`${styles.bottomZone} ${museumScreen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}

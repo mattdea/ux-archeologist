@@ -80,6 +80,15 @@ function playSound(src) {
 - Never add `min-height` to `.bottomZone` — it forces a blank gap above the tracker.
 - The artifact is placed by `useArtifactFit(W, H)` → `{ scale, left, top }` on an absolutely positioned `.wrap`; mark every HUD block (incl. `.bottomZone`) with `data-hud` so the hook avoids it. See design-spec "Artifact Fit".
 
+**Hints (every level):**
+- Define `HINTS`, one nudge per objective, next to `OBJECTIVES`. `const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })` and render `<HintPill docked text={hint} />` just before `.bottomZone`. The pill shows after 20s without progress and hides on every completion; never mark it `data-hud`.
+
+**Sound (every level):**
+- Import `* as sfx from '../audio/sfx'`. Sounds are synthesised and quiet; trigger them from user actions or timers that follow a click. Keep the artifact's era: a Mac does not pop, a feed does not clack.
+
+**Period pointers:**
+- Levels whose hardware had a pointer set it on the artifact root with `cursor: var(--cursor-…)` from `era-cursors.css`; the artifact's own CSS uses `cursor: inherit`, links `var(--cursor-link, pointer)`.
+
 **File structure for a new level:**
 - `src/levels/LevelN.jsx` — screen state machine, museum wiring, artifact composition
 - `src/levels/LevelN.module.css` — three-zone layout (topSpacer / artifactZone / bottomZone), mirrors existing levels exactly

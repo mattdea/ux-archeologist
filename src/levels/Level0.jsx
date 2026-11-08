@@ -10,12 +10,21 @@ import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
+import HintPill from '../shared/museum-ui/HintPill'
+import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Read the notes file',
   'Check your messages',
   'Look up a command in the manual',
+]
+
+// One nudge per objective, shown only after the player has stalled
+const HINTS = [
+  'Try typing  ls  to see what files are here, then  cat  one of them',
+  'Try typing  mail',
+  'Try typing  man  followed by a command, like  man ls',
 ]
 
 // Bezel pixel dimensions — must match .bezel in TerminalBezel.module.css
@@ -34,6 +43,7 @@ export default function Level0() {
   // Skip intro+boot and go directly to 'playing' on replay (level already complete).
   const [screen, setScreen] = useState(() => isLevelComplete(0) ? 'playing' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(0) ? [0, 1, 2] : [])
+  const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
   const fit = useArtifactFit(BEZEL_W, BEZEL_H)
   const scale = fit.scale
@@ -135,6 +145,7 @@ export default function Level0() {
         </div>
 
         {/* Zone 3 — ObjectiveTracker */}
+        <HintPill docked text={hint} />
         <div data-hud className={`${styles.bottomZone} ${screen === 'playing' ? styles.bottomZoneVisible : ''}`}>
           <ObjectiveTracker
             objectives={OBJECTIVES}
