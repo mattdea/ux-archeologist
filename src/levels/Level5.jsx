@@ -40,8 +40,9 @@ export default function Level5() {
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
-  const [screen, setScreen] = useState(() => ALREADY_DONE ? 'playing' : 'intro')
-  const [trackerVisible, setTrackerVisible] = useState(ALREADY_DONE)
+  // Replay (level already complete): skip the intro card, replay the boot
+  const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
+  const [trackerVisible, setTrackerVisible] = useState(false)
 
   // Objectives: independent (no sequential gating), keyed by name
   const [objectives, setObjectives] = useState({
@@ -88,7 +89,7 @@ export default function Level5() {
     }
   }, [screen, allComplete, setContinue])
 
-  // Boot sequence: 1000ms pause → 'playing' (input bar slides up via CSS keyframe)
+  // Boot sequence: 200ms pause → 'playing' (input bar slides up via CSS keyframe)
   const handleBeginExcavation = () => {
     setScreen('booting')
     bootTimers.current.push(

@@ -40,8 +40,8 @@ const DISCOVERY_DESCRIPTION =
 
 export default function Level0() {
   // 'intro' → 'booting' → 'playing' → 'discovery'
-  // Skip intro+boot and go directly to 'playing' on replay (level already complete).
-  const [screen, setScreen] = useState(() => isLevelComplete(0) ? 'playing' : 'intro')
+  // Replay (level already complete): skip the intro card, replay the boot.
+  const [screen, setScreen] = useState(() => isLevelComplete(0) ? 'booting' : 'intro')
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(0) ? [0, 1, 2] : [])
   const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
@@ -57,7 +57,6 @@ export default function Level0() {
   const terminal = useTerminal({
     onObjectiveComplete: completeObjective,
     completedIndices,
-    replay: isLevelComplete(0),
   })
 
   // Start the boot sequence when screen enters 'booting'.

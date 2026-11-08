@@ -55,7 +55,8 @@ const BROWSER_H = 580 // must match BrowserChrome.module.css
 export default function Level2() {
   // ── Museum screen state ─────────────────────────────────────────
   // intro → loading → playing → discovery
-  const [screen, setScreen] = useState(() => isLevelComplete(2) ? 'playing' : 'intro')
+  // Replay (level already complete): skip the intro card, replay the load.
+  const [screen, setScreen] = useState(() => isLevelComplete(2) ? 'loading' : 'intro')
 
   // ── Page loading (1995 modem feel) ──────────────────────────────
   // useNetscapeLoad runs the contact → reply → transfer → done stages and
@@ -63,7 +64,7 @@ export default function Level2() {
   // old page stays up until the new one's first bytes arrive (transfer), as
   // Netscape did, then the new page fills in block by block.
   const netLoad = useNetscapeLoad()
-  const [shownPage, setShownPage] = useState(() => isLevelComplete(2) ? 'yahoo' : null)
+  const [shownPage, setShownPage] = useState(null)
 
   // ── Completed objectives ────────────────────────────────────────
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(2) ? [0, 1, 2] : [])
@@ -81,9 +82,8 @@ export default function Level2() {
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
-  // Notify SharedLayout when artifact is ready for interaction.
-  // Normal flow: fires when modem load sequence completes → screen='playing'.
-  // Replay flow: screen starts as 'playing', fires immediately on mount.
+  // Notify SharedLayout when artifact is ready for interaction: fires when
+  // the first page's load completes → screen='playing' (first visit or replay).
   useEffect(() => {
     if (screen === 'playing') notifyArtifactReady()
   }, [screen, notifyArtifactReady])
@@ -135,6 +135,12 @@ export default function Level2() {
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [netLoad.start])
+
+  // Replay: no intro card, so start the first (dial-up) load on mount
+  useEffect(() => {
+    if (isLevelComplete(2)) fetchPage('yahoo', { slow: true, boot: true })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // The viewport switches to the new page when its transfer begins
   useEffect(() => {

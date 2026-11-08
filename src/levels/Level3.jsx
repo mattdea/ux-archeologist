@@ -63,8 +63,9 @@ export default function Level3() {
   const setContinue = useSetContinue()
 
   // ── Museum screen state ──────────────────────────────────────────────────
-  // Skip intro+boot and go directly to 'playing' on replay (level already complete).
-  const [museumScreen, setMuseumScreen] = useState(() => isLevelComplete(3) ? 'playing' : 'intro')
+  // Replay (level already complete): skip the intro card, replay the boot
+  // (the phone powers on to its lock screen; see the mount effect below).
+  const [museumScreen, setMuseumScreen] = useState(() => isLevelComplete(3) ? 'booting' : 'intro')
 
   // ── Objectives (independent — no sequential gating) ──────────────────────
   const [objectives, setObjectives] = useState(() => {
@@ -81,14 +82,14 @@ export default function Level3() {
 
   // ── Phone screen state ──────────────────────────────────────────────────
   // 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
-  const [phoneScreen, setPhoneScreen] = useState(() => isLevelComplete(3) ? 'home' : 'lock')
+  const [phoneScreen, setPhoneScreen] = useState('lock')
   const [unlockPhase, setUnlockPhase] = useState(0)       // 0-5
   const [currentPage, setCurrentPage] = useState(0)       // home screen page index
   const [transitioning, setTransitioning] = useState(false)
   // Close animation: controls when dock/icons fly back in
   const [closeShowDock, setCloseShowDock] = useState(false)
   const [closeShowIcons, setCloseShowIcons] = useState(false)
-  const [phonePower, setPhonePower] = useState(() => isLevelComplete(3) ? 'on' : 'off')
+  const [phonePower, setPhonePower] = useState('off')
 
   // Timer refs for cleanup
   const unlockTimers = useRef([])
@@ -119,6 +120,12 @@ export default function Level3() {
         setPhonePower('on')
       }, 450))
     }, 300))
+  }, [])
+
+  // Replay: no intro card, so run the boot on mount
+  useEffect(() => {
+    if (isLevelComplete(3)) handleBeginExcavation()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Notify SharedLayout when the artifact is ready for interaction.

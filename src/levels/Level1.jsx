@@ -39,9 +39,8 @@ const BEZEL_H = 755
 // Matches --bottom-zone-height in Level1.module.css
 
 export default function Level1() {
-  // Skip intro+boot and go directly to 'playing' on replay (level already complete).
-  // Skip intro only (boot still plays) if intro was dismissed this session but not yet finished.
-  const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'playing' : 'intro')
+  // Replay (level already complete): skip the intro card, replay the boot.
+  const [screen, setScreen] = useState(() => isLevelComplete(1) ? 'booting' : 'intro')
   // Restore objectives from this session, or all-complete if level is done.
   const [completedIndices, setCompletedIndices] = useState(() => {
     if (isLevelComplete(1)) return [0, 1, 2]
@@ -51,7 +50,7 @@ export default function Level1() {
     } catch { return [] }
   })
   // Boot reveal step for the real desktop (0 = bare gray, REVEAL_ALL = done).
-  const [reveal, setReveal] = useState(() => isLevelComplete(1) ? REVEAL_ALL : 0)
+  const [reveal, setReveal] = useState(0)
   // Floppy in-use LED: on while booting from disk and briefly whenever the
   // Finder reads the disk to open something.
   const [driveBusy, setDriveBusy] = useState(false)
@@ -63,7 +62,7 @@ export default function Level1() {
   }, [])
   useEffect(() => () => clearTimeout(driveTimer.current), [])
 
-  // Startup chime as the boot begins (replays start at 'playing', so no chime)
+  // Startup chime as the boot begins (replays too)
   useEffect(() => {
     if (screen === 'booting') sfx.chime()
   }, [screen])
