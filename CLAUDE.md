@@ -35,7 +35,7 @@
 - HUD elements (ObjectiveTracker, era label, progress dots) are hidden during boot.
 - They appear only after boot completes and the artifact is interactive.
 - Level0/Level1 pattern: `startBoot(onComplete)` — expose a function from the artifact hook, call it from a `useEffect` watching `screen === 'booting'`, pass `() => setScreen('playing')` as callback.
-- Level3 pattern: inline `setTimeout` chain in `handleBeginExcavation` — 1000ms pause, then 450ms boot animation, then `setScreen('playing')`.
+- Level3 pattern: inline `setTimeout` chain in `handleBeginExcavation` — 300ms pause, then 450ms boot animation, then `setScreen('playing')`.
 - Use whichever pattern fits the artifact's complexity.
 
 **Boot delay before animation:**
@@ -50,7 +50,7 @@
 - Document-level keydown recapture should also be active for any interactive phase, not just 'shell'.
 
 **Objective gating:**
-- Sequential (Level0/Level1): `tryFireObjective(idx)` — idx N requires idx N-1 in `completedIndices`. Use refs (`onObjRef`, `completedRef`) to avoid stale closures in async callbacks.
+- Every level currently completes objectives in any order. Level0's `tryFireObjective(idx)` (in `useTerminal`) only skips objectives already done; it reads `onObjRef` / `completedRef` refs to avoid stale closures in async callbacks.
 - Independent (Level3): each objective fires immediately on the triggering action, no gating. Use `completeObjective(key)` with a keyed object: `{ slideToUnlock: false, exploreNotes: false, swipePage: false }`. Convert to `completedIndices` array via `.reduce()`.
 - Choose the pattern that matches the level's interaction model.
 

@@ -54,13 +54,13 @@ All levels are freely accessible. Sequential order is suggested but not enforced
 ## Experience Architecture
 
 ### Progression
-Sequential order is suggested but not enforced: Level 0 → 1 → 2 → 3 → 4 → 5 → Collection. All levels are freely accessible at any time. Completing a level navigates directly to the next level (DiscoveryCard nextUrl).
+Sequential order is suggested but not enforced: Level 0 → 1 → 2 → 3 → 4 → 5 → timeline. All levels are freely accessible at any time. Completing a level navigates directly to the next level (DiscoveryCard nextUrl).
 
 ### Per-Level Flow
 1. **Arrive** — IntroModal overlays the artifact (museum layer). Artifact is inert.
 2. **Boot** — Modal dismissed. Artifact boot/intro sequence plays (era-authentic). HUD hidden.
 3. **Explore** — Player interacts with the artifact, completes 3 objectives.
-4. **Discover** — Continue button appears. Player clicks → DiscoveryCard fades in. Artifact recorded. Player navigates to the next level (or `/collection` after Level 5).
+4. **Discover** — Continue button appears. Player clicks → DiscoveryCard fades in. Artifact recorded. Player navigates to the next level (or the timeline after Level 5).
 
 ### Screen State Machine (every level)
 ```
@@ -215,7 +215,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Monospace font throughout
 - Blinking cursor
 
-**Objectives (sequential):**
+**Objectives (any order):**
 1. Read the notes file
 2. Check your messages
 3. Look up a command in the manual
@@ -275,7 +275,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Empty Trash (Special menu):** enabled when the Trash holds anything. The Finder writes to the disk (drive light, watch cursor) and permanently deletes the contents, silently, as in 1984 (Finder sounds arrived with System 6.0.4+). Notes is a locked document: it stays in the Trash and a 1984-style alert (`MacAlert`: thick double frame, Caution icon, OK with default ring, Return dismisses) explains, sounding the system beep. The alert wording is written in the Mac's voice, not quoted from System 1.
 
-**Objectives (sequential):**
+**Objectives (any order):**
 1. Find the document on this computer
 2. Delete the Projects folder
 3. Discover what commands are available
@@ -317,7 +317,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Back / Forward buttons in toolbar (functional)
 - Page loads run Netscape's stages (contact → reply → transfer → Document: Done) with a "47% of 23K (at 2.4K/sec)" counter; the old page stays up until bytes arrive, then the new page draws block by block (`useNetscapeLoad`, `ProgressiveReveal`); the N throbber animates meanwhile. The real throbber (Navigator 1.1 onward) was a monolithic N on a planet with meteors raining past; that animation lives in the large N box beside the Location bar: `throbber-still.png` (its first frame) when idle, `throbber-anim.gif` (the original 60×60, 41 frames at 120ms, via erynwells.me / jwz) while a page loads. First load of the session is slower, under a modem handshake.
 
-**Objectives (sequential):**
+**Objectives (any order):**
 1. Navigate to a new page
 2. Return to a previous page
 3. Find "A Brief History of the Web"
@@ -513,7 +513,7 @@ src/components/feed/
 - After turn 2+: "What was the biggest leap in interface design?" · "Why did touchscreens change everything?" · "Is this the last interface?"
 
 **Boot Sequence:**
-1. ~1000ms pause after "Begin Excavation"
+1. ~200ms pause after "Begin Excavation"
 2. Input bar slides up from below viewport (300ms ease-out, @keyframes)
 3. Placeholder "Ask me anything..." fades in, cursor blinks
 4. Suggestion chips fade in staggered (50ms each)
