@@ -90,6 +90,11 @@
   color: var(--mac-gray);
 }
 
+/* Menu blinking: the chosen item inverts off and on before the menu closes.
+   These win over :hover so the flash shows under a still pointer. */
+.dropdownItem.blinkOn  { background: var(--mac-black); color: var(--mac-white); }
+.dropdownItem.blinkOff { background: var(--mac-white); color: var(--mac-black); }
+
 .dropdownSeparator {
   height: 1px;
   background: var(--mac-black);

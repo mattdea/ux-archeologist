@@ -1,0 +1,84 @@
+/* src/components/InfoWindowContent.module.css — Finder 1.0 Get Info window */
+
+.info {
+  padding: 8px 10px 10px;
+  font-family: var(--font-chicago);
+  font-size: 13px;
+  color: var(--mac-black);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: var(--border);
+}
+
+.name {
+  flex: 1;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lock {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: inherit;
+}
+
+.lockOff { color: var(--mac-gray); }
+
+.box {
+  width: 12px;
+  height: 12px;
+  border: var(--border);
+  background: var(--mac-white);
+  position: relative;
+}
+
+/* An X in the box, as the 1984 check box was drawn */
+.boxChecked::before,
+.boxChecked::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 4px;
+  width: 12px;
+  height: 2px;
+  background: var(--mac-black);
+  transform: rotate(45deg);
+}
+.boxChecked::after { transform: rotate(-45deg); }
+
+.input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: inherit;
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 8px;
+  row-gap: 3px;
+  margin: 8px 0;
+}
+
+.rows dt { text-align: right; }
+.rows dd { margin: 0; white-space: pre-line; }
+
+.comments {
+  margin-top: 6px;
+  min-height: 46px;
+  padding: 4px 6px;
+  border: var(--border);
+  font-size: 12px;
+  line-height: 1.3;
+}

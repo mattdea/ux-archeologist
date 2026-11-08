@@ -3,21 +3,34 @@ import { useState, useEffect, useRef } from 'react'
 import styles from './MenuBar.module.css'
 
 const APPLE_ITEMS = [
-  { label: 'About the Finder...' },
+  { label: 'About the Finder...', action: 'da', da: 'about' },
   { dotSeparator: true },
-  { label: 'Choose Printer' },
   { label: 'Scrapbook' },
-  { label: 'Alarm Clock' },
-  { label: 'Note Pad' },
-  { label: 'Calculator' },
+  { label: 'Alarm Clock',  action: 'da', da: 'alarm' },
+  { label: 'Note Pad',     action: 'da', da: 'notepad' },
+  { label: 'Calculator',   action: 'da', da: 'calculator' },
   { label: 'Key Caps' },
   { label: 'Control Panel' },
-  { label: 'Puzzle' },
+  { label: 'Puzzle',       action: 'da', da: 'puzzle' },
 ]
 
-export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = false, onOpen, onClose, canEmptyTrash = false, onEmptyTrash }) {
+// Menu blinking: when you chose an item, Finder 1.0 flashed it (inverted
+// off and on) three times before the menu went away — the Control Panel's
+// "Menu blinking" setting, 3 by default. About 3 ticks (50ms) a phase.
+const BLINKS = 3
+const BLINK_MS = 50
+
+export default function MenuBar({
+  onMenuItemClick, canOpen = false, canClose = false, onOpen, onClose,
+  canEmptyTrash = false, onEmptyTrash, canGetInfo = false, onGetInfo,
+  onCleanUp, canEject = false, onEject, onDeskAccessory,
+}) {
   const [openMenu, setOpenMenu] = useState(null)
+  // Label of the item mid-blink and whether it is drawn inverted right now
+  const [blink, setBlink] = useState(null)   // { label, on }
+  const blinkTimer = useRef(null)
   const menuBarRef = useRef(null)
+  useEffect(() => () => clearTimeout(blinkTimer.current), [])
 
   const MENUS = [
     {
@@ -29,13 +42,13 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
         { label: 'Print',          disabled: true },
         { label: 'Close',          action: 'close', disabled: !canClose },
         { dotSeparator: true },
-        { label: 'Get Info',       shortcut: '⌘I' },
+        { label: 'Get Info',       shortcut: '⌘I', action: 'getInfo', disabled: !canGetInfo },
         { label: 'Duplicate',      shortcut: '⌘D',  disabled: true },
         { dotSeparator: true },
         { label: 'Page Setup',     disabled: true },
         { label: 'Print Catalog',  disabled: true },
         { dotSeparator: true },
-        { label: 'Eject',          shortcut: '⌘E' },
+        { label: 'Eject',          shortcut: '⌘E', action: 'eject', disabled: !canEject },
       ],
     },
     {
@@ -69,7 +82,7 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
       id: 'special',
       label: 'Special',
       items: [
-        { label: 'Clean Up' },
+        { label: 'Clean Up',           action: 'cleanUp' },
         { label: 'Empty Trash',        action: 'emptyTrash', disabled: !canEmptyTrash },
         { label: 'Erase Disk' },
         { label: 'Set Startup',        disabled: true },
@@ -100,13 +113,40 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [openMenu])
 
-  const handleItemClick = (item) => {
-    if (item.disabled) return
-    setOpenMenu(null)
-    if (item.action === 'open') { onOpen?.(); return }
-    if (item.action === 'close') { onClose?.(); return }
-    if (item.action === 'emptyTrash') onEmptyTrash?.()
+  const runAction = (item) => {
+    switch (item.action) {
+      case 'open':       onOpen?.(); return
+      case 'close':      onClose?.(); return
+      case 'emptyTrash': onEmptyTrash?.(); break
+      case 'getInfo':    onGetInfo?.(); break
+      case 'cleanUp':    onCleanUp?.(); break
+      case 'eject':      onEject?.(); break
+      case 'da':         onDeskAccessory?.(item.da); break
+      default: break
+    }
     onMenuItemClick()
+  }
+
+  // Blink the chosen item, then close the menu and act
+  const handleItemClick = (item) => {
+    if (item.disabled || blink) return
+    let phase = 0                       // 0,2,4 = off; 1,3,5 = on
+    const step = () => {
+      if (phase >= BLINKS * 2) {
+        setBlink(null)
+        setOpenMenu(null)
+        runAction(item)
+        return
+      }
+      setBlink({ label: item.label, on: phase % 2 === 1 })
+      phase++
+      blinkTimer.current = setTimeout(step, BLINK_MS)
+    }
+    step()
+  }
+  const itemClass = (item, base) => {
+    const b = blink && blink.label === item.label
+    return `${base} ${b ? (blink.on ? styles.blinkOn : styles.blinkOff) : ''}`
   }
 
   return (
@@ -131,8 +171,8 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
               ) : (
                 <li key={item.label}>
                   <button
-                    className={styles.dropdownItem}
-                    onClick={() => { setOpenMenu(null); onMenuItemClick() }}
+                    className={itemClass(item, styles.dropdownItem)}
+                    onClick={() => handleItemClick(item)}
                   >
                     <span className={styles.checkCol} />
                     <span className={styles.itemLabel}>{item.label}</span>
@@ -161,7 +201,7 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
                 ) : (
                   <li key={item.label}>
                     <button
-                      className={`${styles.dropdownItem} ${item.disabled ? styles.dropdownItemDisabled : ''}`}
+                      className={itemClass(item, `${styles.dropdownItem} ${item.disabled ? styles.dropdownItemDisabled : ''}`)}
                       onClick={() => handleItemClick(item)}
                     >
                       <span className={styles.checkCol}>

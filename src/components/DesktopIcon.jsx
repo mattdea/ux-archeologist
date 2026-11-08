@@ -574,6 +574,34 @@ export function TrashIcon({ highlighted, full, selected }) {
   )
 }
 
+// The startup disk: a 3.5" diskette, shutter up, label at the bottom.
+export function DiskIcon({ selected }) {
+  const fg = selected ? 'white' : 'black'
+  const bg = selected ? 'black' : 'white'
+  return (
+    <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" width="40" height="40" shapeRendering="crispEdges">
+      <rect x="8" y="4" width="112" height="120" fill={bg} />
+      {/* outline */}
+      <rect x="8" y="4" width="112" height="4" fill={fg} />
+      <rect x="8" y="120" width="112" height="4" fill={fg} />
+      <rect x="8" y="4" width="4" height="120" fill={fg} />
+      <rect x="116" y="4" width="4" height="120" fill={fg} />
+      {/* metal shutter */}
+      <rect x="36" y="4" width="4" height="44" fill={fg} />
+      <rect x="92" y="4" width="4" height="44" fill={fg} />
+      <rect x="36" y="44" width="60" height="4" fill={fg} />
+      <rect x="68" y="12" width="12" height="28" fill={fg} />
+      {/* label */}
+      <rect x="24" y="72" width="80" height="4" fill={fg} />
+      <rect x="24" y="72" width="4" height="48" fill={fg} />
+      <rect x="100" y="72" width="4" height="48" fill={fg} />
+      <rect x="36" y="84" width="56" height="4" fill={fg} />
+      <rect x="36" y="96" width="40" height="4" fill={fg} />
+      <rect x="36" y="108" width="48" height="4" fill={fg} />
+    </svg>
+  )
+}
+
 const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
   const {
     label,
@@ -588,6 +616,7 @@ const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
     onDrop,
     onTouchStart,
     onTouchEnd,
+    onMouseDown,
     isHighlighted,
     isSelected,
     isFull,
@@ -610,8 +639,11 @@ const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
       onDrop={onDrop}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
+      onMouseDown={onMouseDown}
+      data-icon={props['data-icon']}
     >
       {icon === 'folder' && <FolderIcon selected={isSelected} />}
+      {icon === 'disk'   && <DiskIcon   selected={isSelected} />}
       {icon === 'notes'  && <NotesIcon  selected={isSelected} />}
       {icon === 'trash'  && <TrashIcon  highlighted={isHighlighted} full={isFull} selected={isSelected} />}
       <span className={`${styles.label} ${isSelected ? styles.labelSelected : ''}`}>{label}</span>

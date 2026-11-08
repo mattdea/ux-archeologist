@@ -1,88 +1,251 @@
 // src/components/DesktopScene.jsx
-import { useState, useRef, useEffect } from 'react'
+//
+// The Finder 1.0 desktop. Four icons live on it: the startup disk at the top
+// right, the Trash at the bottom right, and two items dragged out of the disk
+// window (Projects, Notes). Everything the player can do here is something
+// the 1984 Finder did: select with a click or a dotted marquee, drag outlines,
+// open with zoom rectangles, Get Info, Clean Up, Empty Trash, Eject, the desk
+// accessories under the Apple menu.
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react'
 import styles from './DesktopScene.module.css'
 import MenuBar from './MenuBar'
 import DesktopIcon from './DesktopIcon'
 import DraggableWindow from './DraggableWindow'
 import ScreenTexture from './ScreenTexture'
 import MacAlert from './MacAlert'
+import FolderWindowContent from './FolderWindowContent'
+import InfoWindowContent from './InfoWindowContent'
+import DeskAccessory, { DA_TITLES, DA_WIDTH } from './da/DeskAccessory'
 import * as sfx from '../audio/sfx'
 import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
+import { zoomRects, localRect } from './zoomRects'
 
-// Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = Projects,
+// Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = disk + Projects,
 // 3 = Notes, 4 = Trash (everything). The boot sequence steps this up so the
 // real menu bar and icons appear in place; nothing is swapped or moved.
 export const REVEAL_ALL = 4
 const shown = (on) => (on ? undefined : 'hidden')
+
+// Icon grid for Clean Up: columns step left from the disk's column, rows
+// step down from the top. Default positions sit on it.
+const GRID = { x0: 510, y0: 40, dx: 80, dy: 76, cols: 7, rows: 5 }
+const DISK_NAME = 'System Disk'
+
+const ICONS = {
+  disk:     { label: DISK_NAME, icon: 'disk',   reveal: 2 },
+  projects: { label: 'Projects', icon: 'folder', reveal: 2 },
+  notes:    { label: 'Notes',    icon: 'notes',  reveal: 3 },
+  trash:    { label: 'Trash',    icon: 'trash',  reveal: 4 },
+}
+const DEFAULT_POS = {
+  disk:     { x: 510, y: 40 },
+  projects: { x: 510, y: 116 },
+  notes:    { x: 510, y: 192 },
+  trash:    { x: 510, y: 344 },
+}
+const TRASHABLE = ['projects', 'notes']
+
+// What the disk holds. The 1984 System Disk: a System Folder and the Empty
+// Folder you renamed to make a new one (Finder 1.0 had no New Folder).
+const DISK_ITEMS = [
+  { id: 'sysfolder',   label: 'System Folder', icon: 'folder' },
+  { id: 'emptyfolder', label: 'Empty Folder',  icon: 'folder' },
+]
+const SYSFOLDER_ITEMS = [
+  { id: 'system',    label: 'System',         icon: 'notes' },
+  { id: 'finder',    label: 'Finder',         icon: 'notes' },
+  { id: 'imagewriter', label: 'Imagewriter',  icon: 'notes' },
+  { id: 'notepadfile', label: 'Note Pad File', icon: 'notes' },
+  { id: 'scrapbookfile', label: 'Scrapbook File', icon: 'notes' },
+  { id: 'clipboardfile', label: 'Clipboard File', icon: 'notes' },
+]
+const DISK_K = { inDisk: 216, available: 184 }
+
+// Get Info text for each item
+const INFO = {
+  disk: { kind: 'disk', size: '400K on disk', where: 'internal drive', created: 'Tue, Jan 24, 1984\n9:00 AM', modified: 'Wed, Jan 25, 1984\n4:02 PM', comment: '' },
+  projects: { kind: 'folder', size: '6K on disk (5,632 bytes), for 3 files', where: `${DISK_NAME}, internal drive`, created: 'Tue, Jan 24, 1984\n2:15 PM', modified: 'Wed, Jan 25, 1984\n11:40 AM', comment: 'Budget, letter and sketch for the partners meeting.' },
+  notes: { kind: 'document', size: '2K on disk (1,432 bytes)', where: `${DISK_NAME}, internal drive`, created: 'Wed, Jan 25, 1984\n9:14 AM', modified: 'Wed, Jan 25, 1984\n4:02 PM', comment: 'First day with the Macintosh.' },
+  trash: { kind: 'trash', size: '—', where: 'the desktop', created: '—', modified: '—', comment: '' },
+}
+
+const WINDOW_POS = {
+  disk: { x: 40, y: 48 }, sysfolder: { x: 70, y: 70 }, emptyfolder: { x: 90, y: 90 },
+  projects: { x: 80, y: 50 }, notes: { x: 60, y: 55 }, trash: { x: 90, y: 60 },
+}
+
 export default function DesktopScene({ completeObjective, active, reveal = REVEAL_ALL, onDiskAccess }) {
-  // windows: [{ id: string, type: 'projects'|'notes'|'trash', pos: {x,y}, z: number }]
+  // windows: [{ id, type, title, pos, z, hidden, src, item }]
+  //   type: 'disk'|'sysfolder'|'emptyfolder'|'projects'|'notes'|'trash'|'info'|'calculator'|'notepad'|'puzzle'|'alarm'|'about'
+  //   src: desktop icon id the window zooms from and back to (if any)
   const [windows, setWindows] = useState([])
-  const [trashContents, setTrashContents] = useState([])  // [] | ['projects'] | ['notes'] | ['projects','notes']
-  const [iconPositions, setIconPositions] = useState({
-    projects: { x: 496, y: 40 },
-    notes:    { x: 496, y: 160 },
-    trash:    { x: 496, y: 300 },
-  })
-  const [nextZ, setNextZ] = useState(20)
-  const [selectedIcon, setSelectedIcon] = useState(null)
+  const zRef = useRef(20)
+  const [trashContents, setTrashContents] = useState([])
+  const [deleted, setDeleted] = useState([])          // removed by Empty Trash
+  const [iconPositions, setIconPositions] = useState(DEFAULT_POS)
+  const [selected, setSelected] = useState([])         // desktop icon ids
   const [trashHighlighted, setTrashHighlighted] = useState(false)
-
-  // Derived
-  // Items permanently removed by Special ▸ Empty Trash
-  const [deleted, setDeleted] = useState([])
   const [alertMsg, setAlertMsg] = useState(null)
-  const projectsOnDesktop = !trashContents.includes('projects') && !deleted.includes('projects')
-  const notesOnDesktop    = !trashContents.includes('notes')
+  const [locked, setLocked] = useState({ notes: true }) // Notes is a locked document
+  const [ejected, setEjected] = useState(false)        // disk out: icon dimmed
+  const [marquee, setMarquee] = useState(null)         // {x,y,w,h} desktop px
+  const [folderSel, setFolderSel] = useState(null)     // selected item inside a window
 
-  // Clear selection when an icon is trashed
+  const onDesktop = (id) => id === 'trash' || (id === 'disk') || (!trashContents.includes(id) && !deleted.includes(id))
+  const desktopIds = Object.keys(ICONS).filter(onDesktop)
+
+  // Drop selection of icons that left the desktop
   useEffect(() => {
-    if (!projectsOnDesktop && selectedIcon === 'projects') setSelectedIcon(null)
-  }, [projectsOnDesktop])
+    setSelected(prev => prev.filter(onDesktop))
+  }, [trashContents, deleted]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    if (!notesOnDesktop && selectedIcon === 'notes') setSelectedIcon(null)
-  }, [notesOnDesktop])
+  const desktopRef = useRef(null)
+  const iconEls = useRef({})                           // id → element
+  const setIconEl = (id) => (el) => { iconEls.current[id] = el }
+  const iconRect = (id) => localRect(desktopRef.current, iconEls.current[id])
+  const winEl = (id) => desktopRef.current?.querySelector(`[data-win="${id}"]`)
 
-  const openWindow = (type, defaultPos) => {
-    onDiskAccess?.()   // Finder reads the floppy to open anything
-    const z = nextZ
-    setNextZ(n => n + 1)
-    setWindows(prev => {
-      if (prev.find(w => w.type === type)) {
-        return prev.map(w => w.type === type ? { ...w, z } : w)
+  // ── Windows, with zoom rectangles ──────────────────────────────────
+  const pendingZoom = useRef({})                       // id → from rect
+
+  const raise = (id) => {
+    const z = zRef.current++
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, z } : w))
+  }
+
+  // Open (or raise) a window. `from` is the rect the zoom starts at; with
+  // none (desk accessories) the window simply appears, as DAs did.
+  const openWindow = (type, { id = type, title, from, src, item, pos } = {}) => {
+    const existing = windows.find(w => w.id === id)
+    if (existing) { raise(id); return }
+    onDiskAccess?.()   // the Finder reads the disk to open anything
+    if (from) pendingZoom.current[id] = from
+    const z = zRef.current++
+    setWindows(prev => [...prev, { id, type, title, pos: pos ?? WINDOW_POS[type] ?? { x: 100, y: 70 }, z, hidden: !!from, src, item }])
+  }
+
+  // After a hidden window mounts, zoom out to it, then show it
+  useLayoutEffect(() => {
+    const desktop = desktopRef.current
+    for (const w of windows) {
+      const from = pendingZoom.current[w.id]
+      if (!w.hidden || !from) continue
+      delete pendingZoom.current[w.id]
+      const to = localRect(desktop, winEl(w.id))
+      zoomRects(desktop, from, to).then(() => {
+        setWindows(prev => prev.map(x => x.id === w.id ? { ...x, hidden: false } : x))
+      })
+    }
+  }, [windows])
+
+  const closeWindow = (id) => {
+    const w = windows.find(x => x.id === id)
+    if (!w) return
+    const desktop = desktopRef.current
+    const fromRect = localRect(desktop, winEl(id))
+    const to = w.src ? (iconRect(w.src) || null) : null
+    if (!fromRect || !to) {
+      setWindows(prev => prev.filter(x => x.id !== id))
+      return
+    }
+    setWindows(prev => prev.map(x => x.id === id ? { ...x, hidden: true } : x))
+    zoomRects(desktop, fromRect, to).then(() => {
+      setWindows(prev => prev.filter(x => x.id !== id))
+    })
+  }
+
+  const topWindow = () => windows.filter(w => !w.hidden).reduce((a, b) => (!a || b.z > a.z ? b : a), null)
+  const closeTopWindow = () => { const t = topWindow(); if (t) closeWindow(t.id) }
+
+  // Open a desktop icon
+  const openIcon = (id) => {
+    if (id === 'disk') {
+      if (ejected) {
+        sfx.beep()
+        setAlertMsg(`Please insert the disk:\n${DISK_NAME}`)
+        return
       }
-      return [...prev, { id: type, type, pos: defaultPos, z }]
-    })
+      openWindow('disk', { title: DISK_NAME, from: iconRect('disk'), src: 'disk' })
+    } else if (id === 'projects') {
+      openWindow('projects', { title: 'Projects', from: iconRect('projects'), src: 'projects' })
+    } else if (id === 'notes') {
+      openWindow('notes', { title: 'Notes', from: iconRect('notes'), src: 'notes' })
+      completeObjective('openFolder')
+    } else if (id === 'trash') {
+      openWindow('trash', { title: 'Trash', from: iconRect('trash'), src: 'trash' })
+    }
   }
 
-  const closeTopWindow = () => {
-    setWindows(prev => {
-      if (!prev.length) return prev
-      const top = prev.reduce((a, b) => a.z > b.z ? a : b)
-      return prev.filter(w => w.id !== top.id)
-    })
+  // Open an item inside a window (System Folder, a system file…)
+  const openInner = (item, el) => {
+    const from = localRect(desktopRef.current, el)
+    if (item.icon === 'folder') {
+      openWindow(item.id, { title: item.label, from, src: null, pos: WINDOW_POS[item.id] })
+    } else {
+      // Finder 1.0's wording for a file with no application to open it
+      sfx.beep()
+      setAlertMsg(`The file “${item.label}” could not be opened/printed (the application is busy or missing).`)
+    }
   }
 
-  const desktopRef  = useRef(null)
-  const trashRef    = useRef(null)
-  const projectsRef = useRef(null)
-  const notesRef    = useRef(null)
-  const touchDragging = useRef(false)
-  const touchGhost    = useRef(null)
+  // ── Selection ──────────────────────────────────────────────────────
+  const handleIconMouseDown = (id, e) => {
+    e.stopPropagation()
+    setFolderSel(null)
+    if (e.shiftKey) {
+      setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+    } else if (!selected.includes(id)) {
+      setSelected([id])
+    }
+  }
 
-  // Drag outline (System 1 stutter effect)
-  const dragOutline   = useRef(null)
+  // Marquee: press on the bare desktop, drag a dotted rectangle; icons it
+  // touches are selected as it grows.
+  const marqueeStart = useRef(null)
+  const marqueeMoved = useRef(false)
+  const handleDesktopMouseDown = (e) => {
+    if (e.target !== e.currentTarget && !e.target.closest(`.${styles.bgLayer}`)) return
+    if (e.button !== 0) return
+    const desktop = desktopRef.current
+    const start = toLocal(desktop, e.clientX, e.clientY)
+    if (start.y < 30) return   // menu bar
+    const base = e.shiftKey ? selected : []
+    if (!e.shiftKey) { setSelected([]); setFolderSel(null) }
+    marqueeStart.current = start
+    marqueeMoved.current = false
+
+    const move = (ev) => {
+      const p = toLocal(desktop, ev.clientX, ev.clientY)
+      const r = {
+        x: Math.min(start.x, p.x), y: Math.max(30, Math.min(start.y, p.y)),
+        w: Math.abs(p.x - start.x), h: Math.abs(p.y - start.y),
+      }
+      if (r.w < 2 && r.h < 2) return
+      marqueeMoved.current = true
+      setMarquee(r)
+      const hit = desktopIds.filter(id => {
+        const ir = iconRect(id)
+        return ir && ir.x < r.x + r.w && ir.x + ir.w > r.x && ir.y < r.y + r.h && ir.y + ir.h > r.y
+      })
+      setSelected([...new Set([...base, ...hit])])
+    }
+    const up = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+      marqueeStart.current = null
+      setMarquee(null)
+    }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+  }
+
+  // ── Icon drag (HTML5 DnD, dashed outlines, group moves) ───────────
+  const dragOutlines  = useRef([])     // [{ el, dx, dy }] offsets from the primary icon position
   const dragMousePos  = useRef({ x: 0, y: 0 })
   const dragInterval  = useRef(null)
-  const dragResult    = useRef(null)   // set to 'trashed' in drop handler
-  const draggingIcon  = useRef(null)   // which icon is being dragged
+  const dragResult    = useRef(null)   // 'trashed' once a drop handled it
+  const dragGroup     = useRef([])     // icon ids moving together
   const trackMouseRef = useRef(null)
-
-  // ── Icon drag outline ───────────────────────────────────────────────
-  // All in desktop coordinates (the Mac is scaled; see desktopDrag.js).
-  // The outline is the icon graphic's true box. iconGrab = icon position
-  // minus pointer, so the point you grabbed stays under the cursor and the
-  // icon lands exactly where its outline was.
   const iconGrab      = useRef({ x: -70, y: -20 })
   const graphicOffset = useRef({ x: 30, y: 0, w: 40, h: 40 })
 
@@ -108,9 +271,10 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     }
   }
 
-  // iconEl: the desktop icon being dragged. Omitted for items dragged out of
-  // the Trash window; those get an icon-sized outline centred on the cursor.
-  const startDragOutline = (clientX, clientY, iconEl) => {
+  // iconEl: the desktop icon being dragged; `group` the ids moving with it.
+  // Omitted for items dragged out of the Trash window; those get an
+  // icon-sized outline centred on the cursor.
+  const startDragOutline = (clientX, clientY, iconEl, group = []) => {
     const desktop = desktopRef.current
     if (!desktop) return
     stopDragOutline()
@@ -121,451 +285,355 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       const i = toLocal(desktop, ir.left, ir.top)
       iconGrab.current = { x: i.x - m.x, y: i.y - m.y }
     } else {
-      const g = graphicOffset.current = measureGraphic(trashRef.current)
+      const g = graphicOffset.current = measureGraphic(iconEls.current.trash)
       iconGrab.current = { x: -(g.x + g.w / 2), y: -(g.y + g.h / 2) }
     }
     const g = graphicOffset.current
+    const primary = iconEl ? toLocal(desktop, iconEl.getBoundingClientRect().left, iconEl.getBoundingClientRect().top) : null
     const place = (cx, cy) => {
       const p = iconPosForPointer(cx, cy)
       return { x: p.x + g.x, y: p.y + g.y }
     }
     const start = place(clientX, clientY)
-    dragOutline.current = createOutline(desktop, { ...start, w: g.w, h: g.h })
+    const members = group.length ? group : [null]
+    dragOutlines.current = members.map(id => {
+      let dx = 0, dy = 0
+      if (id && primary) {
+        const r = iconRect(id)
+        if (r) { dx = r.x - primary.x; dy = r.y - primary.y }
+      }
+      return { el: createOutline(desktop, { x: start.x + dx, y: start.y + dy, w: g.w, h: g.h }), dx, dy }
+    })
     dragMousePos.current = { x: clientX, y: clientY }
 
     // Stutter: update position at ~10fps (every 100ms) like the 8MHz 68000
     dragInterval.current = setInterval(() => {
-      if (!dragOutline.current) return
       const { x, y } = place(dragMousePos.current.x, dragMousePos.current.y)
-      moveOutline(dragOutline.current, x, y)
+      dragOutlines.current.forEach(o => moveOutline(o.el, x + o.dx, y + o.dy))
     }, 100)
 
-    const trackMouse = (e) => {
-      dragMousePos.current = { x: e.clientX, y: e.clientY }
-    }
+    const trackMouse = (e) => { dragMousePos.current = { x: e.clientX, y: e.clientY } }
     trackMouseRef.current = trackMouse
     // dragover fires during HTML5 drag; pointermove is suppressed by the browser
     document.addEventListener('dragover', trackMouse)
   }
 
   const stopDragOutline = () => {
-    if (dragInterval.current) {
-      clearInterval(dragInterval.current)
-      dragInterval.current = null
-    }
+    if (dragInterval.current) { clearInterval(dragInterval.current); dragInterval.current = null }
     if (trackMouseRef.current) {
       document.removeEventListener('dragover', trackMouseRef.current)
       trackMouseRef.current = null
     }
-    removeOutline(dragOutline.current)
-    dragOutline.current = null
+    dragOutlines.current.forEach(o => removeOutline(o.el))
+    dragOutlines.current = []
   }
+  useEffect(() => () => stopDragOutline(), [])
 
-
-  // Non-passive touchmove on projects icon to allow e.preventDefault()
-  useEffect(() => {
-    const el = projectsRef.current
-    if (!el) return
-    const handler = (e) => {
-      if (touchDragging.current) e.preventDefault()
-    }
-    el.addEventListener('touchmove', handler, { passive: false })
-    return () => el.removeEventListener('touchmove', handler)
-  }, [projectsOnDesktop])
-
-  // Non-passive touchmove on notes icon to allow e.preventDefault()
-  useEffect(() => {
-    const el = notesRef.current
-    if (!el) return
-    const handler = (e) => {
-      if (touchDragging.current) e.preventDefault()
-    }
-    el.addEventListener('touchmove', handler, { passive: false })
-    return () => el.removeEventListener('touchmove', handler)
-  }, [notesOnDesktop])
-
-  // HTML5 DnD — mouse drag (generic, works for all icons)
-  const handleIconDragStart = (iconName, e) => {
-    draggingIcon.current = iconName
+  const handleIconDragStart = (id, e) => {
+    const group = selected.includes(id) ? selected : [id]
+    if (!selected.includes(id)) setSelected([id])
+    dragGroup.current = group
     dragResult.current = null
-    e.dataTransfer.setData('text/plain', iconName)
+    e.dataTransfer.setData('text/plain', id)
     const ghost = document.createElement('div')
     ghost.style.cssText = 'width:1px;height:1px;position:fixed;top:-100px'
     document.body.appendChild(ghost)
     e.dataTransfer.setDragImage(ghost, 0, 0)
     setTimeout(() => document.body.removeChild(ghost), 0)
-    startDragOutline(e.clientX, e.clientY, e.currentTarget)
+    startDragOutline(e.clientX, e.clientY, e.currentTarget, group)
   }
 
-  const handleIconDragEnd = (iconName, e) => {
+  const handleIconDragEnd = (id, e) => {
+    const offsets = dragOutlines.current.map(o => ({ dx: o.dx, dy: o.dy }))
     stopDragOutline()
-    if (dragResult.current === 'trashed') return  // position handled by trash drop
+    if (dragResult.current === 'trashed') return  // positions handled by the drop
     if (!desktopRef.current) return
     // dragend's own coordinates are unreliable; use the last dragover point
     const mouseX = dragMousePos.current?.x ?? e.clientX
     const mouseY = dragMousePos.current?.y ?? e.clientY
     const pos = iconPosForPointer(mouseX, mouseY)
-    setIconPositions(prev => ({ ...prev, [iconName]: pos }))
+    const group = dragGroup.current.length ? dragGroup.current : [id]
+    setIconPositions(prev => {
+      const next = { ...prev }
+      group.forEach((gid, i) => {
+        const o = offsets[i] || { dx: 0, dy: 0 }
+        next[gid] = { x: pos.x + o.dx, y: pos.y + o.dy }
+      })
+      return next
+    })
   }
 
   const handleTrashDragOver = (e) => {
     e.preventDefault()
-    if (draggingIcon.current === 'trash') return  // don't highlight when repositioning trash itself
+    if (dragGroup.current.includes('trash')) return  // repositioning the Trash itself
     setTrashHighlighted(true)
   }
+  const handleTrashDragLeave = () => setTrashHighlighted(false)
 
-  const handleTrashDragLeave = () => {
-    setTrashHighlighted(false)
+  // Drop on the Trash: documents and folders go in; the disk ejects.
+  const trashItems = (ids) => {
+    const items = ids.filter(id => TRASHABLE.includes(id))
+    if (items.length) {
+      setTrashContents(prev => [...new Set([...prev, ...items])])
+      if (items.includes('projects')) completeObjective('trashFile')
+    }
+    if (ids.includes('disk')) ejectDisk(true)
+    return items.length > 0 || ids.includes('disk')
   }
 
   const handleTrashDrop = (e) => {
     e.preventDefault()
     setTrashHighlighted(false)
     const item = e.dataTransfer.getData('text/plain')
-    if (item === 'trash') return  // self-drop — dragend handles repositioning
-    if (item === 'projects') {
-      dragResult.current = 'trashed'
-      stopDragOutline()
-      setTrashContents(prev => prev.includes('projects') ? prev : [...prev, 'projects'])
-      completeObjective('trashFile')
-    } else if (item === 'notes') {
-      dragResult.current = 'trashed'
-      stopDragOutline()
-      setTrashContents(prev => prev.includes('notes') ? prev : [...prev, 'notes'])
-      // Notes trashed: no objective completed
-    } else {
-      stopDragOutline()
-    }
+    if (item === 'trash' || dragGroup.current.includes('trash')) return  // dragend repositions
+    const group = dragGroup.current.length ? dragGroup.current : [item]
+    if (trashItems(group)) dragResult.current = 'trashed'
+    stopDragOutline()
   }
 
-  // ── Touch drag — Projects ───────────────────────────────────────────
-  const handleProjectsTouchStart = (e) => {
-    const touch = e.touches[0]
-    touchDragging.current = true
+  // Items dragged back out of the Trash window onto the desktop
+  const handleDesktopDrop = (e) => {
+    e.preventDefault()
+    const item = e.dataTransfer.getData('text/plain')
+    const m = item.match(/^(projects|notes)-restore$/)
+    if (!m) return
+    stopDragOutline()
+    const id = m[1]
+    setTrashContents(prev => prev.filter(x => x !== id))
+    const pos = iconPosForPointer(e.clientX, e.clientY)
+    setIconPositions(prev => ({ ...prev, [id]: pos }))
+  }
 
+  // ── Touch drag (documents and folders to the Trash) ───────────────
+  const touchGhost = useRef(null)
+  const touchItem  = useRef(null)
+  const overTrash = (x, y) => {
+    const r = iconEls.current.trash?.getBoundingClientRect()
+    return r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
+  }
+  const handleTouchStart = (id) => (e) => {
+    if (!TRASHABLE.includes(id)) return
+    const t = e.touches[0]
+    touchItem.current = id
     const ghost = document.createElement('div')
-    ghost.style.cssText = `
-      position: fixed;
-      width: 40px;
-      height: 44px;
-      background: rgba(255,255,255,0.8);
-      border: 1px solid #000;
-      pointer-events: none;
-      z-index: 9999;
-      left: ${touch.clientX - 20}px;
-      top: ${touch.clientY - 22}px;
-    `
+    ghost.style.cssText = `position:fixed;width:40px;height:44px;background:rgba(255,255,255,0.8);border:1px solid #000;pointer-events:none;z-index:9999;left:${t.clientX - 20}px;top:${t.clientY - 22}px`
     document.body.appendChild(ghost)
     touchGhost.current = ghost
   }
-
-  const handleProjectsTouchEnd = (e) => {
-    touchDragging.current = false
-    if (touchGhost.current) {
-      document.body.removeChild(touchGhost.current)
-      touchGhost.current = null
-    }
-
-    const touch = e.changedTouches[0]
-    const trashRect = trashRef.current?.getBoundingClientRect()
-    if (
-      trashRect &&
-      touch.clientX >= trashRect.left &&
-      touch.clientX <= trashRect.right &&
-      touch.clientY >= trashRect.top &&
-      touch.clientY <= trashRect.bottom
-    ) {
-      setTrashContents(prev => prev.includes('projects') ? prev : [...prev, 'projects'])
-      setTrashHighlighted(false)
-      completeObjective('trashFile')
-    } else {
-      setTrashHighlighted(false)
-    }
+  const handleTouchEnd = (e) => {
+    const id = touchItem.current
+    touchItem.current = null
+    touchGhost.current?.remove(); touchGhost.current = null
+    if (!id) return
+    const t = e.changedTouches[0]
+    setTrashHighlighted(false)
+    if (overTrash(t.clientX, t.clientY)) trashItems([id])
   }
-
-  // Ghost movement + trash highlight for projects touch drag
   useEffect(() => {
-    const moveGhost = (e) => {
-      if (!touchDragging.current || !touchGhost.current) return
-      const touch = e.touches[0]
-      touchGhost.current.style.left = `${touch.clientX - 20}px`
-      touchGhost.current.style.top = `${touch.clientY - 22}px`
-
-      const trashRect = trashRef.current?.getBoundingClientRect()
-      if (
-        trashRect &&
-        touch.clientX >= trashRect.left &&
-        touch.clientX <= trashRect.right &&
-        touch.clientY >= trashRect.top &&
-        touch.clientY <= trashRect.bottom
-      ) {
-        setTrashHighlighted(true)
-      } else {
-        setTrashHighlighted(false)
-      }
+    const desktop = desktopRef.current
+    if (!desktop) return
+    const move = (e) => {
+      if (!touchItem.current || !touchGhost.current) return
+      e.preventDefault()
+      const t = e.touches[0]
+      touchGhost.current.style.left = `${t.clientX - 20}px`
+      touchGhost.current.style.top = `${t.clientY - 22}px`
+      setTrashHighlighted(!!overTrash(t.clientX, t.clientY))
     }
-
-    const el = projectsRef.current
-    if (!el) return
-    el.addEventListener('touchmove', moveGhost, { passive: false })
-    return () => el.removeEventListener('touchmove', moveGhost)
-  }, [projectsOnDesktop])
-
-  // ── Touch drag — Notes ──────────────────────────────────────────────
-  const handleNotesTouchStart = (e) => {
-    const touch = e.touches[0]
-    touchDragging.current = true
-
-    const ghost = document.createElement('div')
-    ghost.style.cssText = `
-      position: fixed;
-      width: 40px;
-      height: 44px;
-      background: rgba(255,255,255,0.8);
-      border: 1px solid #000;
-      pointer-events: none;
-      z-index: 9999;
-      left: ${touch.clientX - 20}px;
-      top: ${touch.clientY - 22}px;
-    `
-    document.body.appendChild(ghost)
-    touchGhost.current = ghost
-  }
-
-  const handleNotesTouchEnd = (e) => {
-    touchDragging.current = false
-    if (touchGhost.current) {
-      document.body.removeChild(touchGhost.current)
-      touchGhost.current = null
-    }
-
-    const touch = e.changedTouches[0]
-    const trashRect = trashRef.current?.getBoundingClientRect()
-    if (
-      trashRect &&
-      touch.clientX >= trashRect.left &&
-      touch.clientX <= trashRect.right &&
-      touch.clientY >= trashRect.top &&
-      touch.clientY <= trashRect.bottom
-    ) {
-      setTrashContents(prev => prev.includes('notes') ? prev : [...prev, 'notes'])
-      setTrashHighlighted(false)
-      // Notes trashed: no objective completed
-    } else {
-      setTrashHighlighted(false)
-    }
-  }
-
-  // Ghost movement + trash highlight for notes touch drag
-  useEffect(() => {
-    const moveGhost = (e) => {
-      if (!touchDragging.current || !touchGhost.current) return
-      const touch = e.touches[0]
-      touchGhost.current.style.left = `${touch.clientX - 20}px`
-      touchGhost.current.style.top = `${touch.clientY - 22}px`
-
-      const trashRect = trashRef.current?.getBoundingClientRect()
-      if (
-        trashRect &&
-        touch.clientX >= trashRect.left &&
-        touch.clientX <= trashRect.right &&
-        touch.clientY >= trashRect.top &&
-        touch.clientY <= trashRect.bottom
-      ) {
-        setTrashHighlighted(true)
-      } else {
-        setTrashHighlighted(false)
-      }
-    }
-
-    const el = notesRef.current
-    if (!el) return
-    el.addEventListener('touchmove', moveGhost, { passive: false })
-    return () => el.removeEventListener('touchmove', moveGhost)
-  }, [notesOnDesktop])
-
-  // Cleanup drag outline on unmount to prevent ghost divs or listener leaks
-  useEffect(() => {
-    return () => stopDragOutline()
+    desktop.addEventListener('touchmove', move, { passive: false })
+    return () => desktop.removeEventListener('touchmove', move)
   }, [])
 
-  const handleFolderDoubleClick = () => {
-    openWindow('projects', { x: 80, y: 50 })
+  // ── Menu commands ──────────────────────────────────────────────────
+  const handleMenuItemClick = () => completeObjective('useMenu')
+
+  const handleMenuOpen = () => {
+    if (!selected.length) return
+    selected.forEach(openIcon)
   }
 
-  const handleNotesDoubleClick = () => {
-    openWindow('notes', { x: 60, y: 55 })
-    completeObjective('openFolder')
+  const handleGetInfo = () => {
+    const id = selected[0]
+    if (!id) return
+    const info = INFO[id]
+    openWindow('info', {
+      id: `info-${id}`, title: 'Info', from: iconRect(id), src: id,
+      item: { id, label: ICONS[id].label, icon: ICONS[id].icon, ...info },
+      pos: { x: 150 + 20 * windows.length, y: 70 + 10 * windows.length },
+    })
   }
 
-  const handleTrashDoubleClick = () => {
-    openWindow('trash', { x: 90, y: 60 })
-  }
-
-  const handleDesktopClick = (e) => {
-    if (e.target === e.currentTarget) setSelectedIcon(null)
-  }
-
-  const handleMenuItemClick = () => {
-    completeObjective('useMenu')
+  // Special ▸ Clean Up: every desktop icon snaps to the nearest free grid
+  // slot, as Finder 1.0 tidied icons in place rather than re-sorting them.
+  const handleCleanUp = () => {
+    const slot = (p) => ({
+      c: Math.max(0, Math.min(GRID.cols - 1, Math.round((GRID.x0 - p.x) / GRID.dx))),
+      r: Math.max(0, Math.min(GRID.rows - 1, Math.round((p.y - GRID.y0) / GRID.dy))),
+    })
+    const taken = new Set()
+    const next = { ...iconPositions }
+    desktopIds.forEach(id => {
+      let { c, r } = slot(iconPositions[id])
+      // Walk down, then to the next column, until a slot is free
+      for (let tries = 0; taken.has(`${c},${r}`) && tries < GRID.cols * GRID.rows; tries++) {
+        r++
+        if (r >= GRID.rows) { r = 0; c = (c + 1) % GRID.cols }
+      }
+      taken.add(`${c},${r}`)
+      next[id] = { x: GRID.x0 - c * GRID.dx, y: GRID.y0 + r * GRID.dy }
+    })
+    setIconPositions(next)
   }
 
   // Special ▸ Empty Trash. The Finder writes to the disk (drive light, watch
   // cursor) and deletes everything in the Trash for good, silently, as in
-  // 1984. Notes is a locked document: it stays in the Trash and an alert
-  // explains why, sounding the system beep as Mac alerts did. (Keeps the
-  // "find the document" objective reachable.)
-  const LOCKED = ['notes']
+  // 1984. A locked item stays, and an alert explains why with the system
+  // beep. Notes starts locked (File ▸ Get Info shows the box), which keeps
+  // the "find the document" objective reachable.
   const handleEmptyTrash = () => {
     if (!trashContents.length) return
     onDiskAccess?.()
-    const keep = trashContents.filter(x => LOCKED.includes(x))
-    const gone = trashContents.filter(x => !LOCKED.includes(x))
+    const keep = trashContents.filter(x => locked[x])
+    const gone = trashContents.filter(x => !locked[x])
     setDeleted(prev => [...new Set([...prev, ...gone])])
     setTrashContents(keep)
-    setWindows(prev => prev.filter(w => !gone.includes(w.type)))
+    setWindows(prev => prev.filter(w => !gone.includes(w.type) && !gone.some(g => w.id === `info-${g}`)))
     if (keep.length) {
       setTimeout(() => {
         sfx.beep()
-        setAlertMsg('The Trash could not be emptied completely. “Notes” is locked.')
+        setAlertMsg(`The Trash could not be emptied completely. “${ICONS[keep[0]].label}” is locked.`)
       }, 700)
     }
   }
 
-  const handleMenuOpen = () => {
-    if (!selectedIcon) return
-    completeObjective('useMenu')
-    if (selectedIcon === 'notes') {
-      openWindow('notes', { x: 60, y: 55 })
-      completeObjective('openFolder')
-    } else if (selectedIcon === 'projects') {
-      openWindow('projects', { x: 80, y: 50 })
-    } else if (selectedIcon === 'trash') {
-      openWindow('trash', { x: 90, y: 60 })
+  // File ▸ Eject (or dragging the disk to the Trash): the drive pushes the
+  // floppy out. Eject leaves a dimmed ghost of the disk on the desktop, as
+  // Finder 1.0 did, so you could still work with what it remembered; its
+  // windows close. There is no second disk here, so a moment later the
+  // player "pushes it back in" and the icon returns.
+  const ejectTimer = useRef(null)
+  const ejectDisk = () => {
+    if (ejected) return
+    onDiskAccess?.()
+    setEjected(true)
+    setWindows(prev => prev.filter(w => !['disk', 'sysfolder', 'emptyfolder'].includes(w.type)))
+    setSelected(prev => prev.filter(x => x !== 'disk'))
+    clearTimeout(ejectTimer.current)
+    ejectTimer.current = setTimeout(() => { onDiskAccess?.(); setEjected(false) }, 3000)
+  }
+  useEffect(() => () => clearTimeout(ejectTimer.current), [])
+
+  const handleDeskAccessory = (name) => {
+    openWindow(name, { title: DA_TITLES[name], pos: { x: 120 + 24 * windows.length, y: 60 + 16 * windows.length } })
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────
+  const canOpen = selected.length > 0 && selected.some(id => !windows.some(w => w.id === id))
+  const infoSelected = selected.length === 1 && !!INFO[selected[0]]
+
+  const windowTitle = (w) => w.title ?? ICONS[w.type]?.label ?? ''
+  const windowContent = (w) => {
+    switch (w.type) {
+      case 'disk':
+        return <FolderWindowContent items={DISK_ITEMS} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+      case 'sysfolder':
+        return <FolderWindowContent items={SYSFOLDER_ITEMS} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+      case 'emptyfolder':
+        return <FolderWindowContent items={[]} />
+      case 'info':
+        return <InfoWindowContent item={w.item} locked={!!locked[w.item.id]} onToggleLock={() => setLocked(l => ({ ...l, [w.item.id]: !l[w.item.id] }))} />
+      case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'about':
+        return <DeskAccessory name={w.type} onDiskAccess={onDiskAccess} />
+      default:
+        return null   // projects / notes / trash: DraggableWindow's built-ins
     }
-  }
-
-  const handleMenuClose = () => {
-    closeTopWindow()
-    completeObjective('useMenu')
-  }
-
-  const handleDesktopDrop = (e) => {
-    e.preventDefault()
-    const item = e.dataTransfer.getData('text/plain')
-    if (item === 'projects-restore') {
-      stopDragOutline()
-      setTrashContents(prev => prev.filter(x => x !== 'projects'))
-      const pos = iconPosForPointer(e.clientX, e.clientY)
-      setIconPositions(prev => ({ ...prev, projects: pos }))
-    } else if (item === 'notes-restore') {
-      stopDragOutline()
-      setTrashContents(prev => prev.filter(x => x !== 'notes'))
-      const pos = iconPosForPointer(e.clientX, e.clientY)
-      setIconPositions(prev => ({ ...prev, notes: pos }))
-    }
-  }
-
-  const handleRestoreProjects = () => {
-    setTrashContents(prev => prev.filter(x => x !== 'projects'))
   }
 
   return (
     <div
       ref={desktopRef}
       className={`${styles.desktop} ${!active ? styles.inactive : ''}`}
-      onClick={handleDesktopClick}
+      onMouseDown={handleDesktopMouseDown}
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDesktopDrop}
     >
-      <ScreenTexture />
+      <div className={styles.bgLayer}><ScreenTexture /></div>
 
       <div style={{ visibility: shown(reveal >= 1) }}>
       <MenuBar
         onMenuItemClick={handleMenuItemClick}
-        canOpen={selectedIcon !== null && !windows.some(w => w.type === selectedIcon)}
+        canOpen={canOpen}
         canClose={windows.length > 0}
         onOpen={handleMenuOpen}
-        onClose={handleMenuClose}
+        onClose={closeTopWindow}
         canEmptyTrash={trashContents.length > 0}
         onEmptyTrash={handleEmptyTrash}
+        canGetInfo={infoSelected}
+        onGetInfo={handleGetInfo}
+        onCleanUp={handleCleanUp}
+        canEject={selected.includes('disk') && !ejected}
+        onEject={ejectDisk}
+        onDeskAccessory={handleDeskAccessory}
       />
       </div>
 
-      {notesOnDesktop && (
-        <DesktopIcon
-          ref={notesRef}
-          label="Notes"
-          icon="notes"
-          style={{ position: 'absolute', left: iconPositions.notes.x, top: iconPositions.notes.y, visibility: shown(reveal >= 3) }}
-          draggable={true}
-          isSelected={selectedIcon === 'notes'}
-          onClick={() => setSelectedIcon('notes')}
-          onDoubleClick={handleNotesDoubleClick}
-          onDragStart={(e) => handleIconDragStart('notes', e)}
-          onDragEnd={(e) => handleIconDragEnd('notes', e)}
-          onTouchStart={handleNotesTouchStart}
-          onTouchEnd={handleNotesTouchEnd}
-        />
-      )}
-
-      {projectsOnDesktop && (
-        <DesktopIcon
-          ref={projectsRef}
-          label="Projects"
-          icon="folder"
-          style={{ position: 'absolute', left: iconPositions.projects.x, top: iconPositions.projects.y, visibility: shown(reveal >= 2) }}
-          draggable={true}
-          isSelected={selectedIcon === 'projects'}
-          onClick={() => setSelectedIcon('projects')}
-          onDoubleClick={handleFolderDoubleClick}
-          onDragStart={(e) => handleIconDragStart('projects', e)}
-          onDragEnd={(e) => handleIconDragEnd('projects', e)}
-          onTouchStart={handleProjectsTouchStart}
-          onTouchEnd={handleProjectsTouchEnd}
-        />
-      )}
-
-      <DesktopIcon
-        ref={trashRef}
-        label="Trash"
-        icon="trash"
-        isFull={trashContents.length > 0}
-        style={{ position: 'absolute', left: iconPositions.trash.x, top: iconPositions.trash.y, visibility: shown(reveal >= 4) }}
-        isHighlighted={trashHighlighted}
-        isSelected={selectedIcon === 'trash'}
-        onClick={() => setSelectedIcon('trash')}
-        onDoubleClick={handleTrashDoubleClick}
-        draggable={true}
-        onDragStart={(e) => handleIconDragStart('trash', e)}
-        onDragEnd={(e) => handleIconDragEnd('trash', e)}
-        onDragOver={handleTrashDragOver}
-        onDragLeave={handleTrashDragLeave}
-        onDrop={handleTrashDrop}
-      />
+      {desktopIds.map(id => {
+        const def = ICONS[id]
+        const pos = iconPositions[id]
+        return (
+          <DesktopIcon
+            key={id}
+            ref={setIconEl(id)}
+            data-icon={id}
+            label={def.label}
+            icon={def.icon}
+            isFull={id === 'trash' && trashContents.length > 0}
+            isHighlighted={id === 'trash' && trashHighlighted}
+            isSelected={selected.includes(id)}
+            className={id === 'disk' && ejected ? styles.ejected : ''}
+            style={{ position: 'absolute', left: pos.x, top: pos.y, visibility: shown(reveal >= def.reveal) }}
+            draggable={true}
+            onMouseDown={(e) => handleIconMouseDown(id, e)}
+            onDoubleClick={() => openIcon(id)}
+            onDragStart={(e) => handleIconDragStart(id, e)}
+            onDragEnd={(e) => handleIconDragEnd(id, e)}
+            onDragOver={id === 'trash' ? handleTrashDragOver : undefined}
+            onDragLeave={id === 'trash' ? handleTrashDragLeave : undefined}
+            onDrop={id === 'trash' ? handleTrashDrop : undefined}
+            onTouchStart={handleTouchStart(id)}
+            onTouchEnd={handleTouchEnd}
+          />
+        )
+      })}
 
       {windows.map(win => (
         <DraggableWindow
           key={win.id}
+          id={win.id}
           type={win.type}
-          title={win.type === 'projects' ? 'Projects' : win.type === 'notes' ? 'Notes' : 'Trash'}
+          title={windowTitle(win)}
           initialPos={win.pos}
           zIndex={win.z}
-          onClose={() => setWindows(prev => prev.filter(w => w.id !== win.id))}
+          hidden={win.hidden}
+          width={DA_WIDTH[win.type] ?? (win.type === 'info' ? 300 : undefined)}
+          onClose={() => closeWindow(win.id)}
+          onFocus={() => raise(win.id)}
           trashContents={win.type === 'trash' ? trashContents : undefined}
-          onRestoreNotes={win.type === 'trash' ? handleRestoreProjects : undefined}
           onItemDragStart={win.type === 'trash' ? startDragOutline : undefined}
           onItemDragEnd={win.type === 'trash' ? stopDragOutline : undefined}
-          onFocus={() => {
-            const z = nextZ
-            setNextZ(n => n + 1)
-            setWindows(prev => prev.map(w => w.id === win.id ? { ...w, z } : w))
-          }}
-        />
+        >
+          {windowContent(win)}
+        </DraggableWindow>
       ))}
 
-      {alertMsg && <MacAlert message={alertMsg} onOk={() => setAlertMsg(null)} />}
+      {marquee && (
+        <svg className={styles.marquee} aria-hidden="true">
+          <rect x={marquee.x + 0.5} y={marquee.y + 0.5} width={Math.max(0, marquee.w - 1)} height={Math.max(0, marquee.h - 1)}
+                fill="none" stroke="#000" strokeWidth="1" strokeDasharray="1 1" shapeRendering="crispEdges" />
+        </svg>
+      )}
 
+      {alertMsg && <MacAlert message={alertMsg} onOk={() => setAlertMsg(null)} />}
     </div>
   )
 }

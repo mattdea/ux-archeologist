@@ -6,9 +6,13 @@ import NotesWindowContent from './NotesWindowContent'
 import TrashWindowContent from './TrashWindowContent'
 import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
 
+// `id` is written to data-win so the desktop can measure the window for the
+// zoom rectangles; `hidden` keeps it mounted but invisible while they draw.
+// `width` overrides the 340px document width (desk accessories are smaller);
+// `children` replaces the built-in content for the given `type`.
 export default function DraggableWindow({
-  title, type, initialPos, zIndex, onClose, onFocus,
-  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd,
+  id, title, type, initialPos, zIndex, onClose, onFocus, hidden = false, width,
+  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, children,
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
   const dragging = useRef(false)
@@ -96,7 +100,6 @@ export default function DraggableWindow({
   const handleTitleMouseDown = (e) => {
     if (e.target.closest('button')) return
     e.preventDefault()
-    onFocus?.()
     if (!beginDrag(e.clientX, e.clientY)) return
     dragging.current = true
 
@@ -156,8 +159,10 @@ export default function DraggableWindow({
   return (
     <div
       ref={windowRef}
+      data-win={id}
       className={styles.window}
-      style={{ left: pos.x, top: pos.y, zIndex }}
+      style={{ left: pos.x, top: pos.y, zIndex, width, visibility: hidden ? 'hidden' : undefined }}
+      onMouseDown={() => onFocus?.()}
     >
       <div
         ref={titleBarRef}
@@ -170,7 +175,8 @@ export default function DraggableWindow({
         <span className={styles.titleText}>{title}</span>
       </div>
 
-      <div className={type === 'notes' ? styles.scrollBody : styles.body}>
+      <div className={type === 'notes' ? styles.scrollBody : children ? styles.custom : styles.body}>
+        {children}
         {type === 'projects' && <ProjectsWindowContent />}
         {type === 'notes'    && <NotesWindowContent />}
         {type === 'trash'    && (

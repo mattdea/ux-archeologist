@@ -1,5 +1,5 @@
 // src/test/MenuBar.test.jsx
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import MenuBar from '../components/MenuBar'
 
@@ -30,7 +30,8 @@ describe('MenuBar', () => {
     render(<MenuBar onMenuItemClick={onMenuItemClick} />)
     await user.click(screen.getByText('File'))
     await user.click(screen.getByText('New Folder'))
-    expect(onMenuItemClick).toHaveBeenCalledTimes(1)
+    // The item blinks three times (Control Panel default) before the menu closes
+    await waitFor(() => expect(onMenuItemClick).toHaveBeenCalledTimes(1))
     expect(screen.queryByText('New Folder')).not.toBeInTheDocument()
   })
 
@@ -72,7 +73,7 @@ describe('MenuBar', () => {
     render(<MenuBar onMenuItemClick={() => {}} canOpen={true} onOpen={onOpen} canClose={false} onClose={() => {}} />)
     await user.click(screen.getByText('File'))
     await user.click(screen.getByText('Open'))
-    expect(onOpen).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(1))
   })
 
   it('File > Close calls onClose when canClose is true', async () => {
@@ -81,6 +82,6 @@ describe('MenuBar', () => {
     render(<MenuBar onMenuItemClick={() => {}} canOpen={false} onOpen={() => {}} canClose={true} onClose={onClose} />)
     await user.click(screen.getByText('File'))
     await user.click(screen.getByText('Close'))
-    expect(onClose).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
   })
 })

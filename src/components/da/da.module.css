@@ -1,0 +1,212 @@
+/* src/components/da/da.module.css — System 1 desk accessories */
+
+/* ── Calculator ── */
+.calc {
+  padding: 8px;
+  font-family: var(--font-chicago);
+  color: var(--mac-black);
+}
+.calcDisplay {
+  height: 24px;
+  border: var(--border);
+  background: var(--mac-white);
+  text-align: right;
+  padding: 2px 6px;
+  font-size: 15px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.calcKeys {
+  display: grid;
+  grid-template-columns: repeat(4, 28px);
+  grid-auto-rows: 24px;
+  gap: 6px;
+}
+.calcKey {
+  background: var(--mac-white);
+  border: var(--border);
+  box-shadow: 1px 1px 0 var(--mac-black);
+  font-family: var(--font-chicago);
+  font-size: 14px;
+  color: var(--mac-black);
+  cursor: inherit;
+  padding: 0;
+}
+.calcKey:nth-child(19) { grid-column: 3 / span 2; }   /* bottom "=" is wide */
+.calcKeyDown, .calcKey:active {
+  background: var(--mac-black);
+  color: var(--mac-white);
+}
+
+/* ── Note Pad ── */
+.notepad {
+  position: relative;
+  height: 150px;
+}
+.notepadText {
+  display: block;
+  width: 100%;
+  height: 120px;
+  padding: 6px 8px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: var(--mac-white);
+  font-family: var(--font-geneva);
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--mac-black);
+  cursor: text;
+}
+.notepadFoot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  border-top: var(--border);
+}
+.notepadNum {
+  position: absolute;
+  left: 32px;
+  bottom: 8px;
+  font-family: var(--font-chicago);
+  font-size: 13px;
+}
+/* The turned-down corner: a diagonal split square at the bottom left */
+.dogEar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(to top right, var(--mac-white) 49%, var(--mac-black) 49%, var(--mac-black) 51%, var(--mac-white) 51%);
+  border-right: var(--border);
+  border-top: var(--border);
+}
+.dogEarBack, .dogEarFwd {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: inherit;
+}
+.dogEarBack { clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.dogEarFwd  { clip-path: polygon(0 0, 0 100%, 100% 100%); }
+.dogEarFwd::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 100%;
+  background-image: repeating-linear-gradient(45deg, var(--mac-black) 0 1px, transparent 1px 3px);
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+  opacity: 0.6;
+}
+
+/* ── Puzzle ── */
+.puzzle {
+  display: grid;
+  grid-template-columns: repeat(4, 28px);
+  grid-auto-rows: 28px;
+  gap: 2px;
+  padding: 8px;
+  background: var(--mac-white);
+}
+.puzzleTile {
+  background: var(--mac-white);
+  border: var(--border);
+  font-family: var(--font-chicago);
+  font-size: 14px;
+  color: var(--mac-black);
+  cursor: inherit;
+  padding: 0;
+}
+.puzzleGap { background: var(--mac-white); }
+.puzzleDone .puzzleTile { background: var(--mac-black); color: var(--mac-white); }
+
+/* ── Alarm Clock ── */
+.alarm {
+  font-family: var(--font-chicago);
+  font-size: 15px;
+  color: var(--mac-black);
+}
+.alarmBar {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 4px 0 10px;
+}
+.alarmTime { flex: 1; white-space: nowrap; }
+/* The lever: a knob on a short stem; down when the panel is open */
+.lever {
+  width: 18px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  position: relative;
+  cursor: inherit;
+  padding: 0;
+}
+.lever span {
+  position: absolute;
+  left: 7px; top: 2px;
+  width: 4px; height: 12px;
+  background: var(--mac-black);
+}
+.lever span::after {
+  content: '';
+  position: absolute;
+  left: -3px; top: -2px;
+  width: 10px; height: 5px;
+  background: var(--mac-black);
+}
+.leverDown span { top: 6px; }
+.leverDown span::after { top: 9px; }
+.alarmMid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 10px;
+  border-top: var(--border);
+  height: 26px;
+}
+.alarmSwitch {
+  width: 12px; height: 20px;
+  border: var(--border);
+  background: linear-gradient(to bottom, var(--mac-white) 50%, var(--mac-black) 50%);
+  cursor: inherit;
+  padding: 0;
+}
+.alarmSwitchOn { background: linear-gradient(to bottom, var(--mac-black) 50%, var(--mac-white) 50%); }
+.alarmIcons {
+  display: flex;
+  justify-content: space-around;
+  padding: 3px 10px 4px;
+  border-top: var(--border);
+}
+.alarmIcon {
+  width: 32px; height: 26px;
+  background: var(--mac-white);
+  border: 1px solid transparent;
+  font-size: 15px;
+  cursor: inherit;
+  padding: 0;
+  filter: grayscale(1) contrast(2);
+}
+.alarmIconOn { background: var(--mac-black); border-color: var(--mac-black); filter: grayscale(1) invert(1) contrast(2); }
+
+/* ── About the Finder ── */
+.about {
+  display: flex;
+  gap: 14px;
+  padding: 12px 14px 14px;
+  font-family: var(--font-chicago);
+  font-size: 13px;
+  color: var(--mac-black);
+}
+.aboutArt { width: 150px; height: 70px; flex-shrink: 0; }
+.aboutText p { margin: 0 0 4px; }
+.aboutTitle { font-size: 15px; }
+.aboutSmall { font-size: 11px; margin-top: 8px; }

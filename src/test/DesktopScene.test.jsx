@@ -1,5 +1,5 @@
 // src/test/DesktopScene.test.jsx
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import DesktopScene from '../components/DesktopScene'
 
@@ -7,8 +7,9 @@ const defaultObjectives = { openFolder: false, trashFile: false, useMenu: false 
 const noop = () => {}
 
 describe('DesktopScene', () => {
-  it('renders Projects, Notes, Trash icons and MenuBar', () => {
+  it('renders System Disk, Projects, Notes, Trash icons and MenuBar', () => {
     render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
+    expect(screen.getByText('System Disk')).toBeInTheDocument()
     expect(screen.getByText('Projects')).toBeInTheDocument()
     expect(screen.getByText('Notes')).toBeInTheDocument()
     expect(screen.getByText('Trash')).toBeInTheDocument()
@@ -37,7 +38,7 @@ describe('DesktopScene', () => {
     render(<DesktopScene objectives={defaultObjectives} completeObjective={completeObjective} active={true} />)
     await user.click(screen.getByText('File'))
     await user.click(screen.getByText('New Folder'))
-    expect(completeObjective).toHaveBeenCalledWith('useMenu')
+    await waitFor(() => expect(completeObjective).toHaveBeenCalledWith('useMenu'))
   })
 
   it('Notes icon is present when notesVisible is true (initial)', () => {

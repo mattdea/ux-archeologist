@@ -67,6 +67,11 @@
   padding: 6px 8px;
 }
 
+/* Content that lays itself out (desk accessories, Get Info) */
+.custom {
+  position: relative;
+}
+
 /* Full-width info row — negative margins escape .body's 6px/8px padding
    so borders run edge-to-edge. border-top + border-bottom = the two lines. */
 .fileListHeader {
@@ -92,6 +97,15 @@
   font-size: 12px;
   color: var(--mac-black);
   pointer-events: none;
+  white-space: nowrap;
+}
+
+/* "NNNK available", right-aligned on the information line */
+.fileInfoRight {
+  margin-left: auto;
+  font-family: var(--font-chicago);
+  font-size: 12px;
+  color: var(--mac-black);
   white-space: nowrap;
 }
 

@@ -10,4 +10,25 @@
   pointer-events: none;
 }
 
+/* Wraps the checker so a press on the bare desktop can be told from a
+   press on an icon or window (the marquee starts here) */
+.bgLayer {
+  position: absolute;
+  inset: 0;
+}
 
+/* Dotted selection rectangle, drawn in desktop coordinates */
+.marquee {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9997;
+  overflow: visible;
+}
+
+/* An ejected disk: Finder 1.0 left a gray ghost of the icon */
+.ejected {
+  opacity: 0.45;
+}
