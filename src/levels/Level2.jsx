@@ -7,6 +7,8 @@ import YahooDirectory from '../components/web/pages/YahooDirectory'
 import YahooComputers from '../components/web/pages/YahooComputers'
 import ValleyComputer from '../components/web/pages/ValleyComputer'
 import VintageArchive from '../components/web/pages/VintageArchive'
+import ProgressiveReveal from '../components/web/ProgressiveReveal'
+import useNetscapeLoad from '../components/web/useNetscapeLoad'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -15,12 +17,14 @@ import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 // ── Page metadata ───────────────────────────────────────────────────
+// kb: fake document size for the status bar's "47% of 23K" line.
 const PAGES = {
-  'yahoo':           { url: 'http://www.yahoo.com/',                        title: 'Yahoo!' },
-  'yahoo-computers': { url: 'http://www.yahoo.com/Computers_and_Internet/', title: 'Yahoo! - Computers and Internet' },
-  'valley':          { url: 'http://www.valleycomputer.com/',               title: 'Valley Computer Repair & Sales' },
-  'archive':         { url: 'http://www.geocities.com/SiliconValley/4527/', title: 'The Vintage Computer Archive' },
+  'yahoo':           { url: 'http://www.yahoo.com/',                        title: 'Yahoo!',                          kb: 23 },
+  'yahoo-computers': { url: 'http://www.yahoo.com/Computers_and_Internet/', title: 'Yahoo! - Computers and Internet', kb: 11 },
+  'valley':          { url: 'http://www.valleycomputer.com/',               title: 'Valley Computer Repair & Sales',  kb: 8 },
+  'archive':         { url: 'http://www.geocities.com/SiliconValley/4527/', title: 'The Vintage Computer Archive',    kb: 16 },
 }
+const hostOf = url => new URL(url).host
 
 // ── Objective definitions ───────────────────────────────────────────
 const OBJECTIVES = [
@@ -36,9 +40,6 @@ const OBJ_KEY_INDEX = { navigate: 0, goBack: 1, findPaper: 2 }
 const BROWSER_W = 700
 const BROWSER_H = 580 // must match BrowserChrome.module.css
 
-// Loading delay (ms) — mimics mid-90s dial-up latency (page navigation)
-const LOAD_DELAY = 500
-
 // Matches --bottom-zone-height in Level2.module.css
 
 export default function Level2() {
@@ -46,17 +47,13 @@ export default function Level2() {
   // intro → loading → playing → discovery
   const [screen, setScreen] = useState(() => isLevelComplete(2) ? 'playing' : 'intro')
 
-  // ── Boot-time page load sequence phase (0–6) ────────────────────
-  // Only plays on first visit. Replays skip straight to 'playing'.
-  // Phase meaning:
-  //   0  → status bar shows "Opening page...", address bar shows URL
-  //   1  → white page background appears (YahooDirectory mounts, empty)
-  //   2  → Yahoo logo placeholder (broken image) appears
-  //   3  → Yahoo logo image loads
-  //   4  → Banner ad image loads
-  //   5  → Rest of page content (search, nav, categories, footer)
-  //   6  → Status bar "Done", screen transitions to 'playing'
-  const [loadPhase, setLoadPhase] = useState(-1)
+  // ── Page loading (1995 modem feel) ──────────────────────────────
+  // useNetscapeLoad runs the contact → reply → transfer → done stages and
+  // the status bar text; `shownPage` is what the viewport is drawing. The
+  // old page stays up until the new one's first bytes arrive (transfer), as
+  // Netscape did, then the new page fills in block by block.
+  const netLoad = useNetscapeLoad()
+  const [shownPage, setShownPage] = useState(() => isLevelComplete(2) ? 'yahoo' : null)
 
   // ── Completed objectives ────────────────────────────────────────
   const [completedIndices, setCompletedIndices] = useState(() => isLevelComplete(2) ? [0, 1, 2] : [])
@@ -64,7 +61,6 @@ export default function Level2() {
   // ── Browser navigation state ────────────────────────────────────
   const [history, setHistory]           = useState(['yahoo'])
   const [historyIndex, setHistoryIndex] = useState(0)
-  const [isNavLoading, setIsNavLoading] = useState(false)
   const [hoverUrl, setHoverUrl]         = useState(null)
 
   // ── Responsive scaling ──────────────────────────────────────────
@@ -103,14 +99,8 @@ export default function Level2() {
   // During intro: blank title bar (no page loaded)
   const displayTitle = screen === 'intro' ? '' : pageTitle
 
-  // Status bar text varies by state
-  const statusText = (() => {
-    if (screen === 'loading') {
-      if (loadPhase <= 0) return `Opening page ${PAGES.yahoo.url}...`
-      return 'Transferring data from www.yahoo.com...'
-    }
-    return hoverUrl ?? (isNavLoading ? 'Loading...' : 'Done')
-  })()
+  // Status bar: a hovered link's URL wins while idle; otherwise the loader's line
+  const statusText = (!netLoad.loading && hoverUrl) ? hoverUrl : netLoad.status
 
   // ── Objective completion ────────────────────────────────────────
   const completeObjective = useCallback((key) => {
@@ -120,83 +110,79 @@ export default function Level2() {
     }
   }, [])
 
-  // ── Per-page navigation loading simulation ──────────────────────
-  const simulateNavLoad = () => {
-    setIsNavLoading(true)
-    setTimeout(() => setIsNavLoading(false), LOAD_DELAY)
-  }
+  // ── Fetch a page ────────────────────────────────────────────────
+  // `slow` is the first load of the session: a longer handshake and a
+  // slower trickle, as if the modem had just connected. On the first visit
+  // it also ends the 'loading' screen.
+  const fetchPage = useCallback((pageKey, { slow = false, boot = false } = {}) => {
+    netLoad.start(pageKey, {
+      host: hostOf(PAGES[pageKey].url),
+      kb: PAGES[pageKey].kb,
+      slow,
+      onDone: boot ? () => setScreen('playing') : undefined,
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [netLoad.start])
 
-  // ── Boot-time 28.8k modem load sequence ────────────────────────
-  // Fires once when "Begin excavation" is clicked on a fresh visit.
-  const startLoadSequence = useCallback(() => {
-    setLoadPhase(0)
-    setTimeout(() => setLoadPhase(1), 500)
-    setTimeout(() => setLoadPhase(2), 1000)
-    setTimeout(() => setLoadPhase(3), 1500)
-    setTimeout(() => setLoadPhase(4), 2000)
-    setTimeout(() => setLoadPhase(5), 2500)
-    setTimeout(() => { setLoadPhase(6); setScreen('playing') }, 3000)
-  }, [])
+  // The viewport switches to the new page when its transfer begins
+  useEffect(() => {
+    if (netLoad.load && netLoad.load.stage !== 'contact' && netLoad.load.stage !== 'reply') {
+      setShownPage(netLoad.load.page)
+    }
+  }, [netLoad.load])
 
   // ── Navigate forward to a new page ─────────────────────────────
   const navigate = useCallback((pageKey) => {
     completeObjective('navigate')
     setHistory(prev => [...prev.slice(0, historyIndex + 1), pageKey])
     setHistoryIndex(prev => prev + 1)
-    simulateNavLoad()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [historyIndex, completeObjective])
+    fetchPage(pageKey)
+  }, [historyIndex, completeObjective, fetchPage])
 
   // ── Go back ─────────────────────────────────────────────────────
   const goBack = useCallback(() => {
     if (!canGoBack) return
     completeObjective('goBack')
     setHistoryIndex(prev => prev - 1)
-    simulateNavLoad()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canGoBack, completeObjective])
+    fetchPage(history[historyIndex - 1])
+  }, [canGoBack, completeObjective, history, historyIndex, fetchPage])
 
   // ── Go forward ──────────────────────────────────────────────────
   const goForward = useCallback(() => {
     if (!canGoForward) return
     setHistoryIndex(prev => prev + 1)
-    simulateNavLoad()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canGoForward])
+    fetchPage(history[historyIndex + 1])
+  }, [canGoForward, history, historyIndex, fetchPage])
 
   // ── Page renderer ───────────────────────────────────────────────
   const renderPage = () => {
-    // Intro: blank white content area (browser chrome visible, no page loaded)
-    if (screen === 'intro') return null
+    // Nothing drawn yet: intro, or the first page's bytes haven't arrived
+    if (screen === 'intro' || !shownPage) return null
 
-    // Navigation loading: blank while page is "downloading" between pages
-    if (isNavLoading) return null
+    // How much of the drawn page has arrived (1 = all of it). While a new
+    // page is still connecting, the old one stays fully drawn.
+    const progress = netLoad.load && netLoad.load.page === shownPage && netLoad.progress !== null
+      ? netLoad.progress : 1
+    // Yahoo's own image staging: broken logo → logo → banner → the rest
+    const yahooPhase = progress >= 1 ? Infinity
+      : progress < 0.2 ? 1 : progress < 0.45 ? 2 : progress < 0.65 ? 3 : progress < 0.85 ? 4 : 5
+    const live = screen !== 'loading'
 
-    // Boot load sequence: progressively reveal YahooDirectory
-    if (screen === 'loading') {
-      if (loadPhase < 1) return null  // phase 0: blank, page background not yet visible
-      return (
-        <YahooDirectory
-          onNavigate={() => {}}
-          onLinkHover={() => {}}
-          loadPhase={loadPhase}
-        />
-      )
-    }
-
-    // Fully playing or discovery: render whichever page is current
-    switch (currentPage) {
-      case 'yahoo':
-        return <YahooDirectory onNavigate={navigate} onLinkHover={setHoverUrl} />
-      case 'yahoo-computers':
-        return <YahooComputers onNavigate={navigate} onLinkHover={setHoverUrl} />
-      case 'valley':
-        return <ValleyComputer onNavigate={navigate} onLinkHover={setHoverUrl} />
-      case 'archive':
-        return <VintageArchive completeObjective={completeObjective} onLinkHover={setHoverUrl} />
-      default:
-        return null
-    }
+    const page = (() => {
+      switch (shownPage) {
+        case 'yahoo':
+          return <YahooDirectory onNavigate={live ? navigate : () => {}} onLinkHover={live ? setHoverUrl : () => {}} loadPhase={yahooPhase} />
+        case 'yahoo-computers':
+          return <YahooComputers onNavigate={navigate} onLinkHover={setHoverUrl} />
+        case 'valley':
+          return <ValleyComputer onNavigate={navigate} onLinkHover={setHoverUrl} />
+        case 'archive':
+          return <VintageArchive completeObjective={completeObjective} onLinkHover={setHoverUrl} />
+        default:
+          return null
+      }
+    })()
+    return <ProgressiveReveal progress={progress}>{page}</ProgressiveReveal>
   }
 
   return (
@@ -211,7 +197,7 @@ export default function Level2() {
           objectives={OBJECTIVES}
           onBegin={() => {
             setScreen('loading')
-            startLoadSequence()
+            fetchPage('yahoo', { slow: true, boot: true })
           }}
         />
       )}
@@ -246,6 +232,7 @@ export default function Level2() {
                 onBack={goBack}
                 onForward={goForward}
                 statusText={statusText}
+                loading={netLoad.loading}
               >
                 {renderPage()}
               </BrowserChrome>

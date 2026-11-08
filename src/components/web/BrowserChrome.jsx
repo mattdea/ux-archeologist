@@ -41,7 +41,8 @@ export default function BrowserChrome({
   canGoForward = false,
   onBack,
   onForward,
-  statusText   = 'Done',
+  statusText   = 'Document: Done',
+  loading      = false,   // throbber animates while a page is on its way
 }) {
   // ── Scroll state ────────────────────────────────────────────────
   const viewportRef = useRef(null)
@@ -237,8 +238,13 @@ export default function BrowserChrome({
         <span className={styles.toolbarSpacer} />
 
         {/* Throbber — Netscape N logo, top-right */}
-        <span className={styles.throbber}>
+        <span className={`${styles.throbber} ${loading ? styles.throbberActive : ''}`}>
           <img src={throbberIcon} className={styles.throbberImg} alt="" draggable="false" />
+          {/* Netscape 2's meteor shower: streaks fall across the N while loading */}
+          <span className={styles.throbberStar} />
+          <span className={styles.throbberStar} />
+          <span className={styles.throbberStar} />
+          <span className={styles.throbberStar} />
         </span>
       </div>
 
@@ -318,7 +324,7 @@ export default function BrowserChrome({
 
       {/* ── Status bar ──────────────────────────────────────────── */}
       <div className={styles.statusBar}>
-        <span className={styles.statusText}>Document: {statusText}</span>
+        <span className={styles.statusText}>{statusText}</span>
         <div className={styles.statusIcons}>
           <span className={styles.statusIcon} />
           <span className={styles.statusIcon} />
