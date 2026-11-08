@@ -42,15 +42,15 @@
   position: absolute;          /* left/top from useArtifactFit */
   cursor: var(--cursor-win-arrow);        /* Windows 95 arrow over the whole browser */
   --cursor-link: var(--cursor-win-hand);  /* …and the system hand over links */
-}
-
-.wrap input {
-  cursor: text;                           /* I-beam over the Location field, as Win95 did */
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: visible;
   pointer-events: auto; /* artifact is interactive */
+}
+
+.wrap input {
+  cursor: text;                           /* I-beam over the Location field, as Win95 did */
 }
 
 /* Inner scaler — holds native-size BrowserChrome, scaled via transform. */

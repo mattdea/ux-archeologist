@@ -94,21 +94,40 @@ const jitter = (v, pct) => v * (1 + (Math.random() * 2 - 1) * pct)
 
 // ── 1971: VT100 ────────────────────────────────────────────────────
 
+// The VT100 made both sounds with one small speaker in the keyboard, driven
+// by pulses from the terminal: a single pulse is the keyclick (SET-UP could
+// turn it off), about 200 pulses in a row are the bell. The speaker's RC
+// circuit rings near 780 Hz, so both have that colour.
+const VT_SPEAKER_HZ = 780
+
 export function key() {
   if (!ensure()) return
   const t = now()
-  // Keyswitch: a bright click plus a short hollow knock from the keycap.
-  const n = noise()
-  const bp = filter('bandpass', jitter(2600, 0.25), 1.2)
-  n.connect(bp).connect(env(0.5, 0.002, 0.03, t))
-  n.start(t); n.stop(t + 0.06)
-  tone('triangle', jitter(180, 0.15), 0.18, 0.002, 0.045, t)
+  // One pulse through the ringing speaker: a dry electronic tick.
+  const o = ctx.createOscillator()
+  o.type = 'square'
+  o.frequency.value = VT_SPEAKER_HZ
+  const ring = filter('bandpass', VT_SPEAKER_HZ, 6)
+  o.connect(ring).connect(env(0.5, 0.0008, 0.012, t))
+  o.start(t); o.stop(t + 0.03)
 }
 
 export function bell() {
   if (!ensure()) return
-  // The VT100's bell was a plain electronic beep, not a chime.
-  tone('square', 1046, 0.09, 0.005, 0.18)
+  // ~200 pulses at the speaker's frequency ≈ a quarter-second beep.
+  const t = now()
+  const o = ctx.createOscillator()
+  o.type = 'square'
+  o.frequency.value = VT_SPEAKER_HZ
+  const ring = filter('bandpass', VT_SPEAKER_HZ, 3)
+  const g = ctx.createGain()
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.16, t + 0.004)
+  g.gain.setValueAtTime(0.16, t + 0.24)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.27)
+  g.connect(master)
+  o.connect(ring).connect(g)
+  o.start(t); o.stop(t + 0.3)
 }
 
 export function crtOn() {
@@ -123,7 +142,7 @@ export function crtOn() {
 
 // ── 1984: Macintosh ────────────────────────────────────────────────
 
-export function chime(src = macChimeSrc, volume = 0.5) {
+export function chime(src = macChimeSrc, volume = 0.22) {
   try {
     const a = new Audio(src)
     a.volume = volume
@@ -131,37 +150,44 @@ export function chime(src = macChimeSrc, volume = 0.5) {
   } catch { /* no audio */ }
 }
 
-/** 400K floppy seeking: head steps as muffled ticks over a low spin. */
+/** 400K floppy reading: the Sony mechanism's motor whir with the head
+ *  stepping underneath it — a soft, slightly uneven purr, not a crackle. */
 export function floppy() {
   if (!ensure()) return () => {}
   const t = now()
   const bus = ctx.createGain()
   bus.gain.setValueAtTime(0.0001, t)
-  bus.gain.exponentialRampToValueAtTime(1, t + 0.05)
+  bus.gain.exponentialRampToValueAtTime(0.6, t + 0.12)
   bus.connect(master)
 
-  const spin = ctx.createOscillator()
-  spin.type = 'sawtooth'
-  spin.frequency.value = 47
-  const spinG = ctx.createGain(); spinG.gain.value = 0.05
-  spin.connect(filter('lowpass', 220)).connect(spinG).connect(bus)
-  spin.start(t)
+  // Motor: a low hum with its harmonics, lightly wobbling
+  const hum = ctx.createOscillator()
+  hum.type = 'sawtooth'
+  hum.frequency.value = 98
+  const wob = ctx.createOscillator()
+  wob.frequency.value = 6.5
+  const wobG = ctx.createGain(); wobG.gain.value = 3
+  wob.connect(wobG).connect(hum.frequency)
+  const humG = ctx.createGain(); humG.gain.value = 0.09
+  hum.connect(filter('lowpass', 420)).connect(humG).connect(bus)
+  hum.start(t); wob.start(t)
 
+  // Airflow: band-limited hiss under the hum
+  const air = noise()
+  const airG = ctx.createGain(); airG.gain.value = 0.035
+  air.connect(filter('bandpass', 1400, 0.8)).connect(airG).connect(bus)
+  air.start(t)
+
+  // Head steps: soft, low thuds in short runs, like the drive seeking a track
   let alive = true
+  let timer = null
   const step = () => {
     if (!alive) return
     const at = now()
-    const n = noise()
-    const lp = filter('lowpass', jitter(900, 0.3))
-    const g = ctx.createGain()
-    g.gain.setValueAtTime(0.0001, at)
-    g.gain.exponentialRampToValueAtTime(0.35, at + 0.003)
-    g.gain.exponentialRampToValueAtTime(0.0001, at + 0.03)
-    n.connect(lp).connect(g).connect(bus)
-    n.start(at); n.stop(at + 0.05)
-    timer = setTimeout(step, jitter(95, 0.5))
+    tone('sine', jitter(140, 0.2), 0.12, 0.003, 0.05, at, bus)
+    timer = setTimeout(step, Math.random() < 0.3 ? jitter(260, 0.4) : jitter(70, 0.3))
   }
-  let timer = setTimeout(step, 30)
+  timer = setTimeout(step, 120)
 
   return () => {
     alive = false
@@ -169,8 +195,8 @@ export function floppy() {
     const at = now()
     bus.gain.cancelScheduledValues(at)
     bus.gain.setValueAtTime(bus.gain.value, at)
-    bus.gain.exponentialRampToValueAtTime(0.0001, at + 0.12)
-    spin.stop(at + 0.15)
+    bus.gain.exponentialRampToValueAtTime(0.0001, at + 0.18)
+    hum.stop(at + 0.2); wob.stop(at + 0.2); air.stop(at + 0.2)
   }
 }
 
