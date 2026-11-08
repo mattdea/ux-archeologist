@@ -4,6 +4,7 @@ import styles from './Level0.module.css'
 import TerminalBezel from '../components/terminal/TerminalBezel'
 import TerminalScreen from '../components/terminal/TerminalScreen'
 import useTerminal from '../components/terminal/useTerminal'
+import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -52,9 +53,9 @@ export default function Level0() {
   // Start the boot sequence when screen enters 'booting'.
   // onComplete transitions to 'playing', which is when HUD elements appear.
   // terminal.startBoot uses stable refs internally — intentionally excluded from deps.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (screen === 'booting') terminal.startBoot(() => setScreen('playing'))
+    if (screen === 'booting') { sfx.crtOn(); terminal.startBoot(() => setScreen('playing')) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen])
 
   // Notify SharedLayout when the artifact is ready for interaction.

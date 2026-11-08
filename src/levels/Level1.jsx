@@ -7,6 +7,7 @@ import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
 import DesktopScene, { REVEAL_ALL } from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
+import * as sfx from '../audio/sfx'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
@@ -52,6 +53,17 @@ export default function Level1() {
     driveTimer.current = setTimeout(() => setDriveBusy(false), 700)
   }, [])
   useEffect(() => () => clearTimeout(driveTimer.current), [])
+
+  // The drive seeks audibly whenever its light is on
+  useEffect(() => {
+    if (!driveBusy) return
+    return sfx.floppy()
+  }, [driveBusy])
+
+  // Startup chime as the boot begins (replays start at 'playing', so no chime)
+  useEffect(() => {
+    if (screen === 'booting') sfx.chime()
+  }, [screen])
   const finishBoot = useCallback(() => setScreen('playing'), [])
 
   // Fits the artifact around the HUD corners, as large as the viewport allows

@@ -15,6 +15,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { hasProfile } from './feedData'
 import Avatar from './Avatar'
+import * as sfx from '../../audio/sfx'
 import posterLogo from '../../../assets/feed/ads/airbnb-logo-white.png'
 import {
   HeartOutlineIcon, CommentOutlineIcon, MoreDotsIcon, LikesHeartIcon,
@@ -98,6 +99,7 @@ export default function Post({
   const doLike = useCallback(() => {
     if (!liked) {
       setLiked(true)
+      sfx.pop()
       bounceSmallHeart()
       if (onLike) onLike()
     }

@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { getFallbackResponse } from './curatorFallbacks'
 import { CURATOR_SYSTEM_PROMPT } from './curatorSystemPrompt'
+import * as sfx from '../../audio/sfx'
 
 const CHARS_PER_SECOND = 80
 const THINKING_DELAY_MS = 500
@@ -113,7 +114,8 @@ export default function useCuratorChat() {
   /**
    * Attempt real API streaming; on any failure fall back to simulateStream.
    */
-  const doResponse = useCallback((apiMessages, assistantId, fallbackText, onComplete) => {
+  const doResponse = useCallback((apiMessages, assistantId, fallbackText, done) => {
+    const onComplete = () => { sfx.receive(); done() }
     const controller = new AbortController()
     abortControllerRef.current = controller
     const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
@@ -154,6 +156,7 @@ export default function useCuratorChat() {
 
     setMessages(prev => [...prev, userMsg, thinkingMsg])
     setIsStreaming(true)
+    sfx.send()
 
     thinkingTimerRef.current = setTimeout(() => {
       setMessages(curr => curr.map(msg =>

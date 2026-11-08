@@ -9,6 +9,7 @@ import ValleyComputer from '../components/web/pages/ValleyComputer'
 import VintageArchive from '../components/web/pages/VintageArchive'
 import ProgressiveReveal from '../components/web/ProgressiveReveal'
 import useNetscapeLoad from '../components/web/useNetscapeLoad'
+import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -115,6 +116,7 @@ export default function Level2() {
   // slower trickle, as if the modem had just connected. On the first visit
   // it also ends the 'loading' screen.
   const fetchPage = useCallback((pageKey, { slow = false, boot = false } = {}) => {
+    if (slow) sfx.modem()   // dialling in: the handshake plays under the handshake
     netLoad.start(pageKey, {
       host: hostOf(PAGES[pageKey].url),
       kb: PAGES[pageKey].kb,

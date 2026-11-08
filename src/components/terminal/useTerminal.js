@@ -6,6 +6,7 @@
 // Phase progression: 'booting' → 'login' → 'password' → 'shell'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import * as sfx from '../../audio/sfx'
 
 // ── Command registry ──────────────────────────────────────────────────────────
 const COMMANDS = {
@@ -228,6 +229,8 @@ export default function useTerminal({ onObjectiveComplete, completedIndices, rep
   // ── Keyboard handler ──────────────────────────────────────────────────────
   const onKeyDown = useCallback((e) => {
     if (respondingRef.current) { e.preventDefault(); return }
+    // Every key the terminal accepts clacks; modifiers and navigation don't.
+    if (e.key === 'Enter' || e.key === 'Backspace' || (e.key.length === 1 && !e.metaKey && !e.altKey)) sfx.key()
 
     if (e.ctrlKey && e.key === 'c') {
       e.preventDefault()
@@ -275,6 +278,7 @@ export default function useTerminal({ onObjectiveComplete, completedIndices, rep
         }
 
         const output = COMMANDS[cmd] ?? [cmd + ': not found']
+        if (!COMMANDS[cmd]) setTimeout(sfx.bell, 400)   // the bell rings as the error prints
 
         // Determine which objective (if any) this command should complete.
         let onDone = null
