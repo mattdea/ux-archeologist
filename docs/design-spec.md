@@ -231,7 +231,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Artifact:** Macintosh System 1 desktop
 **Discovery:** Direct Manipulation
-**Container:** `MonitorBezel.jsx` — beige CRT; 780×755px, 620×415px screen. Drawn from `assets/MonitorBezel@2x.webp`, a headless-Chrome render of `MonitorBezel.svg` (the SVG's 13 blur filters rasterised on the level's first visible frame, a ~200ms stall that ate the page fade-in). `SharedLayout` also starts a view's fade-in only once frames are flowing again after the swap.
+**Container:** `MonitorBezel.jsx` — beige CRT; 780×755px, 620×415px screen. Drawn from `assets/MonitorBezel@2x.webp`, a headless-Chrome render of `MonitorBezel.svg` (the SVG's 13 blur filters rasterised on the level's first visible frame, a ~200ms stall that ate the page fade-in). `SharedLayout` also starts a view's fade-in only once frames are flowing again after the swap. Never put `will-change`, `transform` or `filter` on SharedLayout's `.content`: it becomes a stacking context above the HUD corners and blocks their clicks.
 **Route:** `/level/1`
 
 **IntroModal:**
