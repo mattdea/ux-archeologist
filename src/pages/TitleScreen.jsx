@@ -16,7 +16,7 @@ export default function TitleScreen() {
           Explore how interfaces evolved through the decades.
         </p>
         <button className={styles.btn} onClick={() => navigate('/timeline')}>
-          Begin excavation
+          Enter the exhibit
         </button>
       </div>
       <p className={styles.attribution}>A project by Matthew Dea</p>
