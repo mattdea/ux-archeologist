@@ -9,11 +9,18 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 **Duration:** 5–8 minutes total, ~60–90 seconds per level
 **Audience:** Dual — works as a portfolio case study and a standalone shareable experience
 
-### Progress (7 Nov 2026)
+### Progress (8 Nov 2026)
 
-All six levels are complete and playable; nothing is gated. Recent work:
-- **Layout:** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, vertically centred on the viewport) instead of fixed 180px bands — devices are ~1.3–1.6× larger on a 14" laptop than before.
-- **Level 4:** objectives are now *Like Imani's post* / *Learn more about a sponsored post* / *Follow someone new*; every reload or pull-to-refresh reshuffles the feed (friends and real accounts trade slots, friends show a different photo, Imani lands in slots 10–18); the Airbnb ad carries the "Don't Go There. Live There." poster type and opens a rebuilt 2016 Airbnb mobile homepage set in Circular Air; the player (samtaylor) has an avatar and one post; the Activity tab's Following list only shows people the player follows.
+All six levels are complete and playable; nothing is gated; all 46 tests pass. Work is now done in multi-change sessions (several requests per prompt, committed in related groups) rather than one change per prompt.
+
+Recent work:
+- **Layout (7 Nov):** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, gap above = gap below) instead of fixed 180px bands.
+- **Museum layer:** "Enter the exhibit" on the title screen; hints in every level (docked pill, after 10s without progress); era tooltips on the HUD dots; drawn ticks and strike-through on the objectives; a Continue flourish; one continuous timeline line that fades at both ends.
+- **Sound in every level** (`src/audio/sfx.js`): VT100 click and bell, Mac chime (0.22) and alert beep, a real dial-up recording under Netscape's first load, Instagram like pop, chat send/receive.
+- **Period pointers:** the Mac arrow and wristwatch, the Win95 arrow, hand and arrow-with-hourglass.
+- **Level 1 (1984):** the Mac now fades in from the timeline like the other levels (the bezel is `MonitorBezel@2x.webp`, pre-rendered from the SVG, whose blur filters stalled the fade); boot wipes the gray down in ~20 steps; the desktop is Finder 1.1 from the 1984 sources — System Disk, zoom rectangles, menu blinking, marquee selection, Get Info with Locked, Put Back, Close All, Clean Up, Empty Trash, Eject, and the Calculator, Note Pad, Puzzle and Alarm Clock desk accessories (details and sources under Level 1).
+- **Level 2 (1995):** pages load like 1995 (contact → transfer counter → block-by-block draw), the original meteor throbber animates in the N box while loading.
+- **Level 4 (2016):** objectives *Like Imani's post* / *Learn more about a sponsored post* / *Follow someone new*; the feed reshuffles on every refresh with a seeded order per page; a clockwise pie loader on the first photo; the status bar shows local time.
 
 Open items, roughly in priority order:
 1. Check the deployed Netlify site actually serves the ~160 MB of committed photos.
@@ -21,7 +28,8 @@ Open items, roughly in priority order:
 3. The objectives list is ~330px wide, which limits how large the Mac can be while centred; a narrower tracker would help every level.
 4. The Circular Air font files are committed to the public repo (licence decision pending).
 5. The snowy-cabin library photo is reserved for the Airbnb ad but no longer used by it.
-6. `src/test/DesktopScene.test.jsx` has one pre-existing failing drag-drop test (Level 0).
+6. Level 1 details not settled by any source and so reconstructed: zoom-rectangle frame count and timing, menu-blink timing, the locked-item Empty Trash alert wording, Clean Up snap-vs-repack. Booting System 1.1 in an emulator (infinitemac.org) would settle them.
+7. Level 1's objective-1 hint ("Double-click the Notes icon") predates the System Disk; it still works, but could mention the disk.
 
 ---
 

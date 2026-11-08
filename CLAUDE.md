@@ -3,7 +3,8 @@
 **At the start of every session, read `docs/design-spec.md` in full before making any changes.** It is the single source of truth for all design decisions, architecture, visual tokens, and build conventions. Do not proceed without reading it.
 
 ## Quick rules
-- One change per prompt. Test between each.
+- A prompt may carry several changes. Work through all of them in one go, verifying each as you finish it (browser preview for anything visible, `npx vitest run` before committing), and commit in coherent chunks — one commit per related group of changes, not one per prompt.
+- If the user sends a correction mid-task, fold it in before carrying on with the rest of the list.
 - Visuals first, logic second for new levels.
 - Don't modify files you weren't asked to touch.
 - Always: `git add -A && git commit -m "msg" && git push`
