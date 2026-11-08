@@ -140,6 +140,13 @@ export function crtOn() {
 
 // ── 1984: Macintosh ────────────────────────────────────────────────
 
+/** System beep: a short square-wave tone from the Mac's speaker, played
+ *  when an alert appears. */
+export function beep() {
+  if (!ensure()) return
+  tone('square', 880, 0.08, 0.004, 0.17)
+}
+
 export function chime(src = macChimeSrc, volume = 0.22) {
   try {
     const a = new Audio(src)

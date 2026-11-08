@@ -1,0 +1,74 @@
+/* src/components/MacAlert.module.css
+ *
+ * 1984 alert box. Frame: 1px black, 1px white, 3px black (the Mac's
+ * "double" dialog border). Default button: rounded, with a 3px ring
+ * separated from it by a 1px gap.
+ */
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 300;                 /* above windows (20+) and menus (200) */
+}
+
+.alert {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 16px;
+  row-gap: 14px;
+  padding: 14px 16px 12px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 4px #000,
+    0 0 0 5px #fff,
+    0 0 0 6px #000;
+  font-family: var(--font-chicago);
+  color: #000;
+}
+
+.icon {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.message {
+  grid-row: 1;
+  grid-column: 2;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.ok {
+  grid-row: 2;
+  grid-column: 2;
+  justify-self: end;
+  min-width: 64px;
+  padding: 3px 14px;
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 8px;
+  font-family: var(--font-chicago);
+  font-size: 15px;
+  color: #000;
+  cursor: inherit;
+  /* default-button ring */
+  box-shadow: 0 0 0 2px #fff, 0 0 0 5px #000;
+  margin: 4px 4px 2px 0;
+}
+
+.ok:active {
+  background: #000;
+  color: #fff;
+}
+
+.ok:focus {
+  outline: none;
+}

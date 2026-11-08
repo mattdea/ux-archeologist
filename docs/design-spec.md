@@ -252,6 +252,8 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Boot sequence (`BootSequence`):** black (300ms) → CRT warm-up: the gray pattern fades up over ~900ms with a brief brightness overshoot → Happy Mac → "Welcome to Macintosh." → overlay removed, then the real `DesktopScene` reveals its own menu bar, Projects, Notes, Trash in place (`reveal` 1–4). No blink animation and no stand-in menu bar or icons, so nothing resizes or moves at the hand-off. Callbacks go through a ref so parent re-renders never restart the timeline.
 
+**Empty Trash (Special menu):** enabled when the Trash holds anything. The Finder writes to the disk (drive light, watch cursor) and permanently deletes the contents, silently, as in 1984 (Finder sounds arrived with System 6.0.4+). Notes is a locked document: it stays in the Trash and a 1984-style alert (`MacAlert`: thick double frame, Caution icon, OK with default ring, Return dismisses) explains, sounding the system beep. The alert wording is written in the Mac's voice, not quoted from System 1.
+
 **Objectives (sequential):**
 1. Find the document on this computer
 2. Delete the Projects folder

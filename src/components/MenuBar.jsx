@@ -15,7 +15,7 @@ const APPLE_ITEMS = [
   { label: 'Puzzle' },
 ]
 
-export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = false, onOpen, onClose }) {
+export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = false, onOpen, onClose, canEmptyTrash = false, onEmptyTrash }) {
   const [openMenu, setOpenMenu] = useState(null)
   const menuBarRef = useRef(null)
 
@@ -70,7 +70,7 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
       label: 'Special',
       items: [
         { label: 'Clean Up' },
-        { label: 'Empty Trash',        disabled: true },
+        { label: 'Empty Trash',        action: 'emptyTrash', disabled: !canEmptyTrash },
         { label: 'Erase Disk' },
         { label: 'Set Startup',        disabled: true },
         { label: 'Use MiniFinder...', disabled: true },
@@ -105,6 +105,7 @@ export default function MenuBar({ onMenuItemClick, canOpen = false, canClose = f
     setOpenMenu(null)
     if (item.action === 'open') { onOpen?.(); return }
     if (item.action === 'close') { onClose?.(); return }
+    if (item.action === 'emptyTrash') onEmptyTrash?.()
     onMenuItemClick()
   }
 

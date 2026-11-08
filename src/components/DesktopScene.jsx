@@ -5,6 +5,8 @@ import MenuBar from './MenuBar'
 import DesktopIcon from './DesktopIcon'
 import DraggableWindow from './DraggableWindow'
 import ScreenTexture from './ScreenTexture'
+import MacAlert from './MacAlert'
+import * as sfx from '../audio/sfx'
 import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
 
 // Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = Projects,
@@ -26,7 +28,10 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const [trashHighlighted, setTrashHighlighted] = useState(false)
 
   // Derived
-  const projectsOnDesktop = !trashContents.includes('projects')
+  // Items permanently removed by Special ▸ Empty Trash
+  const [deleted, setDeleted] = useState([])
+  const [alertMsg, setAlertMsg] = useState(null)
+  const projectsOnDesktop = !trashContents.includes('projects') && !deleted.includes('projects')
   const notesOnDesktop    = !trashContents.includes('notes')
 
   // Clear selection when an icon is trashed
@@ -405,6 +410,28 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     completeObjective('useMenu')
   }
 
+  // Special ▸ Empty Trash. The Finder writes to the disk (drive light, watch
+  // cursor) and deletes everything in the Trash for good, silently, as in
+  // 1984. Notes is a locked document: it stays in the Trash and an alert
+  // explains why, sounding the system beep as Mac alerts did. (Keeps the
+  // "find the document" objective reachable.)
+  const LOCKED = ['notes']
+  const handleEmptyTrash = () => {
+    if (!trashContents.length) return
+    onDiskAccess?.()
+    const keep = trashContents.filter(x => LOCKED.includes(x))
+    const gone = trashContents.filter(x => !LOCKED.includes(x))
+    setDeleted(prev => [...new Set([...prev, ...gone])])
+    setTrashContents(keep)
+    setWindows(prev => prev.filter(w => !gone.includes(w.type)))
+    if (keep.length) {
+      setTimeout(() => {
+        sfx.beep()
+        setAlertMsg('The Trash could not be emptied completely. “Notes” is locked.')
+      }, 700)
+    }
+  }
+
   const handleMenuOpen = () => {
     if (!selectedIcon) return
     completeObjective('useMenu')
@@ -460,6 +487,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         canClose={windows.length > 0}
         onOpen={handleMenuOpen}
         onClose={handleMenuClose}
+        canEmptyTrash={trashContents.length > 0}
+        onEmptyTrash={handleEmptyTrash}
       />
       </div>
 
@@ -534,6 +563,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           }}
         />
       ))}
+
+      {alertMsg && <MacAlert message={alertMsg} onOk={() => setAlertMsg(null)} />}
 
     </div>
   )
