@@ -63,9 +63,10 @@ reload; no wiring needed.
 Photos can also be added to an account by hand, beyond what it recovered:
 save the image as `archive/<handle>/<new-code>.jpg` and add a post to its
 `profile.json` with that code and a `date` that places it in the grid (posts
-sort newest first). cristiano has 11 such posts (`added-cr7-01` … `-11`,
+sort newest first). cristiano has 10 such posts (`added-cr7-01` … `-11`, no `-08`,
 supplied by the project owner, Nov 2026) dated between his newest real posts
-so they sit near the top of his grid; their `source` field says so.
+so they sit near the top of his grid; their `source` field says so. His real post BDtvWriBpf3 ("Team…") also uses a
+supplied, uncropped copy of its photo.
 
 To put a recovered account in the home feed, add a `[handle, timestamp]` pair
 to `FEED` in `src/components/feed/feedData.js`. Every recovered account
