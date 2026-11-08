@@ -5,7 +5,7 @@ import App from './App.jsx'
 
 // Preload heavy level assets so they're ready before the user navigates to them.
 // Module-level side effect fires before createRoot — earliest possible moment.
-import monitorBezelUrl from '../assets/MonitorBezel.svg'
+import monitorBezelUrl from '../assets/MonitorBezel@2x.webp'
 const _preloadMonitor = Object.assign(document.createElement('link'), {
   rel: 'preload', as: 'image', href: monitorBezelUrl,
 })

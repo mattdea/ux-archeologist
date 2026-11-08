@@ -16,24 +16,18 @@
   inset: 0;
   /* Pattern is <ScreenTexture> inside, drawn at fixed on-screen size */
   overflow: hidden;
-  opacity: 0;
+  /* Start fully clipped — nothing visible */
+  clip-path: inset(0 0 100% 0);
 }
 
-/* CRT warm-up: the ROM fills the screen with gray at once, and it brightens
-   as the tube warms — a soft fade up with a brief overshoot in brightness and
-   a hint of bloom, rather than a wipe. */
+/* Reveal top-to-bottom in ~20 discrete steps (CRT scan-line feel) */
 .bgReveal {
-  animation: crtWarm 900ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
+  animation: scanReveal 700ms steps(20, end) forwards;
 }
 
-@keyframes crtWarm {
-  0%   { opacity: 0;    filter: brightness(1.7) blur(0.8px); }
-  55%  { opacity: 0.85; filter: brightness(1.25) blur(0.3px); }
-  100% { opacity: 1;    filter: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bgReveal { animation: none; opacity: 1; }
+@keyframes scanReveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0% 0); }
 }
 
 /* ─── Happy Mac icon ─────────────────────────────────────────────── */

@@ -1,6 +1,6 @@
 // src/components/MonitorBezel.jsx
 import styles from './MonitorBezel.module.css'
-import monitorSvg from '../../assets/MonitorBezel.svg'
+import monitorImg from '../../assets/MonitorBezel@2x.webp'
 
 function CrtOverlay() {
   return (
@@ -58,9 +58,10 @@ export default function MonitorBezel({ children, driveBusy = false }) {
   return (
     <div className={styles.monitor}>
 
-      {/* Full device SVG — purely decorative */}
+      {/* Full device, pre-rendered from MonitorBezel.svg at 2x (see .module.css) */}
       <img
-        src={monitorSvg}
+        src={monitorImg}
+        decoding="async"
         className={styles.bezelImg}
         draggable="false"
         aria-hidden="true"

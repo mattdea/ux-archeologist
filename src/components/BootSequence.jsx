@@ -9,7 +9,7 @@ import bootupIconUrl from '../../assets/mac-bootup-icon.png'
 // onReveal), so nothing is swapped, resized or moved at the hand-off.
 const P = {
   BLACK:    0,  // solid black
-  SCANNING: 1,  // CRT warms up: gray desktop fades in
+  SCANNING: 1,  // gray desktop pattern reveals top→bottom
   HAPPY:    2,  // Happy Mac icon centered
   WELCOME:  3,  // Welcome to Macintosh dialog
   DESKTOP:  4,  // overlay removed; DesktopScene shows through
@@ -90,7 +90,7 @@ export default function BootSequence({ onComplete, onReveal, onDriveBusy }) {
   return (
     <div className={styles.boot}>
 
-      {/* Gray desktop pattern — fades up as the CRT warms */}
+      {/* Gray desktop pattern — revealed top-to-bottom via clip-path */}
       <div className={`${styles.bg} ${phase >= P.SCANNING ? styles.bgReveal : ''}`}>
         <ScreenTexture />
       </div>

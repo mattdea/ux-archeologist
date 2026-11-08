@@ -22,6 +22,10 @@
   align-items: center;
   justify-content: center;
   transition: opacity 300ms ease-in-out;
+  /* Keep the content on its own compositor layer so a heavy view (the
+     Mac's bezel) is rasterised while still at opacity 0; otherwise the first
+     visible frame of the fade carries that paint and stalls ~200ms. */
+  will-change: opacity;
 }
 
 /* ─── HUD corners ────────────────────────────────────────────────── */

@@ -1,6 +1,12 @@
 /* src/components/MonitorBezel.module.css
  *
- * SVG-backed bezel. MonitorBezel.svg is 780×755 and is the entire device.
+ * Bitmap-backed bezel. MonitorBezel.svg (780×755, the entire device) is the
+ * source; the browser shows MonitorBezel@2x.webp, rendered from it with
+ * headless Chrome at 2x. The SVG carries 13 Gaussian-blur filters and the
+ * browser rasterised it on the level's first visible frame, a ~200ms stall
+ * that swallowed the page fade-in. Re-render after editing the SVG:
+ *   chrome --headless=new --screenshot --window-size=780,755 \
+ *     --force-device-scale-factor=2 --default-background-color=00000000 …
  * The interactive screen is overlaid at the exact screen-hole position:
  *   left: (780 - 620) / 2 = 80px
  *   top:  149px

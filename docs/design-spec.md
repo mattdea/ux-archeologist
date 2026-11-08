@@ -223,7 +223,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Artifact:** Macintosh System 1 desktop
 **Discovery:** Direct Manipulation
-**Container:** `MonitorBezel.jsx` — beige CRT SVG; 780×755px, 620×415px screen
+**Container:** `MonitorBezel.jsx` — beige CRT; 780×755px, 620×415px screen. Drawn from `assets/MonitorBezel@2x.webp`, a headless-Chrome render of `MonitorBezel.svg` (the SVG's 13 blur filters rasterised on the level's first visible frame, a ~200ms stall that ate the page fade-in). `SharedLayout` also starts a view's fade-in only once frames are flowing again after the swap.
 **Route:** `/level/1`
 
 **IntroModal:**
@@ -250,7 +250,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - No power light or other front indicator, as on the real 128K/512K. The dark dot right of the slot is the manual-eject pinhole.
 - Drive in-use LED: small red light recessed just inside the left end of the floppy slot (original 400K drive). Lit while booting from disk and for ~700ms whenever the Finder opens something (`driveBusy` prop).
 
-**Boot sequence (`BootSequence`):** black (300ms) → CRT warm-up: the gray pattern fades up over ~900ms with a brief brightness overshoot → Happy Mac → "Welcome to Macintosh." → overlay removed, then the real `DesktopScene` reveals its own menu bar, Projects, Notes, Trash in place (`reveal` 1–4). No blink animation and no stand-in menu bar or icons, so nothing resizes or moves at the hand-off. Callbacks go through a ref so parent re-renders never restart the timeline.
+**Boot sequence (`BootSequence`):** black → gray pattern wipes down the screen in ~20 steps (as the ROM fills the frame buffer) → Happy Mac → "Welcome to Macintosh." → overlay removed, then the real `DesktopScene` reveals its own menu bar, Projects, Notes, Trash in place (`reveal` 1–4). No blink animation and no stand-in menu bar or icons, so nothing resizes or moves at the hand-off. Callbacks go through a ref so parent re-renders never restart the timeline.
 
 **Empty Trash (Special menu):** enabled when the Trash holds anything. The Finder writes to the disk (drive light, watch cursor) and permanently deletes the contents, silently, as in 1984 (Finder sounds arrived with System 6.0.4+). Notes is a locked document: it stays in the Trash and a 1984-style alert (`MacAlert`: thick double frame, Caution icon, OK with default ring, Return dismisses) explains, sounding the system beep. The alert wording is written in the Mac's voice, not quoted from System 1.
 

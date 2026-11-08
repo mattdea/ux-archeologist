@@ -68,6 +68,20 @@ function dotClass(dotLevel, activeLevel) {
   return `${styles.dot} ${styles.dotEmpty}`
 }
 
+// Calls `cb` after two consecutive animation frames arrive within 40ms of
+// each other (rendering has settled), or after `maxMs` regardless.
+function whenFramesSettle(cb, maxMs = 600) {
+  const t0 = performance.now()
+  let last = t0, quick = 0
+  const tick = (t) => {
+    quick = t - last < 40 ? quick + 1 : 0
+    last = t
+    if (quick >= 2 || t - t0 > maxMs) cb()
+    else requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
 export default function SharedLayout({ children }) {
   const [view, setView]     = useState('title')   // initial view = title screen
   const [fading, setFading] = useState(false)
@@ -117,11 +131,16 @@ export default function SharedLayout({ children }) {
     const { view: nextView } = pendingRef.current
     pendingRef.current = null
     setView(nextView)
-    setTimeout(() => {
+    // Fade the new view in only once the browser is painting it smoothly.
+    // Mounting a heavy view (the Mac's bezel, fonts, textures) can stall
+    // rendering for ~200ms after the swap; a fade started before that stall
+    // is swallowed by it, and the page simply appears. Wait for two
+    // consecutive quick frames (capped at 600ms) and then start the fade.
+    whenFramesSettle(() => {
       setFading(false)
       setHudFading(false)
       // hudReady stays false — level's notifyArtifactReady will set it true
-    }, 0)
+    })
   }, [])
 
   // ── Inline style for each HUD element ──────────────────────────
