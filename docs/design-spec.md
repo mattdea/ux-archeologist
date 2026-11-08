@@ -164,7 +164,7 @@ White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artif
 
 ## Sound
 
-`src/audio/sfx.js` synthesises every effect with Web Audio (the Macintosh chime is the one recording, `assets/mac-chime.mp3`). Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 VT100 keyclick and bell (one keyboard speaker ringing near 780 Hz: one pulse = click, ~200 = bell), CRT power-on; 1984 startup chime (volume 0.22), no drive sound; 1995 a real dial-up recording under the first page load if `assets/web/dialup.(mp3|ogg|wav|m4a)` exists, otherwise silent (a synthesised handshake sounded wrong); 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
+`src/audio/sfx.js` synthesises every effect with Web Audio (the Macintosh chime is the one recording, `assets/mac-chime.mp3`). Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 VT100 keyclick and bell (one keyboard speaker ringing near 780 Hz: one pulse = click, ~200 = bell), CRT power-on; 1984 startup chime (volume 0.22), no drive sound; 1995 a real dial-up recording (`assets/web/dialup.mp3`, 6.2s, volume 0.25) under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
 
 ## Period pointers
 
@@ -250,7 +250,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - No power light or other front indicator, as on the real 128K/512K. The dark dot right of the slot is the manual-eject pinhole.
 - Drive in-use LED: small red light recessed just inside the left end of the floppy slot (original 400K drive). Lit while booting from disk and for ~700ms whenever the Finder opens something (`driveBusy` prop).
 
-**Boot sequence (`BootSequence`):** black → gray pattern scans in → Happy Mac → "Welcome to Macintosh." → overlay removed, then the real `DesktopScene` reveals its own menu bar, Projects, Notes, Trash in place (`reveal` 1–4). No blink animation and no stand-in menu bar or icons, so nothing resizes or moves at the hand-off. Callbacks go through a ref so parent re-renders never restart the timeline.
+**Boot sequence (`BootSequence`):** black (300ms) → CRT warm-up: the gray pattern fades up over ~900ms with a brief brightness overshoot → Happy Mac → "Welcome to Macintosh." → overlay removed, then the real `DesktopScene` reveals its own menu bar, Projects, Notes, Trash in place (`reveal` 1–4). No blink animation and no stand-in menu bar or icons, so nothing resizes or moves at the hand-off. Callbacks go through a ref so parent re-renders never restart the timeline.
 
 **Objectives (sequential):**
 1. Find the document on this computer
@@ -292,7 +292,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Interactive Elements:**
 - All sidebar/inline links navigate between pages
 - Back / Forward buttons in toolbar (functional)
-- Page loads run Netscape's stages (contact → reply → transfer → Document: Done) with a "47% of 23K (at 2.4K/sec)" counter; the old page stays up until bytes arrive, then the new page draws block by block (`useNetscapeLoad`, `ProgressiveReveal`); the N throbber animates meanwhile. The real throbber (Navigator 1.1 onward) was a monolithic N on a planet with meteors raining past; drop the original 60×60 GIF at `src/assets/web/throbber-anim.gif` and it replaces the CSS stand-in streaks. First load of the session is slower, under a modem handshake.
+- Page loads run Netscape's stages (contact → reply → transfer → Document: Done) with a "47% of 23K (at 2.4K/sec)" counter; the old page stays up until bytes arrive, then the new page draws block by block (`useNetscapeLoad`, `ProgressiveReveal`); the N throbber animates meanwhile. The real throbber (Navigator 1.1 onward) was a monolithic N on a planet with meteors raining past; that animation lives in the large N box beside the Location bar: `throbber-still.png` (its first frame) when idle, `throbber-anim.gif` (the original 60×60, 41 frames at 120ms, via erynwells.me / jwz) while a page loads. First load of the session is slower, under a modem handshake.
 
 **Objectives (sequential):**
 1. Navigate to a new page
