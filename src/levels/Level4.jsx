@@ -130,7 +130,7 @@ export default function Level4() {
           era="2016"
           artifactName="Algorithmic Feed"
           description={DISCOVERY_DESCRIPTION}
-          nextUrl="/timeline"
+          nextUrl="/level/5"
         />
       )}
 

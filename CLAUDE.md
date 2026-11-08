@@ -14,7 +14,7 @@
 - **Batching:** when a prompt asks for several features, build them one at a time and commit + push after each with a descriptive message, so each can be reverted on its own.
 - **Ideation sessions** (prompt starts with "Ideation"): edit no code. Write proposals to `docs/backlog.md` under **Ideas**. Every historical claim gets a source and a confidence level (high / medium / low).
 - **Unattended / overnight runs:** build only items under **Approved** in `docs/backlog.md`. If an item is ambiguous, skip it and leave a note on it in the backlog instead of guessing.
-- **Museum layer** (HUD, modals, objective tracker, discovery cards): before creating or changing any of it, read the existing implementation and reuse it; never invent new museum-layer patterns unless asked. Reference: `src/levels/Level4.jsx` with `src/shared/museum-ui/` and `src/shared/SharedLayout.jsx` — `screen` + `'discovery'`, replay starts at `'booting'`, keyed objectives → `completedIndices`, `useHint` + docked `HintPill`, canonical Continue wiring, `addArtifact` on discovery, `nextUrl="/timeline"`.
+- **Museum layer** (HUD, modals, objective tracker, discovery cards): before creating or changing any of it, read the existing implementation and reuse it; never invent new museum-layer patterns unless asked. Reference: `src/levels/Level4.jsx` with `src/shared/museum-ui/` and `src/shared/SharedLayout.jsx` — `screen` + `'discovery'`, replay starts at `'booting'`, keyed objectives → `completedIndices`, `useHint` + docked `HintPill`, canonical Continue wiring, `addArtifact` on discovery, `nextUrl` = the next level.
 
 ## Level conventions (apply to every level without being asked)
 
@@ -26,9 +26,9 @@
 
 > **Note:** Level3 uses `museumScreen` (not `screen`) and calls the last state `'artifact'` instead of `'discovery'`. Level0/Level1 use `screen` and `'discovery'`. Prefer `screen` + `'discovery'` in future levels.
 
-**After completing a level, navigate to the timeline:**
-- `DiscoveryCard nextUrl` is always `"/timeline"` — all levels return to the timeline on discovery.
-- The timeline is still accessible via the "Back to timeline" link in the HUD.
+**After completing a level, go to the next level:**
+- `DiscoveryCard nextUrl` is the next level (`"/level/N+1"`); the last level (Level5) goes to `"/timeline"`.
+- The timeline is always reachable via the "Back to timeline" link in the HUD.
 
 **Boot sequence:**
 - Every level has a boot/intro sequence that plays after "Begin Excavation" is clicked.

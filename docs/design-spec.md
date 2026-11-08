@@ -117,7 +117,7 @@ Sits outside the device container in the dark museum space.
 ```
 src/shared/museum-ui/
   IntroModal.jsx       props: era, title, description, objectives[], onBegin
-  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl="/timeline" (all levels)
+  DiscoveryCard.jsx    props: era, artifactName, description, nextUrl = next level ("/level/N+1"); Level 5 → "/timeline"
   ObjectiveTracker.jsx props: objectives[], completedIndices[]
 
 src/shared/SharedLayout.jsx

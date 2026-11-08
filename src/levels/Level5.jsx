@@ -122,7 +122,7 @@ export default function Level5() {
           era="2023"
           artifactName="Natural Language"
           description={DISCOVERY_DESCRIPTION}
-          nextUrl="/collection"
+          nextUrl="/timeline"
         />
       )}
 
