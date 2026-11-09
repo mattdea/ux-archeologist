@@ -3,20 +3,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   width: 100px;
   cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
+/* Plain Geneva 9, as the Finder labelled icons (docs/reference/mac system 1/).
+   11px here is 9 Mac pixels at this screen's scale (620 for 512). The
+   system's Geneva stands in for the bitmap face. */
 .label {
-  font-family: var(--font-chicago);
-  font-size: 13px;
+  font-family: var(--font-geneva);
+  font-size: 11px;
+  font-weight: normal;
   color: var(--mac-black);
   text-align: center;
-  line-height: 1.2;
+  line-height: 13px;
   white-space: nowrap;
   background: var(--mac-white);
-  padding: 1px 5px;
+  padding: 0 2px;
+  -webkit-font-smoothing: none;
 }
 
 /* ── Selected state ── */
