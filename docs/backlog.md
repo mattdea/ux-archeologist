@@ -72,18 +72,6 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 **To decide:** which specific moments. Candidates: the year move above; the timeline's entry; modals opening and closing; IntroModal → boot hand-off; the discovery card's arrival. Each would be its own item.
 
-### Level 1: the 1984 startup sound
-
-**Request:** replace the startup chime with the beep the 128K Mac actually made, not the later iconic chord.
-
-**History:**
-- The Macintosh 128K, 512K and Plus played a single square-wave beep at about 600 Hz, generated in software through the 6522 VIA. Confidence **medium-high**: Wikipedia ([Macintosh startup](https://en.wikipedia.org/wiki/Macintosh_startup)); [Music Thing, "Tiny Music Makers pt 4"](https://musicthing.blogspot.com/2005/05/tiny-music-makers-pt-4-mac-startup.html); [Mactrast](https://www.mactrast.com/?p=57261). Sources disagree on who wrote it (Andy Hertzfeld; Charlie Kellner reworked the waveform).
-- The chord arrived with the Macintosh II in 1987 (Mark Lentczner, on the Apple Sound Chip); Jim Reekes's chime came with the Quadra 700 (1991). Confidence **high** for the order, **medium** for the Mac II chord's exact voicing (sources say "C major" vs "arpeggiated").
-
-**Today:** `chime()` in `src/audio/sfx.js` plays `assets/mac-chime.mp3` at 0.22 — a later chord, not identified. `sfx.js` already synthesises a square-wave system `beep()` (Empty Trash alert, Alarm Clock), so the startup beep could be synthesised the same way and the recording dropped. The spec's Sound section would need updating.
-
-**To decide:** exact pitch and duration (find a recording of a real 128K/512K boot to match), and when in `BootSequence` it sounds (power-on, before the gray wipe).
-
 ### Level 1: Mac UI updates and more features
 
 **Request:** make UI updates to the Mac and add more features.
@@ -154,6 +142,20 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 ## Approved
 
 _Matthew moves items here from Ideas. Unattended runs build only from this list; ambiguous items are skipped with a note._
+
+### Level 1: the 1984 startup beep (approved 8 Nov 2026)
+
+**Build:** replace Level 1's startup chime with the beep the original Mac made, not the later chord.
+
+**Source (Matthew's pick):** Wikipedia, [Macintosh startup](https://en.wikipedia.org/wiki/Macintosh_startup): the first three Macintosh models (128K, 512K, Plus) used "a simple square-wave 'beep' generated at 600 Hz", programmed in software by Andy Hertzfeld. Confidence **medium-high**; [Music Thing](https://musicthing.blogspot.com/2005/05/tiny-music-makers-pt-4-mac-startup.html) and [Mactrast](https://www.mactrast.com/?p=57261) agree it was a beep, and Mactrast says Charlie Kellner reworked its waveform. The chord came later, with the Macintosh II in 1987 (confidence **high**).
+
+**How:**
+- In `src/audio/sfx.js`, add `startupBeep()`: a 600 Hz square wave through the existing `tone()` helper, with the same envelope as `beep()` (the system beep, 880 Hz, stays as it is).
+- In `src/levels/Level1.jsx`, call `sfx.startupBeep()` where `sfx.chime()` is called today (as `screen` becomes `'booting'`, replays too).
+- Remove `chime()` and `assets/mac-chime.mp3` if nothing else uses them.
+- Update the design spec: the Sound section and Progress line ("Mac chime (0.22)") say a 600 Hz startup beep; mark its length and volume as reconstructed (no source gives them).
+
+**Not settled, so don't guess past it:** the beep's exact length. Use `beep()`'s envelope unless a recording of a real 128K/512K boot turns up.
 
 ## Done
 
