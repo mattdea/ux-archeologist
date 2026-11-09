@@ -15,6 +15,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { hasProfile } from './feedData'
 import Avatar from './Avatar'
+import useNearScroll from './useNearScroll'
 import * as sfx from '../../audio/sfx'
 import posterLogo from '../../../assets/feed/ads/airbnb-logo-white.png'
 import {
@@ -146,6 +147,8 @@ export default function Post({
   // counting toward a double-tap like; a second tap anywhere but the arrow
   // dismisses it. Learn More and the arrow open the advertiser's page.
   const [adOverlay, setAdOverlay] = useState(false)
+  // The photo is fetched once the post is within ~2 screens of view
+  const [photoRef, photoNear] = useNearScroll()
   const openAd = useCallback((e) => {
     e.stopPropagation()
     setAdOverlay(false)
@@ -195,9 +198,9 @@ export default function Post({
       </div>
 
       {/* Square photo: double-tap target */}
-      <div className="postImageWrap" onClick={handleImageClick}>
+      <div className="postImageWrap" ref={photoRef} onClick={handleImageClick}>
         {photoSrc
-          ? <img className="postImage" src={photoSrc} alt="" draggable={false}
+          ? <img className="postImage" src={photoNear ? photoSrc : undefined} alt="" draggable={false}
               style={photoLoading ? { visibility: 'hidden' } : undefined} />
           : <div className="postImage" style={{ background: imageGradient, visibility: photoLoading ? 'hidden' : undefined }} />}
         {photoLoading && <PhotoLoader running={photoLoading.running} onDone={onPhotoLoaded} />}
