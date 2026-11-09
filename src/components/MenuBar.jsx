@@ -7,7 +7,7 @@ import { getSetting } from './macSettings'
 // then the desk accessories installed in the System file, in this order.
 const APPLE_ITEMS = [
   { label: 'About the Finder...', action: 'da', da: 'about' },
-  { label: 'Scrapbook',    disabled: true },
+  { label: 'Scrapbook',    action: 'da', da: 'scrapbook' },
   { label: 'Alarm Clock',  action: 'da', da: 'alarm' },
   { label: 'Note Pad',     action: 'da', da: 'notepad' },
   { label: 'Calculator',   action: 'da', da: 'calculator' },

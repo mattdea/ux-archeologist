@@ -15,7 +15,7 @@ import ScreenTexture from './ScreenTexture'
 import MacAlert from './MacAlert'
 import FolderWindowContent from './FolderWindowContent'
 import InfoWindowContent from './InfoWindowContent'
-import DeskAccessory, { DA_TITLES, DA_WIDTH, DA_VARIANT } from './da/DeskAccessory'
+import DeskAccessory, { DA_TITLES, DA_WIDTH, DA_VARIANT, DA_POS } from './da/DeskAccessory'
 import { DA_ART } from './da/daArt'
 import { useMacSetting } from './macSettings'
 import AboutFinder from './da/AboutFinder'
@@ -575,7 +575,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     if (name === 'about') { setAbout(true); return }
     if (name === 'alarm') setAlarmRinging(false)   // choosing the Alarm Clock stops the blinking Apple
     if (windows.some(w => w.id === name)) setDaInstance(d => ({ ...d, [name]: (d[name] || 0) + 1 }))
-    openWindow(name, { title: DA_TITLES[name], pos: { x: 120 + 24 * windows.length, y: 60 + 16 * windows.length } })
+    const at = DA_POS[name]
+    openWindow(name, { title: DA_TITLES[name], pos: at ? { x: at.x * 620 / 512, y: at.y * 620 / 512 } : { x: 120 + 24 * windows.length, y: 60 + 16 * windows.length } })
   }
 
   // File ▸ Close All: Finder windows zoom back to their icons; desk
@@ -627,7 +628,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         return <FolderWindowContent items={[]} />
       case 'info':
         return <InfoWindowContent item={w.item} locked={!!locked[w.item.id]} onToggleLock={() => setLocked(l => ({ ...l, [w.item.id]: !l[w.item.id] }))} />
-      case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'keycaps': case 'controlpanel':
+      case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'keycaps': case 'controlpanel': case 'scrapbook':
         return <DeskAccessory name={w.type} instance={daInstance[w.type] || 0} clock={clock} />
       default:
         return null   // projects / notes / trash: DraggableWindow's built-ins

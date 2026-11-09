@@ -248,6 +248,34 @@
 /* The chosen setting: its cell inverted */
 .cpCellOn { background-color: var(--mac-white); mix-blend-mode: difference; }
 
+/* ── Scrapbook ── (traced pages: see Scrapbook.jsx) */
+.scrapbook {
+  position: relative;
+  height: calc(var(--mac-px) * 256);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+/* A held arrow, filled: drawn over the box's inside (1 pixel in) */
+.sbArrow {
+  position: absolute;
+  left: calc(var(--mac-px) * 1);
+  top: calc(var(--mac-px) * 1);
+  width: calc(var(--mac-px) * 14);
+  height: calc(var(--mac-px) * 14);
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+/* The thumb's dotted outline while it drags (as MacScrollBar) */
+.sbGhost {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px dotted var(--mac-black);
+  outline: 1px dotted var(--mac-white);
+  outline-offset: -2px;
+  pointer-events: none;
+}
+
 /* ── About the Finder ── */
 .aboutScrim {
   position: absolute;

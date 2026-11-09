@@ -2,6 +2,8 @@
 //
 // The desk accessories of System 1 that open from the Apple menu. Each is a
 // small self-contained window body; DraggableWindow supplies the frame.
+// DA_POS: where an accessory opens when a reference screenshot shows it
+// (Mac pixels, the frame's top left); the others cascade.
 
 import Calculator from './Calculator'
 import NotePad from './NotePad'
@@ -9,6 +11,7 @@ import Puzzle from './Puzzle'
 import AlarmClock from './AlarmClock'
 import KeyCaps from './KeyCaps'
 import ControlPanel from './ControlPanel'
+import Scrapbook from './Scrapbook'
 
 export const DA_TITLES = {
   calculator: 'Calculator',
@@ -17,6 +20,7 @@ export const DA_TITLES = {
   alarm:      'Alarm Clock',
   keycaps:    'Key Caps',
   controlpanel: 'Control Panel',
+  scrapbook:  'Scrapbook',
 }
 
 export const DA_WIDTH = {
@@ -26,6 +30,11 @@ export const DA_WIDTH = {
   alarm:      170,
   keycaps:    'calc(var(--mac-px) * 310 + 2px)',   // traced body plus the frame
   controlpanel: 'calc(var(--mac-px) * 312 + 2px)',
+  scrapbook:  'calc(var(--mac-px) * 384 + 2px)',
+}
+
+export const DA_POS = {
+  scrapbook: { x: 75, y: 41 },   // macsystem100026–30.png
 }
 
 // Window frame per accessory: Inside Macintosh's rDocProc (rounded, black
@@ -38,6 +47,7 @@ export const DA_VARIANT = {
   alarm:      'traced',
   keycaps:    'doc',
   controlpanel: 'doc',
+  scrapbook:  'doc',
 }
 
 // `instance` changes when the DA is chosen again while open, which remounts
@@ -50,6 +60,7 @@ export default function DeskAccessory({ name, instance = 0, clock }) {
     case 'alarm':      return <AlarmClock clock={clock} />
     case 'keycaps':    return <KeyCaps />
     case 'controlpanel': return <ControlPanel />
+    case 'scrapbook':  return <Scrapbook />
     default:           return null
   }
 }
