@@ -50,6 +50,8 @@ export const REMOVED = new Set([
   // off-account
   'BCXGWDoJmCu',                           // zendaya, a portrait of Leonardo DiCaprio
   'rK0Jx6n3DM',                            // emmawatson, caption only @-tags
+  // duplicates
+  'added-cr7-05',                          // cristiano, same handstand as BDllkx0hpVE
 ])
 
 const photoUrl = (handle, file) => PHOTOS[`../../../assets/feed/archive/${handle}/${file}`] || null

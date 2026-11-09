@@ -250,9 +250,9 @@ export const FRIEND_SETS = {
 export const REAL_OWNERS = {
   sfmoma: ['city', 'art'],
   hummingbirdsxoxo: 'nature',
-  'acacia.johnson': 'nature',
+  'acacia.johnson': ['polar', 'nature'],
   otntty: ['home', 'art'],
-  theoregonduck: ['sport', 'people'],
+  theoregonduck: 'sport',
   instagram: '*',             // lends some of its 49 to pools below; takes whatever is left over
 }
 
@@ -262,27 +262,29 @@ export const REAL_OWNERS = {
 // Joshua Tree house live on here as pool photos.
 const POOLS = {
   art: ['phannapast', 'richardahnert', 'tatiana_mc_garry', 'mangaday', 'jhnmclghln', 'soraceballos',
-    'paperfashion', 'hombre_mcsteez', 'tylersean13', 'thecuadro', '8bithiphop', 'esposin'],
+    'paperfashion', 'hombre_mcsteez', 'tylersean13'],
   music: ['music', 'savagesband', 'p.hil', 'honoluluchris', 'andyshauf', 'kyson_eye', 'mimphx', 'sashabarr', 'danoziontifik'],
   style: ['patmcgrathreal', 'mac_daddyy', 'yuki__fujisawa', 'thehatgirls', 'mayaraefe', 'asmitaparelkar'],
   people: ['la_mayte', 'ericunderwood', 'kuraevaolga', 'chefyash'],
   city: ['corasacher'],
-  nature: ['pondlife_pondlife', 'ssazanovich'],
-  home: ['wolfordroger', 'bali_ayu', 'thejoshuatreehouse'],
+  polar: ['ssazanovich'],
+  nature: [],
+  home: ['wolfordroger', 'bali_ayu'],
   food: ['lucacappuccinodonofrio'],
   sport: ['jameslenger'],
+  // No owner draws from this pool, so all of it goes to @instagram's own
+  // community mix: sets that fit none of the feed's accounts (pixel-art
+  // rappers, celebrity collages, the Joshua Tree rental, microscope slides)
+  // and the rabbit-mask series, kept together in one grid.
+  community: ['8bithiphop', 'thecuadro', 'thejoshuatreehouse', 'pondlife_pondlife', 'esposin'],
 }
 
 // @instagram community photos lent to thin subjects (the rest stay its own).
 const INSTAGRAM_LENT = {
   nature: [
     '2016-02-08_instagram_o290fp2.jpg',
-    '2016-03-09_instagram_o3rsqu2.jpg',
-    '2016-03-09_instagram_o3rsqu4.jpg',
     '2016-03-18_instagram_o4975s5.jpg',
     '2016-04-08_instagram_o5c2g01.jpg',
-    '2016-04-29_instagram_o6evyy5.jpg',
-    '2016-05-09_instagram_o6xlga3.jpg',
   ],
   city: [
     '2016-02-08_instagram_o290fp3.jpg',
@@ -315,6 +317,44 @@ const INSTAGRAM_LENT = {
   ],
 }
 
+// Library photos that @instagram reposted in its real spring-2016 grid
+// (assets/feed/archive/instagram/): they belong to @instagram, whose archived
+// post (code on the right) is the one shown, so the library copy is never
+// dealt to anyone. Found by the feed audit's near-duplicate check, 9 Nov 2026.
+export const REPOSTED_BY_INSTAGRAM = {
+  '2016-03-07_instagram_o3p27s1.jpg': 'BCrDEGdhQYL',
+  '2016-03-07_instagram_o3p27s2.jpg': 'BCwVWcMBQXL',
+  '2016-03-07_instagram_o3p27s3.jpg': 'BCrSbSahQQc',
+  '2016-03-07_instagram_o3p27s4.jpg': 'BCwOWn7BQb9',
+  '2016-03-07_instagram_o3p27s5.jpg': 'BCrKXu7hQSx',
+  '2016-03-07_instagram_o3p27s6.jpg': 'BCwvFNJhQRW',
+  '2016-03-07_patmcgrathreal_o3ou6r5.jpg': 'BCqwzhNhQYS',
+  '2016-03-09_acacia.johnson_o3s4a31.jpg': 'BCvPrIUhQU7',
+  '2016-03-09_instagram_o3rsqu4.jpg': 'BCu0idfhQS0',
+  '2016-03-10_jadeantoine_o3twv75.jpg': 'BCx0-z2hQeL',
+  '2016-03-18_instagram_o4975s2.jpg': 'BDHApNOBQfh',
+  '2016-03-18_paperfashion_o49dnh1.jpg': 'BDHSKiGBQft',
+  '2016-03-18_theoregonduck_o48lze2.jpg': 'BDGUZhXBQRa',
+  '2016-03-19_mac_daddyy_o4b0vw2.jpg': 'BDJkMSbBQbX',
+  '2016-03-27_esposin_o4pcon2.jpg': 'BDdf2PohQVZ',
+  '2016-03-27_wolfordroger_o4pd3x3.jpg': 'BDd0SkHBQSk',
+  '2016-03-28_corasacher_o4r60j2.jpg': 'BDgFGwtBQdj',
+  '2016-03-28_instagram_o4rqxh2.jpg': 'BDmLHeFhQTi',
+  '2016-03-28_instagram_o4rqxh3.jpg': 'BDmbVroBQea',
+  '2016-03-28_instagram_o4rqxh4.jpg': 'BDhHSQUhQe0',
+  '2016-03-28_instagram_o4rqxh5.jpg': 'BDmSbrNBQfz',
+  '2016-03-28_instagram_o4rqxh6.jpg': 'BDg9M1jBQdj',
+  '2016-04-06_mayaraefe_o58doo2.jpg': 'BD36LbNBQcN',
+  '2016-04-07_phannapast_o5a8cd3.jpg': 'BD6flHGBQXr',
+  '2016-04-08_christian_foto_o5bk1v5.jpg': 'BD8ZIPuBQUs',
+  '2016-04-08_instagram_o5c2g02.jpg': 'BD9DWSNhQft',
+}
+
+// A real owner's first grid photo, when it isn't simply their newest.
+const OWNER_LEADS = {
+  hummingbirdsxoxo: '2016-04-17_hummingbirdsxoxo_o5so7x4.jpg',
+}
+
 // Single photos reserved for the two ads.
 export const AD_PHOTOS = {
   airbnb: '2016-04-19_ssazanovich_o5w8f65.jpg',
@@ -329,7 +369,7 @@ const ALL = Object.entries(FILES)
   .map(([path, url]) => {
     const name = fileName(path)
     const m = name.match(NAME_RE)
-    return m && !SKIP.has(name) ? { url, name, date: m[1], account: m[2] } : null
+    return m && !SKIP.has(name) && !REPOSTED_BY_INSTAGRAM[name] ? { url, name, date: m[1], account: m[2] } : null
   })
   .filter(Boolean)
   .sort((a, b) => a.name.localeCompare(b.name))
@@ -367,7 +407,8 @@ const OWNED = (() => {
     // Newest blog post first; within a post, the blog's own order
     const photos = ALL
       .filter(p => p.account === u && !LENT.has(p.name))
-      .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name))
+      .sort((a, b) => (b.name === OWNER_LEADS[u]) - (a.name === OWNER_LEADS[u])
+        || b.date.localeCompare(a.date) || a.name.localeCompare(b.name))
     take(u, photos, true)
   })
 

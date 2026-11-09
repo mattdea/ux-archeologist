@@ -191,3 +191,20 @@ describe('profile-only posts', () => {
     if (rih) expect(rih.id).not.toMatch(/BEbFNVlBM39/)
   })
 })
+
+describe('library ownership', () => {
+  it('never deals a photo @instagram reposted, a SKIP photo, or a photo to two owners', async () => {
+    const { ownedPhotos, REAL_OWNERS, FRIEND_SETS, REPOSTED_BY_INSTAGRAM } = await import('../components/feed/libraryData')
+    const { SKIP } = await import('../components/feed/libraryQuality')
+    const seen = new Set()
+    for (const u of [...Object.keys(FRIEND_SETS), ...Object.keys(REAL_OWNERS)]) {
+      for (const url of ownedPhotos(u)) {
+        const name = url.split('/').pop()
+        expect(REPOSTED_BY_INSTAGRAM[name], name).toBeUndefined()
+        expect(SKIP.has(name), name).toBe(false)
+        expect(seen.has(name), name).toBe(false)
+        seen.add(name)
+      }
+    }
+  })
+})
