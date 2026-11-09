@@ -16,6 +16,7 @@
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
 | | Hints: feature + copy | Feature decisions, house style |
 | 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
+| | Keep TeachText? | Research, then a decision |
 | | Netscape chrome | Version + references |
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
@@ -80,6 +81,22 @@ Rounds 1–4 are in Done.
   - *About the Finder* keeps the Finder 1.1g box by design.
   - *TeachText / Font Mover* (built 9 Nov 2026, see spec "Utilities folder and applications"): TeachText's Open... dialog, Font Mover's font moving, and Disk Copy / SysVersion have no screenshots yet. Send them to build those.
 - **Rule:** everything must be something Finder 1.0/1.1 did.
+
+#### Keep TeachText? (decision)
+Level 1 is a 1984 Mac running Finder 1.1, but Notes and the Projects files open in TeachText, which is a later app. Figure out whether to keep it.
+- **Today:** the Utilities folder (Disk Copy, Fonts, Font Mover, TeachText, SysVersion) comes from the Infinite Mac System Disk in the screenshots. The spec already flags it as later than this Finder and says it's there because that disk has it and Matthew asked for TeachText (9 Nov 2026). Objective 1 ("Find the document") completes by opening Notes in TeachText.
+- **History:**
+  - The 1984 Mac shipped with two bundled apps, MacWrite and MacPaint; a 1984 Notes document would have opened in MacWrite. **High** · [Eclectic Light, "A short history of styled text on the Mac"](https://eclecticlight.co/2024/05/25/a-short-history-of-styled-text-on-the-mac-teachtext-to-textedit-rtf/).
+  - TeachText (Bryan Stearns) grew out of an earlier Apple plain-text editor called Edit, and replaced it sometime between System 2 (1987) and System 7 (1991). The spec says 1988; no source found confirms the exact year. **Medium** for "after 1987", **low** for 1988 · [Wikipedia, TeachText](https://en.wikipedia.org/wiki/TeachText) · [Eclectic Light](https://eclecticlight.co/2024/05/25/a-short-history-of-styled-text-on-the-mac-teachtext-to-textedit-rtf/).
+  - It existed so every Mac could read Readme files once Apple stopped bundling MacWrite. **Medium** (Wikipedia).
+  - The screenshots' own disk is later than 1984 too: its About box reads Finder 4.1 ©1985.
+- **Options to weigh:**
+  - *Keep TeachText*, disclosed as an anachronism (spec, maybe the discovery card). Cheapest; it's already built and traced from real screenshots.
+  - *Swap in MacWrite 1.0.* Period-correct, but it's a full word processor (ruler, fonts, styles), so much more to build, and it needs MacWrite 1.0 screenshots first.
+  - *Swap in Edit.* Plain text, like TeachText, but when it first shipped and what it looked like are unconfirmed.
+  - *Remove the Utilities apps* and make opening a document show the Finder's "application is busy or missing" alert. Accurate for a disk without MacWrite, but it breaks objective 1, which would need new wording.
+- **Research first:** when Edit and TeachText first shipped (Apple system disk release notes, Macintosh Technical Notes, dated disk images on infinitemac.org or Macintosh Garden) and whether any 1984 System Disk carried a text editor besides MacWrite.
+- **Decide:** keep, swap or remove · if kept, whether the museum says so out loud.
 
 #### Netscape chrome
 - **Decide first:** which Navigator version and platform. Throbber = Navigator 1.1+; cursors = Windows 95 (shipped Aug 1995).
