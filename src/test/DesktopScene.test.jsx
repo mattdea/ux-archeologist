@@ -55,10 +55,8 @@ describe('DesktopScene', () => {
     render(<DesktopScene objectives={defaultObjectives} completeObjective={noop} active={true} />)
     await user.click(screen.getByLabelText('Apple menu'))
     await user.click(screen.getByText('Calculator'))
-    // the menu item blinks first, then the window appears. This takes ~1s on
-    // its own (blink + traced window render), right at findBy's 1s default,
-    // so allow 3s or it fails whenever the suite runs in parallel.
-    expect(await screen.findByRole('button', { name: '7' }, { timeout: 3000 })).toBeInTheDocument()
+    // the menu item blinks first, then the window appears
+    expect(await screen.findByRole('button', { name: '7' })).toBeInTheDocument()
     expect(screen.getByText('Calculator')).toBeInTheDocument()
   })
 
