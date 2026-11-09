@@ -96,8 +96,10 @@
   position: relative;
 }
 
-/* Full-width info row — negative margins escape .body's 6px/8px padding
-   so borders run edge-to-edge. border-top + border-bottom = the two lines. */
+/* The information line under the title bar ("4 items   325K in disk
+   74K available"), edge to edge, closed by a double rule: 1px line, 1px
+   gap, 1px line (System 1 screenshots, docs/reference/mac system 1/).
+   The title bar's own bottom border is the line above it. */
 .fileListHeader {
   position: relative;
   display: flex;
@@ -105,10 +107,8 @@
   font-family: var(--font-chicago);
   font-size: 12px;
   color: var(--mac-black);
-  margin: -6px -8px 0;
-  padding: 4px 8px;
-  border-top: var(--border);
-  border-bottom: var(--border);
+  padding: 3px 8px 4px;
+  border-bottom: 3px double var(--mac-black);
 }
 
 /* Absolutely centered relative to the full header width — not offset by

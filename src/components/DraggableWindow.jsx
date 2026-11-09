@@ -180,7 +180,7 @@ export default function DraggableWindow({
         {variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
       </div>
 
-      <div className={type === 'notes' ? styles.scrollBody : children ? styles.custom : styles.body}>
+      <div className={type === 'notes' ? styles.scrollBody : (children || type === 'projects' || type === 'trash') ? styles.custom : styles.body}>
         {children}
         {type === 'projects' && <ProjectsWindowContent />}
         {type === 'notes'    && <NotesWindowContent />}
