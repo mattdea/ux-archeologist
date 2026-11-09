@@ -86,8 +86,17 @@
   color: var(--mac-white);
 }
 
+/* Dimmed: the Menu Manager drew a disabled item's text and then cleared
+   every other pixel with the gray pattern, so the letters come out dotted
+   (Inside Macintosh I, Menu Manager). A checker of Mac pixels, clipped to
+   the text. */
 .dropdownItemDisabled {
-  color: var(--mac-gray);
+  color: var(--mac-black);
+  -webkit-text-fill-color: transparent;
+  background-image: repeating-conic-gradient(var(--mac-black) 0% 25%, transparent 0% 50%);
+  background-size: calc(var(--mac-px) * 2) calc(var(--mac-px) * 2);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 /* The alarm has gone off: the Apple blinks until the Alarm Clock is chosen */
