@@ -67,7 +67,17 @@ _Items from Matthew's list of 8 Nov 2026 are in no particular order or priority.
 
 **Candidates already in the period:** the dimmed Apple-menu items — Scrapbook, Key Caps, Control Panel — are real Finder 1.1 desk accessories (spec, Level 1); Show Clipboard. Everything must be something Finder 1.0/1.1 did (CLAUDE.md, Level 1 conventions); check the screenshots' About box for which System/Finder version they show, since the level depicts Finder 1.1.
 
-**To decide:** after the difference list, which fixes and which features first.
+**Round 1 built (8 Nov 2026, see Done):** both requests above, scroll bars and grow box on every Finder window, inactive windows, the information line.
+
+**Found in the comparison:** the screenshots' About box reads **Finder Version 4.1 ©1985** (System 2.0), not 1.1. Matthew's decision: the level stays Finder 1.1 and copies the screenshots only where 1.1 looked the same (keep the 1.1g About box and the 1.1 menus).
+
+**Differences still open** (from the 8 Nov comparison, current build vs. screenshots):
+- *Desk accessories:* Calculator body is solid gray, keys rounded with a 1px shadow (screenshots: fine dot body, square keys with a heavy black drop shadow, bigger title); Puzzle tiles are separate rounded tiles with solid numerals and a gray blank (screenshots: one joined grid, outlined numerals, dotted blank, dotted frame); Note Pad is landscape with Geneva text, page number beside a hatched dog-ear and a rule above the footer (screenshots: portrait, New York text, page number centred at the bottom, plain dog-ear, triple line along the bottom edge); Alarm Clock has rounded corners and a pole-and-pennant flag (screenshots: square corners with a drop shadow, a small flag glyph).
+- *Icons, labels, menus:* icon labels are bold Chicago 13 (screenshots: plain Geneva 9); the disk icon has label lines on it (screenshots: plain floppy); the Apple menu title doesn't invert while its menu is open; dimmed items are flat #888 instead of a 1-bit gray stipple.
+- *Features:* Key Caps and Control Panel (both in `macsystem100014.png` / `macsystem100015.png`; both shipped in 1984).
+- *Desk accessory frames when inactive:* not in the screenshots; unchanged.
+
+**To decide:** which group next.
 
 ### Level 2: more Netscape pages, or a search with fake results
 
@@ -137,6 +147,16 @@ _Nothing approved right now._
 ## Done
 
 _Finished items, moved here when built._
+
+### Level 1: Mac UI updates, round 1 (built 8 Nov 2026)
+
+From the Ideas item "Level 1: Mac UI updates and more features" (which stays open for the remaining groups). Matthew picked windows plus his two requests. One commit each:
+- **Information line** sits inside the window (it rode over the title bar in disk/folder windows) and ends in a double rule.
+- **Period scroll bar** (`MacScrollBar`, `MacScrollPane`): hollow arrows, crisp gray track, square thumb; arrows repeat, the track pages, the thumb drags as an outline and the contents jump on release; no wheel or trackpad scrolling anywhere (Notes, Note Pad).
+- **Every Finder window** has both bars and a working grow box (outline resize); icons don't reflow, so small windows scroll.
+- **Inactive windows**: no stripes, no close box, blank scroll bars.
+- **Opened icons** are shaded with QuickDraw dkGray, read pixel by pixel from the screenshots.
+Reconstructed (marked in the spec): repeat timing, line sizes, minimum window size, Notes shading.
 
 ### Level 0: the power-on bell (approved and built 8 Nov 2026)
 
