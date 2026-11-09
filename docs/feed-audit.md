@@ -60,7 +60,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 
 ### selenagomez (archive, slot 3)
 - `archive/selenagomez/BEALzcXOjGc.jpg` · [caption] feed lead's caption is only "74 🙏🏽❤️" (her thanks for 74m followers), cryptic without context · accept or open on `#1` · check → **fixed** (never opens the slot (NO_LEAD))
-- `archive/selenagomez/BDuFaGtOjIn.jpg`, `BDrHNrDOjE8.jpg`, `BDmXzZmujIt.jpg`, `BDchTJ8ujLt.jpg`, `BDZazNDOjOA.jpg` · [caption] empty captions (added by hand from POST-LINKS) · fill from the post links if they had text · check → **fixed** (four were empty in the original too; BDrHNrDOjE8 has no capture, needs Matthew)
+- `archive/selenagomez/BDuFaGtOjIn.jpg`, `BDrHNrDOjE8.jpg`, `BDmXzZmujIt.jpg`, `BDchTJ8ujLt.jpg`, `BDZazNDOjOA.jpg` · [caption] empty captions (added by hand from POST-LINKS) · fill from the post links if they had text · check → **fixed** (four were empty in the original too; BDrHNrDOjE8 stays empty, Matthew)
 - `archive/selenagomez/BDWlpPeujBe.jpg` · [caption] caption cut mid-word ("…song I ever wr…") · restore full caption · sure → **fixed** (restored from Wayback)
 - `archive/selenagomez/BDURNbTOjDj.jpg` · [unsuitable] woman in underwear at a window (small in frame) · keep or remove · check → **profile only**
 
@@ -86,7 +86,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 - `src/components/feed/feedData.js` (`EXPLORE_CAPTIONS`) · [caption] non-lead posts are captioned "views for days", "no filter needed #nofilter" and the like, under artwork · topic captions per friend · check → **fixed** (FRIEND_CAPTIONS)
 
 ### natgeo (archive, slot 8)
-- `archive/natgeo/BDzzJzpIVX5.jpg` (feed lead), `BDyufxwIVS0.jpg`, `BDwla7DIVTG.jpg`, `BDwU-vIIVTA.jpg`, `BDvngD6oVXe.jpg`, `BDuNsrnIVSv.jpg`, `BDtuZYooVVi.jpg`, `BDqSm-qoVbJ.jpg` · [caption] captions cut at 80 characters stop mid-sentence with no ellipsis ("…a mother from", "Escape from North Korea video will be") · restore full text from the post links, or end on "…" · sure → **needs Matthew** (BDzzJzpIVX5 restored from Wayback; the other seven not found anywhere, end on …)
+- `archive/natgeo/BDzzJzpIVX5.jpg` (feed lead), `BDyufxwIVS0.jpg`, `BDwla7DIVTG.jpg`, `BDwU-vIIVTA.jpg`, `BDvngD6oVXe.jpg`, `BDuNsrnIVSv.jpg`, `BDtuZYooVVi.jpg`, `BDqSm-qoVbJ.jpg` · [caption] captions cut at 80 characters stop mid-sentence with no ellipsis ("…a mother from", "Escape from North Korea video will be") · restore full text from the post links, or end on "…" · sure → **fixed** (BDzzJzpIVX5 restored from Wayback; the other seven given written endings, Matthew)
 - `archive/natgeo/BCh9zT-IVR8.jpg` · [crop] video still letterboxed in white top and bottom; the photo is a thin strip · replace or recrop · sure → **fixed** (removed (a recrop would be under 300px))
 - `archive/natgeo/BDy6rLWoVa2.jpg`, `BDwU-vIIVTA.jpg`, `BDqd_bDIVVL.jpg`, `BCYyIddoVSD.jpg` · [crop] black or white band baked into the file's edge · trim the bands · check → **fixed** (bands trimmed; real code BCYylddoVSD)
 
@@ -151,7 +151,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 - `archive/humansofny/BCYPXYJtrAI.jpg` · [unsuitable] caption "weed bombs… Calm the fuck down" · remove · check → **kept**
 
 ### neymarjr (archive, slot 22)
-- `archive/neymarjr/BE_erv4RthG.jpg` · [small] 480×480, the feed lead · replace or open on `#2` · sure → **needs Matthew** (no larger copy found; the slot opens on #2)
+- `archive/neymarjr/BE_erv4RthG.jpg` · [small] 480×480, the feed lead · replace or open on `#2` · sure → **fixed** (no larger copy; removed, Matthew)
 - `archive/neymarjr/BDyYjEgxtih.jpg` · [unsuitable] identifiable sick child in hospital holding a transplant-appeal sign (repost) · remove · check → **fixed** (removed)
 - `archive/neymarjr/BDW4A5KRtnJ.jpg` · [crop] square crop shows empty pitch and a ball; Neymar is cut off at the right edge · remove or recrop · sure → **fixed** (recropped onto Neymar)
 - `archive/neymarjr/BD6PL7Exto8.jpg` · [unsuitable] "@pokerstars" work repost (gambling ad) · keep or remove · check → **kept**
@@ -164,7 +164,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 - `archive/9gag/BDqJtqVjJ5b.jpg` · [broken] grey square with a reload arrow (a real April Fools "can't load" joke) looks like a failed image · remove · sure → **fixed** (removed)
 - `archive/9gag/BDsTCqdDJ6E.jpg` · [crop] text meme cut at the left by the square crop ("oys be like:", "but I'n…"); one of the feed's three possible openers · remove · sure → **fixed** (removed)
 - `archive/9gag/BDsgxhcDJxx.jpg` · [unsuitable] the feed post is an alcohol joke meme · keep or open on `#2` · check → **kept**
-- `archive/9gag/` (all 20) · [small] every photo is 576–700 px wide (the archive kept small copies) · accept, or find larger copies · check → **needs Matthew** (no larger copies; kept (Matthew))
+- `archive/9gag/` (all 20) · [small] every photo is 576–700 px wide (the archive kept small copies) · accept, or find larger copies · check → **kept** (no larger copies; kept, Matthew)
 
 ## Other accounts (profiles and Explore)
 
@@ -192,7 +192,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 
 ### glossier
 - `archive/glossier/` (all 11 posts, `BFujQhDPyRV` … `BFh_n8aPycd`) · [date] dated 18–22 May 2016, after the 11 May redesign the level depicts (the profile was captured 5 May; these were added from POST-LINKS) · replace with posts from before 11 May, or accept · sure → **kept** (no earlier photos archived; accepted (Matthew))
-- `archive/glossier/BFsNtw4PyS_.jpg`, `BFnPERwPybU.jpg` · [caption] captions cut at 80 characters ("win Glossie…") · restore · check → **needs Matthew** (not archived; end on …)
+- `archive/glossier/BFsNtw4PyS_.jpg`, `BFnPERwPybU.jpg` · [caption] captions cut at 80 characters ("win Glossie…") · restore · check → **fixed** (written endings, Matthew)
 - `archive-avatars/glossier.jpg` · [profile] a blank pale-pink square (std dev 0.003) · replace with the logo · sure → **kept** (Glossier really used this pink square in spring 2016 (Matthew))
 
 ### katyperry
@@ -210,7 +210,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 - `archive/nytimes/BDy44LXL2wo.jpg` · [unsuitable] caption covers a gang-rape court case (real news) · keep or remove · check → **kept**
 
 ### symmetrybreakfast
-- `archive/symmetrybreakfast/profile.json` · [profile] no avatar (`profile_pic` null, no `archive-avatars` file) · add `archive-avatars/symmetrybreakfast.jpg` · sure → **needs Matthew** (only a 404 is archived; initial avatar)
+- `archive/symmetrybreakfast/profile.json` · [profile] no avatar (`profile_pic` null, no `archive-avatars` file) · add `archive-avatars/symmetrybreakfast.jpg` · sure → **kept** (initial avatar; Matthew: ignore)
 
 ### thefeedfeed
 - `archive/thefeedfeed/BDx3nO0K8tF.jpg` · [small] 400×400 · replace or remove · sure → **needs Matthew** (no larger copy found; removed)
@@ -220,7 +220,7 @@ The duplicates come from one cause. @instagram's real 2016 grid (`archive/instag
 - `archive/victoriassecret/` · [profile] 2 photos against 3,526 claimed posts · as champagnepapi · check → **fixed** (out of Explore)
 
 ### voguemagazine
-- `archive/voguemagazine/BCsunMDP65V.jpg` · [caption] caption cut mid-sentence ("…says @taylor_hill on the") · restore · sure → **needs Matthew** (not found anywhere; ends on …)
+- `archive/voguemagazine/BCsunMDP65V.jpg` · [caption] caption cut mid-sentence ("…says @taylor_hill on the") · restore · sure → **fixed** (written ending, Matthew)
 
 ### zendaya
 - `archive/zendaya/BCXGWDoJmCu.jpg` · [off-topic] a portrait of Leonardo DiCaprio under her name ("Bout damn time") · keep (caption explains) or remove · check → **fixed** (removed)

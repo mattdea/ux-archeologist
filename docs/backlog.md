@@ -138,23 +138,12 @@ _Nothing approved._
 
 ### Level 4: feed audit fixes · 9 Nov 2026
 - Built in six commits (profile-only list, removals, duplicates and library rules, captions, avatars and small photos, crops and profiles). Every finding in `docs/feed-audit.md` now ends in its outcome. Spec Level 4 "What shows where" describes the new rules.
-- **Counts** (121 marked lines): **78 fixed** · **21 kept** · **6 profile only** (8 posts) · **16 needs Matthew** (the fallback is applied; better material would replace it).
-- Removed 44 archive photos (listed in `REMOVED`, `archiveData.js`): 16 unsuitable or broken, 17 too small with no larger copy, 10 bad crops, 1 duplicate. 26 library photos now belong to @instagram (`REPOSTED_BY_INSTAGRAM`), 26 more are in `SKIP`.
-- **Matthew's calls this session:** acacia.johnson's iceberg reflection kept; SFMOMA's extras left as they are; Imani's two near-identical portraits moved apart, not dropped; 9gag's small photos kept; Glossier's pink-square avatar kept (it was their real 2016 avatar) and its 11 late-May posts accepted.
+- **Counts** (121 marked lines): **82 fixed** · **23 kept** · **6 profile only** (8 posts) · **10 needs Matthew** (only larger copies of small photos, which are removed meanwhile).
+- Removed 45 archive photos (listed in `REMOVED`, `archiveData.js`): 16 unsuitable or broken, 18 too small with no larger copy, 10 bad crops, 1 duplicate. 26 library photos now belong to @instagram (`REPOSTED_BY_INSTAGRAM`), 26 more are in `SKIP`.
+- **Matthew's calls this session:** acacia.johnson's iceberg reflection kept; SFMOMA's extras left as they are; Imani's two near-identical portraits moved apart, not dropped; 9gag's small photos kept; Glossier's pink-square avatar kept (it was their real 2016 avatar) and its 11 late-May posts accepted. Afterwards: the ten captions not found in full were given short written endings (each `caption_note` says so), Neymar's 480px lead removed, Selena's empty caption and Symmetry Breakfast's initial avatar left as they are.
 - **Interpretations:** the audit misspelled six codes (l/I: Kylie `BDzIV_BnGvs`, Victoria's Secret `BETergNmlQF`, Kim `BCpQBQROS5l`, Bieber `BDbnw7IAvj8`, natgeo `BCYylddoVSD`, Emma Watson `BBcIpwyn3AD`), fixed by the real code. Where "remove or recrop" would leave a photo under ~360px, it was removed. The reposts rule also takes acacia.johnson's and the Oregon Duck's own reposted photos (the audit had said keep), as the rule overrides the audit. "Open on #1/#2" became `NO_LEAD`.
 - **Checked:** `npm test` (74 pass; `DesktopScene` Calculator test is flaky and fails some runs, unrelated), `npm run build`. In the browser (Vite on 5179, as 8888 was taken): the feed loads; 60 seeds give 60 different orders; Rihanna's slot opens on `BEYsYojhMyD`, `BDOqIgkhM_D` or `BDOpiTFhM9x`, never `BEbFNVlBM39`; no profile-only or removed post in any feed, its older pages or 4,000 Explore tiles; all 8 profile-only posts are in their grids.
-- **Needs from Matthew:**
-
-| File | What's wanted | Where I looked |
-|---|---|---|
-| `archive/natgeo/` `BDyufxwIVS0`, `BDwla7DIVTG`, `BDwU-vIIVTA`, `BDvngD6oVXe`, `BDuNsrnIVSv`, `BDtuZYooVVi`, `BDqSm-qoVbJ` | full caption text (now ends on "…") | Wayback CDX for each post page (exact and prefix); web search for caption fragments |
-| `archive/voguemagazine/BCsunMDP65V` | full caption (Taylor Hill quote) | same |
-| `archive/glossier/BFsNtw4PyS_`, `BFnPERwPybU` | full captions | same |
-| `archive/selenagomez/BDrHNrDOjE8` | whether the post had a caption (empty now) | Wayback CDX: no capture |
-| `archive-avatars/symmetrybreakfast.jpg` | 2016 profile picture (initial shown) | the 1 Apr 2016 profile capture links it; only a 404 of the image is archived, on four CDN hosts |
-| `archive/neymarjr/BE_erv4RthG` (480px, kept; slot opens on #2) | a larger copy | Wayback CDX for the post page: none |
-| removed as too small: kim `BEV_UCDuS3u`, messi `BEg3-TgvM0t`, beyonce `BCvlvAbPw0N`, kevinhart4real `BCbvuDBiYjP` `BCLRbnSiYlB`, badgalriri `BC77u1shMwW`, humansofny `BCgWuaitrJz`, theellenshow `BDgbDB6tjFO`, emmawatson `BAhgjIIn3P1`, thefeedfeed `BDx3nO0K8tF`, instagram `BERo0ybhQd3` `BEMg_axBQaQ` `BDzMcG3hQSD` `BDrFGFthQe4` `BDeIk6qBQRr` `BCYFKfOBQUi` `BCQWw9nhQTw` | larger copies (save as `archive/<handle>/<code>.jpg` and drop the code from `REMOVED`) | Wayback CDX for every post page; the pages archived (Emma Watson's, Kevin Hart's, @instagram's videos) only carry the same small size |
-| `archive/9gag/` (19 photos, 576–700px) | larger copies (kept for now) | not searched one by one; the archive kept only these |
+- **Needs from Matthew** (optional; the level is complete without them): larger copies of the 18 photos removed as too small (kim `BEV_UCDuS3u`, messi `BEg3-TgvM0t`, beyonce `BCvlvAbPw0N`, kevinhart4real `BCbvuDBiYjP` `BCLRbnSiYlB`, badgalriri `BC77u1shMwW`, humansofny `BCgWuaitrJz`, theellenshow `BDgbDB6tjFO`, emmawatson `BAhgjIIn3P1`, thefeedfeed `BDx3nO0K8tF`, neymarjr `BE_erv4RthG`, instagram `BERo0ybhQd3` `BEMg_axBQaQ` `BDzMcG3hQSD` `BDrFGFthQe4` `BDeIk6qBQRr` `BCYFKfOBQUi` `BCQWw9nhQTw`). Save one as `archive/<handle>/<code>.jpg` and drop its code from `REMOVED`. Looked in: Wayback CDX for every post page; the archived pages carry only the same small size.
 
 ### Website audit · 9 Nov 2026 (overnight run)
 - Report: `docs/site-audit.md`, morning summary at the top. Nothing fixed. Run on Vite at 5173: Netlify Dev on 8888 answered HTTP 500 "Could not proxy request".

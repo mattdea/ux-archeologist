@@ -117,8 +117,9 @@ they are objects and a dog rather than faces.
 
 Looked for and not found (see `docs/backlog.md`, Needs from Matthew): larger
 copies of the small photos that were removed instead (listed in `REMOVED`,
-`archiveData.js`), the full text of seven natgeo captions and one Vogue
-caption, and @symmetrybreakfast's 2016 profile picture (only a 404 is
-archived). @glossier's archived avatar is a plain pale-pink square, and that
+`archiveData.js`), and @symmetrybreakfast's 2016 profile picture (only a 404 is archived; it
+keeps its initial). Ten captions cut at 80 characters (seven natgeo, one
+Vogue, two Glossier) were not found in full and end in short written
+endings; their `caption_note` says so. @glossier's archived avatar is a plain pale-pink square, and that
 is what Glossier used in spring 2016: the capture of 5 May 2016 links the same
 image.
