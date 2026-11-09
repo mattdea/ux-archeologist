@@ -12,6 +12,31 @@ const MIN_W = 120
 const MIN_H = 80
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
+// The close box while it's pressed: a starburst inside the box, 9×9 pixels
+// with a 1px margin, read from docs/reference/mac system 1/ (Screenshot
+// 2026-11-08 at 10.54.51 PM). The cursor hides part of the lower half
+// there; it is completed by symmetry.
+const STARBURST = [
+  '....#....',
+  '.#..#..#.',
+  '..#.#.#..',
+  '.........',
+  '###...###',
+  '.........',
+  '..#.#.#..',
+  '.#..#..#.',
+  '....#....',
+]
+function Starburst() {
+  return (
+    <svg viewBox="0 0 11 11" width="11" height="11" shapeRendering="crispEdges" aria-hidden="true" style={{ display: 'block' }}>
+      {STARBURST.flatMap((row, y) => [...row].map((c, x) => c === '#'
+        ? <rect key={`${x}-${y}`} x={x + 1} y={y + 1} width="1" height="1" fill="#000" />
+        : null))}
+    </svg>
+  )
+}
+
 // `id` is written to data-win so the desktop can measure the window for the
 // zoom rectangles; `hidden` keeps it mounted but invisible while they draw.
 // `width` overrides the 340px document width (desk accessories are smaller);
@@ -31,6 +56,7 @@ export default function DraggableWindow({
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
   const [size, setSize] = useState(initialSize ?? null)
+  const [closePressed, setClosePressed] = useState(false)
   const dragging = useRef(false)
   const dragOffset = useRef({ x: 0, y: 0 })
   const titleBarRef = useRef(null)
@@ -172,6 +198,34 @@ export default function DraggableWindow({
     }
   }, [])
 
+  // Close box (Window Manager, TrackGoAway): pressing it draws the starburst;
+  // it lights only while the pointer is over the box, and the window closes
+  // if the button comes up there. Released elsewhere, nothing happens.
+  const handleCloseMouseDown = (e) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    const box = e.currentTarget
+    const inside = (ev) => {
+      const r = box.getBoundingClientRect()
+      return ev.clientX >= r.left && ev.clientX < r.right && ev.clientY >= r.top && ev.clientY < r.bottom
+    }
+    setClosePressed(true)
+    const move = (ev) => setClosePressed(inside(ev))
+    const up = (ev) => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+      mouseCleanupRef.current = null
+      setClosePressed(false)
+      if (inside(ev)) onClose?.()
+    }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+    mouseCleanupRef.current = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+    }
+  }
+
   // Grow box: an outline of the new size follows the pointer at ~10fps from
   // the window's top-left corner; the window itself stays put until release.
   const handleGrowMouseDown = (e) => {
@@ -236,7 +290,16 @@ export default function DraggableWindow({
       >
         {/* An inactive window has no close box (Window Manager: only the
             active window's title bar is highlighted) */}
-        <button className={styles.closeBtn} onClick={onClose} title="Close" tabIndex={active ? 0 : -1} />
+        <button
+          className={styles.closeBtn}
+          onMouseDown={handleCloseMouseDown}
+          // The mouse closes on release (above); Enter or Space still close.
+          onClick={(e) => { if (e.detail === 0) onClose?.() }}
+          title="Close"
+          tabIndex={active ? 0 : -1}
+        >
+          {closePressed && <Starburst />}
+        </button>
         {variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
       </div>
 

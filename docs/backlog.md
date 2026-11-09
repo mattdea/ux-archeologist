@@ -156,6 +156,7 @@ From the Ideas item "Level 1: Mac UI updates and more features" (which stays ope
 - **Every Finder window** has both bars and a working grow box (outline resize); icons don't reflow, so small windows scroll.
 - **Inactive windows**: no stripes, no close box, blank scroll bars.
 - **Opened icons** are shaded with QuickDraw dkGray, read pixel by pixel from the screenshots.
+- **Close box** draws the pressed starburst from Matthew's later screenshot (10.54.51 PM) and closes on release over the box (added on Matthew's go-ahead).
 Reconstructed (marked in the spec): repeat timing, line sizes, minimum window size, Notes shading.
 
 ### Level 0: the power-on bell (approved and built 8 Nov 2026)

@@ -1,5 +1,5 @@
 // src/test/WindowChrome.test.jsx
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import DesktopScene from '../components/DesktopScene'
 
@@ -22,6 +22,20 @@ describe('Finder window chrome', () => {
     expect(disk.querySelectorAll('[data-arrow]').length).toBe(0)
     expect(disk.querySelector('[data-growbox] svg')).toBeNull()
     expect(container.querySelector('[data-win="notes"]').className).not.toMatch(/inactive/)
+  })
+
+  it('draws the starburst while the close box is pressed; released off it, the window stays', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<DesktopScene objectives={objectives} completeObjective={() => {}} active={true} />)
+    await user.dblClick(screen.getByText('System Disk'))
+    await screen.findByText('System Folder')
+    const close = container.querySelector('[data-win="disk"] button[title="Close"]')
+    expect(close.querySelector('svg')).toBeNull()
+    fireEvent.mouseDown(close, { button: 0, clientX: 5, clientY: 5 })
+    expect(close.querySelectorAll('rect').length).toBe(20)
+    fireEvent.mouseUp(document, { clientX: 500, clientY: 500 })
+    expect(close.querySelector('svg')).toBeNull()
+    expect(container.querySelector('[data-win="disk"]')).not.toBeNull()
   })
 
   it('shades an icon while its window is open', async () => {
