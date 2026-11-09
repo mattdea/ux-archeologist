@@ -15,7 +15,7 @@
 | | Collection page | What it shows, how it's reached |
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
 | | Hints: feature + copy | Feature decisions, house style |
-| 3. Fidelity | Mac UI, round 4 | Pick what's next |
+| 3. Fidelity | Mac UI, round 5 | A Scrapbook screenshot |
 | | Netscape chrome | Version + references |
 | | Instagram accounts audit | Nothing: ready to start |
 | 4. Depth | Netscape pages or search | Pages vs search |
@@ -72,15 +72,14 @@ Writing work. Both items need the same first step: a short voice guide (Level 5'
 
 Same method each time: collect period references, list every difference, fix.
 
-#### Mac UI, round 4
-Rounds 1–3 are in Done.
+#### Mac UI, round 5
+Rounds 1–4 are in Done.
 - **Source of truth:** `docs/reference/mac system 1/` (Matthew's infinitemac.org screenshots). They win over the build, the manual and the spec, except: the screenshots show **Finder 4.1 ©1985**, so the level stays Finder 1.1 and copies them only where 1.1 looked the same (keep the 1.1g About box and 1.1 menus). Matthew's decision.
-- **Left from the comparison:**
-  - *Control Panel:* the desktop pattern editor (edit the magnified pattern, apply it to the desktop) and mouse tracking are drawn but not wired; key repeat, delay, insertion-point blink and double-click speed are kept but don't change anything.
-  - *Scrapbook* is still dimmed (no screenshot of it).
-  - *Finder windows and the About box* use the build's own frames; only the desk accessories, icons and menu bar were traced.
+- **Left:**
+  - *Scrapbook* is still dimmed. **Needs:** a screenshot of it open, to trace.
+  - *Control Panel:* insertion point blinking, double-click speed and mouse tracking stay unwired (a web page can't set the caret blink, the system double-click time or pointer speed). A custom caret or our own double-click timing could fake the first two, if wanted.
+  - *About the Finder* keeps the Finder 1.1g box by design.
 - **Rule:** everything must be something Finder 1.0/1.1 did.
-- **Decide:** what's next.
 
 #### Netscape chrome
 - **Decide first:** which Navigator version and platform. Throbber = Navigator 1.1+; cursors = Windows 95 (shipped Aug 1995).
@@ -133,6 +132,11 @@ Phone-width visitors get a card saying the exhibit is best on a computer. Closes
 ---
 
 ## Done
+
+### Level 1: Mac UI, round 4 · 9 Nov 2026
+- Control Panel desktop pattern editor: fat bits (click or drag), a sample desktop, stock patterns from its menu bar, and a click on the sample sets the Mac's desktop pattern. Reconstructed: the stock list and the two clicks.
+- Document window chrome measured in Mac pixels from `macsystem100004.png`: title bar, stripes, close box, Chicago title, Geneva 9 bold information line (QuickDraw's one-pixel smear), 16-pixel scroll bars and grow box. **High**.
+- Control Panel volume scales the beep, and at 0 a beep flashes the menu bar; Key Caps repeats a held key at the Control Panel's delay and rate (tick counts reconstructed).
 
 ### Level 1: Mac UI, round 3 · 8 Nov 2026
 - Desk accessories traced pixel by pixel from the screenshots (`scripts/mac-trace/`, `assets/mac/da/`), with live parts on top. **High**.
