@@ -51,6 +51,7 @@ Year move (above) · timeline entry · modals opening and closing · IntroModal 
 Writing work. Both items need the same first step: a short voice guide (Level 5's persona already sketches it: "slightly formal, warm, knowledgeable").
 
 #### Copy pass across the app
+- **Draft for review: `docs/copy-pass.md`** (9 Nov 2026): voice guide, current vs proposed text for every surface, Level 0 note, and facts flagged outside the copy.
 - **Surfaces:** title screen · About · timeline · 6 IntroModals · 6 DiscoveryCards · HUD tooltips · objectives · Level 5 chips and fallbacks.
 - **Noticed:** Level 1's intro is instructional, the rest are evocative one-liners · Level 4's discovery text is twice as long as the others · the spec's DiscoveryCard entry still says the button goes to `/timeline`.
 - **Decide:** one surface at a time or all at once.
