@@ -2,7 +2,7 @@
 
 ## Ideas
 
-_Proposals only. Nothing is ever built from this section. Historical claims carry a source and a confidence level (high / medium / low)._
+_Proposals only. Nothing is ever built from this section. Historical claims carry a source and a confidence level (high / medium / low). The design spec's museum-layer rules (fades only, "the museum is still", and so on) don't limit ideas here; when an idea that breaks one is approved, the spec is updated to match._
 
 ### Level 4: truncate long captions with "more" (requested 8 Nov 2026, pending history check)
 
@@ -38,15 +38,11 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 **Request:** the timeline's year label and the HUD's top-left era label share a typeface. As the level fades in, the year slides from its timeline position to the corner (a shared-element move), tying the two screens together more than the plain crossfade does.
 
-**Conflict:** the spec's museum rule is "Fade transitions only (300ms, ease-in-out). No bounces, slides" and "The museum is still." Approving this means amending that rule; the Continue flourish (rises with a slight overshoot) is already one exception.
-
 **To decide:** the reverse move on "Back to timeline"; what happens on routes that don't come from the timeline (progress dots, Next excavation, a direct URL) — probably plain fade; behaviour under `prefers-reduced-motion` (plain fade). Touches `Timeline.jsx` and `SharedLayout.jsx` (fade navigation).
 
 ### Museum: a "start here" cue on the timeline
 
 **Request:** an indication on the timeline, such as a pulsing arrow at the first level saying "Start here", or "Explore other levels" once some are done.
-
-**Conflict:** a pulse is museum-layer motion (see the rule above). A static label, or a single fade-in, stays within it.
 
 **To decide:** the copy for each state (nothing done → "Start here" at 1971; some done → point at the first unfinished level?; all done → nothing, or a link to the collection); whether it disappears after the first click.
 
@@ -72,9 +68,9 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 **Request:** add more motion and transitions.
 
-**Conflict:** museum-layer motion is limited to fades by the spec (see the year item). Artifact-layer motion is fine where it is era-authentic, and the spec lists each level's current motion under Animation Rules.
+**Today:** the museum layer mostly fades (300ms); the tracker slides up and the Continue button rises with a slight overshoot. The spec lists each level's artifact motion under Animation Rules.
 
-**To decide:** which specific moments. Candidates: the year move above; the timeline's entry; IntroModal → boot hand-off. Each would be its own item.
+**To decide:** which specific moments. Candidates: the year move above; the timeline's entry; modals opening and closing; IntroModal → boot hand-off; the discovery card's arrival. Each would be its own item.
 
 ### Level 1: the 1984 startup sound
 
@@ -100,7 +96,7 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 **Request:** make more pages clickable, or add a search feature that pulls up "fake" pages in a list of results.
 
-**Conflict:** the level's thesis is "The early web wasn't searched. It was browsed" (DiscoveryCard). A working search box would argue against it — unless search is shown as period-accurate and thin (a directory search over a few listings), which could make the point instead.
+**Note:** the level's thesis is "The early web wasn't searched. It was browsed" (DiscoveryCard). A working search box would argue against it — unless search is shown as period-accurate and thin (a directory search over a few listings), which could make the point instead.
 
 **History, to verify before building:**
 - Navigator had **Net Search** and **Net Directory** buttons; in Feb 1995 Net Directory listed Yahoo. Confidence **medium**: [W3C www-vlib list, Feb 1995](https://lists.w3.org/Archives/Public/www-vlib/1995Feb/0003.html); [savetz.com, "Secrets of the Search Button"](https://www.savetz.com/articles/warssearch.html) (later era).
