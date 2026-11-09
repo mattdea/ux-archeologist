@@ -580,10 +580,10 @@ src/components/chat/
 ## Typography Tokens
 
 ### Museum Layer
-- **Era labels:** Monospace, 11px, #999, letter-spacing 0.1em
+- **Era labels:** Monospace, 13px, #737373 on white (#999 on dark), letter-spacing 0.1em
 - **Level titles:** Serif, 22px, weight 400
 - **Body text:** System sans-serif, 13px, #555, line-height 1.7
-- **Objective label:** Sans-serif, 10px, uppercase, letter-spacing 0.08em, #999
+- **Objective label:** Sans-serif, 10px, uppercase, letter-spacing 0.08em, #737373
 - **Objective items:** Sans-serif, 13px, #333
 - **Buttons:** Sans-serif, 13px, letter-spacing 0.02em
 
@@ -610,9 +610,9 @@ src/components/chat/
 | Accent line | `#333` (2px) |
 | Primary text on white | `#111` |
 | Secondary text on white | `#555` |
-| Muted text on white | `#999` |
+| Muted text on white | `#737373` (4.7:1, the lightest grey that passes WCAG AA on white) |
 | Primary text on dark | `#ccc` |
-| Secondary text on dark | `#777` |
+| Secondary text on dark | `#8a8a8a` (5.5:1 on #111; `#808080` is the floor, 4.8:1) |
 | Progress dot — done | `#666` |
 | Progress dot — active | `#fff` |
 | Progress dot — future | transparent + `#444` border |
