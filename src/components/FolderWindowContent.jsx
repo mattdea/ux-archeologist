@@ -1,42 +1,50 @@
 // src/components/FolderWindowContent.jsx
 //
 // The inside of a Finder 1.0 disk or folder window: the information line
-// ("N items   NNNK in disk   NNNK available") and the icons in a row.
+// ("N items   NNNK in disk   NNNK available", or "in folder") and the icons
+// in a row: 32-pixel icons 64 Mac pixels apart, the first 12 pixels in from
+// the window's top left, labels centred under them (measured from
+// docs/reference/mac system 1/macsystem100032.png).
 // Single-click selects, double-click opens; the parent decides what opening
 // means (a folder zooms open, a system file can't be opened).
 
 import styles from './DraggableWindow.module.css'
 import WindowScrollArea from './WindowScrollArea'
 import iconStyles from './DesktopIcon.module.css'
-import { FolderIcon, NotesIcon, IconShade } from './DesktopIcon'
+import { FolderIcon, NotesIcon, SystemFileIcon, IconShade } from './DesktopIcon'
+
+const mp = (n) => `calc(var(--mac-px) * ${n})`
+const LEFT = 12, TOP = 12, PITCH = 64
+const ICON_BOX = 100   // CSS px: DesktopIcon.module.css .icon width, the icon centred in it
 
 function Glyph({ icon, selected }) {
   if (icon === 'folder') return <FolderIcon selected={selected} />
+  if (icon === 'system') return <SystemFileIcon selected={selected} />
   return <NotesIcon selected={selected} />
 }
 
-export default function FolderWindowContent({ items, inDisk, available, selectedId, onSelect, onOpen, openedIds = [] }) {
+export default function FolderWindowContent({ items, inDisk, inFolder, available, selectedId, onSelect, onOpen, openedIds = [] }) {
   const count = items.length
   return (
     <>
       <div className={styles.fileListHeader}>
         <span>{count} item{count === 1 ? '' : 's'}</span>
-        {inDisk != null && (
+        {(inDisk ?? inFolder) != null && (
           <>
-            <span className={styles.fileInfoText}>{inDisk}K in disk</span>
+            <span className={styles.fileInfoText}>{inDisk != null ? `${inDisk}K in disk` : `${inFolder}K in folder`}</span>
             <span className={styles.fileInfoRight}>{available}K available</span>
           </>
         )}
       </div>
       <WindowScrollArea>
-        <div className={styles.trashBody}>
-          {items.map(item => {
+        <div style={{ position: 'relative', width: mp(LEFT + PITCH * items.length), height: mp(TOP + 32 + 20) }}>
+          {items.map((item, i) => {
             const sel = selectedId === item.id
             return (
               <div
                 key={item.id}
                 className={`${iconStyles.icon} ${sel ? iconStyles.selected : ''}`}
-                style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
+                style={{ position: 'absolute', left: `calc(${mp(LEFT + PITCH * i)} - ${(ICON_BOX / 2)}px + ${mp(16)})`, top: mp(TOP) }}
                 onMouseDown={(e) => { e.stopPropagation(); onSelect?.(item.id) }}
                 onDoubleClick={(e) => { e.stopPropagation(); onOpen?.(item, e.currentTarget) }}
               >

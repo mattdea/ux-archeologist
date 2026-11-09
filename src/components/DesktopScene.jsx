@@ -63,15 +63,15 @@ const DISK_ITEMS = [
   { id: 'sysfolder',   label: 'System Folder', icon: 'folder' },
   { id: 'emptyfolder', label: 'Empty Folder',  icon: 'folder' },
 ]
-const SYSFOLDER_ITEMS = [
-  { id: 'system',    label: 'System',         icon: 'notes' },
-  { id: 'finder',    label: 'Finder',         icon: 'notes' },
-  { id: 'imagewriter', label: 'Imagewriter',  icon: 'notes' },
-  { id: 'notepadfile', label: 'Note Pad File', icon: 'notes' },
-  { id: 'scrapbookfile', label: 'Scrapbook File', icon: 'notes' },
-  { id: 'clipboardfile', label: 'Clipboard File', icon: 'notes' },
+const SYSFOLDER_ITEMS = [   // in the Finder's order (macsystem100032.png)
+  { id: 'system',    label: 'System',         icon: 'system' },
+  { id: 'finder',    label: 'Finder',         icon: 'system' },
+  { id: 'imagewriter', label: 'Imagewriter',  icon: 'system' },
+  { id: 'clipboardfile', label: 'Clipboard File', icon: 'system' },
+  { id: 'notepadfile', label: 'Note Pad File', icon: 'system' },
+  { id: 'scrapbookfile', label: 'Scrapbook File', icon: 'system' },
 ]
-const DISK_K = { inDisk: 216, available: 184 }
+const DISK_K = { inDisk: 216, available: 184, inSysFolder: 208 }
 
 // Get Info text for each item, in the 1984 manual's formats
 // ("Size: 55248 bytes, accounts for 55K on disk"; "Where: Write/Paint,
@@ -622,7 +622,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       case 'disk':
         return <FolderWindowContent items={DISK_ITEMS} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} openedIds={openedIds} />
       case 'sysfolder':
-        return <FolderWindowContent items={SYSFOLDER_ITEMS} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+        return <FolderWindowContent items={SYSFOLDER_ITEMS} inFolder={DISK_K.inSysFolder} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'emptyfolder':
         return <FolderWindowContent items={[]} />
       case 'info':

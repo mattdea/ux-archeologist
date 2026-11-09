@@ -254,6 +254,44 @@ function runs(bitmap, test) {
   return out
 }
 
+// The System Folder's files (System, Finder, Imagewriter, ...): a little
+// Macintosh, traced from docs/reference/mac system 1/macsystem100032.png
+// (24 × 31, bottom-aligned like the document icon)
+const SYSTEM_FILE = [
+  '                                ',
+  '     ######################     ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '    #...################...#    ',
+  '    #..#................#..#    ',
+  '    #..#.#.#.#.#.#.#....#..#    ',
+  '    #..#................#..#    ',
+  '    #..#.#.#.#.#........#..#    ',
+  '    #..#................#..#    ',
+  '    #..#.#.#............#..#    ',
+  '    #..#................#..#    ',
+  '    #..#.#.#............#..#    ',
+  '    #..#................#..#    ',
+  '    #..#.#.#.#..........#..#    ',
+  '    #..#................#..#    ',
+  '    #..#................#..#    ',
+  '    #...################...#    ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '    #...........########...#    ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '    #......................#    ',
+  '     ######################     ',
+  '     #....................#     ',
+  '     #....................#     ',
+  '     #....................#     ',
+  '     ######################     ',
+]
+
 function BitmapIcon({ bitmap, selected }) {
   const fg = selected ? 'white' : 'black'
   const bg = selected ? 'black' : 'white'
@@ -487,6 +525,10 @@ export function TrashIcon({ highlighted, full, selected }) {
 <path d="M106 12H110V16H106V12Z" fill={fg}/>
     </svg>
   )
+}
+
+export function SystemFileIcon({ selected }) {
+  return <BitmapIcon bitmap={SYSTEM_FILE} selected={selected} />
 }
 
 export function DiskIcon({ selected }) {
