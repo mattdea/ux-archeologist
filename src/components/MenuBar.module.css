@@ -12,7 +12,9 @@
   gap: 0;
   z-index: 50;
   font-family: var(--font-chicago);
-  font-size: 16px;
+  /* The bundled Chicago is drawn on a 16-pixel em: at 16 Mac pixels each
+     font pixel is one Mac pixel, as in the screenshots */
+  font-size: calc(var(--mac-px) * 16);
 }
 
 .apple {
@@ -30,6 +32,7 @@
 .appleActive {
   background: var(--mac-black);
   color: var(--mac-white);
+  box-shadow: inset 0 var(--mac-px) 0 var(--mac-white);
 }
 
 .menuItem {
@@ -42,16 +45,19 @@
   background: transparent;
   border: none;
   font-family: var(--font-chicago);
-  font-size: 16px;
+  font-size: calc(var(--mac-px) * 16);
   cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   display: flex;
   align-items: center;
 }
 
+/* The highlighted title starts a pixel below the top of the bar and runs
+   down to its line (macsystem100017.png) */
 .menuLabel:hover,
 .menuLabelActive {
   background: var(--mac-black);
   color: var(--mac-white);
+  box-shadow: inset 0 var(--mac-px) 0 var(--mac-white);
 }
 
 .dropdown {
@@ -71,11 +77,14 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 2px 8px;
+  padding: 0 8px;
   background: transparent;
   border: none;
   font-family: var(--font-chicago);
-  font-size: 16px;
+  font-size: calc(var(--mac-px) * 16);
+  /* Rows 16 Mac pixels apart: Chicago's ascent + descent + leading
+     (Inside Macintosh I, Menu Manager) */
+  line-height: calc(var(--mac-px) * 16);
   text-align: left;
   cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   white-space: nowrap;
@@ -136,5 +145,5 @@
 .shortcut {
   margin-left: 24px;
   font-family: var(--font-chicago);
-  font-size: 16px;
+  font-size: calc(var(--mac-px) * 16);
 }

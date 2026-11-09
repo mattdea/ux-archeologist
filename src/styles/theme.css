@@ -35,7 +35,9 @@
   --border: 1px solid #000000;
   --window-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
 
-  --menu-bar-height: 30px;
+  /* 19 Mac pixels of bar plus its 1-pixel bottom line (docs/reference/
+     mac system 1/macsystem100017.png) */
+  --menu-bar-height: calc(var(--mac-px) * 20);
   --tracker-panel-width: 190px;
 }
 

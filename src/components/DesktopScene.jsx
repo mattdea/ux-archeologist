@@ -75,6 +75,9 @@ const INFO = {
     created: 'Wednesday, January 25, 1984 at 9:14 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: 'First day with the Macintosh.' },
 }
 
+// The menu bar: 20 Mac pixels (this screen draws 512 Mac pixels across 620)
+const MENU_BAR = 20 * 620 / 512
+
 const WINDOW_POS = {
   disk: { x: 40, y: 48 }, sysfolder: { x: 70, y: 70 }, emptyfolder: { x: 90, y: 90 },
   projects: { x: 80, y: 50 }, notes: { x: 60, y: 55 }, trash: { x: 90, y: 60 },
@@ -225,7 +228,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     if (e.button !== 0) return
     const desktop = desktopRef.current
     const start = toLocal(desktop, e.clientX, e.clientY)
-    if (start.y < 30) return   // menu bar
+    if (start.y < MENU_BAR) return   // menu bar
     const base = e.shiftKey ? selected : []
     if (!e.shiftKey) { setSelected([]); setFolderSel(null); setTrashSel(null) }
     marqueeStart.current = start
@@ -234,7 +237,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     const move = (ev) => {
       const p = toLocal(desktop, ev.clientX, ev.clientY)
       const r = {
-        x: Math.min(start.x, p.x), y: Math.max(30, Math.min(start.y, p.y)),
+        x: Math.min(start.x, p.x), y: Math.max(MENU_BAR, Math.min(start.y, p.y)),
         w: Math.abs(p.x - start.x), h: Math.abs(p.y - start.y),
       }
       if (r.w < 2 && r.h < 2) return

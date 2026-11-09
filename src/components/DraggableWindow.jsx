@@ -75,7 +75,7 @@ export default function DraggableWindow({
   const containerSize = useRef({ width: 620, height: 415 })
   const windowSize = useRef({ w: 340, h: 246 })
 
-  const MENU_BAR = 30  // px — matches --menu-bar-height in theme.css
+  const MENU_BAR = 20 * 620 / 512  // px: 20 Mac pixels, as --menu-bar-height in theme.css
 
   // Clamp desktop-relative pos to the screen, below the menu bar
   const clampPos = (x, y) => {
