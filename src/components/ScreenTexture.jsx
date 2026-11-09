@@ -12,7 +12,8 @@ import styles from './ScreenTexture.module.css'
  * shifts the pattern so its origin falls on a device pixel. The bezel can
  * be any size; the pixels of the screen never change size.
  *
- * Fills its nearest positioned parent. Re-measures on resize.
+ * Fills its nearest positioned parent. Re-measures on resize, and when the
+ * parent changes size (a scroll track in a window being resized).
  */
 export default function ScreenTexture() {
   const ref = useRef(null)
@@ -50,9 +51,12 @@ export default function ScreenTexture() {
     update()
     schedule()
     window.addEventListener('resize', schedule)
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(update)
+    ro?.observe(host)
     return () => {
       frames.forEach(cancelAnimationFrame)
       window.removeEventListener('resize', schedule)
+      ro?.disconnect()
     }
   }, [])
 

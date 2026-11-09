@@ -1,5 +1,5 @@
 // src/components/NotesWindowContent.jsx
-import { useRef, useEffect } from 'react'
+import MacScrollPane from './MacScrollPane'
 import styles from './NotesWindowContent.module.css'
 
 const NOTES_TEXT = `Jan 25, 1984
@@ -18,134 +18,18 @@ $2,495 is a lot of money. I hope the partners agree it was worth it.
 
 — R.H.`
 
-const THUMB_HEIGHT = 24
-const ARROW_STEP = 36
+// One line of Monaco 12 at line-height 1.5: what an arrow click scrolls.
+const LINE = 18
 
+// The document scrolls only with its scroll bar (MacScrollPane): no wheel.
 export default function NotesWindowContent() {
-  const viewportRef = useRef(null)
-  const contentRef = useRef(null)
-  const thumbRef = useRef(null)
-  const thumbAreaRef = useRef(null)
-  const scrollPos = useRef(0)
-  const pending = useRef(0)
-  const intervalRef = useRef(null)
-
-  const getMaxScroll = () => {
-    const content = contentRef.current
-    const viewport = viewportRef.current
-    if (!content || !viewport) return 0
-    return Math.max(0, content.scrollHeight - viewport.clientHeight)
-  }
-
-  const applyScroll = (newPos) => {
-    const maxScroll = getMaxScroll()
-    scrollPos.current = Math.max(0, Math.min(maxScroll, newPos))
-    if (contentRef.current) {
-      contentRef.current.style.transform = `translateY(${-scrollPos.current}px)`
-    }
-    // Update thumb position
-    const thumbArea = thumbAreaRef.current
-    const thumb = thumbRef.current
-    if (thumbArea && thumb && maxScroll > 0) {
-      const trackH = thumbArea.clientHeight - THUMB_HEIGHT
-      thumb.style.top = `${(scrollPos.current / maxScroll) * trackH}px`
-    }
-  }
-
-  // Choppy scroll: accumulate wheel delta, apply in 120ms chunks
-  useEffect(() => {
-    const el = viewportRef.current
-    if (!el) return
-
-    const handleWheel = (e) => {
-      e.preventDefault()
-      pending.current += e.deltaY
-
-      if (!intervalRef.current) {
-        intervalRef.current = setInterval(() => {
-          if (Math.abs(pending.current) < 0.5) {
-            pending.current = 0
-            clearInterval(intervalRef.current)
-            intervalRef.current = null
-            return
-          }
-          const step = Math.sign(pending.current) * Math.min(Math.abs(pending.current), 36)
-          pending.current -= step
-          applyScroll(scrollPos.current + step)
-        }, 120)
-      }
-    }
-
-    el.addEventListener('wheel', handleWheel, { passive: false })
-    return () => {
-      el.removeEventListener('wheel', handleWheel)
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
-    }
-  }, [])
-
-  // Arrow button handlers
-  const handleArrowUp = () => applyScroll(scrollPos.current - ARROW_STEP)
-  const handleArrowDown = () => applyScroll(scrollPos.current + ARROW_STEP)
-
-  // Thumb drag
-  const thumbDragStart = useRef(null)
-
-  const handleThumbMouseDown = (e) => {
-    e.preventDefault()
-    const startY = e.clientY
-    const startScroll = scrollPos.current
-
-    const handleMove = (ev) => {
-      const thumbArea = thumbAreaRef.current
-      if (!thumbArea) return
-      const trackH = thumbArea.clientHeight - THUMB_HEIGHT
-      if (trackH <= 0) return
-      const maxScroll = getMaxScroll()
-      const deltaY = ev.clientY - startY
-      applyScroll(startScroll + (deltaY / trackH) * maxScroll)
-    }
-
-    const handleUp = () => {
-      document.removeEventListener('mousemove', handleMove)
-      document.removeEventListener('mouseup', handleUp)
-    }
-
-    document.addEventListener('mousemove', handleMove)
-    document.addEventListener('mouseup', handleUp)
-    thumbDragStart.current = { startY, startScroll }
-  }
-
-  // Click on thumb track (not thumb) — jump scroll
-  const handleTrackClick = (e) => {
-    if (e.target !== thumbAreaRef.current) return
-    const thumbArea = thumbAreaRef.current
-    if (!thumbArea) return
-    const rect = thumbArea.getBoundingClientRect()
-    const clickRatio = (e.clientY - rect.top) / rect.height
-    applyScroll(clickRatio * getMaxScroll())
-  }
-
   return (
-    <div ref={viewportRef} className={styles.viewport}>
-      <div ref={contentRef} className={styles.content}>
-        <pre className={styles.pre}>{NOTES_TEXT}</pre>
-      </div>
-      <div className={styles.scrollbarTrack}>
-        <button className={styles.scrollArrow} onMouseDown={handleArrowUp}>△</button>
-        <div
-          ref={thumbAreaRef}
-          className={styles.scrollThumbArea}
-          onMouseDown={handleTrackClick}
-        >
-          <div
-            ref={thumbRef}
-            className={styles.scrollThumb}
-            onMouseDown={handleThumbMouseDown}
-          />
+    <div className={styles.viewport}>
+      <MacScrollPane vertical horizontal={false} growBox={false} line={LINE} fillWidth>
+        <div className={styles.content}>
+          <pre className={styles.pre}>{NOTES_TEXT}</pre>
         </div>
-        <button className={styles.scrollArrow} onMouseDown={handleArrowDown}>▽</button>
-      </div>
+      </MacScrollPane>
     </div>
   )
 }

@@ -1,0 +1,65 @@
+/* src/components/MacScrollBar.module.css
+ *
+ * A 16px bar: 1px frame, an arrow box at each end (separated from the track
+ * by a 1px line), the track between. The thumb and its drag outline are 16px
+ * squares that overlap the frame and the arrow lines, as on the Mac.
+ */
+.bar {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  background: var(--mac-white);
+  border: 1px solid var(--mac-black);
+  user-select: none;
+}
+
+.vertical { width: 16px; flex-direction: column; }
+.horizontal { height: 16px; flex-direction: row; }
+
+.arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: inherit;
+}
+.vertical .arrow { height: 15px; }
+.horizontal .arrow { width: 15px; }
+
+.vertical .arrow:first-child { border-bottom: 1px solid var(--mac-black); }
+.vertical .arrow:last-child  { border-top: 1px solid var(--mac-black); }
+.horizontal .arrow:first-child { border-right: 1px solid var(--mac-black); }
+.horizontal .arrow:last-child  { border-left: 1px solid var(--mac-black); }
+
+.track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.thumb,
+.ghost {
+  position: absolute;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+}
+.vertical .thumb, .vertical .ghost { left: -1px; }
+.horizontal .thumb, .horizontal .ghost { top: -1px; }
+
+.thumb {
+  background: var(--mac-white);
+  border: 1px solid var(--mac-black);
+  cursor: inherit;
+}
+
+/* The outline dragged in place of the thumb (TrackControl's dragged
+   indicator). Dotted, so the gray track shows through it. */
+.ghost {
+  border: 1px dotted var(--mac-black);
+  outline: 1px dotted var(--mac-white);
+  outline-offset: -2px;
+  pointer-events: none;
+  z-index: 1;
+}

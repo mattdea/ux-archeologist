@@ -152,9 +152,9 @@
   font-size: 12px;
 }
 
+/* Notes: its scroll pane clips itself; the bar overlaps the frame */
 .scrollBody {
   height: 220px;
-  overflow: hidden;
   position: relative;
 }
 

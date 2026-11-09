@@ -1,0 +1,33 @@
+/* src/components/MacScrollPane.module.css */
+.pane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* The grow box: the corner square where the two bars meet */
+.growBox {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--mac-black);
+  background: var(--mac-white);
+  cursor: inherit;
+}
+.growBox svg { display: block; }

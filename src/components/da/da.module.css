@@ -54,6 +54,7 @@
   border: none;
   outline: none;
   resize: none;
+  overflow: hidden;   /* no scroll bar and no wheel scrolling: a page is a page */
   background: var(--mac-white);
   font-family: var(--font-geneva);
   font-size: 13px;
