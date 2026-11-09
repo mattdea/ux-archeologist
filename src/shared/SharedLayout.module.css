@@ -210,7 +210,8 @@
   border-radius: 0;
 }
 
-.hudContinueBtn:hover {
+.hudContinueBtn:hover,
+.hudContinueBtn:focus-visible {
   border-color: #fff;
   color: #fff;
 }
@@ -218,6 +219,9 @@
 /* ─── Back to timeline link ──────────────────────────────────────── */
 
 .backLink {
+  background: none;
+  border: none;
+  padding: 0;
   font-family: system-ui, sans-serif;
   font-size: 13px;
   color: #999;
@@ -226,7 +230,8 @@
   letter-spacing: 0.01em;
 }
 
-.backLink:hover {
+.backLink:hover,
+.backLink:focus-visible {
   color: #ccc;
   text-decoration: underline;
 }

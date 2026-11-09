@@ -27,7 +27,8 @@ export default function Timeline() {
         const delay    = `${i * 150}ms`
 
         return (
-          <div
+          <button
+            type="button"
             key={entry.year}
             className={`${styles.entry} ${complete ? styles.entryComplete : styles.entryIncomplete}`}
             onClick={() => navigate(entry.path)}
@@ -35,17 +36,17 @@ export default function Timeline() {
           >
             <span className={`${styles.dot} ${complete ? styles.dotComplete : styles.dotIncomplete}`} />
 
-            <div className={styles.content}>
+            <span className={styles.content}>
               <span className={styles.year}>{entry.year}</span>
-              <div className={styles.titleRow}>
+              <span className={styles.titleRow}>
                 <span className={styles.title}>{entry.title}</span>
-                <span className={styles.arrow}>→</span>
-              </div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+              </span>
               {complete && (
                 <span className={styles.artifact}>{entry.artifact}</span>
               )}
-            </div>
-          </div>
+            </span>
+          </button>
         )
       })}
 

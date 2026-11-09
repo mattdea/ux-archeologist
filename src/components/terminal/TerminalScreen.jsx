@@ -116,7 +116,7 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
         type="text"
         readOnly
         onKeyDown={onKeyDown}
-        aria-hidden="true"
+        aria-label="Terminal input"
         style={{
           position: 'absolute',
           opacity: 0,

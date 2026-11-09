@@ -38,9 +38,22 @@
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  padding-bottom: 40px;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 40px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   cursor: pointer;
   animation: entryIn 400ms ease-out both;
+}
+
+.entry:focus { outline: none; }
+.entry:focus-visible .title {
+  outline: 1.5px solid #fff;
+  outline-offset: 3px;
 }
 
 /* ── Dot ──────────────────────────────────────────────────────────── */
@@ -87,7 +100,8 @@
 
 .entryComplete   .year { color: #999; }
 .entryIncomplete .year { color: #555; }
-.entry:hover     .year { color: #888; }
+.entry:hover .year,
+.entry:focus-visible .year { color: #888; }
 
 /* ── Title row (title + arrow) ───────────────────────────────────── */
 .titleRow {
@@ -107,7 +121,8 @@
 
 .entryComplete   .title { color: #ccc; }
 .entryIncomplete .title { color: #666; }
-.entry:hover     .title { color: #fff; }
+.entry:hover .title,
+.entry:focus-visible .title { color: #fff; }
 
 /* ── Arrow (always rendered, fades in on hover) ───────────────────── */
 .arrow {
@@ -119,7 +134,8 @@
   transition: opacity 150ms ease;
 }
 
-.entry:hover .arrow {
+.entry:hover .arrow,
+.entry:focus-visible .arrow {
   opacity: 1;
 }
 
@@ -196,4 +212,9 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* Reduced motion: entries fade in without rising */
+@media (prefers-reduced-motion: reduce) {
+  .entry { animation-name: fadeIn; }
 }

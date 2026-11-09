@@ -1,8 +1,18 @@
 // src/shared/museum-ui/AboutModal.jsx
-import { useEffect } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import styles from './AboutModal.module.css'
 
 export default function AboutModal({ onClose }) {
+  const titleId = useId()
+  const closeRef = useRef(null)
+
+  // Focus the close button on open; give focus back to the opener on close
+  useEffect(() => {
+    const opener = document.activeElement
+    closeRef.current?.focus({ preventScroll: true })
+    return () => { if (opener && typeof opener.focus === 'function') opener.focus({ preventScroll: true }) }
+  }, [])
+
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handler)
@@ -11,12 +21,12 @@ export default function AboutModal({ onClose }) {
 
   return (
     <div className={styles.scrim} onClick={onClose}>
-      <div className={styles.card} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.card} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <div className={styles.accentLine} />
-        <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
+        <button ref={closeRef} type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
         <div className={styles.body}>
           <span className={styles.curatorLabel}>Curator's Note</span>
-          <h1 className={styles.title}>Interface Artifacts</h1>
+          <h1 id={titleId} className={styles.title}>Interface Artifacts</h1>
 
           <p className={styles.paragraph}>
             Every interface you've ever used was someone's radical idea. The command line, the desktop, the hyperlink, the touchscreen — each felt inevitable in hindsight but was a leap of imagination when it was new.

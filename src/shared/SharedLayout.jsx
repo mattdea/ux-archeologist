@@ -69,6 +69,11 @@ function dotClass(dotLevel, activeLevel) {
   return `${styles.dot} ${styles.dotEmpty}`
 }
 
+// Reduced motion: HUD corners fade in place instead of sliding.
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+}
+
 // Calls `cb` after two consecutive animation frames arrive within 40ms of
 // each other (rendering has settled), or after `maxMs` regardless.
 function whenFramesSettle(cb, maxMs = 600) {
@@ -148,7 +153,9 @@ export default function SharedLayout({ children }) {
   // direction: 'down' (slides in from above) | 'up' (slides in from below)
   // delayMs: entrance stagger delay
   const hudStyle = (direction, delayMs) => {
-    const translate = direction === 'down' ? 'translateY(-20px)' : 'translateY(20px)'
+    const translate = prefersReducedMotion()
+      ? 'translateY(0)'
+      : direction === 'down' ? 'translateY(-20px)' : 'translateY(20px)'
     if (hudFading) {
       // Fade out on navigate — faster than entrance, no transform change
       return {
@@ -213,17 +220,24 @@ export default function SharedLayout({ children }) {
                 {/* Bottom-right — Continue (when objectives done) + back to timeline */}
                 <div className={styles.hudBottomRight} data-hud style={hudStyle('up', 200)}>
                   <div className={`${styles.hudContinueBtnWrap} ${continueAction ? styles.hudContinueBtnWrapVisible : ''}`}>
-                    <button className={styles.hudContinueBtn} onClick={continueAction ?? undefined}>
+                    <button
+                      type="button"
+                      className={styles.hudContinueBtn}
+                      onClick={continueAction ?? undefined}
+                      tabIndex={continueAction ? 0 : -1}
+                      aria-hidden={continueAction ? undefined : true}
+                    >
                       Continue
                     </button>
                   </div>
                   {activeLevel !== null && (
-                    <span
+                    <button
+                      type="button"
                       className={styles.backLink}
                       onClick={() => fadeNavigate('/timeline')}
                     >
                       ← Back to timeline
-                    </span>
+                    </button>
                   )}
                 </div>
               </>
