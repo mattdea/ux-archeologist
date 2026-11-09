@@ -63,11 +63,10 @@ export default function Level0() {
   // onComplete transitions to 'playing', which is when HUD elements appear.
   // terminal.startBoot uses stable refs internally — intentionally excluded from deps.
   // The power-up self-test rings the bell once during its keyboard check
-  // (VT100 Technical Manual §4.2.8): 600ms in, after the CRT thump and before
+  // (VT100 Technical Manual §4.2.8): 600ms in, before
   // the first boot line at 1000ms (placement reconstructed).
   useEffect(() => {
     if (screen !== 'booting') return
-    sfx.crtOn()
     const bellTimer = setTimeout(() => sfx.bell(), 600)
     terminal.startBoot(() => setScreen('playing'))
     return () => clearTimeout(bellTimer)

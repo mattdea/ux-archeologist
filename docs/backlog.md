@@ -158,6 +158,8 @@ _Finished items, moved here when built._
 
 **Built:** `VT_SPEAKER_HZ` is 787 (keyclick and bell); Level 0 rings `sfx.bell()` 600 ms after `crtOn()` as the boot starts, timer cleared on cleanup; the spec's Sound section updated. Measured in the browser: thump at 6 ms, one 787 Hz bell at 610 ms.
 
+**Later (8 Nov 2026):** Matthew didn't like the CRT power-on thump and hiss (`crtOn()`, added 7 Nov in `cb9a5a5`) before the bell, so it was removed; the bell is now Level 0's only boot sound, still at 600 ms.
+
 ### Level 4: truncate long captions after 3 lines (approved and built 8 Nov 2026)
 
 **Build:** a caption longer than three lines is cut at three lines and ends in "… more"; tapping it expands the full caption in place.

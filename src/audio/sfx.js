@@ -11,7 +11,6 @@
 //
 //   key()               terminal keyboard clack (slightly different each time)
 //   bell()              VT100 bell
-//   crtOn()             CRT power-on thump + warming hiss
 //   startupBeep()       1984 Macintosh startup beep (600 Hz square wave)
 //   beep()              Macintosh system (alert) beep
 //   dialup()            real dial-up recording if assets/web/dialup.* exists; returns stop()
@@ -67,19 +66,6 @@ function tone(type, freq, peak, attack, decay, at = now(), dest) {
   return o
 }
 
-let noiseBuf = null
-function noise() {
-  if (!noiseBuf) {
-    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate)
-    const d = noiseBuf.getChannelData(0)
-    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
-  }
-  const s = ctx.createBufferSource()
-  s.buffer = noiseBuf
-  s.loop = true
-  return s
-}
-
 function filter(type, freq, q = 1) {
   const f = ctx.createBiquadFilter()
   f.type = type
@@ -127,16 +113,6 @@ export function bell() {
   g.connect(master)
   o.connect(ring).connect(g)
   o.start(t); o.stop(t + 0.3)
-}
-
-export function crtOn() {
-  if (!ensure()) return
-  const t = now()
-  tone('sine', 55, 0.5, 0.01, 0.35, t)                   // degauss thump
-  const n = noise()
-  const hp = filter('highpass', 4000)
-  n.connect(hp).connect(env(0.05, 0.3, 0.9, t))          // tube warming hiss
-  n.start(t); n.stop(t + 1.4)
 }
 
 // ── 1984: Macintosh ────────────────────────────────────────────────
