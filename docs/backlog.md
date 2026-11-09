@@ -16,7 +16,7 @@
 | | Collection page | What it shows, how it's reached |
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
 | | Hints: feature + copy | Feature decisions, house style |
-| 3. Fidelity | Mac UI, round 2 | Pick the next group |
+| 3. Fidelity | Mac UI, round 3 | Pick the next group |
 | | Netscape chrome | Version + references |
 | | Instagram accounts audit | Nothing: ready to start |
 | 4. Depth | Netscape pages or search | Pages vs search |
@@ -78,16 +78,14 @@ Writing work. Both items need the same first step: a short voice guide (Level 5'
 
 Same method each time: collect period references, list every difference, fix.
 
-#### Mac UI, round 2
-Round 1 is in Done.
+#### Mac UI, round 3
+Rounds 1 and 2 are in Done.
 - **Source of truth:** `docs/reference/mac system 1/` (Matthew's infinitemac.org screenshots). They win over the build, the manual and the spec, except: the screenshots show **Finder 4.1 ©1985**, so the level stays Finder 1.1 and copies them only where 1.1 looked the same (keep the 1.1g About box and 1.1 menus). Matthew's decision.
 - **Open differences** (build → screenshots):
   - *Calculator:* solid gray body, rounded keys → fine-dot body, square keys with heavy black shadow, bigger title.
   - *Puzzle:* separate rounded tiles, solid numerals, gray blank → one joined grid, outlined numerals, dotted blank and frame.
   - *Note Pad:* landscape, Geneva, page number by a hatched dog-ear → portrait, New York, page number centred at the bottom, plain dog-ear, triple line along the bottom.
   - *Alarm Clock:* rounded corners, pole-and-pennant flag → square corners with drop shadow, small flag glyph.
-  - *Icon labels:* bold Chicago 13 → plain Geneva 9. *Disk icon:* label lines → plain floppy.
-  - *Menus:* Apple title doesn't invert while open · dimmed items flat #888 → 1-bit gray stipple.
   - *Features:* Key Caps and Control Panel (`macsystem100014.png`, `macsystem100015.png`; both shipped in 1984).
 - **Rule:** everything must be something Finder 1.0/1.1 did.
 - **Decide:** which group next.
@@ -135,6 +133,12 @@ _Nothing approved right now._
 ---
 
 ## Done
+
+### Level 1: Mac UI, round 2 · 8 Nov 2026
+- System Disk and document icons traced pixel by pixel from the screenshots: the 1984 disk from `macsystem100003.png` (the Finder 4.1 disk in `macsystem100017.png` differs), the document from the "Welcome!" file. **High**.
+- Icon labels in Apple's bitmap Geneva 9 (`fonts/geneva-9.ttf`, jcs's TrueType conversion of the System 6 bitmap, [jcs/classic-mac-fonts](https://github.com/jcs/classic-mac-fonts), no licence file; Matthew's choice), one font pixel per Mac pixel, in the label box measured from the screenshots. **High**.
+- Dimmed menu items drawn as dotted text (the Menu Manager's gray pattern). Source: Inside Macintosh Vol. I, Menu Manager; no screenshot shows one. **Medium**.
+- The Apple menu title already inverted while open; the round-1 note that it didn't came from a misleading cropped screenshot.
 
 ### Level 1: Mac UI, round 1 · 8 Nov 2026
 - Information line inside the window, ending in a double rule.

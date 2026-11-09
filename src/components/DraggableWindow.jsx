@@ -13,8 +13,8 @@ const MIN_H = 80
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
 // The close box while it's pressed: a starburst inside the box, 9×9 pixels
-// with a 1px margin, read from docs/reference/mac system 1/ (Screenshot
-// 2026-11-08 at 10.54.51 PM). The cursor hides part of the lower half
+// with a 1px margin, read from docs/reference/mac system 1/
+// macsystem100021.png. The cursor hides part of the lower half
 // there; it is completed by symmetry.
 const STARBURST = [
   '....#....',
