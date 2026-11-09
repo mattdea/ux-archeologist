@@ -15,7 +15,7 @@
 | | Collection page | What it shows, how it's reached |
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
 | | Hints: feature + copy | Feature decisions, house style |
-| 3. Fidelity | Mac UI, round 3 | Pick the next group |
+| 3. Fidelity | Mac UI, round 4 | Pick what's next |
 | | Netscape chrome | Version + references |
 | | Instagram accounts audit | Nothing: ready to start |
 | 4. Depth | Netscape pages or search | Pages vs search |
@@ -72,17 +72,15 @@ Writing work. Both items need the same first step: a short voice guide (Level 5'
 
 Same method each time: collect period references, list every difference, fix.
 
-#### Mac UI, round 3
-Rounds 1 and 2 are in Done.
+#### Mac UI, round 4
+Rounds 1–3 are in Done.
 - **Source of truth:** `docs/reference/mac system 1/` (Matthew's infinitemac.org screenshots). They win over the build, the manual and the spec, except: the screenshots show **Finder 4.1 ©1985**, so the level stays Finder 1.1 and copies them only where 1.1 looked the same (keep the 1.1g About box and 1.1 menus). Matthew's decision.
-- **Open differences** (build → screenshots):
-  - *Calculator:* solid gray body, rounded keys → fine-dot body, square keys with heavy black shadow, bigger title.
-  - *Puzzle:* separate rounded tiles, solid numerals, gray blank → one joined grid, outlined numerals, dotted blank and frame.
-  - *Note Pad:* landscape, Geneva, page number by a hatched dog-ear → portrait, New York, page number centred at the bottom, plain dog-ear, triple line along the bottom.
-  - *Alarm Clock:* rounded corners, pole-and-pennant flag → square corners with drop shadow, small flag glyph.
-  - *Features:* Key Caps and Control Panel (`macsystem100014.png`, `macsystem100015.png`; both shipped in 1984).
+- **Left from the comparison:**
+  - *Control Panel:* the desktop pattern editor (edit the magnified pattern, apply it to the desktop) and mouse tracking are drawn but not wired; key repeat, delay, insertion-point blink and double-click speed are kept but don't change anything.
+  - *Scrapbook* is still dimmed (no screenshot of it).
+  - *Finder windows and the About box* use the build's own frames; only the desk accessories, icons and menu bar were traced.
 - **Rule:** everything must be something Finder 1.0/1.1 did.
-- **Decide:** which group next.
+- **Decide:** what's next.
 
 #### Netscape chrome
 - **Decide first:** which Navigator version and platform. Throbber = Navigator 1.1+; cursors = Windows 95 (shipped Aug 1995).
@@ -135,6 +133,16 @@ Phone-width visitors get a card saying the exhibit is best on a computer. Closes
 ---
 
 ## Done
+
+### Level 1: Mac UI, round 3 · 8 Nov 2026
+- Desk accessories traced pixel by pixel from the screenshots (`scripts/mac-trace/`, `assets/mac/da/`), with live parts on top. **High**.
+  - *Calculator* (100012/13): traced window, the held key inverts as in 100013, live Geneva 9 display.
+  - *Puzzle* (100016): traced window and 15 tile sprites with their outlined numerals.
+  - *Note Pad* (100011): in Apple's bitmap **New York 12**, converted from JohnDDuncanIII/macfonts' FontForge source by a new stdlib script (`sfd2ttf.py`; Matthew's choice; no licence file); the screenshot's text wraps line for line the same. The dog-ear now turns forward and the lower-left corner back, as its own text says.
+  - *Alarm Clock* (100006–10): closed and open windows, flag, switch, arrows, rays; live Chicago fields on measured origins; icons reordered clock, calendar, alarm.
+  - *Key Caps* (100014) and *Control Panel* (100015) are new and enabled in the Apple menu; menu blinks is wired to the menus.
+- Desk accessories take keystrokes only while they are the front window.
+- **Reconstructed:** the rdoc close box's pressed look, the alarm switch off position, Key Caps' Option layer and pressed look.
 
 ### Level 1: Mac UI, round 2 · 8 Nov 2026
 - System Disk and document icons traced pixel by pixel from the screenshots: the 1984 disk from `macsystem100003.png` (the Finder 4.1 disk in `macsystem100017.png` differs), the document from the "Welcome!" file. **High**.
