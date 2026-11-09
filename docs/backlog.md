@@ -130,28 +130,6 @@ Today only Notes opens.
 
 ## Approved
 
-### Level 4: Instagram accounts and photos audit · approved 9 Nov 2026
-**Report only.** Change no code, data or assets, and delete nothing. The output is a list for Matthew to approve in the morning.
-- **Write to:** `docs/feed-audit.md` (new). Commit and push only that file.
-- **Scope, in this order:**
-  1. The 24 `FEED` accounts in `feedData.js` (what every visitor sees): 18 real accounts, the four friends (`assets/feed/friends/`), the two ads (`assets/feed/ads/`).
-  2. Every other account that shows anywhere (profiles, Explore): the rest of `assets/feed/archive/` (51 accounts) and `assets/feed/library/`.
-  3. Avatars in `assets/feed/archive-avatars/`.
-  - About 1,400 images. Skip `assets/feed/raw/` (gitignored downloads, never shown).
-- **Look for:**
-  - Broken, blank, tiny or badly cropped images.
-  - Duplicates: the same or nearly the same photo twice in one grid, or under two accounts.
-  - Photos that don't fit the account (off-topic, wrong person) or are unsuitable for a public portfolio (nudity, graphic content, anything that could embarrass).
-  - Captions that don't match their photo, or that mention a video when only a still shows.
-  - Bios, names and counts that read oddly.
-  - Anything that dates the post past spring 2016.
-- **How:** check files and exact duplicates with a script (sizes, hashes). For looking, make labelled contact sheets of each grid in the scratchpad, not the repo, then view the sheets, opening single images only to confirm. marcus.h and cristiano were tidied on 8 Nov; still check them, but expect little.
-- **Report format:**
-  - A summary at the top: counts by kind, and the 10 most important fixes.
-  - Then one section per account in scope order, each finding on one line: `file path · problem · suggested fix (remove / reorder / recaption / replace)`.
-  - Mark how sure each finding is (sure / check).
-  - Accounts with nothing found get one line saying so.
-
 ### Website audit · approved 9 Nov 2026
 **Report only.** Fix nothing, change no code. Run it **after** the small-screen notice is built, so the audit covers it.
 - **Write to:** `docs/site-audit.md` (new). Commit and push only that file.
@@ -168,6 +146,11 @@ Today only Notes opens.
 ---
 
 ## Done
+
+### Level 4: Instagram accounts and photos audit · 9 Nov 2026 (overnight run)
+- Report: `docs/feed-audit.md`. No code, data or assets changed. ~1,386 images checked by script (sizes, hashes, near-duplicates) and by eye on labelled contact sheets kept in the scratchpad, not the repo.
+- Found 119 findings, 47 marked sure and 72 for Matthew's call: 29 unsuitable for a public portfolio (four nude posts that can reach the home feed), 20 duplicate lines (34 @instagram archive photos that `library/` also hands to other accounts and friends), 15 caption problems (natgeo captions cut at 80 characters, including the feed lead), 12 too small, 12 bad crops, 10 off-account, 8 broken-looking, 8 profile oddities, 5 dated past spring 2016 (22 November-2016 @instagram library photos in Explore; all 11 Glossier posts are 18–22 May 2016).
+- Awaiting approval: the report's top 10 fixes.
 
 ### Museum: small-screen notice · 9 Nov 2026 (overnight run)
 - Built `SmallScreenNotice` (`src/shared/museum-ui/`), mounted once in `SharedLayout.jsx` above everything: under 600px wide it shows the drafted copy; "Continue anyway" dismisses it for the visit (`sessionStorage`, try/catch); widening past 600px hides it. Tests in `src/test/SmallScreenNotice.test.jsx`. Verified in the browser at 375px (shows, covers a level's IntroModal, which appears once dismissed, and stays dismissed after a reload) and 1280px (never shows; widening while open closes it). Spec: open items 1 and 2 and the "notice is planned" line removed; described under Dialog System.
