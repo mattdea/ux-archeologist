@@ -1,6 +1,7 @@
 // src/levels/Level1.jsx
 import { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './Level1.module.css'
+import MacCursor from '../components/MacCursor'
 import '../components/era-cursors.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useArtifactFit from '../hooks/useArtifactFit'
@@ -145,6 +146,7 @@ export default function Level1() {
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <MonitorBezel driveBusy={driveBusy}>
                 <div className={`${styles.inner} ${driveBusy ? styles.innerBusy : ''}`}>
+                  <MacCursor busy={driveBusy} />
                   {showDesktop && (
                     <DesktopScene
                       completeObjective={completeObjective}

@@ -68,6 +68,13 @@
   cursor: var(--cursor-mac-watch);
 }
 
+/* Over the screen the browser's pointer is hidden and MacCursor draws the
+   Mac's own, in steps as an emulated Mac moves it. The variables above stay
+   as its source (and the fallback if scripts are off). */
+.inner, .inner * {
+  cursor: none !important;
+}
+
 /*
  * Zone 3 — ObjectiveTracker with outer spacing.
  * align-self: flex-start anchors it to the left edge so padding-left
