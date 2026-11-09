@@ -52,6 +52,23 @@ _Items from Matthew's list of 8 Nov 2026 are in no particular order or priority.
 
 **To decide:** which specific moments. Candidates: the year move above; the timeline's entry; modals opening and closing; IntroModal → boot hand-off; the discovery card's arrival. Each would be its own item.
 
+### Level 0: the power-on bell
+
+**Request:** the terminal beeps once when it's switched on, shorter than the Mac's startup beep and at a similar pitch (Matthew, from a YouTube video of a real terminal, 8 Nov 2026).
+
+**History:**
+- The beep is the VT100's ordinary bell, rung by its power-up self-test. The test runs ROM checksums (keyboard LEDs show the ROM number), RAM, then the non-volatile memory, then the keyboard: the terminal "lights the LEDs for about a half second, and sounds the bell". Only after that does the cursor appear at column 1, line 1. Source: [VT100 Technical Manual, §4.2.8](https://vt100.net/docs/vt100-tm/chapter4.html). Confidence **high**.
+- What the bell is: a bit in the status byte the terminal sends to the keyboard. Sent once, the keyboard speaker clicks; "sent approximately two hundred times in a row, for about a quarter second, it sounds a bell" (same manual, §4.4.3). So the beep lasts about **0.25 s**. Confidence **high**. That's shorter than Level 1's ~1 s Mac beep, which matches what Matthew heard.
+- Pitch: one click per status byte. A byte takes 160 clock periods of 7.945 µs = 1.27 ms, so the clicks come about **787 times a second**, a buzzy tone near 787 Hz, coloured by the keyboard speaker. That's derived from the manual's timing, not measured. Confidence **medium**. A VT100 emulator developer reached the same figure (785 Hz) from the keyboard link rate ([terminal-simulator issue 15](https://github.com/larsbrinkhoff/terminal-simulator/issues/15)). Close to the Mac's 600 Hz, as Matthew heard.
+- If the NVR check fails, the bell sounds several times in a row; that's an error, not a normal start.
+- **To settle the pitch exactly:** measure it from Matthew's video. Download the audio and read the fundamental frequency and length off a spectrum.
+
+**Today:** Level 0's boot plays `sfx.crtOn()` (degauss thump and tube hiss) and then streams the boot text. There's no bell at power-on. `sfx.bell()` already exists and matches the history: a 780 Hz square through a band-pass, about 0.27 s. Change the constant to 787 Hz if the measurement agrees.
+
+**Shape of the change:** ring `sfx.bell()` once during boot, after the CRT warm-up and before the first line or cursor appears, where the keyboard self-test falls. The terminal bezel has one LED and no keyboard, so the half-second LED flash has nowhere to show; it could flash the bezel LED instead.
+
+**Aside, not part of this item:** the VT100 came out in 1978, so it's anachronistic for a 1971 Unix session. Unix in 1971 ran on Teletype Model 33/37 printing terminals, which had no screen and rang a mechanical bell (confidence **high**, widely documented; add a source if this is ever taken up). The level already commits to a screen terminal; noted only so the sound's source is clear.
+
 ### Level 1: Mac UI updates and more features
 
 **Request:** make UI updates to the Mac and add more features.
