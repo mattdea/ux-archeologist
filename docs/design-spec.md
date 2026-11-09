@@ -23,13 +23,11 @@ Recent work:
 - **Level 4 (2016):** objectives *Like Imani's post* / *Learn more about a sponsored post* / *Follow someone new*; the feed reshuffles on every refresh with a seeded order per page; a clockwise pie loader on the first photo; the status bar shows local time.
 
 Open items, roughly in priority order:
-1. Check the deployed Netlify site actually serves the ~160 MB of committed photos.
-2. A "best experienced on a computer" notice for phone-width screens (small screens are not a target).
-3. The objectives list is ~330px wide, which limits how large the Mac can be while centred; a narrower tracker would help every level.
-4. The Circular Air font files are committed to the public repo (licence decision pending). So are Apple's Chicago 12 (source unrecorded) and Geneva 9 (`fonts/geneva-9.ttf`, from github.com/jcs/classic-mac-fonts, added 8 Nov 2026 on Matthew's choice), neither with a licence file. New York 12 (`fonts/new-york-12.ttf`, converted from github.com/JohnDDuncanIII/macfonts, added 8 Nov 2026 on Matthew's choice) is in the same position.
-5. The snowy-cabin library photo is reserved for the Airbnb ad but no longer used by it.
-6. Level 1 details not settled by any source and so reconstructed: zoom-rectangle frame count and timing, menu-blink timing, the locked-item Empty Trash alert wording, Clean Up snap-vs-repack. Booting System 1.1 in an emulator (infinitemac.org) would settle them.
-7. Level 1's objective-1 hint ("Double-click the Notes icon") predates the System Disk; it still works, but could mention the disk.
+1. The objectives list is ~330px wide, which limits how large the Mac can be while centred; a narrower tracker would help every level.
+2. The Circular Air font files are committed to the public repo (licence decision pending). So are Apple's Chicago 12 (source unrecorded) and Geneva 9 (`fonts/geneva-9.ttf`, from github.com/jcs/classic-mac-fonts, added 8 Nov 2026 on Matthew's choice), neither with a licence file. New York 12 (`fonts/new-york-12.ttf`, converted from github.com/JohnDDuncanIII/macfonts, added 8 Nov 2026 on Matthew's choice) is in the same position.
+3. The snowy-cabin library photo is reserved for the Airbnb ad but no longer used by it.
+4. Level 1 details not settled by any source and so reconstructed: zoom-rectangle frame count and timing, menu-blink timing, the locked-item Empty Trash alert wording, Clean Up snap-vs-repack. Booting System 1.1 in an emulator (infinitemac.org) would settle them.
+5. Level 1's objective-1 hint ("Double-click the Notes icon") predates the System Disk; it still works, but could mention the disk.
 
 ---
 
@@ -147,7 +145,7 @@ Zone 2 — artifactZone flex: 1 (the artifact no longer flows here; its wrap is 
 Zone 3 — bottomZone   padding: 0 24px 24px (no top padding: box = visible box); data-hud; visibility: hidden until playing
 ```
 
-Level 5's chat panel has no device and still fills the artifact zone. Never add `min-height` to `.bottomZone`. Phone-width screens are not a target: the artifact shrinks to fit, and a "best on a computer" notice is planned.
+Level 5's chat panel has no device and still fills the artifact zone. Never add `min-height` to `.bottomZone`. Phone-width screens are not a target: the artifact shrinks to fit, and the small-screen notice (Dialog System) says so.
 
 ---
 
@@ -155,6 +153,9 @@ Level 5's chat panel has no device and still fills the artifact zone. Never add 
 
 ### IntroModal
 White card, 2px black accent line, mono era label, serif title, sans body, objectives list, "Begin excavation" button (full-width black).
+
+### Small-screen notice
+`SmallScreenNotice` (mounted once in `SharedLayout.jsx`, after the content, so it sits above everything, a level's IntroModal included). Shown while the viewport is **under 600px** wide (`matchMedia('(max-width: 599.98px)')`; width only, no touch test), on whatever page the visitor lands on. It reuses IntroModal's card styles (`IntroModal.module.css`): mono label `BEST ON A COMPUTER`, title "This exhibit needs a bigger screen", body "Each room recreates a real machine at its real size: a terminal, a Mac, a web browser, two phones. On a screen this small they're hard to use.", full-width black "Continue anyway" button (focused on open). Its only own styles: the opaque museum background (`#111`) instead of the see-through scrim, `z-index: 10000`, and a card at most 380px wide with a 16px side gutter. "Continue anyway" closes it and remembers that for the visit in `sessionStorage` (`ux-archaeologist:small-screen-dismissed`, in try/catch: with storage blocked it still closes, it just isn't remembered). Widening the window to 600px or more hides it without counting as a dismissal (narrow again and it returns). Phones held sideways (wider than 600px but short) don't get it. Copy is a draft for the copy pass.
 
 ### HintPill + useHint
 Nudge in a dark pill, fixed at the bottom centre of the viewport (clear of the tracker, the Continue/back corner and the artifact above). `useHint(HINTS, { active, completedIndices })` returns the hint for the first unfinished objective after 10s without progress; any completion hides it and restarts the clock. Every level defines `HINTS` alongside `OBJECTIVES`. The pill is not `data-hud`, so it never moves the artifact.

@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
+import SmallScreenNotice from './museum-ui/SmallScreenNotice'
 
 // ── Fade-navigate context ──────────────────────────────────────────
 // Provides a navigate() that fades content out before swapping the view.
@@ -236,6 +237,9 @@ export default function SharedLayout({ children }) {
             >
               {children}
             </div>
+
+            {/* Phone-width visitors: "best on a computer", above everything */}
+            <SmallScreenNotice />
 
           </div>
         </ContinueCtx.Provider>

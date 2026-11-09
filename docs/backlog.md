@@ -152,16 +152,6 @@ Today only Notes opens.
   - Mark how sure each finding is (sure / check).
   - Accounts with nothing found get one line saying so.
 
-### Museum: small-screen notice · approved 8 Nov 2026
-Phone-width visitors get a card saying the exhibit is best on a computer. Closes spec open item 2.
-- **When:** viewport width **under 600px**. Matthew gave "below ~470–600ish/700ish"; 600 is the middle of that range. It catches every phone held upright (the widest are ~440px) and leaves iPads (768px and up) alone. Width only, no touch test.
-- **Where:** whatever page the visitor lands on: title, timeline, any level, collection. Mount it once in `SharedLayout.jsx`, above everything including IntroModal; a level's IntroModal shows after it's dismissed.
-- **Dismiss:** a "Continue anyway" button. Remember the dismissal for the visit in `sessionStorage` (wrapped in try/catch, so it still works if storage is blocked); don't show it again until the next visit. Resizing past 600px while it's open just closes it.
-- **Look:** reuse IntroModal's card (white, 2px black accent line, mono label, serif title, sans body, full-width black button) over the dark museum background. No new museum-layer patterns.
-- **Copy (draft, revisit in the copy pass):** label `BEST ON A COMPUTER` · title "This exhibit needs a bigger screen" · body "Each room recreates a real machine at its real size: a terminal, a Mac, a web browser, two phones. On a screen this small they're hard to use." · button "Continue anyway".
-- **Spec:** remove open item 2 and open item 1 (Matthew confirmed on 8 Nov that the live site serves the photos), and the "a 'best on a computer' notice is planned" line under Artifact Fit; describe the notice under Dialog System.
-- **Not covered:** phones held sideways (wider than 600px, but short). Out of scope unless Matthew asks.
-
 ### Website audit · approved 9 Nov 2026
 **Report only.** Fix nothing, change no code. Run it **after** the small-screen notice is built, so the audit covers it.
 - **Write to:** `docs/site-audit.md` (new). Commit and push only that file.
@@ -178,6 +168,11 @@ Phone-width visitors get a card saying the exhibit is best on a computer. Closes
 ---
 
 ## Done
+
+### Museum: small-screen notice · 9 Nov 2026 (overnight run)
+- Built `SmallScreenNotice` (`src/shared/museum-ui/`), mounted once in `SharedLayout.jsx` above everything: under 600px wide it shows the drafted copy; "Continue anyway" dismisses it for the visit (`sessionStorage`, try/catch); widening past 600px hides it. Tests in `src/test/SmallScreenNotice.test.jsx`. Verified in the browser at 375px (shows, covers a level's IntroModal, which appears once dismissed, and stays dismissed after a reload) and 1280px (never shows; widening while open closes it). Spec: open items 1 and 2 and the "notice is planned" line removed; described under Dialog System.
+- **Note for Matthew (ambiguity, 9 Nov 2026):** the entry describes IntroModal's card as having a 2px black accent line and a serif title, but IntroModal today has neither (its accent line is 0px tall and its title is the system sans). I followed "reuse IntroModal's card, no new museum-layer patterns" and reused its actual styles, so the notice matches the intro cards. If you want the accent line and serif title, that's a change to IntroModal (and the spec's Museum Layer rules already say both), so every card would follow.
+- **Interpretation:** "Resizing past 600px while it's open just closes it" is read as hiding it without recording a dismissal, so narrowing again brings it back.
 
 ### Level 1: Mac UI, round 4 · 9 Nov 2026
 - Control Panel desktop pattern editor: fat bits (click or drag), a sample desktop, stock patterns from its menu bar, and a click on the sample sets the Mac's desktop pattern. Reconstructed: the stock list and the two clicks.

@@ -1,0 +1,15 @@
+/* src/shared/museum-ui/SmallScreenNotice.module.css
+ * Only what differs from IntroModal's card: the dark museum room behind it
+ * instead of a see-through scrim (the visitor sees the card, not a squeezed
+ * artifact), above everything, and a card that fits a phone's width. */
+
+.scrim {
+  background: #111;
+  z-index: 10000;
+  padding: 0 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+}
