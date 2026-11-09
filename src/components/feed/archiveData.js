@@ -29,6 +29,29 @@ const FALLBACK_AVATARS = import.meta.glob('../../../assets/feed/archive-avatars/
 // FEED_TIMES in feedData.js), not by real age, so the level always reads
 // as "today" however old the captures are.
 
+// Posts taken out of the level (feed audit, 9 Nov 2026). Their photos are
+// deleted; this list keeps them out if the recovery script downloads them
+// again. To hide a post from the feed and Explore only, use PROFILE_ONLY in
+// feedData.js instead.
+export const REMOVED = new Set([
+  // nudity
+  'BCroouZuSzw', 'BCpQBQROS5l',            // kimkardashian
+  'BDcArURAvtC',                           // justinbieber
+  // ill children, a minor
+  'BC5gGzToh2Z', 'BCz9y_Joh-r',            // therock
+  'BDyYjEgxtih',                           // neymarjr
+  'BDgMA8cBQek',                           // instagram (@filipbalos.art)
+  // broken-looking stills
+  'BCyEALRuS6X',                           // kimkardashian, near-black
+  'BDbnw7IAvj8',                           // justinbieber, letterbox bars
+  'BDi3QxTBQWd', 'BDjxN75hQTF', 'BDRD2YJhQYx', // instagram: video card, black still, black square
+  'BDqJtqVjJ5b',                           // 9gag, "can't load" joke
+  'BEZUF69PkkB',                           // buzzfeed, near-blank screenshot
+  // off-account
+  'BCXGWDoJmCu',                           // zendaya, a portrait of Leonardo DiCaprio
+  'rK0Jx6n3DM',                            // emmawatson, caption only @-tags
+])
+
 const photoUrl = (handle, file) => PHOTOS[`../../../assets/feed/archive/${handle}/${file}`] || null
 const fallbackAvatar = handle => FALLBACK_AVATARS[`../../../assets/feed/archive-avatars/${handle}.jpg`] || null
 
@@ -39,6 +62,7 @@ export const ARCHIVE = Object.fromEntries(
     // A post's photo is the archived file, or <code>.jpg saved by hand into
     // the account's folder (for accounts whose photos were never archived).
     const posts = (m.posts || [])
+      .filter(p => !REMOVED.has(p.code))
       .map(p => ({ ...p, file: (p.file && photoUrl(handle, p.file)) ? p.file : (photoUrl(handle, `${p.code}.jpg`) ? `${p.code}.jpg` : null) }))
       .filter(p => p.file)
       .map(p => ({

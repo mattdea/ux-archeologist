@@ -1,5 +1,5 @@
 // src/test/archiveData.test.js
-import { gridTime } from '../components/feed/archiveData'
+import { gridTime, ARCHIVE, REMOVED } from '../components/feed/archiveData'
 
 describe('gridTime', () => {
   it('labels the first row as hours and days', () => {
@@ -12,5 +12,11 @@ describe('gridTime', () => {
   it('keeps counting weeks past the ladder', () => {
     expect(gridTime(13)).toBe('6w')
     expect(gridTime(47)).toBe('40w')
+  })
+})
+
+describe('removed posts', () => {
+  it('appear in no account', () => {
+    for (const a of Object.values(ARCHIVE)) for (const p of a.posts) expect(REMOVED.has(p.code), p.code).toBe(false)
   })
 })
