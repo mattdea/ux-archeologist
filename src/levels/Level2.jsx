@@ -11,13 +11,16 @@ import ProgressiveReveal from '../components/web/ProgressiveReveal'
 import useNetscapeLoad from '../components/web/useNetscapeLoad'
 import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
-import { completeLevel, isLevelComplete } from '../state/state'
+import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
 import HintPill from '../shared/museum-ui/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
+
+const DISCOVERY_DESCRIPTION =
+  "The early web was a network of pages connected by links that people had deliberately placed. Finding something meant following a trail, clicking from one page to the next, trusting that someone had mapped the path before you. No algorithm decided what you saw. Every connection was a human choice."
 
 // ── Page metadata ───────────────────────────────────────────────────
 // kb: fake document size for the status bar's "47% of 23K" line.
@@ -97,6 +100,13 @@ export default function Level2() {
       setContinue(null)
     }
   }, [screen, allComplete, setContinue])
+
+  // Record artifact when discovery card appears
+  useEffect(() => {
+    if (screen === 'discovery') {
+      addArtifact({ name: 'Hyperlink Navigation', era: '1995', description: DISCOVERY_DESCRIPTION })
+    }
+  }, [screen])
 
   // ── Derived browser values ──────────────────────────────────────
   const currentPage  = history[historyIndex]
@@ -224,7 +234,7 @@ export default function Level2() {
         <DiscoveryCard
           era="1995"
           artifactName="Hyperlink Navigation"
-          description="The early web was a network of pages connected by links that people had deliberately placed. Finding something meant following a trail, clicking from one page to the next, trusting that someone had mapped the path before you. No algorithm decided what you saw. Every connection was a human choice."
+          description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/3"
         />
       )}

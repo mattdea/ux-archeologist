@@ -5,7 +5,7 @@ import MacCursor from '../components/MacCursor'
 import '../components/era-cursors.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useArtifactFit from '../hooks/useArtifactFit'
-import { completeLevel, isLevelComplete } from '../state/state'
+import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import DesktopScene, { REVEAL_ALL } from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
 import * as sfx from '../audio/sfx'
@@ -15,6 +15,9 @@ import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
 import HintPill from '../shared/museum-ui/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
+
+const DISCOVERY_DESCRIPTION =
+  "Before this, using a computer meant memorizing commands and typing them precisely. The Macintosh replaced all of that with objects you could see and manipulate: folders, files, a trash can. Point at something, drag it somewhere, open it with a click. The computer finally spoke in a language people already understood."
 
 const OBJECTIVES = [
   'Find the document on this computer',
@@ -92,6 +95,13 @@ export default function Level1() {
     }
   }, [screen, allComplete, setContinue])
 
+  // Record artifact when discovery card appears
+  useEffect(() => {
+    if (screen === 'discovery') {
+      addArtifact({ name: 'Direct Manipulation', era: '1984', description: DISCOVERY_DESCRIPTION })
+    }
+  }, [screen])
+
   const completeObjective = (key) => {
     const idx = OBJ_KEY_INDEX[key]
     if (idx !== undefined) {
@@ -126,7 +136,7 @@ export default function Level1() {
         <DiscoveryCard
           era="1984"
           artifactName="Direct Manipulation"
-          description="Before this, using a computer meant memorizing commands and typing them precisely. The Macintosh replaced all of that with objects you could see and manipulate: folders, files, a trash can. Point at something, drag it somewhere, open it with a click. The computer finally spoke in a language people already understood."
+          description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/2"
         />
       )}

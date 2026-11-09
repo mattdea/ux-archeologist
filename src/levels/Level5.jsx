@@ -13,7 +13,7 @@ import HintPill from '../shared/museum-ui/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
-import { completeLevel, isLevelComplete } from '../state/state'
+import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import ChatPanel from '../components/chat/ChatPanel'
 
 const OBJECTIVES = [
@@ -88,6 +88,13 @@ export default function Level5() {
       setContinue(null)
     }
   }, [screen, allComplete, setContinue])
+
+  // Record artifact when discovery card appears
+  useEffect(() => {
+    if (screen === 'discovery') {
+      addArtifact({ name: 'Natural Language', era: '2023', description: DISCOVERY_DESCRIPTION })
+    }
+  }, [screen])
 
   // Boot sequence: 200ms pause → 'playing' (input bar slides up via CSS keyframe)
   const handleBeginExcavation = () => {
