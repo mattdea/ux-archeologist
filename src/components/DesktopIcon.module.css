@@ -3,24 +3,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0;
   width: 100px;
   cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
 }
 
-/* Plain Geneva 9, as the Finder labelled icons (docs/reference/mac system 1/).
-   11px here is 9 Mac pixels at this screen's scale (620 for 512). The
-   system's Geneva stands in for the bitmap face. */
+/* Geneva 9 (Apple's bitmap, fonts/geneva-9.ttf), as the Finder labelled
+   icons. Measured from the "Welcome!" label in docs/reference/mac system 1/
+   macsystem100017.png: a white box 12 Mac pixels tall (10 above the
+   baseline, 2 below) directly under the icon, about 2 pixels either side
+   of the text. */
 .label {
-  font-family: var(--font-geneva);
-  font-size: 11px;
+  font-family: var(--font-geneva9);
+  font-size: calc(var(--mac-px) * 9);
   font-weight: normal;
   color: var(--mac-black);
   text-align: center;
-  line-height: 13px;
+  line-height: calc(var(--mac-px) * 12);
   white-space: nowrap;
   background: var(--mac-white);
-  padding: 0 2px;
+  padding: 0 calc(var(--mac-px) * 2);
   -webkit-font-smoothing: none;
 }
 

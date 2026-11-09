@@ -6,6 +6,16 @@
   font-style: normal;
 }
 
+/* Apple's 1-bit Geneva 9 bitmap, exported from System 6 and converted to
+   TrueType by jcs (github.com/jcs/classic-mac-fonts). One font pixel is
+   1/9 em, so at --mac-px * 9 each pixel of a glyph is one Mac pixel. */
+@font-face {
+  font-family: 'Geneva 9';
+  src: url('../../fonts/geneva-9.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --mac-white: #ffffff;
   --mac-black: #000000;
@@ -18,6 +28,9 @@
   --font-chicago: 'Chicago', 'Monaco', 'Courier New', monospace;
   --font-mono: 'Monaco', 'Courier New', monospace;
   --font-geneva: 'Geneva', 'Helvetica Neue', 'Helvetica', sans-serif;
+  --font-geneva9: 'Geneva 9', 'Geneva', 'Helvetica Neue', sans-serif;
+  /* One Mac pixel on this screen: the 512-pixel-wide Mac is drawn 620 wide */
+  --mac-px: calc(620px / 512);
 
   --border: 1px solid #000000;
   --window-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
