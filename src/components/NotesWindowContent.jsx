@@ -19,8 +19,9 @@ $2,495 is a lot of money. I hope the partners agree it was worth it.
 
 — R.H.`
 
-// One line of Monaco 12 at line-height 1.5: what an arrow click scrolls.
-const LINE = 18
+// One line of Geneva 9 (12 Mac pixels; this screen draws 512 Mac pixels
+// across 620): what an arrow click scrolls.
+const LINE = 12 * 620 / 512
 
 // The document scrolls only with its scroll bar (MacScrollPane): no wheel.
 export default function NotesWindowContent() {
