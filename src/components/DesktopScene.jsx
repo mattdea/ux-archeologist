@@ -148,6 +148,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const [ejected, setEjected] = useState(false)        // disk out: icon dimmed
   const [marquee, setMarquee] = useState(null)         // {x,y,w,h} desktop px
   const [folderSel, setFolderSel] = useState(null)     // selected item inside a window
+  const [itemPos, setItemPos] = useState({})           // where icons were dragged to in windows: id → {x, y} Mac px
+  const moveItem = (id, p) => setItemPos(prev => ({ ...prev, [id]: p }))
   // An application in front of the Finder: null, or { name: 'teachtext' |
   // 'fontmover', launching } (launching while its zoom rectangles play)
   const [app, setApp] = useState(null)
@@ -753,15 +755,15 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const windowContent = (w) => {
     switch (w.type) {
       case 'disk':
-        return <FolderWindowContent items={[...DISK_ITEMS, ...docs.map((d, k) => ({ id: d.id, label: d.label, icon: 'notes', doc: true, x: docX(k) }))]} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} openedIds={openedIds} />
+        return <FolderWindowContent items={[...DISK_ITEMS, ...docs.map((d, k) => ({ id: d.id, label: d.label, icon: 'notes', doc: true, x: docX(k) }))]} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} positions={itemPos} onMove={moveItem} openedIds={openedIds} />
       case 'sysfolder':
-        return <FolderWindowContent items={SYSFOLDER_ITEMS} inFolder={DISK_K.inSysFolder} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+        return <FolderWindowContent items={SYSFOLDER_ITEMS} inFolder={DISK_K.inSysFolder} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} positions={itemPos} onMove={moveItem} />
       case 'emptyfolder':
         return <FolderWindowContent items={[]} />
       case 'projects':
-        return <FolderWindowContent items={PROJECT_FILES.map(f => ({ id: f.id, label: f.label, icon: 'notes', project: true }))} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+        return <FolderWindowContent items={PROJECT_FILES.map(f => ({ id: f.id, label: f.label, icon: 'notes', project: true }))} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} positions={itemPos} onMove={moveItem} />
       case 'utilities':
-        return <FolderWindowContent items={UTILITY_ITEMS} left={18} inFolder={DISK_K.inUtilities} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+        return <FolderWindowContent items={UTILITY_ITEMS} left={18} inFolder={DISK_K.inUtilities} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} positions={itemPos} onMove={moveItem} />
       case 'info':
         return <InfoWindowContent item={w.item} locked={!!locked[w.item.id]} onToggleLock={() => setLocked(l => ({ ...l, [w.item.id]: !l[w.item.id] }))} />
       case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'keycaps': case 'controlpanel': case 'scrapbook':
