@@ -82,6 +82,47 @@
   border-bottom: none;
 }
 
+/* ── Traced: the window is a 1-bit picture of the real one (`art`), one
+   pixel per Mac pixel; the title bar and close box are invisible controls
+   laid over the traced ones. Rendered pixelated so the pixels stay square. */
+.traced {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.traced .titleBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: none;
+  border: none;
+}
+.traced .closeBtn {
+  position: absolute;
+  margin: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+/* The title is in the traced pixels; keep it as text for screen readers */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.tracedBody {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
 /* Absolutely centered so pinstripes show on both left and right sides */
 .titleText {
   position: absolute;

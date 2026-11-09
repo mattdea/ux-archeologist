@@ -27,11 +27,11 @@ const STARBURST = [
   '.#..#..#.',
   '....#....',
 ]
-function Starburst() {
+function Starburst({ ink = '#000', scaled = false }) {
   return (
-    <svg viewBox="0 0 11 11" width="11" height="11" shapeRendering="crispEdges" aria-hidden="true" style={{ display: 'block' }}>
+    <svg viewBox="0 0 11 11" width={scaled ? '100%' : 11} height={scaled ? '100%' : 11} shapeRendering="crispEdges" aria-hidden="true" style={{ display: 'block' }}>
       {STARBURST.flatMap((row, y) => [...row].map((c, x) => c === '#'
-        ? <rect key={`${x}-${y}`} x={x + 1} y={y + 1} width="1" height="1" fill="#000" />
+        ? <rect key={`${x}-${y}`} x={x + 1} y={y + 1} width="1" height="1" fill={ink} />
         : null))}
     </svg>
   )
@@ -48,10 +48,14 @@ function Starburst() {
 // `variant`: 'doc' (striped title bar, the Finder's windows and Note Pad),
 // 'rdoc' (Inside Macintosh's rDocProc: rounded corners, a black title bar
 // with the name in white, used by desk accessories), 'plain' (rDocProc with
-// an empty title bar that `titleContent` fills: the Alarm Clock's one line).
+// an empty title bar that `titleContent` fills: the Alarm Clock's one line),
+// 'traced' (the whole window is `art`, a 1-bit PNG traced from the System 1
+// screenshots at one pixel per Mac pixel: { src, w, h, titleH, close: [x, y],
+// closeInk }; the title bar and close box are invisible controls over it).
+const mp = (n) => `calc(var(--mac-px) * ${n})`
 export default function DraggableWindow({
   id, title, type, initialPos, zIndex, onClose, onFocus, hidden = false, width,
-  variant = 'doc', titleContent, size: initialSize, resizable = false, active = true,
+  variant = 'doc', titleContent, size: initialSize, resizable = false, active = true, art,
   trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, trashSelected, onTrashSelect, children,
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
@@ -272,10 +276,11 @@ export default function DraggableWindow({
     <div
       ref={windowRef}
       data-win={id}
-      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''} ${size ? styles.sized : ''} ${!active && variant === 'doc' ? styles.inactive : ''}`}
+      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''} ${size ? styles.sized : ''} ${!active && variant === 'doc' ? styles.inactive : ''} ${art ? styles.traced : ''}`}
       style={{
         left: pos.x, top: pos.y, zIndex,
-        width: size ? size.w : width, height: size ? size.h : undefined,
+        width: art ? mp(art.w) : size ? size.w : width,
+        height: art ? mp(art.h) : size ? size.h : undefined,
         visibility: hidden ? 'hidden' : undefined,
       }}
       onMouseDown={() => onFocus?.()}
@@ -284,6 +289,7 @@ export default function DraggableWindow({
       <div
         ref={titleBarRef}
         className={styles.titleBar}
+        style={art ? { height: mp(art.titleH) } : undefined}
         onMouseDown={handleTitleMouseDown}
         onTouchStart={handleTitleTouchStart}
         onTouchEnd={handleTitleTouchEnd}
@@ -297,12 +303,16 @@ export default function DraggableWindow({
           onClick={(e) => { if (e.detail === 0) onClose?.() }}
           title="Close"
           tabIndex={active ? 0 : -1}
+          style={art ? { left: mp(art.close[0]), top: mp(art.close[1]), width: mp(11), height: mp(11) } : undefined}
         >
-          {closePressed && <Starburst />}
+          {closePressed && <Starburst ink={art?.closeInk} scaled={!!art} />}
         </button>
-        {variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
+        {art ? <span className={styles.srOnly}>{title}</span> : variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
       </div>
 
+      {art ? (
+        <div className={styles.tracedBody} style={{ backgroundImage: `url(${art.src})` }}>{children}</div>
+      ) : (
       <div className={type === 'notes' ? styles.scrollBody : size ? styles.fill : (children || type === 'projects' || type === 'trash') ? styles.custom : styles.body}>
         {children}
         {type === 'projects' && <ProjectsWindowContent />}
@@ -318,6 +328,7 @@ export default function DraggableWindow({
           />
         )}
       </div>
+      )}
       </WindowFrameContext.Provider>
     </div>
   )

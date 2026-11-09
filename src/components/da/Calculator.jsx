@@ -3,18 +3,30 @@
 // Construction Set: a white display across the top of a gray body and 18
 // keys in four columns — C E = *, 7 8 9 /, 4 5 6 -, 1 2 3 and a tall +,
 // a wide 0 and the point. Type on the keyboard or click the keys.
+//
+// The window is traced pixel by pixel from the System 1 screenshots
+// (docs/reference/mac system 1/macsystem100012.png, 100013.png): DA_ART in
+// daArt.js.
+// Over it go invisible keys, the press (the key's outer rectangle inverted,
+// as in macsystem100013.png) and the display's digits in Geneva 9.
 import { useEffect, useState } from 'react'
 import styles from './da.module.css'
 
-// [label, gridArea]
+const mp = (n) => `calc(var(--mac-px) * ${n})`
+const box = ([x, y, w, h]) => ({ left: mp(x), top: mp(y), width: mp(w), height: mp(h) })
+
+// Each key's white face in the traced art, [x, y, w, h] in Mac pixels
 const KEYS = [
-  ['C', '1 / 1'], ['E', '1 / 2'], ['=', '1 / 3'], ['*', '1 / 4'],
-  ['7', '2 / 1'], ['8', '2 / 2'], ['9', '2 / 3'], ['/', '2 / 4'],
-  ['4', '3 / 1'], ['5', '3 / 2'], ['6', '3 / 3'], ['-', '3 / 4'],
-  ['1', '4 / 1'], ['2', '4 / 2'], ['3', '4 / 3'], ['+', '4 / 4 / span 2'],
-  ['0', '5 / 1 / auto / span 2'], ['.', '5 / 3'],
+  ['C', [10, 53, 16, 14]], ['E', [32, 53, 16, 14]], ['=', [54, 53, 16, 14]], ['*', [76, 53, 16, 14]],
+  ['7', [10, 75, 16, 14]], ['8', [32, 75, 16, 14]], ['9', [54, 75, 16, 14]], ['/', [76, 75, 16, 14]],
+  ['4', [10, 97, 16, 14]], ['5', [32, 97, 16, 14]], ['6', [54, 97, 16, 14]], ['-', [76, 97, 16, 14]],
+  ['1', [10, 119, 16, 14]], ['2', [32, 119, 16, 14]], ['3', [54, 119, 16, 14]], ['+', [76, 119, 16, 36]],
+  ['0', [10, 141, 38, 14]], ['.', [54, 141, 16, 14]],
 ]
 const LABELS = KEYS.map(k => k[0])
+// The display's white face; digits sit right-aligned 4 pixels in, on a
+// baseline 14 pixels down (the traced "0")
+const DISPLAY = [9, 28, 84, 18]
 
 export default function Calculator() {
   const [display, setDisplay] = useState('0')
@@ -38,8 +50,16 @@ export default function Calculator() {
     return s.length > 14 ? n.toExponential(6) : s
   }
 
-  const press = (k) => {
-    setPressed(k); setTimeout(() => setPressed(null), 80)
+  // Inverted while the button is held (or 80ms for a typed key)
+  useEffect(() => {
+    if (!pressed) return
+    const up = () => setPressed(null)
+    document.addEventListener('mouseup', up)
+    return () => document.removeEventListener('mouseup', up)
+  }, [pressed])
+
+  const press = (k, typed = false) => {
+    if (typed) { setPressed(k); setTimeout(() => setPressed(null), 80) }
     if (k === 'C') { setDisplay('0'); setAcc(null); setOp(null); setFresh(true); return }
     if (k === 'E') { setDisplay('0'); setFresh(true); return }   // clear entry
     if (/[0-9.]/.test(k)) {
@@ -67,7 +87,7 @@ export default function Calculator() {
     const onKey = (e) => {
       const map = { Enter: '=', Escape: 'C', Backspace: 'E', x: '*', X: '*' }
       const k = map[e.key] ?? e.key
-      if (LABELS.includes(k)) { e.preventDefault(); press(k) }
+      if (LABELS.includes(k)) { e.preventDefault(); press(k, true) }
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
@@ -75,19 +95,18 @@ export default function Calculator() {
 
   return (
     <div className={styles.calc}>
-      <div className={styles.calcDisplay}>{display}</div>
-      <div className={styles.calcKeys}>
-        {KEYS.map(([k, area]) => (
-          <button
-            key={k}
-            type="button"
-            className={`${styles.calcKey} ${pressed === k ? styles.calcKeyDown : ''}`}
-            style={{ gridArea: area }}
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => press(k)}
-          >{k}</button>
-        ))}
-      </div>
+      <div className={styles.calcDisplay} style={box(DISPLAY)}>{display}</div>
+      {KEYS.map(([k, [x, y, w, h]]) => (
+        <button
+          key={k}
+          type="button"
+          aria-label={k}
+          className={`${styles.calcKey} ${pressed === k ? styles.calcKeyDown : ''}`}
+          style={box([x - 1, y - 1, w + 2, h + 2])}
+          onMouseDown={(e) => { e.preventDefault(); setPressed(k) }}
+          onClick={() => press(k)}
+        />
+      ))}
     </div>
   )
 }

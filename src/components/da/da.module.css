@@ -1,44 +1,35 @@
 /* src/components/da/da.module.css — System 1 desk accessories */
 
-/* ── Calculator ── */
+/* ── Calculator ── (traced art: see Calculator.jsx) */
 .calc {
-  padding: 8px;
-  font-family: var(--font-chicago);
-  color: var(--mac-black);
-  /* 50% gray body, as the real one */
-  background-image: repeating-conic-gradient(var(--mac-black) 0 25%, var(--mac-white) 0 50%);
-  background-size: 2px 2px;
+  position: absolute;
+  inset: 0;
 }
+/* The live display over the traced one: Geneva 9, right-aligned */
 .calcDisplay {
-  height: 24px;
-  border: var(--border);
+  position: absolute;
   background: var(--mac-white);
+  font-family: var(--font-geneva9);
+  font-size: calc(var(--mac-px) * 9);
+  line-height: calc(var(--mac-px) * 12);
+  padding: calc(var(--mac-px) * 4) calc(var(--mac-px) * 4) 0 0;
   text-align: right;
-  padding: 2px 6px;
-  font-size: 15px;
-  margin-bottom: 8px;
+  color: var(--mac-black);
   overflow: hidden;
   white-space: nowrap;
-}
-.calcKeys {
-  display: grid;
-  grid-template-columns: repeat(4, 28px);
-  grid-template-rows: repeat(5, 24px);
-  gap: 6px;
+  -webkit-font-smoothing: none;
 }
 .calcKey {
-  background: var(--mac-white);
-  border: var(--border);
-  box-shadow: 1px 1px 0 var(--mac-black);
-  font-family: var(--font-chicago);
-  font-size: 14px;
-  color: var(--mac-black);
-  cursor: inherit;
+  position: absolute;
   padding: 0;
+  border: none;
+  background: transparent;
+  cursor: inherit;
 }
-.calcKeyDown, .calcKey:active {
-  background: var(--mac-black);
-  color: var(--mac-white);
+/* Held down: the key's outer rectangle inverts (white over it, difference) */
+.calcKeyDown {
+  background: var(--mac-white);
+  mix-blend-mode: difference;
 }
 
 /* ── Note Pad ── */

@@ -16,6 +16,7 @@ import MacAlert from './MacAlert'
 import FolderWindowContent from './FolderWindowContent'
 import InfoWindowContent from './InfoWindowContent'
 import DeskAccessory, { DA_TITLES, DA_WIDTH, DA_VARIANT } from './da/DeskAccessory'
+import { DA_ART } from './da/daArt'
 import AboutFinder from './da/AboutFinder'
 import { useAlarmClock, AlarmClockTitle } from './da/AlarmClock'
 import * as sfx from '../audio/sfx'
@@ -691,6 +692,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           hidden={win.hidden}
           width={DA_WIDTH[win.type] ?? (win.type === 'info' ? 300 : undefined)}
           variant={DA_VARIANT[win.type] ?? 'doc'}
+          art={DA_ART[win.type]}
           size={FINDER_SIZE[win.type]}
           resizable={!!FINDER_SIZE[win.type]}
           titleContent={win.type === 'alarm' ? <AlarmClockTitle clock={clock} /> : undefined}

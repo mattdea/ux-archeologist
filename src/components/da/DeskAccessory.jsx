@@ -26,7 +26,7 @@ export const DA_WIDTH = {
 // title bar) for Calculator, Puzzle and the Alarm Clock; Note Pad used the
 // ordinary document frame.
 export const DA_VARIANT = {
-  calculator: 'rdoc',
+  calculator: 'traced',
   notepad:    'doc',
   puzzle:     'rdoc',
   alarm:      'plain',
