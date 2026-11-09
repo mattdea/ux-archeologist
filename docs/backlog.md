@@ -4,27 +4,7 @@
 
 _Proposals only. Nothing is ever built from this section. Historical claims carry a source and a confidence level (high / medium / low). The design spec's museum-layer rules (fades only, "the museum is still", and so on) don't limit ideas here; when an idea that breaks one is approved, the spec is updated to match._
 
-### Level 4: truncate long captions with "more" (requested 8 Nov 2026, pending history check)
-
-**Request:** long captions in the feed are cut short with a "more" link that expands the full text in place, only if Instagram did this in spring 2016.
-
-**Why it matters:** captions currently render in full. 1,075 of the 3,113 real captions in `assets/feed/archive/*/profile.json` exceed 125 characters, the longest 1,821 (voguemagazine), so a single post can run for screens.
-
-**History, unconfirmed:**
-- Today the mobile feed shows about 125 characters or 3 lines, then "… more". Confidence **medium** for today; the sources are third-party guides, not Instagram ([textcaret](https://textcaret.com/content/why-is-my-instagram-caption-cut-off), [solsocialmedia](https://www.solsocialmedia.com/post/instagram-caption-length)).
-- That the spring-2016 iOS app (pre-May-2016 redesign) truncated feed captions with "… more": confidence **low**, still unsettled after a second search (8 Nov 2026). Every dated 2015–16 feed image found has a caption of three lines or fewer (≤ ~125 characters), shown in full, so none shows either behaviour. Checked:
-  - Instagram's App Store page, Wayback snapshots Jan 2015 – Mar 2016 (v6.4.1 – v7.17.1): "What's New" notes never mention captions; the Mar 2016 screenshots show a one-line caption.
-  - Instagram blog, 1 Sep 2015 Direct announcement (feed screenshot, one-line caption) and 15 Mar 2016 ranked-feed announcement (no screenshot).
-  - business.instagram.com/advertising, Wayback 28 Feb 2016: sponsored-post mock-ups with captions up to three lines, shown in full.
-  - `docs/reference/` screenshots: captions of one to two lines.
-  - Web searches: only current-day guides, which disagree on today's cutoff (57–140 characters, or three lines) and give no start date.
-- **To settle it:** a 2015–16 screenshot of the iOS feed with a caption longer than about three lines — your own camera-roll screenshots from then, a YouTube app walkthrough from late 2015 / early 2016, or the caption strings in an archived 7.x Android APK. Approve only if it shows truncation; if it shows the full caption, drop this.
-
-**If confirmed:** match the period exactly — the cutoff (lines vs. characters), the ellipsis, the "more" colour and weight, and whether tapping expands in place or opens the post. Touch only `Post.jsx` and `feed-styles.css`.
-
----
-
-_The items below came from Matthew's list of 8 Nov 2026, in no particular order or priority. Each records the request, what exists today and anything that must be decided before it can move to Approved._
+_Items from Matthew's list of 8 Nov 2026 are in no particular order or priority. Each records the request, what exists today and anything that must be decided before it can move to Approved._
 
 ### Museum: small-screen notice
 
@@ -113,7 +93,7 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 **Request:** build out more Instagram screens and features.
 
-**Era guardrail:** the feed is spring 2016, before the May 2016 redesign. Stories (Aug 2016) and the white redesign are out of era. Confidence **high** that Stories launched in August 2016 (add Instagram's announcement as the source). Direct (revamped Sept 2015) is in era; the spec's 1 Sep 2015 Direct announcement is already in the caption item above.
+**Era guardrail:** the feed is spring 2016, before the May 2016 redesign. Stories (Aug 2016) and the white redesign are out of era. Confidence **high** that Stories launched in August 2016 (add Instagram's announcement as the source). Direct (revamped Sept 2015, Instagram blog announcement of 1 Sep 2015) is in era.
 
 **To decide:** which screens. Candidates: the comments view, Direct inbox, the camera tab, a hashtag page from Explore's TRENDING TAGS, Edit Profile. Each needs dated reference screenshots in `docs/reference/` first, as the existing screens had.
 
@@ -145,7 +125,23 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 _Matthew moves items here from Ideas. Unattended runs build only from this list; ambiguous items are skipped with a note._
 
-_Nothing approved right now._
+### Level 4: truncate long captions after 3 lines (approved 8 Nov 2026)
+
+**Build:** a caption longer than three lines is cut at three lines and ends in "… more"; tapping it expands the full caption in place.
+
+**Why:** captions render in full today. 1,075 of the 3,113 real captions in `assets/feed/archive/*/profile.json` exceed 125 characters, the longest 1,821 (voguemagazine), so one post can run for screens.
+
+**History:** unsettled. Matthew searched at length and found no 2015–16 screenshot of a caption longer than three lines, so whether the spring-2016 app truncated is unknown (confidence **low**). Today's app cuts at about 3 lines / 125 characters (confidence **medium**, third-party guides: [textcaret](https://textcaret.com/content/why-is-my-instagram-caption-cut-off), [solsocialmedia](https://www.solsocialmedia.com/post/instagram-caption-length)). Matthew's decision: truncate after 3 lines anyway. Mark it **reconstructed** in the design spec, with the "more" styling.
+
+**How (touch only `Post.jsx` and `feed-styles.css`):**
+- `.captionLine` gets a clamp class while not expanded: `max-height: 48px` (3 × the 16px line height) and `overflow: hidden`, `position: relative`. Don't use `-webkit-line-clamp`: its own ellipsis would sit under the "more".
+- Measure with a ref: the caption is clamped when `scrollHeight > clientHeight`. Re-check with a `ResizeObserver`, because a post that first lays out hidden measures 0.
+- When clamped, overlay `… more` at the bottom right of the third line: white background with a ~20px fade to the left so no glyph is cut visibly; "…" in `--ig-text`, "more" in `--ig-muted` (the "View all N comments" grey), 13px.
+- Tapping "more" or the caption text expands it (drop the clamp class); the username keeps opening the profile (it already stops propagation). Expanded stays expanded for that post.
+- Drags must not expand: `useDragScroll` already never turns a drag into a tap, so a plain `onClick` is enough.
+- Same behaviour in the feed, post detail and profile list views (they all render `Post`).
+- Spec: add the behaviour to Level 4's Interactive Elements, marked reconstructed.
+
 
 ## Done
 
