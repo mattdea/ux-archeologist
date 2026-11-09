@@ -36,14 +36,15 @@
 .glyph {
   position: relative;
   display: block;
-  width: 40px;
-  height: 40px;
+  width: calc(var(--mac-px) * 32);    /* icons are 32 Mac pixels */
+  height: calc(var(--mac-px) * 32);
   flex: 0 0 auto;
 }
 .glyphArt,
 .glyphArt svg {
   display: block;
 }
+.glyphArt svg { width: 100%; height: 100%; }
 .shade {
   position: absolute;
   inset: 0;

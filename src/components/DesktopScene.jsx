@@ -31,8 +31,14 @@ export const REVEAL_ALL = 4
 const shown = (on) => (on ? undefined : 'hidden')
 
 // Icon grid for Clean Up: columns step left from the disk's column, rows
-// step down from the top. Default positions sit on it.
-const GRID = { x0: 510, y0: 40, dx: 80, dy: 76, cols: 7, rows: 5 }
+// step down from the top. Default positions sit on it. Measured from
+// docs/reference/mac system 1/macsystem100025.png in Mac pixels: the
+// icons' left edges at x 455, System Disk at y 28, Welcome! at 92, the
+// Trash at 284 (a 64-pixel grid). An icon's box is 100 CSS px wide with the
+// 32-pixel icon centred, so x is the box's left edge.
+const MACPX = 620 / 512
+const iconBoxX = (macX) => macX * MACPX - (100 - 32 * MACPX) / 2
+const GRID = { x0: iconBoxX(455), y0: 28 * MACPX, dx: 64 * MACPX, dy: 64 * MACPX, cols: 7, rows: 5 }
 const DISK_NAME = 'System Disk'
 
 const ICONS = {
@@ -41,11 +47,13 @@ const ICONS = {
   notes:    { label: 'Notes',    icon: 'notes',  reveal: 3 },
   trash:    { label: 'Trash',    icon: 'trash',  reveal: 4 },
 }
+// System Disk and the Trash where the real ones are; Notes where the
+// disk's "Welcome!" document sits; Projects on the next grid row
 const DEFAULT_POS = {
-  disk:     { x: 510, y: 40 },
-  projects: { x: 510, y: 116 },
-  notes:    { x: 510, y: 192 },
-  trash:    { x: 510, y: 344 },
+  disk:     { x: GRID.x0, y: GRID.y0 },
+  notes:    { x: GRID.x0, y: GRID.y0 + GRID.dy },
+  projects: { x: GRID.x0, y: GRID.y0 + 2 * GRID.dy },
+  trash:    { x: GRID.x0, y: GRID.y0 + 4 * GRID.dy },
 }
 const TRASHABLE = ['projects', 'notes']
 
