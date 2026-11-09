@@ -77,13 +77,18 @@ const DISK_K = { inDisk: 216, available: 184 }
 // ("Size: 55248 bytes, accounts for 55K on disk"; "Where: Write/Paint,
 // internal drive"; "Created: Tuesday, January 24, 1984 at 10:05 AM")
 const INFO = {
-  disk: { kind: 'disk', size: '188416 bytes available, 221184 bytes used', where: 'internal drive',
+  disk: { kind: 'disk', size: '221184 bytes used for 10 files', where: 'internal drive',
     created: 'Tuesday, January 24, 1984 at 9:00 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: '' },
   projects: { kind: 'folder', size: '5632 bytes, accounts for 6K on disk', where: `${DISK_NAME}, internal drive`,
     created: 'Tuesday, January 24, 1984 at 2:15 PM', modified: 'Wednesday, January 25, 1984 at 11:40 AM', comment: 'Budget, letter and sketch for the partners meeting.' },
   notes: { kind: 'MacWrite document', size: '1432 bytes, accounts for 2K on disk', where: `${DISK_NAME}, internal drive`,
     created: 'Wednesday, January 25, 1984 at 9:14 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: 'First day with the Macintosh.' },
 }
+
+// Get Info windows: 384 Mac pixels inside the frame, opened where the real
+// Finder put the System Disk's (macsystem100022.png)
+const INFO_WIDTH = 'calc(var(--mac-px) * 384 + 2px)'
+const INFO_POS = { x: 45 * 620 / 512, y: 55 * 620 / 512 }
 
 // The menu bar: 20 Mac pixels (this screen draws 512 Mac pixels across 620)
 const MENU_BAR = 20 * 620 / 512
@@ -497,7 +502,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     openWindow('info', {
       id: `info-${id}`, title: `Information about ${ICONS[id].label}`, from: iconRect(id), src: id,
       item: { id, label: ICONS[id].label, icon: ICONS[id].icon, ...info },
-      pos: { x: 150 + 20 * windows.length, y: 70 + 10 * windows.length },
+      pos: (n => ({ x: INFO_POS.x + 20 * n, y: INFO_POS.y + 20 * n }))(windows.filter(w => w.type === 'info').length),
     })
   }
 
@@ -702,7 +707,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           initialPos={win.pos}
           zIndex={win.z}
           hidden={win.hidden}
-          width={DA_WIDTH[win.type] ?? (win.type === 'info' ? 300 : undefined)}
+          width={DA_WIDTH[win.type] ?? (win.type === 'info' ? INFO_WIDTH : undefined)}
           variant={DA_VARIANT[win.type] ?? 'doc'}
           art={win.type === 'alarm' && clock.open ? DA_ART.alarmOpen : DA_ART[win.type]}
           size={FINDER_SIZE[win.type]}

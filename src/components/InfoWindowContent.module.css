@@ -1,59 +1,74 @@
-/* src/components/InfoWindowContent.module.css — Finder 1.0 Get Info window */
+/* src/components/InfoWindowContent.module.css — the Get Info window.
+ * Positions are Mac pixels (see InfoWindowContent.jsx); lines stay 1 CSS px.
+ * Chicago on a 16-pixel em with a 15-pixel line puts the baseline 12 pixels
+ * below a line's top. */
 
 .info {
-  padding: 8px 10px 10px;
-  font-family: var(--font-chicago);
-  font-size: 13px;
-  color: var(--mac-black);
-}
-
-.head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.name {
-  flex: 1;
-  font-size: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.lock {
   position: relative;
+  height: calc(var(--mac-px) * 216);
+  font-family: var(--font-chicago);
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 15);
+  color: var(--mac-black);
+  white-space: pre;
+  overflow: hidden;   /* a long date runs off the window, as on the Mac */
+}
+
+.name { position: absolute; }
+
+.icon {
+  position: absolute;
+  width: calc(var(--mac-px) * 32);
+  height: calc(var(--mac-px) * 32);
+}
+.icon svg { display: block; width: 100%; height: 100%; }
+
+.rows { margin: 0; }
+.rows > div { position: absolute; left: 0; right: 0; height: calc(var(--mac-px) * 15); }
+.rows dt, .rows dd { position: absolute; top: 0; margin: 0; }
+
+/* The check box: 12 pixels square, its label 2 pixels after it */
+.lock {
+  position: absolute;
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 6px 0 8px;
+  align-items: flex-start;
+  height: calc(var(--mac-px) * 15);
   cursor: inherit;
 }
 
-.lockOff { color: var(--mac-gray); }
-
 .box {
-  width: 12px;
-  height: 12px;
-  border: var(--border);
-  background: var(--mac-white);
   position: relative;
+  box-sizing: border-box;
+  width: calc(var(--mac-px) * 12);
+  height: calc(var(--mac-px) * 12);
+  margin: calc(var(--mac-px) * 3) calc(var(--mac-px) * 2) 0 0;   /* top 136, as measured */
+  border: 1px solid var(--mac-black);
+  background: var(--mac-white);
 }
 
-/* An X in the box, as the 1984 check box was drawn */
+/* An X corner to corner, as the 1984 check box was drawn */
 .boxChecked::before,
 .boxChecked::after {
   content: '';
   position: absolute;
-  left: -1px;
-  top: 4px;
-  width: 12px;
-  height: 2px;
+  left: 50%;
+  top: 50%;
+  width: 141%;
+  height: 1px;
   background: var(--mac-black);
-  transform: rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
 }
-.boxChecked::after { transform: rotate(-45deg); }
+.boxChecked::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* Dimmed: dotted, a checker of Mac pixels clipped to the letters, as the
+   Control Manager drew a disabled control's title (and as MenuBar dims) */
+.lockOff .lockText {
+  -webkit-text-fill-color: transparent;
+  background-image: repeating-conic-gradient(var(--mac-black) 0% 25%, transparent 0% 50%);
+  background-size: calc(var(--mac-px) * 2) calc(var(--mac-px) * 2);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
 .input {
   position: absolute;
@@ -63,29 +78,21 @@
   cursor: inherit;
 }
 
-.rows {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 8px;
-  row-gap: 3px;
-  margin: 8px 0;
-}
-
-.rows dt { text-align: right; }
-.rows dd { margin: 0; white-space: pre-line; }
-
 .comments {
+  position: absolute;
+  box-sizing: border-box;
   display: block;
-  width: 100%;
-  height: 56px;
-  padding: 4px 6px;
-  border: var(--border);
+  padding: calc(var(--mac-px) * 3) calc(var(--mac-px) * 4);
+  border: 1px solid var(--mac-black);
+  border-radius: 0;
   background: var(--mac-white);
   color: var(--mac-black);
   font-family: var(--font-geneva);
-  font-size: 12px;
-  line-height: 1.3;
+  font-size: calc(var(--mac-px) * 9);
+  line-height: calc(var(--mac-px) * 12);
+  white-space: pre-wrap;
   resize: none;
   outline: none;
-  cursor: text;
+  overflow: hidden;
+  cursor: inherit;
 }
