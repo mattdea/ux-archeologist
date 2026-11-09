@@ -500,9 +500,14 @@ const EXPLORE_CAPTIONS = [
     each next tile from a different account. */
 // Every real account's photos, round-robin so neighbouring tiles come from
 // different accounts: archive accounts first, then the blog library.
+// Archive accounts with fewer photos than this stay out of Explore: their
+// grids look empty against thousands of claimed posts (champagnepapi,
+// kendalljenner, victoriassecret). Their profiles still open from a name.
+const EXPLORE_MIN_POSTS = 6
+
 const EXPLORE_ALL = (() => {
   const queues = [
-    ...ARCHIVE_HANDLES.map(h => ARCHIVE[h].posts.flatMap((p, i) => PROFILE_ONLY.has(p.code) ? [] : [{ url: p.url, account: h, post: archivePost(h, i) }])),
+    ...ARCHIVE_HANDLES.filter(h => ARCHIVE[h].posts.length >= EXPLORE_MIN_POSTS).map(h => ARCHIVE[h].posts.flatMap((p, i) => PROFILE_ONLY.has(p.code) ? [] : [{ url: p.url, account: h, post: archivePost(h, i) }])),
     EXPLORE_ORDER.map(item => ({ ...item, post: null })),
   ]
   const out = []

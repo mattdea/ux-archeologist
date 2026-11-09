@@ -101,6 +101,15 @@ originals sit in `raw/imani brooks/` (gitignored).
 | `friends/avatars/pete.photo.jpg` | a Nikkor lens, cropped to 300×300 | Michelle Ding on Unsplash, [HHEHf0NzJK8](https://unsplash.com/photos/HHEHf0NzJK8) (Unsplash License) |
 | `friends/avatars/j.okafor.jpg` | a black pug, cropped to 300×300 | charlesdeluvio on Unsplash, [zqhe4qjVTJI](https://unsplash.com/photos/zqhe4qjVTJI) (Unsplash License) |
 | `friends/avatars/mia.c.jpg` | pink gerberas, cropped to 300×300 | Luca Severin on Unsplash, [azzu94fbYWM](https://unsplash.com/photos/a-close-up-of-a-bouquet-of-pink-and-magenta-flowers-azzu94fbYWM) (Unsplash License) |
+| `friends/avatars/nadia_s.jpg` | a pink cloud at sunset, cropped to 300×300 ("mostly food, sometimes sky"; the old crop showed only a hat brim) | kabita Darlami on Unsplash, [lrU362_1Puk](https://unsplash.com/photos/a-pink-cloud-in-the-sky-at-sunset-lrU362_1Puk) (Unsplash License) |
+
+Edited in place, no new source: the black or white bands trimmed from
+`archive/natgeo/BDy6rLWoVa2`, `BDwU-vIIVTA`, `BDqd_bDIVVL`, `BCYylddoVSD` and
+`archive/beyonce/BDnt9evPw5L`; `archive/neymarjr/BDW4A5KRtnJ` cropped to the
+square on the right, where Neymar is; the camcorder badge cropped out of
+`library/2016-03-29_ericunderwood_o4tk703` and `o4tk705`; `archive/therock/avatar.jpg`
+cropped inside its baked-in circle; `friends/avatars/samtaylor.jpg` cropped to
+one person.
 
 The four friend avatars replace photos that also appeared elsewhere in the
 level (three of them real, identifiable people from the blog library), so

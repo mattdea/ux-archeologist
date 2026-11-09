@@ -63,6 +63,15 @@ export const REMOVED = new Set([
   'BDx3nO0K8tF',                           // thefeedfeed, 400×400
   'BERo0ybhQd3', 'BEMg_axBQaQ', 'BDzMcG3hQSD', 'BDrFGFthQe4',
   'BDeIk6qBQRr', 'BCYFKfOBQUi', 'BCQWw9nhQTw', // instagram, 640×360/426 video stills
+  // bad square crops (cut text or subject, letterbox bands)
+  'BDCALBCOSy9',                           // kimkardashian, wall and a lower third
+  'BDRC3n8gvvp',                           // justinbieber, an empty sofa
+  'BCh9zT-IVR8',                           // natgeo, a thin strip in white bands
+  'BB-n_LmCYuF',                           // kevinhart4real, a thin strip in white bands
+  'BDsTCqdDJ6E',                           // 9gag, meme text cut at the left
+  'BEeHRL7vktl',                           // buzzfeed, Prince quote cut
+  'BBcIpwyn3AD', '7BB_xzH3GS', '7BB0-TH3F7', // emmawatson, @repostapp screenshots
+  'BC6u7ebBRvG',                           // khloekardashian, quote cut at the left
   // duplicates
   'added-cr7-05',                          // cristiano, same handstand as BDllkx0hpVE
 ])

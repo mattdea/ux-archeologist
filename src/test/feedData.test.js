@@ -229,3 +229,11 @@ describe('slot leads and captions', () => {
     }
   })
 })
+
+describe('Explore', () => {
+  it('leaves out archive accounts with fewer than 6 photos', () => {
+    const shown = new Set()
+    for (let n = 0; n < 4000; n++) shown.add(exploreTile(n).post?.username)
+    for (const [h, a] of Object.entries(ARCHIVE)) if (a.posts.length < 6) expect(shown.has(h), h).toBe(false)
+  })
+})
