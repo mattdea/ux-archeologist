@@ -17,6 +17,7 @@ const ENTRIES = [
 export default function Timeline() {
   const navigate = useFadeNavigate()
   const [showAbout, setShowAbout] = useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
 
   return (
     <div className={styles.timeline}>
@@ -50,14 +51,35 @@ export default function Timeline() {
         )
       })}
 
-      {/* ── Dev helper ─────────────────────────────────────────────── */}
-      <button
-        className={styles.resetBtn}
-        onClick={() => { resetAll(); navigate('/') }}
-        style={{ animationDelay: '850ms' }}
-      >
-        Reset progress
-      </button>
+      {/* ── Reset progress: asks once before wiping every level ───── */}
+      {confirmReset ? (
+        <div className={styles.resetConfirm} role="group" aria-label="Reset all six levels?">
+          <span className={styles.resetQuestion}>Reset all six levels?</span>
+          <button
+            type="button"
+            className={styles.resetChoice}
+            onClick={() => { resetAll(); navigate('/') }}
+          >
+            Reset
+          </button>
+          <button
+            type="button"
+            className={styles.resetChoice}
+            autoFocus
+            onClick={() => setConfirmReset(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          className={styles.resetBtn}
+          onClick={() => setConfirmReset(true)}
+          style={{ animationDelay: '850ms' }}
+        >
+          Reset progress
+        </button>
+      )}
 
       <button className={styles.aboutLink} onClick={() => setShowAbout(true)}>About</button>
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
