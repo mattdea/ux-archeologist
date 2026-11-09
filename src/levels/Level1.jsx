@@ -62,9 +62,9 @@ export default function Level1() {
   }, [])
   useEffect(() => () => clearTimeout(driveTimer.current), [])
 
-  // Startup chime as the boot begins (replays too)
+  // Startup beep as the boot begins (replays too)
   useEffect(() => {
-    if (screen === 'booting') sfx.chime()
+    if (screen === 'booting') sfx.startupBeep()
   }, [screen])
   const finishBoot = useCallback(() => setScreen('playing'), [])
 

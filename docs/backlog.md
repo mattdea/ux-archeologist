@@ -143,7 +143,13 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 _Matthew moves items here from Ideas. Unattended runs build only from this list; ambiguous items are skipped with a note._
 
-### Level 1: the 1984 startup beep (approved 8 Nov 2026)
+_Nothing approved right now._
+
+## Done
+
+_Finished items, moved here when built._
+
+### Level 1: the 1984 startup beep (approved and built 8 Nov 2026)
 
 **Build:** replace Level 1's startup chime with the beep the original Mac made, not the later chord.
 
@@ -157,6 +163,4 @@ _Matthew moves items here from Ideas. Unattended runs build only from this list;
 
 **Not settled, so don't guess past it:** the beep's exact length. Use `beep()`'s envelope unless a recording of a real 128K/512K boot turns up.
 
-## Done
-
-_Finished items, moved here when built._
+**Built:** `sfx.startupBeep()` (600 Hz square, `beep()`'s envelope) plays as Level 1 boots; `chime()` and `assets/mac-chime.mp3` removed; the spec's Sound section and Progress line updated. Length still reconstructed.

@@ -1,7 +1,7 @@
 // src/audio/sfx.js
 //
 // Era sound effects, synthesised with Web Audio so the repo carries no extra
-// files (the one recording, the Macintosh chime, already lives in assets/).
+// files (the dial-up handshake is the one recording played from here).
 // Everything is quiet by design: these are the sounds of a room, not a game.
 //
 // Browsers only let audio start inside a user gesture. The context is
@@ -12,12 +12,11 @@
 //   key()               terminal keyboard clack (slightly different each time)
 //   bell()              VT100 bell
 //   crtOn()             CRT power-on thump + warming hiss
-//   chime(src)          play a recording (Macintosh startup chime)
+//   startupBeep()       1984 Macintosh startup beep (600 Hz square wave)
+//   beep()              Macintosh system (alert) beep
 //   dialup()            real dial-up recording if assets/web/dialup.* exists; returns stop()
 //   pop()               Instagram like
 //   send() / receive()  chat: message sent / reply finished
-
-import macChimeSrc from '../../assets/mac-chime.mp3'
 
 let ctx = null
 let master = null
@@ -147,12 +146,12 @@ export function beep() {
   tone('square', 880, 0.08, 0.004, 0.17)
 }
 
-export function chime(src = macChimeSrc, volume = 0.22) {
-  try {
-    const a = new Audio(src)
-    a.volume = volume
-    a.play().catch(() => {})
-  } catch { /* no audio */ }
+/** Startup beep: the 128K, 512K and Plus played a plain 600 Hz square-wave
+ *  beep at power-on (the chord arrived with the Macintosh II in 1987).
+ *  Length and level are reconstructed: they reuse beep()'s envelope. */
+export function startupBeep() {
+  if (!ensure()) return
+  tone('square', 600, 0.08, 0.004, 0.17)
 }
 
 // ── 1995: dial-up ──────────────────────────────────────────────────

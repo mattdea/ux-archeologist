@@ -16,7 +16,7 @@ All six levels are complete and playable; nothing is gated; all 46 tests pass. P
 Recent work:
 - **Layout (7 Nov):** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, gap above = gap below) instead of fixed 180px bands.
 - **Museum layer:** "Enter the exhibit" on the title screen; hints in every level (docked pill, after 10s without progress); era tooltips on the HUD dots; drawn ticks and strike-through on the objectives; a Continue flourish; one continuous timeline line that fades at both ends.
-- **Sound in every level** (`src/audio/sfx.js`): VT100 click and bell, Mac chime (0.22) and alert beep, a real dial-up recording under Netscape's first load, Instagram like pop, chat send/receive.
+- **Sound in every level** (`src/audio/sfx.js`): VT100 click and bell, Mac 600 Hz startup beep and alert beep, a real dial-up recording under Netscape's first load, Instagram like pop, chat send/receive.
 - **Period pointers:** the Mac arrow and wristwatch, the Win95 arrow, hand and arrow-with-hourglass.
 - **Level 1 (1984):** the Mac now fades in from the timeline like the other levels (the bezel is `MonitorBezel@2x.webp`, pre-rendered from the SVG, whose blur filters stalled the fade); boot wipes the gray down in ~20 steps; the desktop is Finder 1.1 from the 1984 sources — System Disk, zoom rectangles, menu blinking, marquee selection, Get Info with Locked, Put Back, Close All, Clean Up, Empty Trash, Eject, and the Calculator, Note Pad, Puzzle and Alarm Clock desk accessories (details and sources under Level 1).
 - **Level 2 (1995):** pages load like 1995 (contact → transfer counter → block-by-block draw), the original meteor throbber animates in the N box while loading.
@@ -172,7 +172,7 @@ White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artif
 
 ## Sound
 
-`src/audio/sfx.js` synthesises every effect with Web Audio (the Macintosh chime is the one recording, `assets/mac-chime.mp3`). Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 VT100 keyclick and bell (one keyboard speaker ringing near 780 Hz: one pulse = click, ~200 = bell), CRT power-on; 1984 startup chime (volume 0.22), no drive sound; 1995 a real dial-up recording (`assets/web/dialup.mp3`, 6.2s, volume 0.25) under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
+`src/audio/sfx.js` synthesises every effect with Web Audio except the recordings named below. Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 VT100 keyclick and bell (one keyboard speaker ringing near 780 Hz: one pulse = click, ~200 = bell), CRT power-on; 1984 startup beep, a 600 Hz square wave as on the 128K, 512K and Plus (the chord came with the Macintosh II in 1987; source: Wikipedia, "Macintosh startup"), played as the boot begins — its length and level are reconstructed (it reuses the 880 Hz alert beep's envelope, 4 ms attack, 170 ms decay, peak 0.08), no drive sound; 1995 a real dial-up recording (`assets/web/dialup.mp3`, 6.2s, volume 0.25) under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
 
 ## Period pointers
 
