@@ -17,7 +17,6 @@
 | | Hints: feature + copy | Feature decisions, house style |
 | 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
 | | Netscape chrome | Version + references |
-| | Instagram accounts audit | Nothing: ready to start |
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
 | | Instagram screens | Which screens + references |
@@ -86,12 +85,6 @@ Rounds 1–4 are in Done.
 - **Decide first:** which Navigator version and platform. Throbber = Navigator 1.1+; cursors = Windows 95 (shipped Aug 1995).
 - **Then:** dated reference screenshots into `docs/reference/`, a difference list, fixes.
 
-#### Instagram accounts and photos audit
-Ready to start.
-- **Scope:** 18 real accounts in `FEED` with their full grids (`assets/feed/archive/`, `assets/feed/library/`), the four friends, the ads, Explore.
-- **Look for:** broken, off-topic, duplicate or unsuitable photos · captions that don't match · odd bios or counts. (marcus.h and cristiano already done.)
-- **Output:** a per-account list of removals and reorders for Matthew to approve.
-
 ---
 
 ### 4. Depth: more to do inside each artifact
@@ -119,6 +112,28 @@ Today only Notes opens.
 ---
 
 ## Approved
+
+### Level 4: Instagram accounts and photos audit · approved 9 Nov 2026
+**Report only.** Change no code, data or assets, and delete nothing. The output is a list for Matthew to approve in the morning.
+- **Write to:** `docs/feed-audit.md` (new). Commit and push only that file.
+- **Scope, in this order:**
+  1. The 24 `FEED` accounts in `feedData.js` (what every visitor sees): 18 real accounts, the four friends (`assets/feed/friends/`), the two ads (`assets/feed/ads/`).
+  2. Every other account that shows anywhere (profiles, Explore): the rest of `assets/feed/archive/` (51 accounts) and `assets/feed/library/`.
+  3. Avatars in `assets/feed/archive-avatars/`.
+  - About 1,400 images. Skip `assets/feed/raw/` (gitignored downloads, never shown).
+- **Look for:**
+  - Broken, blank, tiny or badly cropped images.
+  - Duplicates: the same or nearly the same photo twice in one grid, or under two accounts.
+  - Photos that don't fit the account (off-topic, wrong person) or are unsuitable for a public portfolio (nudity, graphic content, anything that could embarrass).
+  - Captions that don't match their photo, or that mention a video when only a still shows.
+  - Bios, names and counts that read oddly.
+  - Anything that dates the post past spring 2016.
+- **How:** check files and exact duplicates with a script (sizes, hashes). For looking, make labelled contact sheets of each grid in the scratchpad, not the repo, then view the sheets, opening single images only to confirm. marcus.h and cristiano were tidied on 8 Nov; still check them, but expect little.
+- **Report format:**
+  - A summary at the top: counts by kind, and the 10 most important fixes.
+  - Then one section per account in scope order, each finding on one line: `file path · problem · suggested fix (remove / reorder / recaption / replace)`.
+  - Mark how sure each finding is (sure / check).
+  - Accounts with nothing found get one line saying so.
 
 ### Museum: small-screen notice · approved 8 Nov 2026
 Phone-width visitors get a card saying the exhibit is best on a computer. Closes spec open item 2.
