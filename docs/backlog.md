@@ -132,7 +132,13 @@ _Items from Matthew's list of 8 Nov 2026 are in no particular order or priority.
 
 _Matthew moves items here from Ideas. Unattended runs build only from this list; ambiguous items are skipped with a note._
 
-### Level 4: truncate long captions after 3 lines (approved 8 Nov 2026)
+_Nothing approved right now._
+
+## Done
+
+_Finished items, moved here when built._
+
+### Level 4: truncate long captions after 3 lines (approved and built 8 Nov 2026)
 
 **Build:** a caption longer than three lines is cut at three lines and ends in "… more"; tapping it expands the full caption in place.
 
@@ -149,10 +155,7 @@ _Matthew moves items here from Ideas. Unattended runs build only from this list;
 - Same behaviour in the feed, post detail and profile list views (they all render `Post`).
 - Spec: add the behaviour to Level 4's Interactive Elements, marked reconstructed.
 
-
-## Done
-
-_Finished items, moved here when built._
+**Built:** as described, in `Post.jsx` and `feed-styles.css`; the spec's Level 4 Interactive Elements has it, marked reconstructed. On a fresh load, 4 of the 24 feed captions are cut (instagram, therock, humansofny, nasa).
 
 ### Level 1: the 1984 startup beep (approved and built 8 Nov 2026)
 

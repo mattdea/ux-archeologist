@@ -591,6 +591,35 @@
   cursor: pointer;
 }
 
+/* Long captions: cut at three lines with "… more" (reconstructed: no 2015–16
+   screenshot shows a caption this long). The 20px fade hides the glyph the
+   overlay lands on; not -webkit-line-clamp, whose own ellipsis would sit
+   under the "more". */
+.captionClamp {
+  position: relative;
+  max-height: 48px;            /* 3 × the 16px line height */
+  overflow: hidden;
+}
+
+.captionLine[data-clamped] {
+  cursor: pointer;
+}
+
+.captionMore {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--ig-muted);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff 20px);
+}
+
+.captionEllipsis {
+  color: var(--ig-text);
+}
+
 /* ─── Loading spinner at feed bottom ─────────────────────────────────────── */
 
 .loadingArea {

@@ -113,6 +113,24 @@ export default function Post({
     burstTimerRef.current = setTimeout(() => setBurstKey(0), 950)
   }, [doLike])
 
+  // Captions longer than three lines are cut with "… more"; a tap on the
+  // caption expands it in place for good. Measured, not counted: the caption
+  // is clamped when its text overflows the 48px (3-line) box. The observer
+  // re-checks once a post that laid out hidden gets its real width.
+  const captionRef = useRef(null)
+  const [captionOpen, setCaptionOpen] = useState(false)
+  const [captionClamped, setCaptionClamped] = useState(false)
+  useEffect(() => {
+    const el = captionRef.current
+    if (!el || captionOpen) { setCaptionClamped(false); return }
+    const check = () => setCaptionClamped(el.scrollHeight > el.clientHeight + 1)
+    check()
+    if (typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [captionOpen, caption])
+
   const openProfile = useCallback((e) => {
     e.stopPropagation()
     if (onOpenProfile) onOpenProfile(username)
@@ -250,8 +268,16 @@ export default function Post({
           <LikesHeartIcon />
           <span>{likesLabel} likes</span>
         </div>
-        <div className="captionLine">
+        <div
+          ref={captionRef}
+          className={captionOpen ? 'captionLine' : 'captionLine captionClamp'}
+          onClick={captionClamped ? () => setCaptionOpen(true) : undefined}
+          data-clamped={captionClamped || undefined}
+        >
           <span className="postUser" onClick={openProfile}>{username}</span> <RichText text={caption} />
+          {captionClamped && (
+            <span className="captionMore"><span className="captionEllipsis">…</span> more</span>
+          )}
         </div>
         {commentCount > comments.length && (
           <div className="viewCommentsLine">

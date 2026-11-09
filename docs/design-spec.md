@@ -417,6 +417,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **Interactive Elements:**
 - Tab bar switches tabs; re-tapping the current tab pops to its root
 - Tapping a username or avatar opens that profile, as does a commenter's name when that account has a profile (`hasProfile()`); tapping a grid tile opens the post; Back pops. Nav-bar buttons have a 44pt tap target that extends 10pt past the glyph
+- Long captions (feed, post detail, profile list): a caption longer than three lines is cut at 48px (3 × 16px) and ends in "… more" at the bottom right of the third line ("…" in `--ig-text`, "more" in `--ig-muted`, on white with a 20px fade to the left); tapping the caption or "more" expands it in place for good, while the username still opens the profile. Measured (`scrollHeight > clientHeight`, re-checked by a `ResizeObserver`), not counted in characters. **Reconstructed:** no 2015–16 screenshot of a caption this long was found, so whether the spring-2016 app truncated is unknown; the three-line cut follows today's app (Matthew's decision, 8 Nov 2026)
 - Sponsored posts: tapping the photo shows the ad overlay; LEARN MORE / Sponsored open the in-app browser (see objective 2)
 - Double-tap a photo: big white heart springs in (~250ms), holds, fades by ~900ms; action-row heart fills red and bounces; like count moves by one. The heart button toggles like / unlike
 - Follow / Unfollow on a profile or Activity row updates everywhere (`followStore.js`): exact follower counts move by one, abbreviated ones stay put
