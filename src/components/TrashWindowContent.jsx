@@ -1,5 +1,6 @@
 // src/components/TrashWindowContent.jsx
 import styles from './DraggableWindow.module.css'
+import WindowScrollArea from './WindowScrollArea'
 import iconStyles from './DesktopIcon.module.css'
 import { FolderIcon, NotesIcon } from './DesktopIcon'
 
@@ -60,17 +61,20 @@ export default function TrashWindowContent({ contents = [], selected, onSelect, 
       <div className={styles.fileListHeader}>
         <span>{count === 0 ? '0 items' : `${count} item${count > 1 ? 's' : ''}`}</span>
         {count === 0 && <span className={styles.fileInfoText}>Trash is empty</span>}
+        {count === 0 && <span />}
       </div>
-      <div className={styles.trashBody}>
-        {hasProjects && (
-          <TrashItem id="projects" label="Projects" Icon={FolderIcon} selected={selected === 'projects'} onSelect={onSelect}
-            onDragStart={handleProjectsDragStart} onDragEnd={handleProjectsDragEnd} />
-        )}
-        {hasNotes && (
-          <TrashItem id="notes" label="Notes" Icon={NotesIcon} selected={selected === 'notes'} onSelect={onSelect}
-            onDragStart={handleNotesDragStart} onDragEnd={handleNotesDragEnd} />
-        )}
-      </div>
+      <WindowScrollArea>
+        <div className={styles.trashBody}>
+          {hasProjects && (
+            <TrashItem id="projects" label="Projects" Icon={FolderIcon} selected={selected === 'projects'} onSelect={onSelect}
+              onDragStart={handleProjectsDragStart} onDragEnd={handleProjectsDragEnd} />
+          )}
+          {hasNotes && (
+            <TrashItem id="notes" label="Notes" Icon={NotesIcon} selected={selected === 'notes'} onSelect={onSelect}
+              onDragStart={handleNotesDragStart} onDragEnd={handleNotesDragEnd} />
+          )}
+        </div>
+      </WindowScrollArea>
     </>
   )
 }

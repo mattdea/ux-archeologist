@@ -91,6 +91,25 @@
   padding: 6px 8px;
 }
 
+/* A Finder window with a set size: title bar, information line, then the
+   scrolling area takes the rest. */
+.sized {
+  display: flex;
+  flex-direction: column;
+}
+.fill {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.scrollArea {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 /* Content that lays itself out (desk accessories, Get Info) */
 .custom {
   position: relative;
@@ -109,14 +128,17 @@
   color: var(--mac-black);
   padding: 3px 8px 4px;
   border-bottom: 3px double var(--mac-black);
+  flex: 0 0 auto;
+  /* In a narrow window the three parts close up and the line is clipped,
+     as in docs/reference/mac system 1/macsystem100019.png */
+  justify-content: space-between;
+  gap: 16px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-/* Absolutely centered relative to the full header width — not offset by
-   the item-count text on the left. Mirrors the title text centering trick. */
+/* "NNNK in disk", between the count and the space available */
 .fileInfoText {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   font-family: var(--font-chicago);
   font-size: 12px;
   color: var(--mac-black);
@@ -126,7 +148,6 @@
 
 /* "NNNK available", right-aligned on the information line */
 .fileInfoRight {
-  margin-left: auto;
   font-family: var(--font-chicago);
   font-size: 12px;
   color: var(--mac-black);

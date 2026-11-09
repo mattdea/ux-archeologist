@@ -80,6 +80,14 @@ const WINDOW_POS = {
   projects: { x: 80, y: 50 }, notes: { x: 60, y: 55 }, trash: { x: 90, y: 60 },
 }
 
+// The Finder's own windows open at these sizes and can be grown from the
+// corner. The disk window fits its icons, so it opens with nothing to scroll
+// (white tracks); the System Folder's six icons need the horizontal bar.
+const FINDER_SIZE = {
+  disk: { w: 340, h: 150 }, sysfolder: { w: 340, h: 150 }, emptyfolder: { w: 260, h: 130 },
+  projects: { w: 340, h: 150 }, trash: { w: 300, h: 150 },
+}
+
 export default function DesktopScene({ completeObjective, active, reveal = REVEAL_ALL, onDiskAccess }) {
   // windows: [{ id, type, title, pos, z, hidden, src, item }]
   //   type: 'disk'|'sysfolder'|'emptyfolder'|'projects'|'notes'|'trash'|'info'|'calculator'|'notepad'|'puzzle'|'alarm'|'about'
@@ -673,6 +681,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           hidden={win.hidden}
           width={DA_WIDTH[win.type] ?? (win.type === 'info' ? 300 : undefined)}
           variant={DA_VARIANT[win.type] ?? 'doc'}
+          size={FINDER_SIZE[win.type]}
+          resizable={!!FINDER_SIZE[win.type]}
           titleContent={win.type === 'alarm' ? <AlarmClockTitle clock={clock} /> : undefined}
           onClose={() => closeWindow(win.id)}
           onFocus={() => raise(win.id)}

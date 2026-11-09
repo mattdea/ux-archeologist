@@ -6,6 +6,7 @@
 // means (a folder zooms open, a system file can't be opened).
 
 import styles from './DraggableWindow.module.css'
+import WindowScrollArea from './WindowScrollArea'
 import iconStyles from './DesktopIcon.module.css'
 import { FolderIcon, NotesIcon } from './DesktopIcon'
 
@@ -27,23 +28,25 @@ export default function FolderWindowContent({ items, inDisk, available, selected
           </>
         )}
       </div>
-      <div className={styles.trashBody}>
-        {items.map(item => {
-          const sel = selectedId === item.id
-          return (
-            <div
-              key={item.id}
-              className={`${iconStyles.icon} ${sel ? iconStyles.selected : ''}`}
-              style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
-              onMouseDown={(e) => { e.stopPropagation(); onSelect?.(item.id) }}
-              onDoubleClick={(e) => { e.stopPropagation(); onOpen?.(item, e.currentTarget) }}
-            >
-              <Glyph icon={item.icon} selected={sel} />
-              <span className={`${iconStyles.label} ${sel ? iconStyles.labelSelected : ''}`}>{item.label}</span>
-            </div>
-          )
-        })}
-      </div>
+      <WindowScrollArea>
+        <div className={styles.trashBody}>
+          {items.map(item => {
+            const sel = selectedId === item.id
+            return (
+              <div
+                key={item.id}
+                className={`${iconStyles.icon} ${sel ? iconStyles.selected : ''}`}
+                style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
+                onMouseDown={(e) => { e.stopPropagation(); onSelect?.(item.id) }}
+                onDoubleClick={(e) => { e.stopPropagation(); onOpen?.(item, e.currentTarget) }}
+              >
+                <Glyph icon={item.icon} selected={sel} />
+                <span className={`${iconStyles.label} ${sel ? iconStyles.labelSelected : ''}`}>{item.label}</span>
+              </div>
+            )
+          })}
+        </div>
+      </WindowScrollArea>
     </>
   )
 }

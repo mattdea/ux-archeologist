@@ -4,22 +4,33 @@ import styles from './DraggableWindow.module.css'
 import ProjectsWindowContent from './ProjectsWindowContent'
 import NotesWindowContent from './NotesWindowContent'
 import TrashWindowContent from './TrashWindowContent'
-import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
+import { toLocal, createOutline, moveOutline, resizeOutline, removeOutline } from './desktopDrag'
+import { WindowFrameContext } from './windowFrame'
+
+// Smallest a window can be grown down to (reconstructed: no source gives it)
+const MIN_W = 120
+const MIN_H = 80
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
 // `id` is written to data-win so the desktop can measure the window for the
 // zoom rectangles; `hidden` keeps it mounted but invisible while they draw.
 // `width` overrides the 340px document width (desk accessories are smaller);
 // `children` replaces the built-in content for the given `type`.
+// `size` ({ w, h }) gives the window a fixed size (the Finder's windows);
+// with `resizable` its grow box drags an outline of the new size, and the
+// window takes it on release. `active` is false for windows behind the
+// front one.
 // `variant`: 'doc' (striped title bar, the Finder's windows and Note Pad),
 // 'rdoc' (Inside Macintosh's rDocProc: rounded corners, a black title bar
 // with the name in white, used by desk accessories), 'plain' (rDocProc with
 // an empty title bar that `titleContent` fills: the Alarm Clock's one line).
 export default function DraggableWindow({
   id, title, type, initialPos, zIndex, onClose, onFocus, hidden = false, width,
-  variant = 'doc', titleContent,
+  variant = 'doc', titleContent, size: initialSize, resizable = false, active = true,
   trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, trashSelected, onTrashSelect, children,
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
+  const [size, setSize] = useState(initialSize ?? null)
   const dragging = useRef(false)
   const dragOffset = useRef({ x: 0, y: 0 })
   const titleBarRef = useRef(null)
@@ -161,14 +172,61 @@ export default function DraggableWindow({
     }
   }, [])
 
+  // Grow box: an outline of the new size follows the pointer at ~10fps from
+  // the window's top-left corner; the window itself stays put until release.
+  const handleGrowMouseDown = (e) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    e.stopPropagation()
+    onFocus?.()
+    const win = windowRef.current
+    const desktop = win?.offsetParent
+    if (!win || !desktop) return
+    const start = { w: win.offsetWidth, h: win.offsetHeight }
+    const p0 = toLocal(desktop, e.clientX, e.clientY)
+    const { x, y } = posRef.current
+    const sizeFor = (cx, cy) => {
+      const p = toLocal(desktop, cx, cy)
+      return {
+        w: Math.round(clamp(start.w + p.x - p0.x, MIN_W, desktop.offsetWidth - x)),
+        h: Math.round(clamp(start.h + p.y - p0.y, MIN_H, desktop.offsetHeight - y)),
+      }
+    }
+    outlineEl.current = createOutline(desktop, { x, y, ...start })
+    let mouse = { x: e.clientX, y: e.clientY }
+    outlineInterval.current = setInterval(() => {
+      const s = sizeFor(mouse.x, mouse.y)
+      if (outlineEl.current) resizeOutline(outlineEl.current, s.w, s.h)
+    }, 100)
+    const move = (ev) => { mouse = { x: ev.clientX, y: ev.clientY } }
+    const up = (ev) => {
+      stopOutline()
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+      mouseCleanupRef.current = null
+      setSize(sizeFor(ev.clientX, ev.clientY))
+    }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+    mouseCleanupRef.current = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+    }
+  }
+
   return (
     <div
       ref={windowRef}
       data-win={id}
-      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''}`}
-      style={{ left: pos.x, top: pos.y, zIndex, width, visibility: hidden ? 'hidden' : undefined }}
+      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''} ${size ? styles.sized : ''}`}
+      style={{
+        left: pos.x, top: pos.y, zIndex,
+        width: size ? size.w : width, height: size ? size.h : undefined,
+        visibility: hidden ? 'hidden' : undefined,
+      }}
       onMouseDown={() => onFocus?.()}
     >
+      <WindowFrameContext.Provider value={{ active, resizable, onGrowMouseDown: resizable ? handleGrowMouseDown : undefined }}>
       <div
         ref={titleBarRef}
         className={styles.titleBar}
@@ -180,7 +238,7 @@ export default function DraggableWindow({
         {variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
       </div>
 
-      <div className={type === 'notes' ? styles.scrollBody : (children || type === 'projects' || type === 'trash') ? styles.custom : styles.body}>
+      <div className={type === 'notes' ? styles.scrollBody : size ? styles.fill : (children || type === 'projects' || type === 'trash') ? styles.custom : styles.body}>
         {children}
         {type === 'projects' && <ProjectsWindowContent />}
         {type === 'notes'    && <NotesWindowContent />}
@@ -195,6 +253,7 @@ export default function DraggableWindow({
           />
         )}
       </div>
+      </WindowFrameContext.Provider>
     </div>
   )
 }

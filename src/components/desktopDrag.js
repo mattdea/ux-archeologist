@@ -38,6 +38,11 @@ export function moveOutline(el, x, y) {
   el.style.top = `${y}px`
 }
 
+export function resizeOutline(el, w, h) {
+  el.style.width = `${w}px`
+  el.style.height = `${h}px`
+}
+
 export function removeOutline(el) {
   el?.parentNode?.removeChild(el)
 }
