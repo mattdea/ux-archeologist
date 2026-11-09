@@ -130,22 +130,15 @@ Today only Notes opens.
 
 ## Approved
 
-### Website audit · approved 9 Nov 2026
-**Report only.** Fix nothing, change no code. Run it **after** the small-screen notice is built, so the audit covers it.
-- **Write to:** `docs/site-audit.md` (new). Commit and push only that file.
-- **Pages:** title, timeline, Levels 0–5, collection. Check each at 1440, 1280 and 1024 wide, and at 375 wide for the small-screen notice. Use the dev server from `.claude/launch.json`; if port 8888 is taken, run `npx vite` on another port.
-- **Every level can be finished:** objectives tick off in any order · Continue appears · the discovery card shows and leads to the next level (Level 5 → timeline) · a revisit skips the intro card and replays the boot · the hint pill appears after 10 s without progress and hides on completion.
-- **Errors:** console errors and warnings · failed or 404 requests (images, fonts, sounds) · Level 5's chat falling back cleanly when the API is unreachable.
-- **Accessibility basics:** keyboard focus on museum controls (buttons, dots, links, modals) · contrast of museum-layer text · missing alt text or labels · `prefers-reduced-motion` respected.
-- **Load weight:** what each page downloads (total size, largest files), with Level 4's photos the main suspect.
-- **Build vs spec:** where the running site differs from `docs/design-spec.md` (wording, layout, timings, routes). Don't flag era-authentic choices the spec marks as reconstructed.
-- **Copy:** typos and inconsistent wording in museum-layer text. Flag only; rewriting belongs to the copy pass.
-- **Checks:** run `npm test` and `npm run build`; report failures with their output.
-- **Report format:** a summary with the top 10 fixes first, then one section per page. One finding per line: `page · problem · severity (high / medium / low) · suggested fix`. For a visual finding, say exactly where on the page and at which width.
-
 ---
 
 ## Done
+
+### Website audit · 9 Nov 2026 (overnight run)
+- Report: `docs/site-audit.md`, morning summary at the top. Nothing fixed. Run on Vite at 5173: Netlify Dev on 8888 answered HTTP 500 "Could not proxy request".
+- All six levels finish in any order, Continue and the discovery card lead on (Level 5 → timeline), revisits skip the intro, hints show after 10 s idle (measured on Levels 0, 1, 2, 4). `npm test` and `npm run build` pass; the build warns of a 1.88 MB chunk.
+- Top issues: timeline entries and "Back to timeline" aren't keyboard-reachable; Level 4 loads ~6 MB on arrival; one bundle for every level; museum greys under AA contrast; Levels 1, 2, 5 don't call `addArtifact`; intro/discovery copy drifted from the spec; URLs don't route and `/collection` is unreachable; "Reset progress" has no confirmation.
+- Awaiting approval: the report's top 10 fixes.
 
 ### Level 4: Instagram accounts and photos audit · 9 Nov 2026 (overnight run)
 - Report: `docs/feed-audit.md`. No code, data or assets changed. ~1,386 images checked by script (sizes, hashes, near-duplicates) and by eye on labelled contact sheets kept in the scratchpad, not the repo.
