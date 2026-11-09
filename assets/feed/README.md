@@ -91,3 +91,25 @@ and sarah.moments post from reserved library sets (`FRIEND_SETS` in
 find, is a portrait and fashion photographer whose 21 photos (plus avatar)
 are by @aliounepic on Unsplash (Unsplash License), in `friends/imani.brooks/`. The full-size
 originals sit in `raw/imani brooks/` (gitignored).
+
+## Files added by the feed audit fixes (9 Nov 2026)
+
+| File | What it is | Source |
+| --- | --- | --- |
+| `archive-avatars/theellenshow.jpg` | @theellenshow's profile picture, 320×320 | Wayback Machine capture of instagram.com/theellenshow/ of 5 May 2016 (the `profile.json` capture); its `profile_pic_url_hd`, `scontent.cdninstagram.com/t51.2885-19/s320x320/10268947_581025105394003_2093423358_a.jpg`, fetched from the Wayback Machine |
+| `friends/avatars/sarah.moments.jpg` | tea cup, teapot and a notebook, cropped to 300×300 | Kelly Sikkema on Unsplash, [PAHGAZdCMpk](https://unsplash.com/photos/a-cup-of-tea-and-a-book-on-a-table-PAHGAZdCMpk) (Unsplash License) |
+| `friends/avatars/pete.photo.jpg` | a Nikkor lens, cropped to 300×300 | Michelle Ding on Unsplash, [HHEHf0NzJK8](https://unsplash.com/photos/HHEHf0NzJK8) (Unsplash License) |
+| `friends/avatars/j.okafor.jpg` | a black pug, cropped to 300×300 | charlesdeluvio on Unsplash, [zqhe4qjVTJI](https://unsplash.com/photos/zqhe4qjVTJI) (Unsplash License) |
+| `friends/avatars/mia.c.jpg` | pink gerberas, cropped to 300×300 | Luca Severin on Unsplash, [azzu94fbYWM](https://unsplash.com/photos/a-close-up-of-a-bouquet-of-pink-and-magenta-flowers-azzu94fbYWM) (Unsplash License) |
+
+The four friend avatars replace photos that also appeared elsewhere in the
+level (three of them real, identifiable people from the blog library), so
+they are objects and a dog rather than faces.
+
+Looked for and not found (see `docs/backlog.md`, Needs from Matthew): larger
+copies of the small photos that were removed instead (listed in `REMOVED`,
+`archiveData.js`), the full text of seven natgeo captions and one Vogue
+caption, and @symmetrybreakfast's 2016 profile picture (only a 404 is
+archived). @glossier's archived avatar is a plain pale-pink square, and that
+is what Glossier used in spring 2016: the capture of 5 May 2016 links the same
+image.

@@ -50,6 +50,19 @@ export const REMOVED = new Set([
   // off-account
   'BCXGWDoJmCu',                           // zendaya, a portrait of Leonardo DiCaprio
   'rK0Jx6n3DM',                            // emmawatson, caption only @-tags
+  // too small or soft (under 500px, or 640px video stills); no larger copy
+  // on the Wayback Machine or the web
+  'BEV_UCDuS3u',                           // kimkardashian, 320×320
+  'BEg3-TgvM0t',                           // leomessi, 320×320
+  'BCvlvAbPw0N',                           // beyonce, 320×399
+  'BCbvuDBiYjP', 'BCLRbnSiYlB',            // kevinhart4real, 480×480
+  'BC77u1shMwW',                           // badgalriri, 427×533
+  'BCgWuaitrJz',                           // humansofny, 472×315
+  'BDgbDB6tjFO',                           // theellenshow, 480×441
+  'BAhgjIIn3P1',                           // emmawatson, 480×480
+  'BDx3nO0K8tF',                           // thefeedfeed, 400×400
+  'BERo0ybhQd3', 'BEMg_axBQaQ', 'BDzMcG3hQSD', 'BDrFGFthQe4',
+  'BDeIk6qBQRr', 'BCYFKfOBQUi', 'BCQWw9nhQTw', // instagram, 640×360/426 video stills
   // duplicates
   'added-cr7-05',                          // cristiano, same handstand as BDllkx0hpVE
 ])
