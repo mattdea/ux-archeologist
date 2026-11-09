@@ -23,4 +23,15 @@ describe('Finder window chrome', () => {
     expect(disk.querySelector('[data-growbox] svg')).toBeNull()
     expect(container.querySelector('[data-win="notes"]').className).not.toMatch(/inactive/)
   })
+
+  it('shades an icon while its window is open', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<DesktopScene objectives={objectives} completeObjective={() => {}} active={true} />)
+    const diskIcon = container.querySelector('[data-icon="disk"]')
+    expect(diskIcon.querySelector('[data-opened]')).toBeNull()
+    await user.dblClick(screen.getByText('System Disk'))
+    await screen.findByText('System Folder')
+    expect(diskIcon.querySelector('[data-opened]')).not.toBeNull()
+    expect(container.querySelector('[data-icon="projects"] [data-opened]')).toBeNull()
+  })
 })

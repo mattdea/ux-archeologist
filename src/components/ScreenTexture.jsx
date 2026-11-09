@@ -3,7 +3,10 @@ import { useLayoutEffect, useRef } from 'react'
 import styles from './ScreenTexture.module.css'
 
 /**
- * The 1984 desktop's 50% gray checkerboard, drawn at a fixed on-screen size.
+ * A 1984 fill pattern, drawn at a fixed on-screen size: the desktop's 50%
+ * gray checkerboard by default, or `pattern="dkgray"`, QuickDraw's dark gray
+ * (rows $77/$DD: three black, one white, shifted two each row), which shades
+ * an opened icon.
  *
  * The Mac sits inside a `scale()` transform chosen by useArtifactFit. A
  * 1px checker scaled by 0.89× or 1.17× lands on fractional pixels and
@@ -15,7 +18,7 @@ import styles from './ScreenTexture.module.css'
  * Fills its nearest positioned parent. Re-measures on resize, and when the
  * parent changes size (a scroll track in a window being resized).
  */
-export default function ScreenTexture() {
+export default function ScreenTexture({ pattern = 'checker' }) {
   const ref = useRef(null)
 
   useLayoutEffect(() => {
@@ -60,5 +63,5 @@ export default function ScreenTexture() {
     }
   }, [])
 
-  return <div ref={ref} className={styles.texture} aria-hidden="true" />
+  return <div ref={ref} className={`${styles.texture} ${pattern === 'dkgray' ? styles.dkgray : ''}`} aria-hidden="true" />
 }

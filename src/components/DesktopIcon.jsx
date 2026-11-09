@@ -1,6 +1,41 @@
 // src/components/DesktopIcon.jsx
-import { forwardRef } from 'react'
+import { forwardRef, useLayoutEffect, useRef } from 'react'
+import ScreenTexture from './ScreenTexture'
 import styles from './DesktopIcon.module.css'
+
+/**
+ * Wraps an icon's SVG. While its window is open (`opened`) the icon is drawn
+ * as its silhouette filled with dark gray and no outline, as the Finder
+ * shaded an opened disk, folder or document (docs/reference/mac system 1/).
+ * The silhouette is the icon's own SVG used as a mask, so it fits every icon
+ * exactly; the gray is a ScreenTexture, so its dots stay crisp at any scale.
+ */
+export function IconShade({ opened = false, children }) {
+  const hostRef = useRef(null)
+  const shadeRef = useRef(null)
+  // Before paint: mask the shade with the icon's current SVG
+  useLayoutEffect(() => {
+    const svg = hostRef.current?.querySelector('svg')
+    const shade = shadeRef.current
+    if (!opened || !svg || !shade) return
+    const url = `url("data:image/svg+xml,${encodeURIComponent(svg.outerHTML)}")`
+    if (shade.style.maskImage === url) return
+    shade.style.maskImage = url
+    shade.style.webkitMaskImage = url
+  })
+  return (
+    <span className={styles.glyph}>
+      <span ref={hostRef} className={styles.glyphArt} style={{ visibility: opened ? 'hidden' : undefined }}>
+        {children}
+      </span>
+      {opened && (
+        <span ref={shadeRef} className={styles.shade} data-opened="">
+          <ScreenTexture pattern="dkgray" />
+        </span>
+      )}
+    </span>
+  )
+}
 
 export function FolderIcon({ selected }) {
   const fg = selected ? 'white' : 'black'
@@ -620,6 +655,7 @@ const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
     isHighlighted,
     isSelected,
     isFull,
+    isOpened,
     className,
     style,
   } = props
@@ -642,10 +678,12 @@ const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
       onMouseDown={onMouseDown}
       data-icon={props['data-icon']}
     >
-      {icon === 'folder' && <FolderIcon selected={isSelected} />}
-      {icon === 'disk'   && <DiskIcon   selected={isSelected} />}
-      {icon === 'notes'  && <NotesIcon  selected={isSelected} />}
-      {icon === 'trash'  && <TrashIcon  highlighted={isHighlighted} full={isFull} selected={isSelected} />}
+      <IconShade opened={isOpened}>
+        {icon === 'folder' && <FolderIcon selected={isSelected} />}
+        {icon === 'disk'   && <DiskIcon   selected={isSelected} />}
+        {icon === 'notes'  && <NotesIcon  selected={isSelected} />}
+        {icon === 'trash'  && <TrashIcon  highlighted={isHighlighted} full={isFull} selected={isSelected} />}
+      </IconShade>
       <span className={`${styles.label} ${isSelected ? styles.labelSelected : ''}`}>{label}</span>
     </div>
   )

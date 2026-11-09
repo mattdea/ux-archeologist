@@ -592,12 +592,14 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
 
   // The active window: the frontmost one not zooming shut (one still zooming
   // open already counts). The rest draw inactive.
+  // An icon is shaded while its window is open (not once it starts to close)
+  const openedIds = windows.filter(w => !w.closing).map(w => w.id)
   const frontId = windows.filter(w => !w.closing).reduce((a, b) => (!a || b.z > a.z ? b : a), null)?.id
   const windowTitle = (w) => w.title ?? ICONS[w.type]?.label ?? ''
   const windowContent = (w) => {
     switch (w.type) {
       case 'disk':
-        return <FolderWindowContent items={DISK_ITEMS} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
+        return <FolderWindowContent items={DISK_ITEMS} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} openedIds={openedIds} />
       case 'sysfolder':
         return <FolderWindowContent items={SYSFOLDER_ITEMS} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'emptyfolder':
@@ -657,6 +659,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
             isFull={id === 'trash' && trashContents.length > 0}
             isHighlighted={id === 'trash' && trashHighlighted}
             isSelected={selected.includes(id)}
+            isOpened={openedIds.includes(id)}
             className={id === 'disk' && ejected ? styles.ejected : ''}
             style={{ position: 'absolute', left: pos.x, top: pos.y, visibility: shown(reveal >= def.reveal) }}
             draggable={true}

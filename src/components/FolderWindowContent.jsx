@@ -8,14 +8,14 @@
 import styles from './DraggableWindow.module.css'
 import WindowScrollArea from './WindowScrollArea'
 import iconStyles from './DesktopIcon.module.css'
-import { FolderIcon, NotesIcon } from './DesktopIcon'
+import { FolderIcon, NotesIcon, IconShade } from './DesktopIcon'
 
 function Glyph({ icon, selected }) {
   if (icon === 'folder') return <FolderIcon selected={selected} />
   return <NotesIcon selected={selected} />
 }
 
-export default function FolderWindowContent({ items, inDisk, available, selectedId, onSelect, onOpen }) {
+export default function FolderWindowContent({ items, inDisk, available, selectedId, onSelect, onOpen, openedIds = [] }) {
   const count = items.length
   return (
     <>
@@ -40,7 +40,9 @@ export default function FolderWindowContent({ items, inDisk, available, selected
                 onMouseDown={(e) => { e.stopPropagation(); onSelect?.(item.id) }}
                 onDoubleClick={(e) => { e.stopPropagation(); onOpen?.(item, e.currentTarget) }}
               >
-                <Glyph icon={item.icon} selected={sel} />
+                <IconShade opened={openedIds.includes(item.id)}>
+                  <Glyph icon={item.icon} selected={sel} />
+                </IconShade>
                 <span className={`${iconStyles.label} ${sel ? iconStyles.labelSelected : ''}`}>{item.label}</span>
               </div>
             )
