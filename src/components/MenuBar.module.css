@@ -147,3 +147,6 @@
   font-family: var(--font-chicago);
   font-size: calc(var(--mac-px) * 16);
 }
+
+/* A beep with the speaker volume at 0: the menu bar inverts for a moment */
+.menuBarFlash { filter: invert(1); }

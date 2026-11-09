@@ -127,6 +127,15 @@ export default function MenuBar({
     onMenuItemClick()
   }
 
+  // With the speaker volume at 0, a beep flashes the menu bar instead
+  const [flash, setFlash] = useState(false)
+  useEffect(() => {
+    let t
+    const onFlash = () => { setFlash(true); clearTimeout(t); t = setTimeout(() => setFlash(false), 120) }
+    window.addEventListener('mac-flash-menubar', onFlash)
+    return () => { window.removeEventListener('mac-flash-menubar', onFlash); clearTimeout(t) }
+  }, [])
+
   // Blink the chosen item, then close the menu and act
   const handleItemClick = (item) => {
     if (item.disabled || blink) return
@@ -151,7 +160,7 @@ export default function MenuBar({
   }
 
   return (
-    <div className={styles.menuBar} ref={menuBarRef}>
+    <div className={`${styles.menuBar} ${flash ? styles.menuBarFlash : ''}`} ref={menuBarRef}>
       <div className={styles.menuItem}>
         <button
           className={`${styles.apple} ${openMenu === 'apple' ? styles.appleActive : ''} ${alarmRinging && openMenu !== 'apple' ? styles.appleBlink : ''}`}

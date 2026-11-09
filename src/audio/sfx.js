@@ -119,9 +119,19 @@ export function bell() {
 
 /** System beep: a short square-wave tone from the Mac's speaker, played
  *  when an alert appears. */
+// The Control Panel's speaker volume, 0–7 (3 to start). At 0 the Mac
+// doesn't beep: it flashes the menu bar instead (MenuBar listens for
+// 'mac-flash-menubar').
+let macVolume = 3
+export function setMacVolume(v) { macVolume = v }
+
 export function beep() {
+  if (macVolume === 0) {
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('mac-flash-menubar'))
+    return
+  }
   if (!ensure()) return
-  tone('square', 880, 0.08, 0.004, 0.17)
+  tone('square', 880, 0.08 * macVolume / 3, 0.004, 0.17)
 }
 
 /** Startup beep: the 128K, 512K and Plus played a plain 600 Hz square-wave

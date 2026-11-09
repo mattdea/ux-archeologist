@@ -75,7 +75,8 @@ export default function ControlPanel() {
     caretBlink: useSetting('caretBlink'),
   }
   const [dbl, setDbl] = useSetting('doubleClick')
-  const [volume, setVolume] = useSetting('volume')
+  const [volume, setVolumeSetting] = useSetting('volume')
+  const setVolume = (v) => { setVolumeSetting(v); sfx.setMacVolume(v) }
   const [desktop, setDesktop] = useSetting('desktopPattern')
   const [pattern, setPattern] = useState(desktop)   // being edited; the desktop changes on a click
 
@@ -127,7 +128,7 @@ export default function ControlPanel() {
     const up = () => {
       document.removeEventListener('mousemove', move)
       document.removeEventListener('mouseup', up)
-      if (v > 0) sfx.beep()            // the Mac beeps at the new volume
+      sfx.beep()                       // at the new volume (at 0 the menu bar flashes)
     }
     document.addEventListener('mousemove', move)
     document.addEventListener('mouseup', up)

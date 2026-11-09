@@ -9,9 +9,11 @@
 // pressed key are live: labels in Chicago, centred, baseline 13 pixels into
 // each 18-pixel face; the line's text 4 pixels in, baseline 14 down. The
 // Option layer is today's US Mac layout and a pressed key's look (its face
-// inverted) is reconstructed: neither is in the screenshot.
-import { useEffect, useState } from 'react'
+// inverted) is reconstructed: neither is in the screenshot. A held key
+// repeats at the Control Panel's delay and rate.
+import { useEffect, useRef, useState } from 'react'
 import { useWindowFrame } from '../windowFrame'
+import { getSetting } from '../macSettings'
 import art from '../../../assets/mac/da/keycaps.png'
 import styles from './da.module.css'
 
@@ -42,6 +44,13 @@ const BLANK = [['Backspace', 271, 41, 28], ['Tab', 11, 61, 28], ['CapsLock', 11,
 const BY_CODE = Object.fromEntries([...KEYS.map(k => [k.code, k]), ...BLANK.map(([code, x, y, w]) => [code, { code, x, y, w, layers: code === 'Space' ? [' ', ' ', ' '] : null }])])
 const MAX = 32   // characters the line holds before it drops the oldest
 
+// A held key repeats as the Control Panel says, in ticks (1/60 s):
+// "delay until repeat" 0–4 (0 off) and "key repeat rate" 0–4 (turtle to
+// rabbit). The tick counts are reconstructed.
+const DELAY_TICKS = [Infinity, 48, 36, 24, 15]
+const RATE_TICKS = [24, 12, 6, 4, 2]
+const TICK = 1000 / 60
+
 export default function KeyCaps() {
   const { active } = useWindowFrame()
   const [text, setText] = useState('')
@@ -50,6 +59,8 @@ export default function KeyCaps() {
   const [down, setDown] = useState(null)   // code of the key shown pressed
 
   const layer = option ? 2 : shift ? 1 : 0
+  const repeatRef = useRef(null)
+  const stopRepeat = () => { clearTimeout(repeatRef.current); repeatRef.current = null }
   const type = (key) => {
     if (key.code === 'Backspace') { setText(t => t.slice(0, -1)); return }
     const ch = key.layers?.[layer]
@@ -65,15 +76,22 @@ export default function KeyCaps() {
       const key = BY_CODE[e.code]
       if (!key || e.metaKey || e.ctrlKey) return
       e.preventDefault()
+      if (e.repeat) return                 // the browser's repeat; Key Caps keeps its own
       setDown(key.code)
-      if (!e.repeat) type(key)
+      type(key)
+      stopRepeat()
+      const delay = DELAY_TICKS[getSetting('keyDelay')], rate = RATE_TICKS[getSetting('keyRepeat')]
+      if (!isFinite(delay)) return
+      const again = () => { type(key); repeatRef.current = setTimeout(again, rate * TICK) }
+      repeatRef.current = setTimeout(again, delay * TICK)
     }
     const onUp = (e) => {
       if (e.key === 'Shift') setShift(false)
       if (e.key === 'Alt') setOption(false)
+      stopRepeat()
       setDown(d => (d === e.code ? null : d))
     }
-    const reset = () => { setShift(false); setOption(false); setDown(null) }
+    const reset = () => { setShift(false); setOption(false); setDown(null); stopRepeat() }
     document.addEventListener('keydown', onDown)
     document.addEventListener('keyup', onUp)
     window.addEventListener('blur', reset)
