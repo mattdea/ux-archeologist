@@ -2,7 +2,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styles from './BootSequence.module.css'
 import ScreenTexture from './ScreenTexture'
-import bootupIconUrl from '../../assets/mac-bootup-icon.png'
+import happyMacUrl from '../../assets/mac/boot-happy-mac.png'
+import welcomeUrl from '../../assets/mac/boot-welcome.png'
+
+// Traced from docs/reference/mac system 1/macsystem100023.png (Happy Mac, 25×32
+// at (243,145)) and macsystem100024.png (the welcome box, 448×126 at (32,64),
+// with its 3-pixel shadow), in Mac pixels on the 512×342 screen.
+const mp = (n) => `calc(var(--mac-px) * ${n})`
 
 // Phases of the overlay. Once the desktop is up the overlay is gone and the
 // real DesktopScene underneath draws its own menu bar and icons (via
@@ -13,42 +19,6 @@ const P = {
   HAPPY:    2,  // Happy Mac icon centered
   WELCOME:  3,  // Welcome to Macintosh dialog
   DESKTOP:  4,  // overlay removed; DesktopScene shows through
-}
-
-function HappyMacSVG({ className }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 25 33"
-      className={`${styles.happyMacSvg} ${className || ''}`}
-    >
-      {/* White fill background */}
-      <rect x="0" y="0" width="25" height="33" fill="white" />
-      {/* Black pixel art — provided by user */}
-      <rect x="2" y="0" width="21" height="1"/>
-      <rect x="1" y="1" width="1" height="1"/>
-      <rect x="23" y="1" width="1" height="1"/>
-      <rect x="0" y="2" width="1" height="26"/>
-      <rect x="24" y="2" width="1" height="26"/>
-      <rect x="4" y="3" width="17" height="1"/>
-      <rect x="3" y="4" width="1" height="14"/>
-      <rect x="21" y="4" width="1" height="14"/>
-      <rect x="8" y="7" width="1" height="2"/>
-      <rect x="12" y="7" width="1" height="5"/>
-      <rect x="15" y="7" width="1" height="2"/>
-      <rect x="11" y="12" width="2" height="1"/>
-      <rect x="9" y="14" width="1" height="1"/>
-      <rect x="14" y="14" width="1" height="1"/>
-      <rect x="10" y="15" width="4" height="1"/>
-      <rect x="4" y="18" width="17" height="1"/>
-      <rect x="15" y="23" width="6" height="1"/>
-      <rect x="3" y="24" width="2" height="1"/>
-      <rect x="1" y="28" width="23" height="1"/>
-      <rect x="1" y="29" width="1" height="3"/>
-      <rect x="23" y="29" width="1" height="3"/>
-      <rect x="1" y="32" width="23" height="1"/>
-    </svg>
-  )
 }
 
 /**
@@ -95,21 +65,16 @@ export default function BootSequence({ onComplete, onReveal, onDriveBusy }) {
         <ScreenTexture />
       </div>
 
-      {/* Happy Mac — centered standalone; gone once welcome dialog takes over */}
+      {/* Happy Mac, where the ROM drew it; gone once the welcome box is up */}
       {phase === P.HAPPY && (
-        <div className={styles.happyCenter}>
-          <HappyMacSVG />
-        </div>
+        <img src={happyMacUrl} className={styles.art} alt="" draggable="false"
+          style={{ left: mp(243), top: mp(145), width: mp(25), height: mp(32) }} />
       )}
 
-      {/* Welcome to Macintosh dialog */}
+      {/* Welcome to Macintosh. */}
       {phase === P.WELCOME && (
-        <div className={styles.welcomeCenter}>
-          <div className={styles.welcomeWindow}>
-            <img src={bootupIconUrl} className={styles.welcomeIcon} alt="" draggable="false" />
-            <span className={styles.welcomeText}>Welcome to Macintosh.</span>
-          </div>
-        </div>
+        <img src={welcomeUrl} className={styles.art} alt="Welcome to Macintosh." draggable="false"
+          style={{ left: mp(32), top: mp(64), width: mp(451), height: mp(129) }} />
       )}
 
     </div>
