@@ -130,6 +130,25 @@ Today only Notes opens.
 
 ## Approved
 
+### Level 4: feed audit fixes · approved 9 Nov 2026
+- **Source:** `docs/feed-audit.md` (119 findings). Apply the suggested fix on every line, **sure and check**, except where a rule below overrides it. Where a line says "accept or fix" or "keep or remove", take the fix (remove, replace, trim, recaption, hide, or open on a later post). Lines that say "nothing found" or "nothing to fix" stay as they are.
+- **Keep, whatever the audit says:**
+  - **Cristiano's suggestive photos:** `added-cr7-10` (the GQ cover, despite its date flag too), `added-cr7-09` and `added-cr7-11`. The duplicate `added-cr7-05` still goes.
+  - **Swearing and R-rated topics in captions:** Kim `BCitq5zOS8m`, Kevin Hart `BDL_7eyiYsX` `BDN-kJeiYqS` `BCLRbnSiYlB` (still fix their crop and size lines), HONY `BCbc8bHtrPJ` `BCYPXYJtrAI`, Katy Perry `BAbe8AAv-e_` `BB-xDOKv-Xy`, BuzzFeed 4/20 `BEb3Y1hPkqG` `BEcVpL1Pki6`, NYTimes `BDy44LXL2wo`.
+  - **Other sensitive posts:** Katy Perry's Hillary posts, Neymar's PokerStars ad `BD6PL7Exto8`, the 9gag alcohol meme `BDsgxhcDJxx`, Drake's Playboy packets `BDZsT2NDQPD`.
+  - **Avatar:** Selena's black-and-white avatar.
+  - **Other Rihanna photos:** `BCg1hcdhMwt`, `BDEJX7AhM50` and `BDMDjlvhM80` stay as they are.
+- **Profile only** (the post stays in its account's grid but never shows in the home feed or Explore): Rihanna `BEbFNVlBM39`, Gigi Hadid `BBiTEemDCaK` `BB2fgnNjCU-` `BB6Itm_jCQ2` `BCO1kMRDCVn`, Kylie `BDzlV_BnGvs`, Selena `BDURNbTOjDj`, Victoria's Secret `BETergNmIQF`. Build this as one named list in the feed data, so adding a post later is a one-line change. A feed slot whose lead is on the list opens on the next post.
+- **Remove:** the full nudes (Kim `BCroouZuSzw` `BCpQBQROSS1`, Bieber `BDcArURAvtC`); the ill children (The Rock `BC5gGzToh2Z` `BCz9y_Joh-r`, Neymar `BDyYjEgxtih`); the minor (`archive/instagram/BDgMA8cBQek`).
+- **New material** (avatars for Ellen and Symmetry Breakfast, the Glossier logo, larger copies of small photos, full text of cut-off captions, neutral avatars for the 4 friends):
+  - Find it on the web: archived Instagram pages or the Wayback Machine for the real accounts; Unsplash, like Imani's set, for the friend avatars.
+  - Record each new file's source in `assets/feed/README.md`. Commit files only to the folders the level reads; never `git add -f` anything under `assets/feed/raw/`.
+  - If something can't be found, use the audit's fallback: remove the small photo, end the caption on "…", or leave the initial avatar. Add it to a **Needs from Matthew** list (file, what's wanted, where you looked).
+- **When done:**
+  - Mark every finding in `docs/feed-audit.md` with its outcome: fixed · kept · profile only · needs Matthew.
+  - Update the spec's Level 4 section for any rule that changed: the profile-only list, library photos reposted by @instagram belonging to @instagram, hiding accounts with under ~6 photos from Explore, and caption hashing by file name.
+  - In Done, give the counts and the Needs from Matthew list.
+
 ---
 
 ## Done
