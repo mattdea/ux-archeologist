@@ -25,6 +25,17 @@ describe('TeachText', () => {
     expect(screen.getByText('File')).toBeInTheDocument()
   })
 
+  it('closing the document goes back to the desktop', { timeout: 15000 }, async () => {
+    const user = userEvent.setup()
+    render(<DesktopScene objectives={objectives} completeObjective={() => {}} active={true} />)
+    await user.dblClick(screen.getByText('Notes'))
+    await screen.findByLabelText('Document')
+    await waitFor(() => expect(finderMenus()).toBeNull(), { timeout: 3000 })
+    await choose(user, 'File', 'Close')
+    await waitFor(() => expect(finderMenus()).not.toBeNull(), { timeout: 3000 })
+    expect(screen.queryByLabelText('Document')).toBeNull()
+  })
+
   it('saves a new document to the disk, where the Finder shows it after Quit', { timeout: 15000 }, async () => {
     const user = userEvent.setup()
     render(<DesktopScene objectives={objectives} completeObjective={() => {}} active={true} />)

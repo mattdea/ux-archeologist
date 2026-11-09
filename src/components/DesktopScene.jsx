@@ -285,6 +285,10 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     zoomRects(desktop, from, to).then(() => setApp(a => a && a.name === name ? { name } : a))
   }
   const quitApp = () => { setApp(null); setTT(null); setTTSave(null); setTTAsk(null) }
+  // Closing TeachText's document quits it too, back to the Finder. (The real
+  // TeachText stayed open with an empty screen and its menus, which reads as
+  // a frozen Mac or a wiped desktop; Matthew's call, 9 Nov 2026.)
+  const closeDoc = quitApp
 
   // TeachText's File menu
   const ttCommit = (docId, text) => {
@@ -294,7 +298,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   }
   const ttCloseOrQuit = (then) => {
     if (tt?.dirty) { sfx.beep(); setTTAsk(then); return }
-    if (then === 'quit') quitApp(); else setTT(null)
+    if (then === 'quit') quitApp(); else closeDoc()
   }
   const ttSaveNow = (then = null) => {
     if (!tt) return
@@ -302,7 +306,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     onDiskAccess?.()
     ttCommit(tt.docId, tt.text)
     setTT(t => ({ ...t, dirty: false }))
-    if (then === 'quit') quitApp(); else if (then === 'close') setTT(null)
+    if (then === 'quit') quitApp(); else if (then === 'close') closeDoc()
   }
   const ttSaveAs = (name, then) => {
     onDiskAccess?.()
@@ -311,7 +315,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     setDocs(prev => existing ? prev.map(d => d.id === id ? { ...d, text: tt.text } : d) : [...prev, { id, label: name, text: tt.text }])
     setTTSave(null)
     setTT(t => ({ ...t, docId: id, title: name, dirty: false }))
-    if (then === 'quit') quitApp(); else if (then === 'close') setTT(null)
+    if (then === 'quit') quitApp(); else if (then === 'close') closeDoc()
   }
   // TeachText's Edit menu, on the text box's selection
   const ttEdit = (op) => {
@@ -903,7 +907,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           message={`Save changes to “${tt?.title}” before ${ttAsk === 'quit' ? 'quitting' : 'closing'}?`}
           buttons={[
             { label: 'Yes', onClick: () => { setTTAsk(null); ttSaveNow(ttAsk) } },
-            { label: 'No', onClick: () => { setTTAsk(null); if (ttAsk === 'quit') quitApp(); else setTT(null) } },
+            { label: 'No', onClick: () => { setTTAsk(null); if (ttAsk === 'quit') quitApp(); else closeDoc() } },
             { label: 'Cancel', onClick: () => setTTAsk(null) },
           ]}
         />
