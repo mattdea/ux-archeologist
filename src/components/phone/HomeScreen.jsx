@@ -30,7 +30,6 @@ import iconClock      from '../../../assets/iphone-icons/Clock.png'
 import iconCalculator from '../../../assets/iphone-icons/Calculator.png'
 import iconNotes      from '../../../assets/iphone-icons/Notes.png'
 import iconSettings   from '../../../assets/iphone-icons/Settings.png'
-import iconContacts   from '../../../assets/iphone-icons/Contacts.png'
 import iconAppStore   from '../../../assets/iphone-icons/App-Store.png'
 import iconITunes     from '../../../assets/iphone-icons/iTunes-Store.png'
 import iconPhone      from '../../../assets/iphone-icons/Phone.png'
@@ -40,12 +39,13 @@ import iconIPod       from '../../../assets/iphone-icons/Apple-Music.png'
 
 // ── Icon data ───────────────────────────────────────────────────────────────
 // Each entry: { id, name, iconSrc }
-// Page 0: 4×4 grid with 13 icons — row 4 has only Contacts in col 0.
-// CSS grid naturally leaves the 3 trailing cells of row 4 empty.
+// Page 0: the twelve apps of the June 2007 launch, 4×3. The SMS app was
+// called "Text" until iPhone OS 3.0 (2009), and Contacts was reached from
+// Phone, not the home screen, until iPhone OS 1.1.3 (January 2008).
 
 const PAGE_0_GRID = [
   // Row 1
-  { id: 'messages',   name: 'Messages',   iconSrc: iconMessages },
+  { id: 'text',       name: 'Text',       iconSrc: iconMessages },
   { id: 'calendar',   name: 'Calendar',   iconSrc: iconCalendar },
   { id: 'photos',     name: 'Photos',     iconSrc: iconPhotos },
   { id: 'camera',     name: 'Camera',     iconSrc: iconCamera },
@@ -59,8 +59,6 @@ const PAGE_0_GRID = [
   { id: 'calculator', name: 'Calculator', iconSrc: iconCalculator },
   { id: 'notes',      name: 'Notes',      iconSrc: iconNotes },
   { id: 'settings',   name: 'Settings',   iconSrc: iconSettings },
-  // Row 4 (partial — only col 0)
-  { id: 'contacts',   name: 'Contacts',   iconSrc: iconContacts },
 ]
 
 // Page 1: 2 icons in top-left, rest of grid empty.
