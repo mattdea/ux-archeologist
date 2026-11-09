@@ -22,6 +22,10 @@ plain color blocks when a photo is missing.
 
 An account in `archive/` wins over the same account in `library/`.
 
+Photos are stored at most 750px on a side (2x the 375pt feed column), at their
+own JPEG quality capped at 80; the full-size originals are in git history
+(before 9 Nov 2026). After adding photos, run `scripts/shrink-feed-photos.sh`.
+
 ## Recovering more real accounts
 
 ```bash
