@@ -19,17 +19,21 @@ function CautionIcon() {
   )
 }
 
-export default function MacAlert({ message, onOk }) {
+// `buttons` (optional) replaces the single OK: [{ label, onClick }], the
+// first the default (ringed, and what Return chooses).
+export default function MacAlert({ message, onOk, buttons }) {
+  const choices = buttons ?? [{ label: 'OK', onClick: onOk }]
+  const onDefault = choices[0].onClick
   const okRef = useRef(null)
 
   useEffect(() => {
     okRef.current?.focus()
     const onKey = (e) => {
-      if (e.key === 'Enter' || e.key === 'Return') { e.preventDefault(); onOk() }
+      if (e.key === 'Enter' || e.key === 'Return') { e.preventDefault(); onDefault() }
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [onOk])
+  }, [onDefault])
 
   return (
     // The scrim swallows clicks: nothing else responds while an alert is up
@@ -37,7 +41,12 @@ export default function MacAlert({ message, onOk }) {
       <div className={styles.alert} role="alertdialog" aria-modal="true" aria-label={message}>
         <CautionIcon />
         <p className={styles.message}>{message}</p>
-        <button ref={okRef} type="button" className={styles.ok} onClick={onOk}>OK</button>
+        <div className={styles.buttons}>
+          {choices.map((b, i) => (
+            <button key={b.label} ref={i === 0 ? okRef : undefined} type="button"
+              className={`${styles.ok} ${i === 0 ? '' : styles.plain}`} onClick={b.onClick}>{b.label}</button>
+          ))}
+        </div>
       </div>
     </div>
   )

@@ -79,6 +79,7 @@ Rounds 1–4 are in Done.
   - *Scrapbook*: dropped on 9 Nov 2026, then built the same night once Matthew added screenshots of its five pages (`macsystem100026–30.png`).
   - *Control Panel:* insertion point blinking, double-click speed and mouse tracking stay unwired (a web page can't set the caret blink, the system double-click time or pointer speed). A custom caret or our own double-click timing could fake the first two, if wanted.
   - *About the Finder* keeps the Finder 1.1g box by design.
+  - *TeachText / Font Mover* (built 9 Nov 2026, see spec "Utilities folder and applications"): TeachText's Open... dialog, Font Mover's font moving, and Disk Copy / SysVersion have no screenshots yet. Send them to build those.
 - **Rule:** everything must be something Finder 1.0/1.1 did.
 
 #### Netscape chrome

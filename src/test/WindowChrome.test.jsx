@@ -16,12 +16,12 @@ describe('Finder window chrome', () => {
     expect(disk.querySelectorAll('[data-arrow]').length).toBe(4)   // both bars active
     expect(disk.querySelector('[data-growbox] svg')).not.toBeNull()
 
-    await user.dblClick(screen.getAllByText('Notes')[0])
-    await waitFor(() => expect(container.querySelector('[data-win="notes"]')).not.toBeNull())
+    await user.dblClick(screen.getAllByText('Trash')[0])
+    await waitFor(() => expect(container.querySelector('[data-win="trash"]')).not.toBeNull())
     await waitFor(() => expect(disk.className).toMatch(/inactive/))
     expect(disk.querySelectorAll('[data-arrow]').length).toBe(0)
     expect(disk.querySelector('[data-growbox] svg')).toBeNull()
-    expect(container.querySelector('[data-win="notes"]').className).not.toMatch(/inactive/)
+    expect(container.querySelector('[data-win="trash"]').className).not.toMatch(/inactive/)
   })
 
   it('draws the starburst while the close box is pressed; released off it, the window stays', async () => {

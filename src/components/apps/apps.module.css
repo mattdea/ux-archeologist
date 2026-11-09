@@ -1,0 +1,113 @@
+/* src/components/apps/apps.module.css — applications (TeachText, Font Mover).
+ * Positions are Mac pixels; lines stay 1 CSS pixel. */
+
+/* ── TeachText's document window ── */
+.tt {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Geneva 12 on 16-pixel lines, 4 pixels in, as macsystem100033.png */
+.ttText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: auto;
+  margin: 0;
+  padding: 0 0 0 calc(var(--mac-px) * 4);
+  border: none;
+  border-radius: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  background: var(--mac-white);
+  color: var(--mac-black);
+  caret-color: var(--mac-black);
+  font-family: var(--font-geneva12);
+  font-size: calc(var(--mac-px) * 12);
+  line-height: calc(var(--mac-px) * 16);
+  white-space: pre-wrap;
+  -webkit-font-smoothing: none;
+  cursor: inherit;
+}
+.ttText::selection { background: var(--mac-black); color: var(--mac-white); }
+
+/* The bottom: a blank strip where a horizontal bar would be */
+.ttStrip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--mac-black);
+  background: var(--mac-white);
+}
+
+.ttGrow {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  box-sizing: border-box;
+  width: calc(var(--mac-px) * 16);
+  height: calc(var(--mac-px) * 16);
+  border: 1px solid var(--mac-black);
+  background: var(--mac-white);
+  cursor: inherit;
+}
+.ttGrow svg { display: block; }
+
+/* ── Dialogs and full-screen apps over traced art ── */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+}
+
+.saveDialog,
+.fontMover {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
+.fontMover {
+  inset: 0;
+  z-index: 400;          /* over the menu bar: Font Mover has none */
+}
+
+/* The name, typed live in Chicago where the traced field is blank */
+.saveName {
+  position: absolute;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 0 0 calc(var(--mac-px) * 2);
+  border: none;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: var(--mac-black);
+  caret-color: var(--mac-black);
+  font-family: var(--font-chicago);
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 16);
+  cursor: inherit;
+}
+.saveName::selection { background: var(--mac-black); color: var(--mac-white); }
+
+.btn {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: inherit;
+}
+/* Pressed: the face inverted inside its rounded frame */
+.btnDown {
+  position: absolute;
+  inset: calc(var(--mac-px) * 1);
+  border-radius: calc(var(--mac-px) * 4);
+  background: var(--mac-white);
+  mix-blend-mode: difference;
+}

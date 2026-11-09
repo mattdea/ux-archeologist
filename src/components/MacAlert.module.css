@@ -46,10 +46,19 @@
   line-height: 1.35;
 }
 
-.ok {
+.buttons {
   grid-row: 2;
   grid-column: 2;
-  justify-self: end;
+  display: flex;
+  flex-direction: row-reverse;   /* the default button on the right */
+  justify-content: flex-start;
+  gap: 18px;
+}
+
+/* Other buttons: no default ring */
+.ok.plain { box-shadow: none; }
+
+.ok {
   min-width: 64px;
   padding: 3px 14px;
   background: #fff;

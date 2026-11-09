@@ -27,6 +27,9 @@ export default function MenuBar({
   canEmptyTrash = false, onEmptyTrash, canGetInfo = false, onGetInfo,
   onCleanUp, canEject = false, onEject, onDeskAccessory,
   canPutBack = false, onPutBack, onCloseAll, onSelectAll, alarmRinging = false,
+  // An application in front (TeachText): its own menus after the Apple menu,
+  // and its own first Apple item ({ label, onSelect }); items run onSelect
+  menus: appMenus, appleAbout,
 }) {
   const [openMenu, setOpenMenu] = useState(null)
   // Label of the item mid-blink and whether it is drawn inverted right now
@@ -111,6 +114,7 @@ export default function MenuBar({
   }, [openMenu])
 
   const runAction = (item) => {
+    if (item.onSelect) { item.onSelect(); onMenuItemClick?.(); return }
     switch (item.action) {
       case 'open':       onOpen?.(); return
       case 'close':      onClose?.(); return
@@ -124,7 +128,7 @@ export default function MenuBar({
       case 'da':         onDeskAccessory?.(item.da); break
       default: break
     }
-    onMenuItemClick()
+    onMenuItemClick?.()
   }
 
   // With the speaker volume at 0, a beep flashes the menu bar instead
@@ -175,7 +179,7 @@ export default function MenuBar({
         </button>
         {openMenu === 'apple' && (
           <ul className={styles.dropdown}>
-            {APPLE_ITEMS.map((item, i) =>
+            {(appleAbout ? [{ ...appleAbout }, ...APPLE_ITEMS.slice(1)] : APPLE_ITEMS).map((item, i) =>
               item.dotSeparator ? (
                 <li key={i} className={styles.dropdownDotSeparator} />
               ) : (
@@ -193,7 +197,7 @@ export default function MenuBar({
           </ul>
         )}
       </div>
-      {MENUS.map(menu => (
+      {(appMenus ?? MENUS).map(menu => (
         <div key={menu.id} className={styles.menuItem}>
           <button
             className={`${styles.menuLabel} ${openMenu === menu.id ? styles.menuLabelActive : ''}`}

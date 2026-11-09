@@ -23,6 +23,9 @@ import { useAlarmClock } from './da/AlarmClock'
 import * as sfx from '../audio/sfx'
 import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
 import { zoomRects, localRect } from './zoomRects'
+import { TeachTextContent, SaveDialog } from './apps/TeachText'
+import FontMover from './apps/FontMover'
+import { NOTES_TEXT } from './NotesWindowContent'
 
 // Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = disk + Projects,
 // 3 = Notes, 4 = Trash (everything). The boot sequence steps this up so the
@@ -57,11 +60,26 @@ const DEFAULT_POS = {
 }
 const TRASHABLE = ['projects', 'notes']
 
-// What the disk holds. The 1984 System Disk: a System Folder and the Empty
-// Folder you renamed to make a new one (Finder 1.0 had no New Folder).
+// What the disk holds, in the order of macsystem100031.png: the Empty Folder
+// you renamed to make a new one (Finder 1.0 had no New Folder), the System
+// Folder, and the Utilities folder of the Infinite Mac disk the screenshots
+// come from (its tools are 1985–88; kept because that disk has them, and
+// TeachText is what Notes opens in). Documents saved from TeachText follow.
+// Where the Finder kept them in the disk window (x from the content's left,
+// macsystem100031.png); the first saved document goes where the Finder put
+// "Untitled" (macsystem100035.png), later ones to the right of Utilities.
 const DISK_ITEMS = [
-  { id: 'sysfolder',   label: 'System Folder', icon: 'folder' },
-  { id: 'emptyfolder', label: 'Empty Folder',  icon: 'folder' },
+  { id: 'emptyfolder', label: 'Empty Folder',  icon: 'folder', x: 24 },
+  { id: 'sysfolder',   label: 'System Folder', icon: 'folder', x: 111 },
+  { id: 'utilities',   label: 'Utilities',     icon: 'folder', x: 215 },
+]
+const docX = (k) => (k === 0 ? 152 : 215 + 64 * k)
+const UTILITY_ITEMS = [   // macsystem100031.png
+  { id: 'diskcopy',   label: 'Disk Copy',   icon: 'diskcopy' },
+  { id: 'fonts',      label: 'Fonts',       icon: 'fonts' },
+  { id: 'fontmover',  label: 'Font Mover',  icon: 'fontmover' },
+  { id: 'teachtext',  label: 'TeachText',   icon: 'teachtext' },
+  { id: 'sysversion', label: 'SysVersion',  icon: 'sysversion' },
 ]
 const SYSFOLDER_ITEMS = [   // in the Finder's order (macsystem100032.png)
   { id: 'system',    label: 'System',         icon: 'system' },
@@ -71,7 +89,7 @@ const SYSFOLDER_ITEMS = [   // in the Finder's order (macsystem100032.png)
   { id: 'notepadfile', label: 'Note Pad File', icon: 'system' },
   { id: 'scrapbookfile', label: 'Scrapbook File', icon: 'system' },
 ]
-const DISK_K = { inDisk: 216, available: 184, inSysFolder: 208 }
+const DISK_K = { inDisk: 216, available: 184, inSysFolder: 208, inUtilities: 96 }
 
 // Get Info text for each item, in the 1984 manual's formats
 // ("Size: 55248 bytes, accounts for 55K on disk"; "Where: Write/Paint,
@@ -81,7 +99,7 @@ const INFO = {
     created: 'Tuesday, January 24, 1984 at 9:00 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: '' },
   projects: { kind: 'folder', size: '5632 bytes, accounts for 6K on disk', where: `${DISK_NAME}, internal drive`,
     created: 'Tuesday, January 24, 1984 at 2:15 PM', modified: 'Wednesday, January 25, 1984 at 11:40 AM', comment: 'Budget, letter and sketch for the partners meeting.' },
-  notes: { kind: 'MacWrite document', size: '1432 bytes, accounts for 2K on disk', where: `${DISK_NAME}, internal drive`,
+  notes: { kind: 'TeachText document', size: '1432 bytes, accounts for 2K on disk', where: `${DISK_NAME}, internal drive`,
     created: 'Wednesday, January 25, 1984 at 9:14 AM', modified: 'Wednesday, January 25, 1984 at 4:02 PM', comment: 'First day with the Macintosh.' },
 }
 
@@ -96,6 +114,7 @@ const MENU_BAR = 20 * 620 / 512
 const WINDOW_POS = {
   disk: { x: 40, y: 48 }, sysfolder: { x: 70, y: 70 }, emptyfolder: { x: 90, y: 90 },
   projects: { x: 80, y: 50 }, notes: { x: 60, y: 55 }, trash: { x: 90, y: 60 },
+  utilities: { x: 72 * MACPX, y: 202 * MACPX },   // macsystem100031.png
 }
 
 // The Finder's own windows open at these sizes and can be grown from the
@@ -104,7 +123,13 @@ const WINDOW_POS = {
 const FINDER_SIZE = {
   disk: { w: 340, h: 150 }, sysfolder: { w: 340, h: 150 }, emptyfolder: { w: 260, h: 130 },
   projects: { w: 340, h: 150 }, trash: { w: 300, h: 150 },
+  utilities: { w: 380 * MACPX, h: 112 * MACPX },
 }
+
+// TeachText's document window fills the screen inside a 3-pixel margin:
+// frame (3,23)–(508,338), measured from macsystem100033.png
+const TT_POS = { x: 3 * MACPX, y: 23 * MACPX }
+const TT_SIZE = { w: 506 * MACPX, h: 316 * MACPX }
 
 export default function DesktopScene({ completeObjective, active, reveal = REVEAL_ALL, onDiskAccess }) {
   // windows: [{ id, type, title, pos, z, hidden, src, item }]
@@ -122,6 +147,17 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const [ejected, setEjected] = useState(false)        // disk out: icon dimmed
   const [marquee, setMarquee] = useState(null)         // {x,y,w,h} desktop px
   const [folderSel, setFolderSel] = useState(null)     // selected item inside a window
+  // An application in front of the Finder: null, or { name: 'teachtext' |
+  // 'fontmover', launching } (launching while its zoom rectangles play)
+  const [app, setApp] = useState(null)
+  const [docs, setDocs] = useState([])                 // TeachText documents saved to the disk: { id, label, text }
+  const [notesText, setNotesText] = useState(NOTES_TEXT)
+  const [tt, setTT] = useState(null)                   // TeachText's window: { docId, title, text, dirty } or null
+  const [ttSave, setTTSave] = useState(null)           // the Save dialog: { then: null | 'close' | 'quit' }
+  const [ttAsk, setTTAsk] = useState(null)             // "Save changes?" before 'close' | 'quit'
+  const ttEditor = useRef(null)
+  const [ttZ, setTTZ] = useState(20)                  // TeachText's window in the window stack
+  const ttClip = useRef('')                            // TeachText's clipboard
 
   const onDesktop = (id) => id === 'trash' || (id === 'disk') || (!trashContents.includes(id) && !deleted.includes(id))
   const desktopIds = Object.keys(ICONS).filter(onDesktop)
@@ -201,9 +237,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     } else if (id === 'projects') {
       openWindow('projects', { title: 'Projects', from: iconRect('projects'), src: 'projects' })
     } else if (id === 'notes') {
-      // Opening a document from the Finder closed every desk accessory
-      setWindows(prev => prev.filter(w => !DA_TITLES[w.type]))
-      openWindow('notes', { title: 'Notes', from: iconRect('notes'), src: 'notes' })
+      // A TeachText document: opening it launches TeachText with it
+      launch('teachtext', iconRect('notes'), { docId: 'notes', title: 'Notes', text: notesText, dirty: false })
       completeObjective('openFolder')
     } else if (id === 'trash') {
       openWindow('trash', { title: 'Trash', from: iconRect('trash'), src: 'trash' })
@@ -215,12 +250,102 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     const from = localRect(desktopRef.current, el)
     if (item.icon === 'folder') {
       openWindow(item.id, { title: item.label, from, src: null, pos: WINDOW_POS[item.id] })
+    } else if (item.id === 'teachtext') {
+      launch('teachtext', from, { docId: null, title: 'Untitled', text: '', dirty: false })
+    } else if (item.id === 'fontmover') {
+      launch('fontmover', from)
+    } else if (item.doc) {
+      const d = docs.find(x => x.id === item.id)
+      launch('teachtext', from, { docId: d.id, title: d.label, text: d.text, dirty: false })
     } else {
       // Finder 1.0's wording for a file with no application to open it
       sfx.beep()
       setAlertMsg(`The file “${item.label}” could not be opened/printed (the application is busy or missing).`)
     }
   }
+
+  // ── Applications ───────────────────────────────────────────────────
+  // Launching: the disk is read, desk accessories close, zoom rectangles
+  // grow from the icon to the whole screen, then the Finder's desktop gives
+  // way to the application (its windows come back when it quits).
+  const launch = (name, from, doc) => {
+    onDiskAccess?.()
+    setWindows(prev => prev.filter(w => !DA_TITLES[w.type]))
+    setApp({ name, launching: true })
+    setTT(name === 'teachtext' ? doc : null)
+    setTTZ(zRef.current++)
+    const desktop = desktopRef.current
+    const to = desktop ? { x: 0, y: MENU_BAR, w: desktop.offsetWidth, h: desktop.offsetHeight - MENU_BAR } : null
+    zoomRects(desktop, from, to).then(() => setApp(a => a && a.name === name ? { name } : a))
+  }
+  const quitApp = () => { setApp(null); setTT(null); setTTSave(null); setTTAsk(null) }
+
+  // TeachText's File menu
+  const ttCommit = (docId, text) => {
+    if (docId === 'notes') setNotesText(text)
+    else setDocs(prev => prev.map(d => d.id === docId ? { ...d, text } : d))
+  }
+  const ttCloseOrQuit = (then) => {
+    if (tt?.dirty) { sfx.beep(); setTTAsk(then); return }
+    if (then === 'quit') quitApp(); else setTT(null)
+  }
+  const ttSaveNow = (then = null) => {
+    if (!tt) return
+    if (!tt.docId) { setTTSave({ then }); return }
+    onDiskAccess?.()
+    ttCommit(tt.docId, tt.text)
+    setTT(t => ({ ...t, dirty: false }))
+    if (then === 'quit') quitApp(); else if (then === 'close') setTT(null)
+  }
+  const ttSaveAs = (name, then) => {
+    onDiskAccess?.()
+    const existing = docs.find(d => d.label === name)
+    const id = existing?.id ?? `doc-${docs.length + 1}`
+    setDocs(prev => existing ? prev.map(d => d.id === id ? { ...d, text: tt.text } : d) : [...prev, { id, label: name, text: tt.text }])
+    setTTSave(null)
+    setTT(t => ({ ...t, docId: id, title: name, dirty: false }))
+    if (then === 'quit') quitApp(); else if (then === 'close') setTT(null)
+  }
+  // TeachText's Edit menu, on the text box's selection
+  const ttEdit = (op) => {
+    const el = ttEditor.current
+    if (!el || !tt) return
+    const { selectionStart: a, selectionEnd: b } = el
+    const text = tt.text
+    let next = text, caret = a
+    if (op === 'selectAll') { el.focus(); el.select(); return }
+    if (op === 'copy' || op === 'cut') ttClip.current = text.slice(a, b)
+    if (op === 'cut' || op === 'clear') next = text.slice(0, a) + text.slice(b)
+    if (op === 'paste') { next = text.slice(0, a) + ttClip.current + text.slice(b); caret = a + ttClip.current.length }
+    if (next !== text) setTT(t => ({ ...t, text: next, dirty: true }))
+    requestAnimationFrame(() => { el.focus(); el.setSelectionRange(caret, op === 'copy' ? b : caret) })
+  }
+  const ttReadOnly = tt?.docId === 'notes' && !!locked.notes
+  const ttMenus = [
+    {
+      id: 'file', label: 'File', items: [
+        { label: 'New',         disabled: !!tt, onSelect: () => setTT({ docId: null, title: 'Untitled', text: '', dirty: false }) },
+        { label: 'Open...',     disabled: true },
+        { label: 'Close',       disabled: !tt, onSelect: () => ttCloseOrQuit('close') },
+        { label: 'Save',        disabled: !tt || ttReadOnly, onSelect: () => ttSaveNow() },
+        { label: 'Save As...',  disabled: !tt, onSelect: () => setTTSave({ then: null }) },
+        { label: 'Page Setup...', disabled: true },
+        { label: 'Print...',    disabled: true },
+        { label: 'Quit',        onSelect: () => ttCloseOrQuit('quit') },
+      ],
+    },
+    {
+      id: 'edit', label: 'Edit', items: [
+        { label: 'Undo',       shortcut: '⌘Z', disabled: true },
+        { label: 'Cut',        shortcut: '⌘X', disabled: !tt || ttReadOnly, onSelect: () => ttEdit('cut') },
+        { label: 'Copy',       shortcut: '⌘C', disabled: !tt, onSelect: () => ttEdit('copy') },
+        { label: 'Paste',      shortcut: '⌘V', disabled: !tt || ttReadOnly, onSelect: () => ttEdit('paste') },
+        { label: 'Clear',      disabled: !tt || ttReadOnly, onSelect: () => ttEdit('clear') },
+        { label: 'Select All', shortcut: '⌘A', disabled: !tt, onSelect: () => ttEdit('selectAll') },
+      ],
+    },
+  ]
+  const ttAbout = { label: 'About TeachText...', onSelect: () => setAlertMsg('TeachText\n© 1988 Apple Computer, Inc.') }
 
   // ── Selection ──────────────────────────────────────────────────────
   const handleIconMouseDown = (id, e) => {
@@ -559,7 +684,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
     if (ejected) return
     onDiskAccess?.()
     setEjected(true)
-    setWindows(prev => prev.filter(w => !['disk', 'sysfolder', 'emptyfolder'].includes(w.type)))
+    setWindows(prev => prev.filter(w => !['disk', 'sysfolder', 'emptyfolder', 'utilities'].includes(w.type)))
     setSelected(prev => prev.filter(x => x !== 'disk'))
     clearTimeout(ejectTimer.current)
     ejectTimer.current = setTimeout(() => { onDiskAccess?.(); setEjected(false) }, 3000)
@@ -616,16 +741,20 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   // An icon is shaded while its window is open (not once it starts to close)
   const openedIds = windows.filter(w => !w.closing).map(w => w.id)
   const [desktopPattern] = useMacSetting('desktopPattern')   // set in the Control Panel
+  // While an application runs, the Finder's icons and windows are gone
+  const finderAway = !!app && !app.launching
   const frontId = windows.filter(w => !w.closing).reduce((a, b) => (!a || b.z > a.z ? b : a), null)?.id
   const windowTitle = (w) => w.title ?? ICONS[w.type]?.label ?? ''
   const windowContent = (w) => {
     switch (w.type) {
       case 'disk':
-        return <FolderWindowContent items={DISK_ITEMS} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} openedIds={openedIds} />
+        return <FolderWindowContent items={[...DISK_ITEMS, ...docs.map((d, k) => ({ id: d.id, label: d.label, icon: 'notes', doc: true, x: docX(k) }))]} inDisk={DISK_K.inDisk} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} openedIds={openedIds} />
       case 'sysfolder':
         return <FolderWindowContent items={SYSFOLDER_ITEMS} inFolder={DISK_K.inSysFolder} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'emptyfolder':
         return <FolderWindowContent items={[]} />
+      case 'utilities':
+        return <FolderWindowContent items={UTILITY_ITEMS} left={18} inFolder={DISK_K.inUtilities} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'info':
         return <InfoWindowContent item={w.item} locked={!!locked[w.item.id]} onToggleLock={() => setLocked(l => ({ ...l, [w.item.id]: !l[w.item.id] }))} />
       case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'keycaps': case 'controlpanel': case 'scrapbook':
@@ -665,6 +794,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         onCloseAll={closeAll}
         onSelectAll={selectAll}
         alarmRinging={alarmRinging}
+        menus={app?.name === 'teachtext' && !app.launching ? ttMenus : undefined}
+        appleAbout={app?.name === 'teachtext' && !app.launching ? ttAbout : undefined}
       />
       </div>
 
@@ -683,7 +814,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
             isSelected={selected.includes(id)}
             isOpened={openedIds.includes(id)}
             className={id === 'disk' && ejected ? styles.ejected : ''}
-            style={{ position: 'absolute', left: pos.x, top: pos.y, visibility: shown(reveal >= def.reveal) }}
+            style={{ position: 'absolute', left: pos.x, top: pos.y, visibility: shown(reveal >= def.reveal && !finderAway) }}
             draggable={true}
             onMouseDown={(e) => handleIconMouseDown(id, e)}
             onDoubleClick={() => openIcon(id)}
@@ -707,7 +838,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           title={windowTitle(win)}
           initialPos={win.pos}
           zIndex={win.z}
-          hidden={win.hidden}
+          hidden={win.hidden || finderAway}
           width={DA_WIDTH[win.type] ?? (win.type === 'info' ? INFO_WIDTH : undefined)}
           variant={DA_VARIANT[win.type] ?? 'doc'}
           art={win.type === 'alarm' && clock.open ? DA_ART.alarmOpen : DA_ART[win.type]}
@@ -731,6 +862,42 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
                 fill="none" stroke="#000" strokeWidth="1" strokeDasharray="1 1" shapeRendering="crispEdges" />
         </svg>
       )}
+
+      {app?.name === 'teachtext' && tt && (
+        <DraggableWindow
+          key={`tt-${tt.docId ?? 'untitled'}`}
+          id="teachtext"
+          type="teachtext"
+          title={tt.title}
+          initialPos={TT_POS}
+          zIndex={ttZ}
+          hidden={!!app.launching}
+          size={TT_SIZE}
+          resizable
+          active={!ttSave && !ttAsk}
+          onClose={() => ttCloseOrQuit('close')}
+          onFocus={() => setTTZ(zRef.current++)}
+        >
+          <TeachTextContent
+            text={tt.text}
+            readOnly={ttReadOnly}
+            editorRef={ttEditor}
+            onChange={(text) => setTT(t => ({ ...t, text, dirty: true }))}
+          />
+        </DraggableWindow>
+      )}
+      {ttSave && <SaveDialog initial={tt?.title ?? 'Untitled'} onSave={(name) => ttSaveAs(name, ttSave.then)} onCancel={() => setTTSave(null)} />}
+      {ttAsk && (
+        <MacAlert
+          message={`Save changes to “${tt?.title}” before ${ttAsk === 'quit' ? 'quitting' : 'closing'}?`}
+          buttons={[
+            { label: 'Yes', onClick: () => { setTTAsk(null); ttSaveNow(ttAsk) } },
+            { label: 'No', onClick: () => { setTTAsk(null); if (ttAsk === 'quit') quitApp(); else setTT(null) } },
+            { label: 'Cancel', onClick: () => setTTAsk(null) },
+          ]}
+        />
+      )}
+      {app?.name === 'fontmover' && !app.launching && <FontMover onQuit={quitApp} />}
 
       {about && <AboutFinder onClose={() => setAbout(false)} />}
       {alertMsg && <MacAlert message={alertMsg} onOk={() => setAlertMsg(null)} />}

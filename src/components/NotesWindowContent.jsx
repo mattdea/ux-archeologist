@@ -3,7 +3,7 @@ import MacScrollPane from './MacScrollPane'
 import { useWindowFrame } from './windowFrame'
 import styles from './NotesWindowContent.module.css'
 
-const NOTES_TEXT = `Jan 25, 1984
+export const NOTES_TEXT = `Jan 25, 1984
 
 Finally got the Macintosh set up on my desk today. Susan from accounting helped me carry the box up from the loading dock — it's heavier than it looks.
 

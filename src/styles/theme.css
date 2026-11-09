@@ -26,6 +26,15 @@
   font-style: normal;
 }
 
+/* Apple's bitmap Geneva 12, from the same source (jcs/classic-mac-fonts):
+   TeachText's text, at font-size 12 Mac pixels */
+@font-face {
+  font-family: 'Geneva 12';
+  src: url('../../fonts/geneva-12.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --mac-white: #ffffff;
   --mac-black: #000000;
@@ -39,6 +48,7 @@
   --font-mono: 'Monaco', 'Courier New', monospace;
   --font-geneva: 'Geneva', 'Helvetica Neue', 'Helvetica', sans-serif;
   --font-geneva9: 'Geneva 9', 'Geneva', 'Helvetica Neue', sans-serif;
+  --font-geneva12: 'Geneva 12', 'Geneva', 'Helvetica Neue', sans-serif;
   --font-newyork12: 'New York 12', 'Times New Roman', serif;
   /* One Mac pixel on this screen: the 512-pixel-wide Mac is drawn 620 wide */
   --mac-px: calc(620px / 512);
