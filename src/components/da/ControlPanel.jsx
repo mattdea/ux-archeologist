@@ -13,6 +13,9 @@
 //                    The right box is a little desktop in that pattern: click
 //                    its menu bar for the next of the stock patterns, click
 //                    the desktop to make it the Mac's desktop pattern
+// Opening it, the boxes don't arrive together: each one draws in on its own,
+// at a random moment within about half a second (as on infinite mac;
+// the spread is reconstructed).
 // Settings live in macSettings.js for the session. Mouse tracking is shown
 // but not wired. Reconstructed: the stock patterns (QuickDraw's own and a
 // few classic ones, not System 1's list) and the menu-bar / desktop clicks,
@@ -61,7 +64,28 @@ const STOCK = [
 ]
 const same = (a, b) => a.every((v, i) => v === b[i])
 
+// The panel's boxes, frame included: [left, top, right, bottom] in Mac pixels
+const BOXES = [
+  [6, 6, 46, 147],       // speaker volume
+  [51, 6, 198, 35],      // date and time
+  [203, 6, 304, 35],     // menu blinks
+  [51, 44, 253, 86],     // key repeat and delay
+  [258, 44, 305, 86],    // insertion point blinking
+  [51, 95, 93, 147],     // mouse tracking
+  [98, 95, 212, 147],    // desktop pattern
+  [217, 95, 305, 147],   // double-click speed
+]
+const BOX_FIRST = 40, BOX_SPREAD = 420    // ms: each box draws in somewhere in this window
+
 export default function ControlPanel() {
+  const [drawn, setDrawn] = useState(() => BOXES.map(() => false))
+  useEffect(() => {
+    const timers = BOXES.map((_, i) => setTimeout(() => {
+      setDrawn(d => d.map((v, j) => v || j === i))
+    }, BOX_FIRST + Math.random() * BOX_SPREAD))
+    return () => timers.forEach(clearTimeout)
+  }, [])
+
   const [now, setNow] = useState(() => new Date())
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 250)
@@ -187,6 +211,12 @@ export default function ControlPanel() {
           }}
           onClick={() => setDbl(i)}
         />
+      ))}
+
+      {/* Boxes still to draw in */}
+      {BOXES.map(([l, t, r, b], i) => !drawn[i] && (
+        <span key={`box${i}`} className={styles.cpCover} data-cp-cover=""
+          style={{ left: mp(l), top: mp(t), width: mp(r - l + 1), height: mp(b - t + 1) }} />
       ))}
     </div>
   )

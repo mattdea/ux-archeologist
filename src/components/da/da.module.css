@@ -243,6 +243,8 @@
   background: var(--mac-white);
   cursor: inherit;
 }
+/* A box not drawn in yet: blank, and it takes the clicks */
+.cpCover { position: absolute; background: var(--mac-white); z-index: 1; }
 /* The chosen setting: its cell inverted */
 .cpCellOn { background-color: var(--mac-white); mix-blend-mode: difference; }
 
