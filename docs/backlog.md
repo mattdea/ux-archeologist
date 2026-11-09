@@ -163,4 +163,4 @@ _Finished items, moved here when built._
 
 **Not settled, so don't guess past it:** the beep's exact length. Use `beep()`'s envelope unless a recording of a real 128K/512K boot turns up.
 
-**Built:** `sfx.startupBeep()` (600 Hz square, `beep()`'s envelope) plays as Level 1 boots; `chime()` and `assets/mac-chime.mp3` removed; the spec's Sound section and Progress line updated. Length still reconstructed.
+**Built:** `sfx.startupBeep()` (600 Hz square) plays as Level 1 boots; `chime()` and `assets/mac-chime.mp3` removed; the spec's Sound section and Progress line updated. First built with `beep()`'s ~175 ms envelope; Matthew then set the length to about 1 s (held, 200 ms fade). Level still reconstructed.

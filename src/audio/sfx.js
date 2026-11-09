@@ -147,11 +147,24 @@ export function beep() {
 }
 
 /** Startup beep: the 128K, 512K and Plus played a plain 600 Hz square-wave
- *  beep at power-on (the chord arrived with the Macintosh II in 1987).
- *  Length and level are reconstructed: they reuse beep()'s envelope. */
+ *  beep at power-on (the chord arrived with the Macintosh II in 1987). It
+ *  holds for about 1 s as the boot begins, then fades over the last 200 ms.
+ *  The level is reconstructed (beep()'s peak). */
+const STARTUP_BEEP_S = 1
 export function startupBeep() {
   if (!ensure()) return
-  tone('square', 600, 0.08, 0.004, 0.17)
+  const t = now()
+  const o = ctx.createOscillator()
+  o.type = 'square'
+  o.frequency.value = 600
+  const g = ctx.createGain()
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.08, t + 0.004)
+  g.gain.setValueAtTime(0.08, t + STARTUP_BEEP_S - 0.2)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + STARTUP_BEEP_S)
+  g.connect(master)
+  o.connect(g)
+  o.start(t); o.stop(t + STARTUP_BEEP_S + 0.05)
 }
 
 // ── 1995: dial-up ──────────────────────────────────────────────────
