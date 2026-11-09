@@ -10,7 +10,7 @@
 // A photo that is missing on this machine falls back to the post's gradient.
 
 import AIRBNB_AD from '../../../assets/feed/ads/airbnb-ad.jpg'
-import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
+import { ACCOUNTS, EXPLORE_ORDER, adPhoto, friendPhotos, isLibraryAccount, libraryAvatar, libraryFileName, libraryPhotos, ownedPhotos, sourcePhoto } from './libraryData'
 import { ARCHIVE, ARCHIVE_HANDLES, isArchiveAccount, archivePost, archiveProfile, gridTime } from './archiveData'
 
 // Imani's photos are Unsplash (Unsplash License, @aliounepic), the one set
@@ -55,12 +55,14 @@ export function hashString(s) {
 const EXPLORE_TIMES = ['3m', '12m', '28m', '41m', '1h', '2h', '3h', '5h', '6h', '9h', '14h', '1d']
 
 /** A post by a real library account. Deterministic per photo, so the same
-    photo shows the same likes and caption in the feed, Explore and profile. */
+    photo shows the same likes and caption in the feed, Explore and profile.
+    Hashed on the photo's file name, not its built URL, so `npm run dev` and
+    the public build agree and re-encoding a file doesn't change its post. */
 const EXTRA_CAPTIONS = ['📷', 'this light though', 'new favorite', 'can’t stop looking at this', 'a good day', 'saturday ✨', 'details', 'more soon']
 
 export function libraryPost(account, url, overrides = {}) {
   const meta = ACCOUNTS[account]
-  const h = hashString(url)
+  const h = hashString(libraryFileName(url) || url)
   const big = /m$|k$/.test(meta.followers)
   return {
     id: 'lib-' + h,
@@ -107,12 +109,46 @@ function feedArchivePost(handle, k, overrides = {}) {
   return i === undefined ? null : archivePost(handle, i, { timestamp: gridTime(k), ...overrides })
 }
 
+// Posts that never open a feed slot (they still show in their grid and in
+// Explore): a slot that would lead on one opens on the account's next post.
+// Feed audit, 9 Nov 2026.
+const NO_LEAD = new Set([
+  'BEALzcXOjGc',   // selenagomez, "74 🙏🏽❤️": cryptic without context
+  'BEl5XXRPMxg',   // leomessi, a video message to Stephen Curry
+  'BEeKDAVCYtt',   // kevinhart4real, a portrait of Prince (tribute)
+  // instagram: video posts whose captions are about motion and sound
+  'BERo0ybhQd3', 'BD1U1rQBQfS', 'BDzMcG3hQSD', 'BDrFGFthQe4',
+  'BCYwZd6BQde', 'BCYwK9nhQdD', 'BCYv5NAhQcu', 'BCRH0EqBQWO',
+])
+
+/** Feed positions an archive account's slot may open on: its first three
+    feed-eligible posts that aren't in NO_LEAD. */
+const LEAD_CHOICES = Object.fromEntries(ARCHIVE_HANDLES.map(h => [h,
+  FEED_INDEXES[h].flatMap((i, k) => NO_LEAD.has(ARCHIVE[h].posts[i].code) ? [] : [k]).slice(0, 3)]))
+
 // ── Posts ──────────────────────────────────────────────────────────────────
 // `timestamp` is the 2016 short form shown at the right of the post header.
 // BASE_POSTS are the player's four invented friends and two ads; the real
 // accounts are listed in FEED_ORDER below.
 
 const FRIEND_PHOTO_LEAD = username => friendSet(username)[0] || null
+
+// Captions for the friends' other photos (all but their lead post), in each
+// friend's own voice and subject. Spring, not summer: the feed is April 2016.
+const FRIEND_CAPTIONS = {
+  'marcus.h': ['window light, no reflector', 'from saturday’s shoot', 'portrait series, cont.', 'she didn’t know I was shooting',
+    'shot on the 85 #portrait', 'overcast days are the best days', 'outtake I still love', 'faces > places'],
+  'julia.creates': ['work in progress ✏️', 'new piece, finally finished', 'sketchbook page', 'studio mess today',
+    'commission for a friend 🎨', 'trying a new palette', 'little study', 'this one took forever'],
+  'sarah.moments': ['tea and a sketchbook ☕', 'quiet morning', 'saved this for a rainy day', 'found this on my walk',
+    'slow sunday ✏️', 'this made me smile', 'little things', 'early start, worth it'],
+  'imani.brooks': ['from the editorial 📷', 'outtake', 'Dakar, last spring', 'light test',
+    'styling by my sister ✨', 'contact sheet favorite', 'set day', 'film still'],
+}
+const friendCaption = (username, h) => {
+  const list = FRIEND_CAPTIONS[username] || EXPLORE_CAPTIONS
+  return list[h % list.length]
+}
 
 const BASE_POSTS = [
   {
@@ -184,7 +220,7 @@ const BASE_POSTS = [
     avatar: friendAvatar('warbyparker'),
     imageGradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
     likes: '7,892',
-    caption: 'Fall frames are here. Try 5 pairs at home, free. #WarbyParker',
+    caption: 'Spring frames are here. Try 5 pairs at home, free. #WarbyParker',
     commentCount: 44,
     comments: [],
     avatarColor: '#1a1a2e',
@@ -212,8 +248,13 @@ const BASE_POSTS = [
 // Point each friend's post at the lead photo of their set, and each ad at a
 // real photo of that brand from the archive (else its reserved library
 // photo). The old post-*.jpg files are no longer used.
+// The ad's photo, by post code; otherwise the brand's newest archived post.
+// Warby Parker's newest (BD6dadaS8s_) is a Snapchat note, so the ad uses its
+// spring product shot (feed audit, 9 Nov 2026).
+const AD_POST = { warbyparker: 'BDL3YUuy8pA' }
 BASE_POSTS.forEach(p => {
-  const ad = p.isSponsored && ARCHIVE[p.username] ? ARCHIVE[p.username].posts[0].url : null
+  const posts = p.isSponsored && ARCHIVE[p.username] ? ARCHIVE[p.username].posts : null
+  const ad = posts ? (posts.find(x => x.code === AD_POST[p.username]) || posts[0]).url : null
   const src = FRIEND_PHOTO_LEAD(p.username) || ad || adPhoto(p.username)
   if (src && !p.imageSrc) p.imageSrc = src
 })
@@ -292,7 +333,13 @@ export function buildFeed(seed = 0) {
     const options = MOVABLE_SLOTS.filter(i => i >= IMANI_RANGE[0] && i <= IMANI_RANGE[1])
     const to = options[Math.floor(r() * options.length)]
     ;[users[home], users[to]] = [users[to], users[home]]
-    users.forEach(u => { if (!BASE_POSTS.some(p => p.username === u)) start[u] = Math.floor(r() * 3) })
+    users.forEach(u => {
+      if (BASE_POSTS.some(p => p.username === u)) return
+      const choices = LEAD_CHOICES[u] || [0]
+      start[u] = choices[Math.floor(r() * 3) % choices.length] ?? 0
+    })
+  } else {
+    users.forEach(u => { if (LEAD_CHOICES[u]?.length) start[u] = LEAD_CHOICES[u][0] })
   }
   const posts = users.flatMap((username, i) => {
     const timestamp = FEED[i][1]
@@ -307,7 +354,7 @@ export function buildFeed(seed = 0) {
         ...base,
         id: `${base.id}-${k}`,
         imageSrc: set[k],
-        caption: EXPLORE_CAPTIONS[h % EXPLORE_CAPTIONS.length],
+        caption: friendCaption(username, h),
         likes: String(20 + (h % 180)),
         commentCount: 0,
         comments: [],
@@ -345,7 +392,7 @@ export function buildFeed(seed = 0) {
     return shownOrder[n]
   }
   const page = n => orderFor(n).flatMap(username => {
-    const post = feedArchivePost(username, (start[username] || 0) + n)
+    const post = feedArchivePost(username, (start[username] || 0) + n, { timestamp: gridTime(n) })
     return post ? [post] : []
   })
   return { posts, page }
@@ -432,7 +479,6 @@ const EXPLORE_USERS = [
 ]
 
 const EXPLORE_CAPTIONS = [
-  'summer is here ☀️ #startofsummer',
   'golden hour never gets old',
   'weekend mode 🙌',
   'throwback to this exact spot #tbt',
@@ -557,7 +603,7 @@ export function getProfile(username) {
         username,
         imageSrc: image,
         likes: (40 + (ph % 1800)).toLocaleString('en-US'),
-        caption: EXPLORE_CAPTIONS[ph % EXPLORE_CAPTIONS.length],
+        caption: friendCaption(username, ph),
         commentCount: 1 + (ph % 40),
         comments: [],
         timestamp: gridTime(i),

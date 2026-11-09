@@ -68,6 +68,11 @@ supplied by the project owner, Nov 2026) dated between his newest real posts
 so they sit near the top of his grid; their `source` field says so. His real post BDtvWriBpf3 ("Team…") also uses a
 supplied, uncropped copy of its photo.
 
+Captions edited by hand after recovery (restored in full, trimmed, or ended
+on "…" where the full text wasn't found) carry a `caption_note` saying what
+changed and where the text came from. Re-running the script rewrites
+`profile.json`, so re-apply those edits afterwards (`git diff` shows them).
+
 To put a recovered account in the home feed, add a `[handle, timestamp]` pair
 to `FEED` in `src/components/feed/feedData.js`. Every recovered account
 already appears in Explore and can be opened as a profile.

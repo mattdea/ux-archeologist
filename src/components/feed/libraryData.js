@@ -241,7 +241,7 @@ export const GRID_CAP = 24
 // set; `lead` = the photo used for their feed post. imani.brooks is not here:
 // her photos are committed ES imports in feedData.js (IMANI_PHOTOS).
 export const FRIEND_SETS = {
-  'marcus.h':       { from: ['christian_foto'], topic: 'people' },
+  'marcus.h':       { from: ['christian_foto'], topic: 'people', lead: '2016-04-08_christian_foto_o5bk1v4.jpg' },
   'julia.creates':  { from: ['jadeantoine'], topic: 'art' },
   'sarah.moments':  { from: ['liaselina'], topic: 'art', lead: '2016-05-01_liaselina_o6ifm73.jpg' },
 }
@@ -471,6 +471,13 @@ export function libraryAvatar(account) {
 
 export function isLibraryAccount(username) {
   return !!(ACCOUNTS[username] && REAL_OWNERS[username] !== undefined && OWNED[username]?.length)
+}
+
+const NAME_BY_URL = new Map(ALL.map(p => [p.url, p.name]))
+
+/** The library file name behind a built photo URL (stable across builds), or null. */
+export function libraryFileName(url) {
+  return NAME_BY_URL.get(url) || null
 }
 
 /** Who owns a photo URL, or null. */

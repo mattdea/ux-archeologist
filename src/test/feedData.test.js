@@ -208,3 +208,24 @@ describe('library ownership', () => {
     }
   })
 })
+
+describe('slot leads and captions', () => {
+  it('never open a slot on a NO_LEAD post', () => {
+    for (const seed of [0, 1, 2, 3, 7, 99, 12345]) {
+      const ids = buildFeed(seed).posts.map(p => String(p.id))
+      for (const code of ['BEALzcXOjGc', 'BEl5XXRPMxg', 'BEeKDAVCYtt', 'BERo0ybhQd3']) {
+        expect(ids.some(id => id.endsWith('-' + code)), `${seed} ${code}`).toBe(false)
+      }
+    }
+  })
+  it('runs the Warby Parker ad on its spring product shot with a spring caption', () => {
+    const ad = POSTS.find(p => p.username === 'warbyparker')
+    expect(ad.caption).toMatch(/^Spring frames/)
+    if (ARCHIVE.warbyparker) expect(ad.imageSrc).toMatch(/BDL3YUuy8pA/)
+  })
+  it("gives friends' other photos captions of their own, never summer", () => {
+    for (const u of ['marcus.h', 'julia.creates', 'sarah.moments', 'imani.brooks']) {
+      for (const t of getProfile(u).grid.slice(1)) expect(t.post.caption).not.toMatch(/summer/i)
+    }
+  })
+})
