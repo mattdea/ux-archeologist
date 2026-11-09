@@ -61,6 +61,7 @@ export const REMOVED = new Set([
   'BDgbDB6tjFO',                           // theellenshow, 480×441
   'BAhgjIIn3P1',                           // emmawatson, 480×480
   'BDx3nO0K8tF',                           // thefeedfeed, 400×400
+  'BE_erv4RthG',                           // neymarjr, 480×480 (Matthew's call)
   'BERo0ybhQd3', 'BEMg_axBQaQ', 'BDzMcG3hQSD', 'BDrFGFthQe4',
   'BDeIk6qBQRr', 'BCYFKfOBQUi', 'BCQWw9nhQTw', // instagram, 640×360/426 video stills
   // bad square crops (cut text or subject, letterbox bands)

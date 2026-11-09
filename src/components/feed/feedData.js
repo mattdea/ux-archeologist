@@ -116,7 +116,7 @@ const NO_LEAD = new Set([
   'BEALzcXOjGc',   // selenagomez, "74 🙏🏽❤️": cryptic without context
   'BEl5XXRPMxg',   // leomessi, a video message to Stephen Curry
   'BEeKDAVCYtt',   // kevinhart4real, a portrait of Prince (tribute)
-  'BE_erv4RthG', 'BE36Uatxtit', // neymarjr: 480×480 lead, then a video; opens on #2
+  'BE36Uatxtit',   // neymarjr, a video still
   // instagram: video posts whose captions are about motion and sound
   'BERo0ybhQd3', 'BD1U1rQBQfS', 'BDzMcG3hQSD', 'BDrFGFthQe4',
   'BCYwZd6BQde', 'BCYwK9nhQdD', 'BCYv5NAhQcu', 'BCRH0EqBQWO',
