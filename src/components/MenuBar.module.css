@@ -28,7 +28,6 @@
   color: var(--mac-black);
 }
 
-.apple:hover,
 .appleActive {
   background: var(--mac-black);
   color: var(--mac-white);
@@ -52,8 +51,8 @@
 }
 
 /* The highlighted title starts a pixel below the top of the bar and runs
-   down to its line (macsystem100017.png) */
-.menuLabel:hover,
+   down to its line (macsystem100017.png). Only an open menu's title
+   highlights: passing the pointer over the bar does nothing until a click. */
 .menuLabelActive {
   background: var(--mac-black);
   color: var(--mac-white);
