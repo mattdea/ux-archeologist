@@ -11,7 +11,7 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 
 ### Progress (8 Nov 2026)
 
-All six levels are complete and playable; nothing is gated; all 46 tests pass. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
+All six levels are complete and playable; nothing is gated; all 77 tests pass. Each level is its own code chunk (`src/views.js`), fetched while the previous view fades out. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
 
 Recent work:
 - **Layout (7 Nov):** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, gap above = gap below) instead of fixed 180px bands.
