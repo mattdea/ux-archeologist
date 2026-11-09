@@ -17,6 +17,7 @@ import FolderWindowContent from './FolderWindowContent'
 import InfoWindowContent from './InfoWindowContent'
 import DeskAccessory, { DA_TITLES, DA_WIDTH, DA_VARIANT } from './da/DeskAccessory'
 import { DA_ART } from './da/daArt'
+import { useMacSetting } from './macSettings'
 import AboutFinder from './da/AboutFinder'
 import { useAlarmClock } from './da/AlarmClock'
 import * as sfx from '../audio/sfx'
@@ -598,6 +599,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   // open already counts). The rest draw inactive.
   // An icon is shaded while its window is open (not once it starts to close)
   const openedIds = windows.filter(w => !w.closing).map(w => w.id)
+  const [desktopPattern] = useMacSetting('desktopPattern')   // set in the Control Panel
   const frontId = windows.filter(w => !w.closing).reduce((a, b) => (!a || b.z > a.z ? b : a), null)?.id
   const windowTitle = (w) => w.title ?? ICONS[w.type]?.label ?? ''
   const windowContent = (w) => {
@@ -625,7 +627,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDesktopDrop}
     >
-      <div className={styles.bgLayer}><ScreenTexture /></div>
+      <div className={styles.bgLayer}><ScreenTexture pattern={desktopPattern} /></div>
 
       <div style={{ visibility: shown(reveal >= 1) }}>
       <MenuBar

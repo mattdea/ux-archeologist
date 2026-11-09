@@ -232,6 +232,17 @@
   image-rendering: pixelated;
   cursor: inherit;
 }
+/* Fat bits: each set bit a 4-pixel black square */
+.cpFat { position: absolute; cursor: inherit; }
+.cpFat i { position: absolute; background: var(--mac-black); }
+.cpSample {
+  position: absolute;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  background: var(--mac-white);
+  cursor: inherit;
+}
 /* The chosen setting: its cell inverted */
 .cpCellOn { background-color: var(--mac-white); mix-blend-mode: difference; }
 

@@ -6,7 +6,8 @@ import styles from './ScreenTexture.module.css'
  * A 1984 fill pattern, drawn at a fixed on-screen size: the desktop's 50%
  * gray checkerboard by default, or `pattern="dkgray"`, QuickDraw's dark gray
  * (rows $77/$DD: three black, one white, shifted two each row), which shades
- * an opened icon.
+ * an opened icon, or any 8×8 pattern as 8 row bytes (high bit left), as the
+ * Control Panel sets for the desktop.
  *
  * The Mac sits inside a `scale()` transform chosen by useArtifactFit. A
  * 1px checker scaled by 0.89× or 1.17× lands on fractional pixels and
@@ -18,6 +19,16 @@ import styles from './ScreenTexture.module.css'
  * Fills its nearest positioned parent. Re-measures on resize, and when the
  * parent changes size (a scroll track in a window being resized).
  */
+/** An 8×8 pattern (8 row bytes, high bit left) as a CSS image, 1 px a bit. */
+function patternImage(rows) {
+  let rects = ''
+  rows.forEach((byte, y) => {
+    for (let x = 0; x < 8; x++) if (byte & (0x80 >> x)) rects += `<rect x='${x}' y='${y}' width='1' height='1'/>`
+  })
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'><rect width='8' height='8' fill='#fff'/>${rects}</svg>`
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
+}
+
 export default function ScreenTexture({ pattern = 'checker' }) {
   const ref = useRef(null)
 
@@ -63,5 +74,13 @@ export default function ScreenTexture({ pattern = 'checker' }) {
     }
   }, [])
 
-  return <div ref={ref} className={`${styles.texture} ${pattern === 'dkgray' ? styles.dkgray : ''}`} aria-hidden="true" />
+  const custom = Array.isArray(pattern) ? patternImage(pattern) : null
+  return (
+    <div
+      ref={ref}
+      className={`${styles.texture} ${pattern === 'dkgray' ? styles.dkgray : ''}`}
+      style={custom ? { backgroundImage: custom, backgroundSize: '8px 8px', imageRendering: 'pixelated' } : undefined}
+      aria-hidden="true"
+    />
+  )
 }

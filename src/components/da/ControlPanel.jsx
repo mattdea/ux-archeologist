@@ -8,13 +8,21 @@
 //   menu blinks      0–3: how many times a chosen menu item blinks (MenuBar)
 //   key repeat rate  0–4, delay until repeat 0–4, insertion point blink 1–3,
 //   double-click speed (three circles): chosen, they invert or fill
-// Settings live in macSettings.js for the session. The mouse tracking and
-// desktop pattern controls are shown but don't change anything yet.
+//   desktop pattern  the left box shows the pattern's pixels magnified ("fat
+//                    bits", 5 Mac pixels a bit): click or drag to flip them.
+//                    The right box is a little desktop in that pattern: click
+//                    its menu bar for the next of the stock patterns, click
+//                    the desktop to make it the Mac's desktop pattern
+// Settings live in macSettings.js for the session. Mouse tracking is shown
+// but not wired. Reconstructed: the stock patterns (QuickDraw's own and a
+// few classic ones, not System 1's list) and the menu-bar / desktop clicks,
+// as the 1984 manual describes them from memory.
 import { useEffect, useRef, useState } from 'react'
 import art from '../../../assets/mac/da/controlpanel.png'
 import thumbSrc from '../../../assets/mac/da/cp-thumb.png'
 import dotSrc from '../../../assets/mac/da/cp-dot-on.png'
-import { getSetting, setSetting } from '../macSettings'
+import { useMacSetting, GRAY } from '../macSettings'
+import ScreenTexture from '../ScreenTexture'
 import { toLocal } from '../desktopDrag'
 import * as sfx from '../../audio/sfx'
 import styles from './da.module.css'
@@ -33,10 +41,25 @@ const DOTS = [255, 272, 289]          // double-click circles' left edges (9 acr
 const MARK0 = 119                     // the slider's 0 mark; 7 is at 119 - 12 × 7
 const MAC_PX = 620 / 512              // CSS px per Mac pixel (--mac-px)
 
-function useSetting(key) {
-  const [v, setV] = useState(() => getSetting(key))
-  return [v, (n) => { setSetting(key, n); setV(n) }]
-}
+const useSetting = useMacSetting
+
+// Fat bits at (107, 101), 8 × 8 bits of 5 Mac pixels (a 4-pixel square and a
+// gap); the sample desktop's menu bar is (158, 101) 46 × 5, its desktop
+// (158, 107) 46 × 34
+const FAT = [107, 101]
+const STOCK = [
+  GRAY,
+  [0x88, 0x22, 0x88, 0x22, 0x88, 0x22, 0x88, 0x22],   // light gray
+  [0x77, 0xDD, 0x77, 0xDD, 0x77, 0xDD, 0x77, 0xDD],   // dark gray
+  [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],   // white
+  [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF],   // black
+  [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80],   // diagonal
+  [0xFF, 0x80, 0x80, 0x80, 0xFF, 0x08, 0x08, 0x08],   // bricks
+  [0x88, 0x88, 0x88, 0xFF, 0x88, 0x88, 0x88, 0xFF],   // grid
+  [0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42, 0x81],   // crosses
+  [0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA],   // stripes
+]
+const same = (a, b) => a.every((v, i) => v === b[i])
 
 export default function ControlPanel() {
   const [now, setNow] = useState(() => new Date())
@@ -53,6 +76,39 @@ export default function ControlPanel() {
   }
   const [dbl, setDbl] = useSetting('doubleClick')
   const [volume, setVolume] = useSetting('volume')
+  const [desktop, setDesktop] = useSetting('desktopPattern')
+  const [pattern, setPattern] = useState(desktop)   // being edited; the desktop changes on a click
+
+  // Fat bits: the first bit pressed decides whether a drag sets or clears
+  const bitAt = (clientX, clientY) => {
+    const p = toLocal(rootRef.current, clientX, clientY)
+    const x = Math.floor((p.x / MAC_PX - FAT[0]) / 5), y = Math.floor((p.y / MAC_PX - FAT[1]) / 5)
+    return x >= 0 && x < 8 && y >= 0 && y < 8 ? [x, y] : null
+  }
+  const paint = (e) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    e.stopPropagation()
+    const first = bitAt(e.clientX, e.clientY)
+    if (!first) return
+    let rows = pattern.slice()
+    const on = !(rows[first[1]] & (0x80 >> first[0]))
+    const set = ([x, y]) => {
+      const mask = 0x80 >> x
+      const next = on ? rows[y] | mask : rows[y] & ~mask
+      if (next === rows[y]) return
+      rows = rows.slice(); rows[y] = next; setPattern(rows)
+    }
+    set(first)
+    const move = (ev) => { const b = bitAt(ev.clientX, ev.clientY); if (b) set(b) }
+    const up = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up) }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+  }
+  const nextStock = () => {
+    const i = STOCK.findIndex(p => same(p, pattern))
+    setPattern(STOCK[(i + 1) % STOCK.length])
+  }
 
   // Volume: the thumb follows the pointer from mark to mark
   const rootRef = useRef(null)
@@ -103,6 +159,20 @@ export default function ControlPanel() {
           />
         ))
       })}
+
+      {/* Desktop pattern: fat bits, and a sample desktop */}
+      <span className={styles.cpFat} style={{ left: mp(FAT[0]), top: mp(FAT[1]), width: mp(40), height: mp(40) }} onMouseDown={paint}>
+        {pattern.flatMap((byte, y) => [...Array(8)].map((_, x) => (byte & (0x80 >> x))
+          ? <i key={`${x}-${y}`} style={{ left: mp(5 * x), top: mp(5 * y), width: mp(4), height: mp(4) }} />
+          : null))}
+      </span>
+      <button type="button" aria-label="Next pattern" className={styles.cpCell}
+        style={{ left: mp(158), top: mp(101), width: mp(46), height: mp(5) }} onClick={nextStock} />
+      <button type="button" aria-label="Use this pattern for the desktop" className={styles.cpSample}
+        style={{ left: mp(158), top: mp(107), width: mp(46), height: mp(34) }}
+        onClick={() => setDesktop(pattern)} data-current={same(pattern, desktop) || undefined}>
+        <ScreenTexture pattern={pattern} />
+      </button>
 
       {DOTS.map((x, i) => (
         <button
