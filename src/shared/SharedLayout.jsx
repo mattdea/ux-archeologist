@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
 import SmallScreenNotice from './museum-ui/SmallScreenNotice'
+import { loadView, warmMacBezel } from '../views'
 
 // ── Fade-navigate context ──────────────────────────────────────────
 // Provides a navigate() that fades content out before swapping the view.
@@ -126,7 +127,10 @@ export default function SharedLayout({ children }) {
     setContinueAction(null)  // clear Continue button on navigate
     setHudFading(true)       // start HUD fade-out (200ms)
     setHudReady(false)       // mark not ready (visual driven by hudFading until nav completes)
-    pendingRef.current = { view: nextView, options }
+    if (nextView === 'timeline' || nextView === 'level1') warmMacBezel()
+    // Fetch the view's code while the old one fades out
+    const ready = loadView(nextView).catch(() => {})
+    pendingRef.current = { view: nextView, options, ready }
     setFading(true)          // start content fade-out (300ms)
   }, [view])
 
@@ -134,18 +138,23 @@ export default function SharedLayout({ children }) {
   const handleTransitionEnd = useCallback((e) => {
     if (e.target !== e.currentTarget || e.propertyName !== 'opacity') return
     if (!pendingRef.current) return
-    const { view: nextView } = pendingRef.current
-    pendingRef.current = null
-    setView(nextView)
-    // Fade the new view in only once the browser is painting it smoothly.
-    // Mounting a heavy view (the Mac's bezel, fonts, textures) can stall
-    // rendering for ~200ms after the swap; a fade started before that stall
-    // is swallowed by it, and the page simply appears. Wait for two
-    // consecutive quick frames (capped at 600ms) and then start the fade.
-    whenFramesSettle(() => {
-      setFading(false)
-      setHudFading(false)
-      // hudReady stays false — level's notifyArtifactReady will set it true
+    const pending = pendingRef.current
+    // Swap only once the view's chunk has arrived (usually already, during
+    // the fade-out), so the new view never flashes empty.
+    pending.ready.then(() => {
+      if (pendingRef.current !== pending) return   // superseded by another navigation
+      pendingRef.current = null
+      setView(pending.view)
+      // Fade the new view in only once the browser is painting it smoothly.
+      // Mounting a heavy view (the Mac's bezel, fonts, textures) can stall
+      // rendering for ~200ms after the swap; a fade started before that stall
+      // is swallowed by it, and the page simply appears. Wait for two
+      // consecutive quick frames (capped at 600ms) and then start the fade.
+      whenFramesSettle(() => {
+        setFading(false)
+        setHudFading(false)
+        // hudReady stays false — level's notifyArtifactReady will set it true
+      })
     })
   }, [])
 
