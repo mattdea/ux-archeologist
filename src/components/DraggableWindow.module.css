@@ -48,6 +48,16 @@
   padding: 0;
 }
 
+/* A document window behind the front one: plain white title bar, no
+   stripes and no close box, the title still shown (Inside Macintosh I,
+   Window Manager). Its scroll bars go blank too (MacScrollPane). */
+.inactive .titleBar {
+  background-image: none;
+}
+.inactive .closeBtn {
+  visibility: hidden;
+}
+
 /* ── rDocProc: desk accessory frame ──
    Rounded corners (16px diameter), a solid black title bar with the title
    in white, no stripes, no grow box. */

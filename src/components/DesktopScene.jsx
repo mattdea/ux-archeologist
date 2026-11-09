@@ -162,7 +162,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       setWindows(prev => prev.filter(x => x.id !== id))
       return
     }
-    setWindows(prev => prev.map(x => x.id === id ? { ...x, hidden: true } : x))
+    setWindows(prev => prev.map(x => x.id === id ? { ...x, hidden: true, closing: true } : x))
     zoomRects(desktop, fromRect, to).then(() => {
       setWindows(prev => prev.filter(x => x.id !== id))
     })
@@ -590,6 +590,9 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const infoSelected = selected.length === 1 && !!INFO[selected[0]]
   const daOf = (w) => DA_TITLES[w.type] ? w.type : null
 
+  // The active window: the frontmost one not zooming shut (one still zooming
+  // open already counts). The rest draw inactive.
+  const frontId = windows.filter(w => !w.closing).reduce((a, b) => (!a || b.z > a.z ? b : a), null)?.id
   const windowTitle = (w) => w.title ?? ICONS[w.type]?.label ?? ''
   const windowContent = (w) => {
     switch (w.type) {
@@ -672,6 +675,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
 
       {windows.map(win => (
         <DraggableWindow
+          active={win.id === frontId}
           key={win.id}
           id={win.id}
           type={win.type}

@@ -1,5 +1,6 @@
 // src/components/NotesWindowContent.jsx
 import MacScrollPane from './MacScrollPane'
+import { useWindowFrame } from './windowFrame'
 import styles from './NotesWindowContent.module.css'
 
 const NOTES_TEXT = `Jan 25, 1984
@@ -23,9 +24,10 @@ const LINE = 18
 
 // The document scrolls only with its scroll bar (MacScrollPane): no wheel.
 export default function NotesWindowContent() {
+  const { active } = useWindowFrame()
   return (
     <div className={styles.viewport}>
-      <MacScrollPane vertical horizontal={false} growBox={false} line={LINE} fillWidth>
+      <MacScrollPane vertical horizontal={false} growBox={false} line={LINE} fillWidth active={active}>
         <div className={styles.content}>
           <pre className={styles.pre}>{NOTES_TEXT}</pre>
         </div>

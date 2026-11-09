@@ -218,7 +218,7 @@ export default function DraggableWindow({
     <div
       ref={windowRef}
       data-win={id}
-      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''} ${size ? styles.sized : ''}`}
+      className={`${styles.window} ${variant === 'rdoc' ? styles.rdoc : ''} ${variant === 'plain' ? styles.plain : ''} ${size ? styles.sized : ''} ${!active && variant === 'doc' ? styles.inactive : ''}`}
       style={{
         left: pos.x, top: pos.y, zIndex,
         width: size ? size.w : width, height: size ? size.h : undefined,
@@ -234,7 +234,9 @@ export default function DraggableWindow({
         onTouchStart={handleTitleTouchStart}
         onTouchEnd={handleTitleTouchEnd}
       >
-        <button className={styles.closeBtn} onClick={onClose} title="Close" />
+        {/* An inactive window has no close box (Window Manager: only the
+            active window's title bar is highlighted) */}
+        <button className={styles.closeBtn} onClick={onClose} title="Close" tabIndex={active ? 0 : -1} />
         {variant === 'plain' ? titleContent : <span className={styles.titleText}>{title}</span>}
       </div>
 
