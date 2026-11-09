@@ -114,79 +114,59 @@
 /* Solved: the tiles blink */
 .puzzleBlink .puzzleTile:not(.puzzleGap) { filter: invert(1); }
 
-/* ── Alarm Clock ── */
-/* The clock row sits in the window's title bar (DraggableWindow 'plain') */
-.alarmTime {
-  flex: 1;
-  margin-left: 8px;
+/* ── Alarm Clock ── (traced art and sprites: see AlarmClock.jsx) */
+.alarm {
+  position: absolute;
+  inset: 0;
+}
+/* A field of text on its measured origin; the window drags through it
+   unless it can be set */
+.alarmField {
+  position: absolute;
   font-family: var(--font-chicago);
-  font-size: 15px;
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 15);
   color: var(--mac-black);
   white-space: nowrap;
-  pointer-events: none;      /* drags on the time move the window */
+  pointer-events: none;
 }
-.flag {
-  width: 22px;
-  height: 22px;
-  margin-right: 4px;
-  background: transparent;
+.alarmField > span { position: absolute; }
+.alarmFieldHit { pointer-events: auto; cursor: inherit; z-index: 3; }
+.alarmFieldOn { background: var(--mac-black); color: var(--mac-white); }
+.alarmFlag, .alarmSprite, .alarmArrows {
+  position: absolute;
+  padding: 0;
   border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
   cursor: inherit;
+  z-index: 3;
 }
-.alarm {
-  font-family: var(--font-chicago);
-  font-size: 15px;
-  color: var(--mac-black);
-}
-.alarmMid {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 8px;
-  height: 28px;
-  border-top: var(--border);
-}
-.alarmMidText { flex: 1; white-space: nowrap; }
-.alarmSwitch {
-  width: 10px; height: 20px;
-  border: var(--border);
-  background: linear-gradient(to bottom, var(--mac-white) 50%, var(--mac-black) 50%);
-  cursor: inherit;
-  padding: 0;
-}
-.alarmSwitchOn { background: linear-gradient(to bottom, var(--mac-black) 50%, var(--mac-white) 50%); }
-.alarmArrows { display: flex; flex-direction: column; }
+.alarmSprite:not(button) { pointer-events: none; z-index: 1; }
 .alarmArrows button {
-  background: var(--mac-white);
-  border: none;
-  padding: 0 2px;
-  font-size: 8px;
-  line-height: 11px;
-  color: var(--mac-black);
-  cursor: inherit;
-}
-.alarmIcons {
-  display: flex;
-  justify-content: space-around;
-  padding: 3px 8px 4px;
-  border-top: var(--border);
-}
-.alarmIcon {
-  width: 34px; height: 26px;
-  background: var(--mac-white);
-  border: none;
-  color: var(--mac-black);
-  cursor: inherit;
+  display: block;
+  width: 100%;
+  height: 50%;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: inherit;
 }
-.alarmIconOn { background: var(--mac-black); color: var(--mac-white); }
+.alarmCell {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: inherit;
+  z-index: 2;
+}
+/* The chosen icon: its cell inverted inside a 1-pixel margin */
+.alarmCellOn {
+  background: var(--mac-white);
+  mix-blend-mode: difference;
+}
 
 /* ── About the Finder ── */
 .aboutScrim {

@@ -29,7 +29,7 @@ export const DA_VARIANT = {
   calculator: 'traced',
   notepad:    'doc',
   puzzle:     'traced',
-  alarm:      'plain',
+  alarm:      'traced',
 }
 
 // `instance` changes when the DA is chosen again while open, which remounts

@@ -18,7 +18,7 @@ import InfoWindowContent from './InfoWindowContent'
 import DeskAccessory, { DA_TITLES, DA_WIDTH, DA_VARIANT } from './da/DeskAccessory'
 import { DA_ART } from './da/daArt'
 import AboutFinder from './da/AboutFinder'
-import { useAlarmClock, AlarmClockTitle } from './da/AlarmClock'
+import { useAlarmClock } from './da/AlarmClock'
 import * as sfx from '../audio/sfx'
 import { toLocal, createOutline, moveOutline, removeOutline } from './desktopDrag'
 import { zoomRects, localRect } from './zoomRects'
@@ -692,10 +692,9 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           hidden={win.hidden}
           width={DA_WIDTH[win.type] ?? (win.type === 'info' ? 300 : undefined)}
           variant={DA_VARIANT[win.type] ?? 'doc'}
-          art={DA_ART[win.type]}
+          art={win.type === 'alarm' && clock.open ? DA_ART.alarmOpen : DA_ART[win.type]}
           size={FINDER_SIZE[win.type]}
           resizable={!!FINDER_SIZE[win.type]}
-          titleContent={win.type === 'alarm' ? <AlarmClockTitle clock={clock} /> : undefined}
           onClose={() => closeWindow(win.id)}
           onFocus={() => raise(win.id)}
           trashContents={win.type === 'trash' ? trashContents : undefined}

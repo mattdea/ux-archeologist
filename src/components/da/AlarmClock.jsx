@@ -1,24 +1,32 @@
 // src/components/da/AlarmClock.jsx — Donn Denman's Alarm Clock. Closed, it
 // is one line: the time ticking in Chicago and a flag at the right. Click
-// the flag down and a panel opens beneath with three icons — alarm clock,
-// clock face, calendar — and the row above them shows what the chosen icon
-// stands for: the alarm time with its on/off switch, the time, or the date.
-// When the alarm goes off the Mac beeps once and the Apple in the menu bar
-// blinks until the Alarm Clock is chosen again.
+// the flag and a panel opens beneath with three icons — clock face,
+// calendar, alarm clock — and the row above them shows what the chosen icon
+// stands for: the time, the date, or the alarm time with its on/off switch.
+// In alarm mode, click a field (hour, minutes, seconds, AM/PM) to select it
+// and the up/down arrows set it. When the alarm goes off the Mac beeps once
+// and the Apple in the menu bar blinks until the Alarm Clock is chosen again.
 //
-// The clock row lives in the window's title bar (DraggableWindow's 'plain'
-// variant), so this component renders in two parts: `AlarmClockTitle` for
-// that row and `AlarmClock` for the panel. They share state through props.
+// Traced from docs/reference/mac system 1/macsystem100006–100010.png: the
+// window closed and open (DA_ART.alarm / alarmOpen), with the flag, the
+// alarm switch, the arrow box and the alarm icon's rays as sprites. The
+// text is live Chicago, each field at the origin measured in the
+// screenshots (Mac pixels): times put the hour right-aligned in a 2-digit
+// slot at x 28, then ":mm:ss AM"; dates the month right-aligned at x 38,
+// then "/ d/yy" with the day right-aligned too. The switch's off position
+// isn't in the screenshots: it is the on lever flipped (reconstructed).
 import { useEffect, useState } from 'react'
+import flagUp from '../../../assets/mac/da/alarm-flag-up.png'
+import flagDown from '../../../assets/mac/da/alarm-flag-down.png'
+import switchOn from '../../../assets/mac/da/alarm-switch-on.png'
+import switchOff from '../../../assets/mac/da/alarm-switch-off.png'
+import arrows from '../../../assets/mac/da/alarm-arrows.png'
+import iconOn from '../../../assets/mac/da/alarm-icon-on.png'
 import styles from './da.module.css'
 import * as sfx from '../../audio/sfx'
 
+const mp = (n) => `calc(var(--mac-px) * ${n})`
 const pad = (n) => String(n).padStart(2, '0')
-const fmtTime = (d, secs = true) => {
-  const h = d.getHours(), h12 = h % 12 || 12
-  return `${h12}:${pad(d.getMinutes())}${secs ? ':' + pad(d.getSeconds()) : ''} ${h < 12 ? 'AM' : 'PM'}`
-}
-const fmtDate = (d) => `${d.getMonth() + 1}/${d.getDate()}/${String(d.getFullYear()).slice(-2)}`
 
 export function useAlarmClock({ onRing }) {
   const [now, setNow] = useState(() => new Date())
@@ -34,89 +42,114 @@ export function useAlarmClock({ onRing }) {
   }, [])
   useEffect(() => {
     if (!alarmOn) return
-    if (now.getHours() === alarmAt.getHours() && now.getMinutes() === alarmAt.getMinutes() && now.getSeconds() === 0) {
+    if (now.getHours() === alarmAt.getHours() && now.getMinutes() === alarmAt.getMinutes() && now.getSeconds() === alarmAt.getSeconds()) {
       sfx.beep()
       onRing?.()
     }
   }, [now, alarmOn, alarmAt, onRing])
-  const bumpAlarm = (mins) => setAlarmAt(d => new Date(d.getTime() + mins * 60000))
+  // Step one field of the alarm time; the others stay put
+  const bumpAlarm = (field, dir) => setAlarmAt(d => {
+    const n = new Date(d)
+    if (field === 'h') n.setHours((n.getHours() + dir + 24) % 24)
+    if (field === 'm') n.setMinutes((n.getMinutes() + dir + 60) % 60)
+    if (field === 's') n.setSeconds((n.getSeconds() + dir + 60) % 60)
+    if (field === 'ap') n.setHours((n.getHours() + 12) % 24)
+    return n
+  })
   return { now, open, setOpen, mode, setMode, alarmOn, setAlarmOn, alarmAt, bumpAlarm }
 }
 
-function Flag({ down }) {
-  // A little flag on a pole, up when the panel is closed, down when open
-  return (
-    <svg width="14" height="18" viewBox="0 0 14 18" shapeRendering="crispEdges" aria-hidden="true">
-      <rect x="2" y="1" width="2" height="16" fill="#000" />
-      {down
-        ? <path d="M4 9h8l-3 3 3 3H4z" fill="#000" />
-        : <path d="M4 1h8l-3 3 3 3H4z" fill="#000" />}
-    </svg>
-  )
+// Field origins and widths in Mac pixels (Chicago: digits 8, colon 4, space 3)
+const TIME_FIELDS = [['h', 28, 16, true], [':', 44, 4], ['m', 48, 16], [':', 64, 4], ['s', 68, 16], ['ap', 87, 20]]
+const DATE_FIELDS = [['mo', 38, 16, true], ['/', 54, 7], ['d', 61, 16, true], ['/', 77, 7], ['y', 84, 16]]
+
+function timeParts(d) {
+  const h = d.getHours()
+  return { h: String(h % 12 || 12), m: pad(d.getMinutes()), s: pad(d.getSeconds()), ap: h < 12 ? 'AM' : 'PM', ':': ':' }
+}
+function dateParts(d) {
+  return { mo: String(d.getMonth() + 1), d: String(d.getDate()), y: pad(d.getFullYear() % 100), '/': '/' }
 }
 
-export function AlarmClockTitle({ clock }) {
-  return (
-    <>
-      <span className={styles.alarmTime}>{fmtTime(clock.now)}</span>
-      <button type="button" className={styles.flag} onClick={() => clock.setOpen(o => !o)} aria-label={clock.open ? 'Close the clock panel' : 'Open the clock panel'}>
-        <Flag down={clock.open} />
-      </button>
-    </>
-  )
+// One row of fields on a baseline; `selected` field is inverted (2 pixels
+// round its text, from the baseline up 11 and down 1, as in 100010)
+function Fields({ fields, parts, baseline, selected, onSelect }) {
+  return fields.map(([key, x, w, right]) => {
+    const settable = !!onSelect && key !== ':' && key !== '/'
+    return (
+      <span
+        key={`${key}${x}`}
+        className={`${styles.alarmField} ${selected === key ? styles.alarmFieldOn : ''} ${settable ? styles.alarmFieldHit : ''}`}
+        style={{ left: mp(x - 1), top: mp(baseline - 11), width: mp(w), height: mp(13) }}
+        onMouseDown={settable ? (e) => { e.stopPropagation(); onSelect(key) } : undefined}
+      >
+        {/* The text's origin is 1 pixel in from the highlight; right-aligned
+            fields end 1 pixel past it */}
+        <span style={right ? { top: mp(-1), right: mp(-1) } : { top: mp(-1), left: mp(1) }}>{parts[key]}</span>
+      </span>
+    )
+  })
 }
 
-const ICONS = {
-  alarm: (
-    <svg width="22" height="20" viewBox="0 0 22 20" shapeRendering="crispEdges" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
-      <rect x="10" y="7" width="2" height="5" fill="currentColor" /><rect x="10" y="11" width="4" height="2" fill="currentColor" />
-      <rect x="2" y="2" width="5" height="3" fill="currentColor" /><rect x="15" y="2" width="5" height="3" fill="currentColor" />
-      <rect x="4" y="16" width="3" height="3" fill="currentColor" /><rect x="15" y="16" width="3" height="3" fill="currentColor" />
-    </svg>
-  ),
-  clock: (
-    <svg width="22" height="20" viewBox="0 0 22 20" shapeRendering="crispEdges" aria-hidden="true">
-      <circle cx="11" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="2" />
-      <rect x="10" y="5" width="2" height="6" fill="currentColor" /><rect x="10" y="10" width="5" height="2" fill="currentColor" />
-    </svg>
-  ),
-  calendar: (
-    <svg width="22" height="20" viewBox="0 0 22 20" shapeRendering="crispEdges" aria-hidden="true">
-      <rect x="2" y="3" width="18" height="15" fill="none" stroke="currentColor" strokeWidth="2" />
-      <rect x="2" y="3" width="18" height="4" fill="currentColor" />
-      <rect x="5" y="9" width="3" height="3" fill="currentColor" /><rect x="10" y="9" width="3" height="3" fill="currentColor" /><rect x="15" y="9" width="3" height="3" fill="currentColor" />
-      <rect x="5" y="13" width="3" height="3" fill="currentColor" /><rect x="10" y="13" width="3" height="3" fill="currentColor" />
-    </svg>
-  ),
-}
+const CELLS = { clock: 1, calendar: 44, alarm: 87 }   // icon cells' left edges; each 42 wide
 
 export default function AlarmClock({ clock }) {
-  if (!clock.open) return null
-  const { mode } = clock
+  const [field, setField] = useState(null)   // the alarm field being set
+  const { open, mode } = clock
+
   return (
     <div className={styles.alarm}>
-      <div className={styles.alarmMid}>
-        {mode === 'alarm' && (
-          <button type="button" className={`${styles.alarmSwitch} ${clock.alarmOn ? styles.alarmSwitchOn : ''}`} onClick={() => clock.setAlarmOn(a => !a)} aria-label={clock.alarmOn ? 'Alarm on' : 'Alarm off'} />
-        )}
-        <span className={styles.alarmMidText}>
-          {mode === 'alarm' ? fmtTime(clock.alarmAt, false) : mode === 'calendar' ? fmtDate(clock.now) : fmtTime(clock.now)}
-        </span>
-        {mode === 'alarm' && (
-          <span className={styles.alarmArrows}>
-            <button type="button" onClick={() => clock.bumpAlarm(1)} aria-label="Later">▲</button>
-            <button type="button" onClick={() => clock.bumpAlarm(-1)} aria-label="Earlier">▼</button>
-          </span>
-        )}
-      </div>
-      <div className={styles.alarmIcons}>
-        {['alarm', 'clock', 'calendar'].map(m => (
-          <button key={m} type="button" className={`${styles.alarmIcon} ${mode === m ? styles.alarmIconOn : ''}`} onClick={() => clock.setMode(m)} aria-label={m}>
-            {ICONS[m]}
-          </button>
-        ))}
-      </div>
+      {/* Top row: the time, and the flag that opens the panel */}
+      <Fields fields={TIME_FIELDS} parts={timeParts(clock.now)} baseline={15} />
+      <button
+        type="button"
+        className={styles.alarmFlag}
+        style={{ left: mp(110), top: mp(2), width: mp(18), height: mp(17), backgroundImage: `url(${open ? flagDown : flagUp})` }}
+        onClick={() => { clock.setOpen(o => !o); setField(null) }}
+        aria-label={open ? 'Close the clock panel' : 'Open the clock panel'}
+      />
+
+      {open && (
+        <>
+          {/* Middle row */}
+          {mode === 'clock' && <Fields fields={TIME_FIELDS} parts={timeParts(clock.now)} baseline={35} />}
+          {mode === 'calendar' && <Fields fields={DATE_FIELDS} parts={dateParts(clock.now)} baseline={35} />}
+          {mode === 'alarm' && (
+            <>
+              <button
+                type="button"
+                className={styles.alarmSprite}
+                style={{ left: mp(10), top: mp(23), width: mp(8), height: mp(13), backgroundImage: `url(${clock.alarmOn ? switchOn : switchOff})` }}
+                onClick={() => clock.setAlarmOn(a => !a)}
+                aria-label={clock.alarmOn ? 'Alarm on' : 'Alarm off'}
+              />
+              <Fields fields={TIME_FIELDS} parts={timeParts(clock.alarmAt)} baseline={35} selected={field} onSelect={setField} />
+              {field && (
+                <span className={styles.alarmArrows} style={{ left: mp(115), top: mp(21), width: mp(11), height: mp(18), backgroundImage: `url(${arrows})` }}>
+                  <button type="button" onClick={() => clock.bumpAlarm(field, 1)} aria-label="Later" />
+                  <button type="button" onClick={() => clock.bumpAlarm(field, -1)} aria-label="Earlier" />
+                </span>
+              )}
+            </>
+          )}
+
+          {/* Icons: the alarm clock shows its rays while the alarm is on;
+              the chosen one inverts inside a 1-pixel margin */}
+          {clock.alarmOn && (
+            <span className={styles.alarmSprite} style={{ left: mp(88), top: mp(42), width: mp(40), height: mp(28), backgroundImage: `url(${iconOn})` }} />
+          )}
+          {Object.entries(CELLS).map(([m, x]) => (
+            <button
+              key={m}
+              type="button"
+              className={`${styles.alarmCell} ${mode === m ? styles.alarmCellOn : ''}`}
+              style={{ left: mp(x + 1), top: mp(42), width: mp(40), height: mp(28) }}
+              onClick={() => { clock.setMode(m); setField(null) }}
+              aria-label={m}
+            />
+          ))}
+        </>
+      )}
     </div>
   )
 }

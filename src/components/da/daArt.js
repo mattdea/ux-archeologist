@@ -9,10 +9,16 @@
 
 import calculator from '../../../assets/mac/da/calculator.png'
 import puzzle from '../../../assets/mac/da/puzzle.png'
+import alarmClosed from '../../../assets/mac/da/alarm-closed.png'
+import alarmOpen from '../../../assets/mac/da/alarm-open.png'
 
 export const DA_ART = {
   // macsystem100012.png / macsystem100013.png
   calculator: { src: calculator, w: 106, h: 169, titleH: 20, close: [9, 4], closeInk: '#fff' },
   // macsystem100016.png, its 16 cells cleared (the tiles are sprites)
   puzzle: { src: puzzle, w: 91, h: 110, titleH: 20, close: [9, 4], closeInk: '#fff' },
+  // macsystem100006.png closed and 100008.png open, text and flag cleared
+  // (the clock face icon from 100007.png, unselected); the top row drags
+  alarm: { src: alarmClosed, w: 133, h: 22, titleH: 20, close: [10, 5] },
+  alarmOpen: { src: alarmOpen, w: 133, h: 75, titleH: 20, close: [10, 5] },
 }
