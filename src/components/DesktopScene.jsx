@@ -860,6 +860,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
           onTrashSelect={win.type === 'trash' ? setTrashSel : undefined}
           onItemDragStart={win.type === 'trash' ? startDragOutline : undefined}
           onItemDragEnd={win.type === 'trash' ? stopDragOutline : undefined}
+          trashPositions={win.type === 'trash' ? itemPos : undefined}
+          onTrashMove={win.type === 'trash' ? moveItem : undefined}
         >
           {windowContent(win)}
         </DraggableWindow>

@@ -56,7 +56,7 @@ const mp = (n) => `calc(var(--mac-px) * ${n})`
 export default function DraggableWindow({
   id, title, type, initialPos, zIndex, onClose, onFocus, hidden = false, width,
   variant = 'doc', titleContent, size: initialSize, resizable = false, active = true, art,
-  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, trashSelected, onTrashSelect, children,
+  trashContents, onRestoreNotes, onItemDragStart, onItemDragEnd, trashSelected, onTrashSelect, trashPositions, onTrashMove, children,
 }) {
   const [pos, setPos] = useState(initialPos ?? { x: 120, y: 60 })
   const [size, setSize] = useState(initialSize ?? null)
@@ -325,6 +325,8 @@ export default function DraggableWindow({
             onRestoreNotes={onRestoreNotes}
             onItemDragStart={onItemDragStart}
             onItemDragEnd={onItemDragEnd}
+            positions={trashPositions}
+            onMove={onTrashMove}
           />
         )}
       </div>
