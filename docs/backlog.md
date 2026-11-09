@@ -76,9 +76,11 @@ _The items below came from Matthew's list of 8 Nov 2026, in no particular order 
 
 **Request:** make UI updates to the Mac and add more features.
 
-**Candidates already in the period:** the dimmed Apple-menu items — Scrapbook, Key Caps, Control Panel — are real Finder 1.1 desk accessories (spec, Level 1); Show Clipboard; the details the spec lists as reconstructed (zoom-rect frames, menu-blink timing, Empty Trash alert wording, Clean Up), which booting System 1.1 at infinitemac.org would settle. Everything must be something Finder 1.0/1.1 did (CLAUDE.md, Level 1 conventions).
+**Source of truth:** `docs/reference/mac system 1/` — 18 screenshots Matthew took of System 1 running on infinitemac.org (8 Nov 2026). Where they disagree with the current build, the 1984 manual or anything else in the spec, the screenshots win. Start by comparing each one against the matching state of Level 1 and listing every difference (layout, pixel details, wording, menus, windows, behaviour); that list is the UI-update work. They may also settle the details the spec marks as reconstructed (zoom-rect frames, menu-blink timing, Empty Trash alert wording, Clean Up); update the spec where they do.
 
-**To decide:** which UI updates (a list of what looks wrong today), and which features first.
+**Candidates already in the period:** the dimmed Apple-menu items — Scrapbook, Key Caps, Control Panel — are real Finder 1.1 desk accessories (spec, Level 1); Show Clipboard. Everything must be something Finder 1.0/1.1 did (CLAUDE.md, Level 1 conventions); check the screenshots' About box for which System/Finder version they show, since the level depicts Finder 1.1.
+
+**To decide:** after the difference list, which fixes and which features first.
 
 ### Level 2: more Netscape pages, or a search with fake results
 
