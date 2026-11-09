@@ -245,12 +245,14 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       if (r.w < 2 && r.h < 2) return
       marqueeMoved.current = true
       marqueeRect.current = r
-      setMarquee(r)
     }
+    // Redrawn at ~10fps, as the 8 MHz 68000 drew drag outlines
+    const tick = setInterval(() => { if (marqueeRect.current) setMarquee(marqueeRect.current) }, 100)
     // "When you release the mouse button, the icons are selected" (1984 manual)
     const up = () => {
       document.removeEventListener('mousemove', move)
       document.removeEventListener('mouseup', up)
+      clearInterval(tick)
       marqueeStart.current = null
       const r = marqueeRect.current
       marqueeRect.current = null
