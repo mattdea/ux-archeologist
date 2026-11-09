@@ -1,7 +1,7 @@
 // src/shared/museum-ui/SmallScreenNotice.jsx
 //
-// Phone-width visitors (viewport under 600px) get a card saying the exhibit
-// is best on a computer, over the dark museum background and above
+// Phone-width visitors (viewport under 600px) get a card saying the site is
+// made for larger screens, over the dark museum background and above
 // everything, including a level's IntroModal (which shows once this is
 // dismissed). "Continue anyway" dismisses it for the visit (sessionStorage,
 // guarded: if storage is blocked it still closes, just isn't remembered).
@@ -46,11 +46,9 @@ export default function SmallScreenNotice() {
       <div className={`${styles.card} ${own.card}`}>
         <div className={styles.accentLine} />
         <div className={styles.body}>
-          <span className={styles.eraLabel}>Best on a computer</span>
-          <h1 id="small-screen-title" className={styles.title}>This exhibit needs a bigger screen</h1>
+          <h1 id="small-screen-title" className={styles.title}>Made for larger screens</h1>
           <p className={styles.description}>
-            Each room recreates a real machine at its real size: a terminal, a Mac, a web browser, two phones.
-            On a screen this small they're hard to use.
+            Each level shows a device at its original size. On a phone they're shrunk to fit and hard to use.
           </p>
           <button
             ref={buttonRef}
