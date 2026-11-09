@@ -610,7 +610,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         return <FolderWindowContent items={[]} />
       case 'info':
         return <InfoWindowContent item={w.item} locked={!!locked[w.item.id]} onToggleLock={() => setLocked(l => ({ ...l, [w.item.id]: !l[w.item.id] }))} />
-      case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'keycaps':
+      case 'calculator': case 'notepad': case 'puzzle': case 'alarm': case 'keycaps': case 'controlpanel':
         return <DeskAccessory name={w.type} instance={daInstance[w.type] || 0} clock={clock} />
       default:
         return null   // projects / notes / trash: DraggableWindow's built-ins

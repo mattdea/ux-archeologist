@@ -8,6 +8,7 @@ import NotePad from './NotePad'
 import Puzzle from './Puzzle'
 import AlarmClock from './AlarmClock'
 import KeyCaps from './KeyCaps'
+import ControlPanel from './ControlPanel'
 
 export const DA_TITLES = {
   calculator: 'Calculator',
@@ -15,6 +16,7 @@ export const DA_TITLES = {
   puzzle:     'Puzzle',
   alarm:      'Alarm Clock',
   keycaps:    'Key Caps',
+  controlpanel: 'Control Panel',
 }
 
 export const DA_WIDTH = {
@@ -23,6 +25,7 @@ export const DA_WIDTH = {
   puzzle:     130,
   alarm:      170,
   keycaps:    'calc(var(--mac-px) * 310 + 2px)',   // traced body plus the frame
+  controlpanel: 'calc(var(--mac-px) * 312 + 2px)',
 }
 
 // Window frame per accessory: Inside Macintosh's rDocProc (rounded, black
@@ -34,6 +37,7 @@ export const DA_VARIANT = {
   puzzle:     'traced',
   alarm:      'traced',
   keycaps:    'doc',
+  controlpanel: 'doc',
 }
 
 // `instance` changes when the DA is chosen again while open, which remounts
@@ -45,6 +49,7 @@ export default function DeskAccessory({ name, instance = 0, clock }) {
     case 'puzzle':     return <Puzzle key={instance} />
     case 'alarm':      return <AlarmClock clock={clock} />
     case 'keycaps':    return <KeyCaps />
+    case 'controlpanel': return <ControlPanel />
     default:           return null
   }
 }

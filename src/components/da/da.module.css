@@ -200,6 +200,41 @@
 /* Pressed: the face inverted (reconstructed) */
 .keycapDown { background: var(--mac-white); mix-blend-mode: difference; }
 
+/* ── Control Panel ── (traced backdrop: see ControlPanel.jsx) */
+.cp {
+  position: relative;
+  height: calc(var(--mac-px) * 156);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+.cpText {
+  position: absolute;
+  font-family: var(--font-chicago);
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 15);
+  white-space: pre;
+  pointer-events: none;
+}
+.cpSlider { position: absolute; cursor: inherit; }
+.cpSprite {
+  position: absolute;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.cpCell {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  cursor: inherit;
+}
+/* The chosen setting: its cell inverted */
+.cpCellOn { background-color: var(--mac-white); mix-blend-mode: difference; }
+
 /* ── About the Finder ── */
 .aboutScrim {
   position: absolute;

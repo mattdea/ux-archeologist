@@ -1,6 +1,7 @@
 // src/components/MenuBar.jsx
 import { useState, useEffect, useRef } from 'react'
 import styles from './MenuBar.module.css'
+import { getSetting } from './macSettings'
 
 // Apple menu, Finder 1.1 (Inside Macintosh I fig. 16; Easy Guide 1984): About,
 // then the desk accessories installed in the System file, in this order.
@@ -11,14 +12,14 @@ const APPLE_ITEMS = [
   { label: 'Note Pad',     action: 'da', da: 'notepad' },
   { label: 'Calculator',   action: 'da', da: 'calculator' },
   { label: 'Key Caps',     action: 'da', da: 'keycaps' },
-  { label: 'Control Panel', disabled: true },
+  { label: 'Control Panel', action: 'da', da: 'controlpanel' },
   { label: 'Puzzle',       action: 'da', da: 'puzzle' },
 ]
 
 // Menu blinking: when you chose an item, Finder 1.0 flashed it (inverted
 // off and on) three times before the menu went away — the Control Panel's
-// "Menu blinking" setting, 3 by default. About 3 ticks (50ms) a phase.
-const BLINKS = 3
+// "Menu blinking" setting, 3 by default (now set in the Control Panel). About
+// 3 ticks (50ms) a phase.
 const BLINK_MS = 50
 
 export default function MenuBar({
@@ -130,8 +131,9 @@ export default function MenuBar({
   const handleItemClick = (item) => {
     if (item.disabled || blink) return
     let phase = 0                       // 0,2,4 = off; 1,3,5 = on
+    const blinks = getSetting('menuBlinks')
     const step = () => {
-      if (phase >= BLINKS * 2) {
+      if (phase >= blinks * 2) {
         setBlink(null)
         setOpenMenu(null)
         runAction(item)
