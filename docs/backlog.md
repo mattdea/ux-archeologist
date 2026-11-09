@@ -10,8 +10,7 @@
 
 | Group | Item | Needs before approval |
 |---|---|---|
-| 1. Visitor's journey | Small-screen notice | 3 decisions |
-| | "Start here" cue on the timeline | Copy per state |
+| 1. Visitor's journey | "Start here" cue on the timeline | Copy per state |
 | | Year carries from timeline into level | Edge cases |
 | | Collection page | What it shows, how it's reached |
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
@@ -28,11 +27,6 @@
 ### 1. The visitor's journey
 
 Museum layer, from arriving to finishing. All touch the title screen, timeline and `SharedLayout.jsx`, so design them as one route. "More motion" lives here as specific moments rather than an item of its own.
-
-#### Small-screen notice
-Tell phone-width visitors it's best on a computer. Already open item 2 in the spec.
-- **Decide:** breakpoint (width, or width + touch) · blocks entry or has "Continue anyway" · title screen only or every route.
-- **Look:** museum card, white with the 2px accent line, like IntroModal.
 
 #### "Start here" cue on the timeline
 E.g. a pulsing arrow at 1971 saying "Start here".
@@ -128,7 +122,15 @@ Today only Notes opens.
 
 ## Approved
 
-_Nothing approved right now._
+### Museum: small-screen notice · approved 8 Nov 2026
+Phone-width visitors get a card saying the exhibit is best on a computer. Closes spec open item 2.
+- **When:** viewport width **under 600px**. Matthew gave "below ~470–600ish/700ish"; 600 is the middle of that range. It catches every phone held upright (the widest are ~440px) and leaves iPads (768px and up) alone. Width only, no touch test.
+- **Where:** whatever page the visitor lands on: title, timeline, any level, collection. Mount it once in `SharedLayout.jsx`, above everything including IntroModal; a level's IntroModal shows after it's dismissed.
+- **Dismiss:** a "Continue anyway" button. Remember the dismissal for the visit in `sessionStorage` (wrapped in try/catch, so it still works if storage is blocked); don't show it again until the next visit. Resizing past 600px while it's open just closes it.
+- **Look:** reuse IntroModal's card (white, 2px black accent line, mono label, serif title, sans body, full-width black button) over the dark museum background. No new museum-layer patterns.
+- **Copy (draft, revisit in the copy pass):** label `BEST ON A COMPUTER` · title "This exhibit needs a bigger screen" · body "Each room recreates a real machine at its real size: a terminal, a Mac, a web browser, two phones. On a screen this small they're hard to use." · button "Continue anyway".
+- **Spec:** remove open item 2 and open item 1 (Matthew confirmed on 8 Nov that the live site serves the photos), and the "a 'best on a computer' notice is planned" line under Artifact Fit; describe the notice under Dialog System.
+- **Not covered:** phones held sideways (wider than 600px, but short). Out of scope unless Matthew asks.
 
 ---
 
