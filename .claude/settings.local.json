@@ -15,7 +15,9 @@
       "Read(//opt/homebrew/lib/node_modules/netlify-cli/bin/**)",
       "Read(//Users/matthewdea/.npm-global/bin/**)",
       "Read(//usr/local/bin/**)",
-      "Bash(chmod +x \"/Users/matthewdea/Code/ux-archeologist/.claude/start-dev.sh\")"
+      "Bash(chmod +x \"/Users/matthewdea/Code/ux-archeologist/.claude/start-dev.sh\")",
+      "Bash(sed -n '/^### Level 1: Mac UI/,/^### /p' docs/backlog.md)",
+      "Bash(sed -n '/^## Approved/,/^## Done/p' docs/backlog.md)"
     ]
   }
 }
