@@ -13,7 +13,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import MacScrollBar from './MacScrollBar'
 import styles from './MacScrollPane.module.css'
 
-const INSET = 15   // a 16px bar placed 1px over the frame takes 15px inside
+const INSET = 16 * 620 / 512 - 1   // a 16-Mac-pixel bar placed 1px over the frame
 
 export default function MacScrollPane({
   children, vertical = true, horizontal = true, growBox = true, active = true,
@@ -83,7 +83,7 @@ export default function MacScrollPane({
       {corner && (
         <div className={styles.growBox} onMouseDown={active && growBox ? onGrowMouseDown : undefined} data-growbox="">
           {active && growBox && (
-            <svg viewBox="0 0 14 14" width="14" height="14" shapeRendering="crispEdges" aria-hidden="true">
+            <svg viewBox="0 0 14 14" width="100%" height="100%" shapeRendering="crispEdges" aria-hidden="true">
               <rect x="2.5" y="2.5" width="6" height="6" fill="#fff" stroke="#000" />
               <rect x="4.5" y="4.5" width="8" height="8" fill="#fff" stroke="#000" />
             </svg>

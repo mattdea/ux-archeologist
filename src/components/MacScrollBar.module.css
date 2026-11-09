@@ -1,7 +1,8 @@
 /* src/components/MacScrollBar.module.css
+ * Sizes are Mac pixels (--mac-px); the lines are the frame's 1 CSS pixel.
  *
- * A 16px bar: 1px frame, an arrow box at each end (separated from the track
- * by a 1px line), the track between. The thumb and its drag outline are 16px
+ * A 16-pixel bar: frame, an arrow box at each end (separated from the track
+ * by a line), the track between. The thumb and its drag outline are 16-pixel
  * squares that overlap the frame and the arrow lines, as on the Mac.
  */
 .bar {
@@ -13,8 +14,8 @@
   user-select: none;
 }
 
-.vertical { width: 16px; flex-direction: column; }
-.horizontal { height: 16px; flex-direction: row; }
+.vertical { width: calc(var(--mac-px) * 16); flex-direction: column; }
+.horizontal { height: calc(var(--mac-px) * 16); flex-direction: row; }
 
 .arrow {
   flex: 0 0 auto;
@@ -23,8 +24,9 @@
   justify-content: center;
   cursor: inherit;
 }
-.vertical .arrow { height: 15px; }
-.horizontal .arrow { width: 15px; }
+.vertical .arrow { height: calc(var(--mac-px) * 15); }
+.horizontal .arrow { width: calc(var(--mac-px) * 15); }
+.arrow svg { width: 100%; height: 100%; }
 
 .vertical .arrow:first-child { border-bottom: 1px solid var(--mac-black); }
 .vertical .arrow:last-child  { border-top: 1px solid var(--mac-black); }
@@ -42,8 +44,8 @@
 .ghost {
   position: absolute;
   box-sizing: border-box;
-  width: 16px;
-  height: 16px;
+  width: calc(var(--mac-px) * 16);
+  height: calc(var(--mac-px) * 16);
 }
 .vertical .thumb, .vertical .ghost { left: -1px; }
 .horizontal .thumb, .horizontal .ghost { top: -1px; }

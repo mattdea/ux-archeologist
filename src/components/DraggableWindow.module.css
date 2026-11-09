@@ -10,20 +10,21 @@
 
 .titleBar {
   position: relative;
-  height: 22px;
-  /* Solid white base; stripes rendered as a 12px block (6 × 2px) centered,
-     inset 2px from each horizontal edge so stripes never touch the border */
+  /* Measured from docs/reference/mac system 1/macsystem100004.png in Mac
+     pixels: 17 rows under the frame, then the line; six 1-pixel stripes on
+     every other row, 3 rows from the top, 1 pixel in from each side */
+  height: calc(var(--mac-px) * 17);
   background-color: var(--mac-white);
   background-image: repeating-linear-gradient(
     to bottom,
-    var(--mac-black) 0px,
-    var(--mac-black) 1px,
-    var(--mac-white) 1px,
-    var(--mac-white) 2px
+    var(--mac-black) 0,
+    var(--mac-black) calc(var(--mac-px) * 1),
+    var(--mac-white) calc(var(--mac-px) * 1),
+    var(--mac-white) calc(var(--mac-px) * 2)
   );
-  background-size: calc(100% - 4px) 12px;
+  background-size: calc(100% - var(--mac-px) * 2) calc(var(--mac-px) * 11);
   background-repeat: no-repeat;
-  background-position: 2px 50%;
+  background-position: var(--mac-px) calc(var(--mac-px) * 3);
   border-bottom: var(--border);
   display: flex;
   align-items: center;
@@ -31,18 +32,17 @@
   touch-action: none;
 }
 
-/* Empty square — no × content, just a white box with black border.
-   box-shadow creates a 2px white halo so stripes don't butt up against the box. */
+/* The close box: an 11-pixel square 8 pixels in, with a 1-pixel white gap
+   between it and the stripes (macsystem100004.png) */
 .closeBtn {
   position: relative;
   z-index: 1;
-  /* 12px pushes box right so ~8px of stripes show to its left before the halo */
-  margin-left: 12px;
-  width: 13px;
-  height: 13px;
+  margin-left: calc(var(--mac-px) * 8);
+  width: calc(var(--mac-px) * 11);
+  height: calc(var(--mac-px) * 11);
   background: var(--mac-white);
   border: var(--border);
-  box-shadow: 0 0 0 2px var(--mac-white);
+  box-shadow: 0 0 0 var(--mac-px) var(--mac-white);
   flex-shrink: 0;
   cursor: inherit;   /* era pointer set on the artifact root (era-cursors.css) */
   padding: 0;
@@ -127,12 +127,16 @@
 .titleText {
   position: absolute;
   left: 50%;
+  top: var(--mac-px);
   transform: translateX(-50%);
+  /* Chicago 12, a font pixel per Mac pixel, baseline 13 into the bar, on a
+     white gap 7 pixels either side */
   font-family: var(--font-chicago);
-  font-size: 13px;
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 15);
   color: var(--mac-black);
   background: var(--mac-white);
-  padding: 1px 8px;
+  padding: 0 calc(var(--mac-px) * 7);
   pointer-events: none;
   white-space: nowrap;
   z-index: 1;
@@ -174,24 +178,29 @@
   position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--font-chicago);
-  font-size: 12px;
+  /* Geneva 9 bold, as QuickDraw made bold: each glyph drawn again a pixel
+     to the right and a pixel wider (macsystem100004.png); 17 rows, the
+     baseline 13 down, 8 pixels in */
+  font-family: var(--font-geneva9);
+  font-size: calc(var(--mac-px) * 9);
+  line-height: calc(var(--mac-px) * 12);
+  letter-spacing: var(--mac-px);
+  text-shadow: var(--mac-px) 0 0 currentColor;
+  -webkit-font-smoothing: none;
   color: var(--mac-black);
-  padding: 3px 8px 4px;
-  border-bottom: 3px double var(--mac-black);
+  padding: calc(var(--mac-px) * 3) calc(var(--mac-px) * 8) calc(var(--mac-px) * 2);
+  border-bottom: calc(var(--mac-px) * 3) double var(--mac-black);
   flex: 0 0 auto;
   /* In a narrow window the three parts close up and the line is clipped,
      as in docs/reference/mac system 1/macsystem100019.png */
   justify-content: space-between;
-  gap: 16px;
+  gap: calc(var(--mac-px) * 16);
   overflow: hidden;
   white-space: nowrap;
 }
 
 /* "NNNK in disk", between the count and the space available */
 .fileInfoText {
-  font-family: var(--font-chicago);
-  font-size: 12px;
   color: var(--mac-black);
   pointer-events: none;
   white-space: nowrap;
@@ -199,8 +208,6 @@
 
 /* "NNNK available", right-aligned on the information line */
 .fileInfoRight {
-  font-family: var(--font-chicago);
-  font-size: 12px;
   color: var(--mac-black);
   white-space: nowrap;
 }

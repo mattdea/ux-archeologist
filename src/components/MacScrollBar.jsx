@@ -19,8 +19,9 @@ import ScreenTexture from './ScreenTexture'
 import { toLocal } from './desktopDrag'
 import styles from './MacScrollBar.module.css'
 
-export const BAR = 16              // bar thickness, frame included
-const THUMB = 16                   // the scroll box is square
+const MAC_PX = 620 / 512           // CSS px per Mac pixel (--mac-px)
+export const BAR = 16 * MAC_PX     // bar thickness, frame included (16 Mac pixels)
+const THUMB = 16 * MAC_PX          // the scroll box is square
 const REPEAT_DELAY = 250           // ms before an arrow or track press repeats
 const REPEAT_EVERY = 50            // ms between repeats
 
@@ -42,7 +43,7 @@ function Arrow({ dir, pressed }) {
   const w = across ? 14 : 15, h = across ? 15 : 14
   const d = 'M' + UP.map(MAP[dir]).map(p => p.join(' ')).join(' L') + ' Z'
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} shapeRendering="crispEdges" aria-hidden="true"
+    <svg viewBox={`0 0 ${w} ${h}`} shapeRendering="crispEdges" aria-hidden="true" preserveAspectRatio="none"
       style={{ display: 'block' }}>
       <path d={d} fill={pressed ? '#000' : '#fff'} stroke="#000" strokeWidth="1" />
     </svg>
