@@ -1,7 +1,8 @@
 // src/test/feedData.test.js
 // The real-account photos are gitignored, so these tests only assert on what
 // holds with or without them: the invented friends, the ads, and the ordering.
-import { POSTS, FEED, FEED_ORDER, FEED_TIMES, feedPage, buildFeed, hasProfile, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile } from '../components/feed/feedData'
+import { POSTS, FEED, FEED_ORDER, FEED_TIMES, feedPage, buildFeed, hasProfile, FOLLOWING_ACTIVITY, YOU_ACTIVITY, TRICKLE_ACTIVITY, getProfile, exploreTile, PROFILE_ONLY } from '../components/feed/feedData'
+import { ARCHIVE } from '../components/feed/archiveData'
 
 describe('buildFeed(seed)', () => {
   const ads = ['airbnb', 'warbyparker']
@@ -154,5 +155,39 @@ describe('the sponsored post', () => {
     const ad = POSTS.find(p => p.username === 'airbnb').ad
     expect(ad).toMatchObject({ name: 'Airbnb', domain: 'airbnb.com', page: 'airbnb-live-there' })
     expect(ad.url).toMatch(/^https:\/\/www\.airbnb\.com\//)
+  })
+})
+
+// Every post the feed can deal for a seed: its slots and all its older pages.
+function everyFeedPost(seed) {
+  const f = buildFeed(seed)
+  const out = [...f.posts]
+  for (let n = 1; ; n++) { const pg = f.page(n); if (!pg.length) break; out.push(...pg) }
+  return out
+}
+const codeOf = post => String(post?.id || '').replace(/^archive-[^-]+-/, '')
+
+describe('profile-only posts', () => {
+  const onDisk = [...PROFILE_ONLY].filter(code => Object.values(ARCHIVE).some(a => a.posts.some(p => p.code === code)))
+  it('stay in their own grid', () => {
+    for (const code of onDisk) {
+      const handle = Object.keys(ARCHIVE).find(h => ARCHIVE[h].posts.some(p => p.code === code))
+      expect(getProfile(handle).grid.some(t => t.id.endsWith('-' + code)), code).toBe(true)
+    }
+  })
+  it('never reach the home feed or its older pages', () => {
+    for (const seed of [0, 1, 7, 99, 12345]) {
+      const codes = new Set(everyFeedPost(seed).map(p => String(p.id)))
+      for (const code of onDisk) expect([...codes].some(id => id.endsWith('-' + code)), code).toBe(false)
+    }
+  })
+  it('never show in Explore', () => {
+    const codes = new Set()
+    for (let n = 0; n < 4000; n++) codes.add(codeOf(exploreTile(n).post))
+    for (const code of onDisk) expect(codes.has(code), code).toBe(false)
+  })
+  it("open Rihanna's slot on her next post", () => {
+    const rih = POSTS.find(p => p.username === 'badgalriri')
+    if (rih) expect(rih.id).not.toMatch(/BEbFNVlBM39/)
   })
 })

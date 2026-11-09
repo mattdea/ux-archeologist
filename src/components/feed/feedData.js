@@ -81,6 +81,32 @@ export function libraryPost(account, url, overrides = {}) {
   }
 }
 
+// ── Profile-only posts ────────────────────────────────────────────────────
+// Archived posts that stay in their account's grid but never show in the
+// home feed (slot leads or older pages) or Explore. A feed slot whose lead is
+// here opens on the account's next post. One post code per line.
+export const PROFILE_ONLY = new Set([
+  'BEbFNVlBM39',   // badgalriri
+  'BBiTEemDCaK',   // gigihadid
+  'BB2fgnNjCU-',   // gigihadid
+  'BB6Itm_jCQ2',   // gigihadid
+  'BCO1kMRDCVn',   // gigihadid
+  'BDzIV_BnGvs',   // kyliejenner (the audit spells it BDzlV_BnGvs)
+  'BDURNbTOjDj',   // selenagomez
+  'BETergNmlQF',   // victoriassecret (the audit spells it BETergNmIQF)
+])
+
+/** Grid indexes of an archive account's posts that may reach the feed. */
+const FEED_INDEXES = Object.fromEntries(ARCHIVE_HANDLES.map(h => [h,
+  ARCHIVE[h].posts.flatMap((p, i) => PROFILE_ONLY.has(p.code) ? [] : [i])]))
+
+/** The k-th feed-eligible post of an archive account, labelled by its feed
+    position (gridTime(k)), or null once the account runs out. */
+function feedArchivePost(handle, k, overrides = {}) {
+  const i = FEED_INDEXES[handle]?.[k]
+  return i === undefined ? null : archivePost(handle, i, { timestamp: gridTime(k), ...overrides })
+}
+
 // ── Posts ──────────────────────────────────────────────────────────────────
 // `timestamp` is the 2016 short form shown at the right of the post header.
 // BASE_POSTS are the player's four invented friends and two ads; the real
@@ -288,7 +314,7 @@ export function buildFeed(seed = 0) {
         timestamp,
       }]
     }
-    const post = archivePost(username, start[username] || 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
+    const post = feedArchivePost(username, start[username] || 0, FEED_COMMENTS[username] ? { comments: FEED_COMMENTS[username] } : {})
     return post ? [{ ...post, timestamp }] : []
   })
   // Older pages. Each one deals the real accounts that still have posts in a
@@ -302,7 +328,7 @@ export function buildFeed(seed = 0) {
       const k = shownOrder.length
       const prevLast = shownOrder[k - 1].at(-1)
       const pr = rng((Math.imul(seed ^ 0x9e3779b9, 31) + Math.imul(k, 0x85ebca6b)) >>> 0)
-      const order = shuffle(real.filter(u => archivePost(u, (start[u] || 0) + k)), pr)
+      const order = shuffle(real.filter(u => feedArchivePost(u, (start[u] || 0) + k)), pr)
       const last = order.length - 1
       if (last >= 2) {
         if (order[last] === prevLast) {
@@ -319,7 +345,7 @@ export function buildFeed(seed = 0) {
     return shownOrder[n]
   }
   const page = n => orderFor(n).flatMap(username => {
-    const post = archivePost(username, (start[username] || 0) + n)
+    const post = feedArchivePost(username, (start[username] || 0) + n)
     return post ? [post] : []
   })
   return { posts, page }
@@ -429,7 +455,7 @@ const EXPLORE_CAPTIONS = [
 // different accounts: archive accounts first, then the blog library.
 const EXPLORE_ALL = (() => {
   const queues = [
-    ...ARCHIVE_HANDLES.map(h => ARCHIVE[h].posts.map((p, i) => ({ url: p.url, account: h, post: archivePost(h, i) }))),
+    ...ARCHIVE_HANDLES.map(h => ARCHIVE[h].posts.flatMap((p, i) => PROFILE_ONLY.has(p.code) ? [] : [{ url: p.url, account: h, post: archivePost(h, i) }])),
     EXPLORE_ORDER.map(item => ({ ...item, post: null })),
   ]
   const out = []
