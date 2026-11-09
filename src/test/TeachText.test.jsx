@@ -59,12 +59,15 @@ describe('TeachText', () => {
     const user = userEvent.setup()
     render(<DesktopScene objectives={objectives} completeObjective={() => {}} active={true} />)
     await user.dblClick(screen.getByText('System Disk'))
-    await user.dblClick(await screen.findByText('Utilities'))
-    await user.dblClick(await screen.findByText('TeachText'))
-    await user.type(await screen.findByLabelText('Document'), 'x')
+    // Each step opens a window (zoom rectangles, drive light), which can
+    // outlast findBy's 1s default when the suite runs in parallel.
+    const wait = { timeout: 3000 }
+    await user.dblClick(await screen.findByText('Utilities', {}, wait))
+    await user.dblClick(await screen.findByText('TeachText', {}, wait))
+    await user.type(await screen.findByLabelText('Document', {}, wait), 'x')
     await waitFor(() => expect(finderMenus()).toBeNull(), { timeout: 3000 })
     await choose(user, 'File', 'Quit')
-    await user.click(await screen.findByText('No'))
+    await user.click(await screen.findByText('No', {}, wait))
     await waitFor(() => expect(finderMenus()).not.toBeNull(), { timeout: 3000 })
   })
 })
