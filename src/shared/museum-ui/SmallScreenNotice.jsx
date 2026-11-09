@@ -46,10 +46,7 @@ export default function SmallScreenNotice() {
       <div className={`${styles.card} ${own.card}`}>
         <div className={styles.accentLine} />
         <div className={styles.body}>
-          <h1 id="small-screen-title" className={styles.title}>Made for larger screens</h1>
-          <p className={styles.description}>
-            Each level shows a device at its original size. On a phone they're shrunk to fit and hard to use.
-          </p>
+          <h1 id="small-screen-title" className={styles.title}>This experience was designed for larger screens.</h1>
           <button
             ref={buttonRef}
             type="button"
