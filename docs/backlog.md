@@ -15,7 +15,7 @@
 | | Collection page | What it shows, how it's reached |
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
 | | Hints: feature + copy | Feature decisions, house style |
-| 3. Fidelity | Mac UI, round 5 | A Scrapbook screenshot |
+| 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
 | | Netscape chrome | Version + references |
 | | Instagram accounts audit | Nothing: ready to start |
 | 4. Depth | Netscape pages or search | Pages vs search |
@@ -76,7 +76,7 @@ Same method each time: collect period references, list every difference, fix.
 Rounds 1–4 are in Done.
 - **Source of truth:** `docs/reference/mac system 1/` (Matthew's infinitemac.org screenshots). They win over the build, the manual and the spec, except: the screenshots show **Finder 4.1 ©1985**, so the level stays Finder 1.1 and copies them only where 1.1 looked the same (keep the 1.1g About box and 1.1 menus). Matthew's decision.
 - **Left:**
-  - *Scrapbook* is still dimmed. **Needs:** a screenshot of it open, to trace.
+  - *Scrapbook* stays dimmed: dropped by Matthew (9 Nov 2026).
   - *Control Panel:* insertion point blinking, double-click speed and mouse tracking stay unwired (a web page can't set the caret blink, the system double-click time or pointer speed). A custom caret or our own double-click timing could fake the first two, if wanted.
   - *About the Finder* keeps the Finder 1.1g box by design.
 - **Rule:** everything must be something Finder 1.0/1.1 did.
