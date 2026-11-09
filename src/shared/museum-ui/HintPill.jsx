@@ -6,9 +6,9 @@ import styles from './HintPill.module.css'
  *   text     — the hint; when `docked`, null/'' hides it (the last text stays
  *              rendered while it fades out)
  *   visible  — explicit visibility (undocked use)
- *   docked   — fixed at the bottom centre of the viewport, clear of the
- *              objectives (bottom-left), Continue / back link (bottom-right)
- *              and the artifact above
+ *   docked   — fixed just under the artifact, centred (useArtifactFit sets
+ *              --hint-top / --hint-max and keeps room for it above the
+ *              objectives); at the bottom centre when there is no artifact
  */
 export default function HintPill({ text, visible, docked = false }) {
   const show = docked ? !!text : visible

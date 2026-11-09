@@ -21,6 +21,12 @@ import { useState, useLayoutEffect } from 'react'
  *    above the bottom HUD, it is centred between the top band and the
  *    bottom HUD. Either way the gap above equals the gap below.
  *  - Always centred horizontally in the viewport.
+ *  - Room for the hint: the docked HintPill sits `hintGap` under the
+ *    artifact, so an artifact above the bottom HUD keeps at least
+ *    `hintSpace` between its bottom and the HUD (pill + gaps), not just
+ *    `bandGap`. The hook publishes the pill's place as CSS variables on
+ *    <html>: --hint-top (artifact bottom + hintGap) and --hint-max (the
+ *    artifact's width), removed again on unmount.
  *
  * Returns { scale, left, top } in viewport px for an absolutely positioned
  * wrapper of width*scale × height*scale. Recomputes on resize and once
@@ -33,12 +39,23 @@ import { useState, useLayoutEffect } from 'react'
  * @param {number} [opts.bandGap=32]    Clearance from the top band and from a bottom HUD below
  * @param {number} [opts.sideGap=40]    Clearance from a bottom HUD block beside the artifact
  * @param {number} [opts.edgeGap=24]    Clearance from the viewport edges when no HUD is there
+ * @param {number} [opts.hintSpace=64]  Least space between the artifact and a bottom HUD below it
  */
-export default function useArtifactFit(width, height, { maxScale = 1.35, bandGap = 32, sideGap = 40, edgeGap = 24 } = {}) {
-  const [fit, setFit] = useState(() => computeFit(width, height, { maxScale, bandGap, sideGap, edgeGap }))
+export const HINT_GAP = 14
+
+export default function useArtifactFit(width, height, { maxScale = 1.35, bandGap = 32, sideGap = 40, edgeGap = 24, hintSpace = 64 } = {}) {
+  const [fit, setFit] = useState(() => computeFit(width, height, { maxScale, bandGap, sideGap, edgeGap, hintSpace }))
+
+  // Where the docked hint goes: just under the artifact, no wider than it.
+  useLayoutEffect(() => {
+    const s = document.documentElement.style
+    s.setProperty('--hint-top', `${fit.top + height * fit.scale + HINT_GAP}px`)
+    s.setProperty('--hint-max', `${width * fit.scale}px`)
+    return () => { s.removeProperty('--hint-top'); s.removeProperty('--hint-max') }
+  }, [fit, width, height])
 
   useLayoutEffect(() => {
-    const update = () => setFit(computeFit(width, height, { maxScale, bandGap, sideGap, edgeGap }))
+    const update = () => setFit(computeFit(width, height, { maxScale, bandGap, sideGap, edgeGap, hintSpace }))
     update()
     // Measure again once fonts/tracker have settled.
     const raf = requestAnimationFrame(update)
@@ -47,7 +64,7 @@ export default function useArtifactFit(width, height, { maxScale = 1.35, bandGap
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', update)
     }
-  }, [width, height, maxScale, bandGap, sideGap, edgeGap])
+  }, [width, height, maxScale, bandGap, sideGap, edgeGap, hintSpace])
 
   return fit
 }
@@ -65,7 +82,7 @@ function union(a, b) {
     : b
 }
 
-export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideGap = 40, edgeGap = 24 } = {}) {
+export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideGap = 40, edgeGap = 24, hintSpace = 64 } = {}) {
   if (typeof document === 'undefined') return { scale: 1, left: 0, top: 0 }
   const W = window.innerWidth
   const H = window.innerHeight
@@ -94,7 +111,7 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
         if (side === 'L') x0 = Math.max(x0, r.right + sideGap)
         else x1 = Math.min(x1, r.left - sideGap)
       } else {
-        y1 = Math.min(y1, r.top - bandGap)
+        y1 = Math.min(y1, r.top - Math.max(bandGap, hintSpace))
       }
     })
     const rw = 2 * Math.min(W / 2 - x0, x1 - W / 2), rh = y1 - y0
