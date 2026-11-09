@@ -10,6 +10,7 @@
 // Over it go invisible keys, the press (the key's outer rectangle inverted,
 // as in macsystem100013.png) and the display's digits in Geneva 9.
 import { useEffect, useState } from 'react'
+import { useWindowFrame } from '../windowFrame'
 import styles from './da.module.css'
 
 const mp = (n) => `calc(var(--mac-px) * ${n})`
@@ -83,7 +84,10 @@ export default function Calculator() {
     setOp(k); setFresh(true)
   }
 
+  // The keyboard reaches the Calculator only while it's the front window
+  const { active } = useWindowFrame()
   useEffect(() => {
+    if (!active) return
     const onKey = (e) => {
       const map = { Enter: '=', Escape: 'C', Backspace: 'E', x: '*', X: '*' }
       const k = map[e.key] ?? e.key

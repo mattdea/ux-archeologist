@@ -10,7 +10,7 @@ const APPLE_ITEMS = [
   { label: 'Alarm Clock',  action: 'da', da: 'alarm' },
   { label: 'Note Pad',     action: 'da', da: 'notepad' },
   { label: 'Calculator',   action: 'da', da: 'calculator' },
-  { label: 'Key Caps',     disabled: true },
+  { label: 'Key Caps',     action: 'da', da: 'keycaps' },
   { label: 'Control Panel', disabled: true },
   { label: 'Puzzle',       action: 'da', da: 'puzzle' },
 ]

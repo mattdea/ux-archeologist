@@ -168,6 +168,38 @@
   mix-blend-mode: difference;
 }
 
+/* ── Key Caps ── (traced backdrop: see KeyCaps.jsx) */
+.keycaps {
+  position: relative;
+  height: calc(var(--mac-px) * 150);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+.keycapsLine {
+  position: absolute;
+  font-family: var(--font-chicago);
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 15);
+  white-space: pre;
+  overflow: hidden;
+  pointer-events: none;
+}
+.keycap {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-chicago);
+  font-size: calc(var(--mac-px) * 16);
+  line-height: calc(var(--mac-px) * 15);
+  color: var(--mac-black);
+  cursor: inherit;
+}
+.keycap > span { position: absolute; left: 0; right: 0; text-align: center; }
+/* Pressed: the face inverted (reconstructed) */
+.keycapDown { background: var(--mac-white); mix-blend-mode: difference; }
+
 /* ── About the Finder ── */
 .aboutScrim {
   position: absolute;
