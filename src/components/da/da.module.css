@@ -32,52 +32,59 @@
   mix-blend-mode: difference;
 }
 
-/* ── Note Pad ── */
+/* ── Note Pad ── (measured from macsystem100011.png: see NotePad.jsx) */
 .notepad {
   position: relative;
-  height: 150px;
+  height: calc(var(--mac-px) * 227);
+  background: var(--mac-white);
 }
 .notepadText {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: block;
   width: 100%;
-  height: 120px;
-  padding: 6px 8px;
+  height: calc(var(--mac-px) * 196);
+  /* 7.5 + half of the 1-pixel leading puts the first baseline 20 down */
+  padding: calc(var(--mac-px) * 7.5) calc(var(--mac-px) * 9) 0;
   border: none;
   outline: none;
   resize: none;
   overflow: hidden;   /* no scroll bar and no wheel scrolling: a page is a page */
-  background: var(--mac-white);
-  font-family: var(--font-geneva);
-  font-size: 13px;
-  line-height: 1.3;
+  background: transparent;
+  font-family: var(--font-newyork12);
+  font-size: calc(var(--mac-px) * 15);
+  line-height: calc(var(--mac-px) * 16);
   color: var(--mac-black);
   cursor: text;
+  -webkit-font-smoothing: none;
 }
+/* Dog-ear, bottom rule and the three lines along the bottom edge (traced) */
 .notepadFoot {
   position: absolute;
   left: 0;
-  right: 0;
   bottom: 0;
-  height: 30px;
-  border-top: var(--border);
+  width: 100%;
+  height: calc(var(--mac-px) * 31);
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 .notepadNum {
   position: absolute;
-  left: 32px;
-  bottom: 8px;
-  font-family: var(--font-chicago);
-  font-size: 13px;
+  left: 0;
+  right: 0;
+  top: calc(var(--mac-px) * 200);
+  text-align: center;
+  font-family: var(--font-newyork12);
+  font-size: calc(var(--mac-px) * 15);
+  line-height: calc(var(--mac-px) * 15);
+  pointer-events: none;
+  -webkit-font-smoothing: none;
 }
-/* The turned-down corner: a diagonal split square at the bottom left */
 .dogEar {
   position: absolute;
   left: 0;
-  bottom: 0;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(to top right, var(--mac-white) 49%, var(--mac-black) 49%, var(--mac-black) 51%, var(--mac-white) 51%);
-  border-right: var(--border);
-  border-top: var(--border);
 }
 .dogEarBack, .dogEarFwd {
   position: absolute;
@@ -87,17 +94,8 @@
   padding: 0;
   cursor: inherit;
 }
-.dogEarBack { clip-path: polygon(0 0, 100% 0, 100% 100%); }
-.dogEarFwd  { clip-path: polygon(0 0, 0 100%, 100% 100%); }
-.dogEarFwd::after {
-  content: '';
-  position: absolute;
-  left: 0; bottom: 0;
-  width: 100%; height: 100%;
-  background-image: repeating-linear-gradient(45deg, var(--mac-black) 0 1px, transparent 1px 3px);
-  clip-path: polygon(0 0, 0 100%, 100% 100%);
-  opacity: 0.6;
-}
+.dogEarFwd  { clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.dogEarBack { clip-path: polygon(0 0, 0 100%, 100% 100%); }
 
 /* ── Puzzle ── (traced art and tile sprites: see Puzzle.jsx) */
 .puzzle {

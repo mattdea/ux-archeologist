@@ -17,7 +17,7 @@ export const DA_TITLES = {
 
 export const DA_WIDTH = {
   calculator: 150,
-  notepad:    230,
+  notepad:    'calc(var(--mac-px) * 219 + 2px)',   // the page, measured, plus the frame
   puzzle:     130,
   alarm:      170,
 }

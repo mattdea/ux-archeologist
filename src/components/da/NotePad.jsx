@@ -1,9 +1,19 @@
 // src/components/da/NotePad.jsx — the Note Pad desk accessory: eight pages
-// of plain text. The page number sits above a turned-down corner at the
-// bottom left; click the corner's lower part to turn forward, its upper
-// part to turn back. Pages persist for the session.
+// of plain text in New York 12. As its own first page says: "Click on the
+// dog-ear to turn to the next following page. Click in the lower left
+// corner to turn to the next previous page." Pages persist for the session.
+//
+// Measured from docs/reference/mac system 1/macsystem100011.png (Mac
+// pixels, inside the frame, below the title bar): a white page 219 wide and
+// 227 tall; text 9 in, first baseline 20 down, lines 16 apart; the
+// dog-ear, bottom rule and three lines along the bottom edge are traced
+// (notepad-foot.png, the last 31 rows); the page number is centred with its
+// baseline 212 down.
 import { useState } from 'react'
+import footSrc from '../../../assets/mac/da/notepad-foot.png'
 import styles from './da.module.css'
+
+const mp = (n) => `calc(var(--mac-px) * ${n})`
 
 const PAGES = 8
 const STARTER = [
@@ -31,13 +41,13 @@ export default function NotePad() {
         onChange={(e) => setText(e.target.value)}
         spellCheck={false}
       />
-      <div className={styles.notepadFoot}>
-        <span className={styles.notepadNum}>{page + 1}</span>
-        {/* Dog-ear: top half turns back, bottom half turns forward */}
-        <div className={styles.dogEar} aria-hidden="true">
-          <button type="button" className={styles.dogEarBack} onClick={() => turn(-1)} title="Previous page" />
-          <button type="button" className={styles.dogEarFwd} onClick={() => turn(1)} title="Next page" />
-        </div>
+      <div className={styles.notepadFoot} style={{ backgroundImage: `url(${footSrc})` }} />
+      <span className={styles.notepadNum}>{page + 1}</span>
+      {/* The dog-ear (above the fold) turns forward; the lower left corner
+          (below it) turns back */}
+      <div className={styles.dogEar} style={{ top: mp(196), width: mp(24), height: mp(25) }}>
+        <button type="button" className={styles.dogEarFwd} onClick={() => turn(1)} title="Next page" />
+        <button type="button" className={styles.dogEarBack} onClick={() => turn(-1)} title="Previous page" />
       </div>
     </div>
   )
