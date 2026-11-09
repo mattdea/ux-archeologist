@@ -132,7 +132,13 @@ _Items from Matthew's list of 8 Nov 2026 are in no particular order or priority.
 
 _Matthew moves items here from Ideas. Unattended runs build only from this list; ambiguous items are skipped with a note._
 
-### Level 0: the power-on bell (approved 8 Nov 2026)
+_Nothing approved right now._
+
+## Done
+
+_Finished items, moved here when built._
+
+### Level 0: the power-on bell (approved and built 8 Nov 2026)
 
 **Build:** the terminal rings its bell once as it powers on, after the CRT warm-up starts and before the first boot line prints. It's shorter than Level 1's Mac beep and a little higher.
 
@@ -150,9 +156,7 @@ _Matthew moves items here from Ideas. Unattended runs build only from this list;
 
 **Not settled, so don't guess past it:** the measured pitch and length. If Matthew's video is analysed later and disagrees, change `VT_SPEAKER_HZ` and the hold time to match.
 
-## Done
-
-_Finished items, moved here when built._
+**Built:** `VT_SPEAKER_HZ` is 787 (keyclick and bell); Level 0 rings `sfx.bell()` 600 ms after `crtOn()` as the boot starts, timer cleared on cleanup; the spec's Sound section updated. Measured in the browser: thump at 6 ms, one 787 Hz bell at 610 ms.
 
 ### Level 4: truncate long captions after 3 lines (approved and built 8 Nov 2026)
 

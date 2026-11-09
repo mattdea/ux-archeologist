@@ -93,9 +93,11 @@ function filter(type, freq, q = 1) {
 
 // The VT100 made both sounds with one small speaker in the keyboard, driven
 // by pulses from the terminal: a single pulse is the keyclick (SET-UP could
-// turn it off), about 200 pulses in a row are the bell. The speaker's RC
-// circuit rings near 780 Hz, so both have that colour.
-const VT_SPEAKER_HZ = 780
+// turn it off), about 200 pulses in a row are the bell (VT100 Technical
+// Manual §4.4.3). One pulse per status byte, and a byte takes 160 clock
+// periods of 7.945 µs = 1.271 ms, so the bell buzzes near 787 Hz. Derived
+// from the manual's timing, not measured.
+const VT_SPEAKER_HZ = 787
 
 export function key() {
   if (!ensure()) return
