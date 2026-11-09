@@ -315,7 +315,7 @@ export default function DraggableWindow({
       ) : (
       <div className={type === 'notes' ? styles.scrollBody : size ? styles.fill : (children || type === 'projects' || type === 'trash') ? styles.custom : styles.body}>
         {children}
-        {type === 'projects' && <ProjectsWindowContent />}
+        {type === 'projects' && !children && <ProjectsWindowContent />}
         {type === 'notes'    && <NotesWindowContent />}
         {type === 'trash'    && (
           <TrashWindowContent

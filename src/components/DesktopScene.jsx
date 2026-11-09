@@ -26,6 +26,7 @@ import { zoomRects, localRect } from './zoomRects'
 import { TeachTextContent, SaveDialog } from './apps/TeachText'
 import FontMover from './apps/FontMover'
 import { NOTES_TEXT } from './NotesWindowContent'
+import { PROJECT_FILES } from './projectFiles'
 
 // Boot reveal order: 0 = bare desktop, 1 = menu bar, 2 = disk + Projects,
 // 3 = Notes, 4 = Trash (everything). The boot sequence steps this up so the
@@ -152,6 +153,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   const [app, setApp] = useState(null)
   const [docs, setDocs] = useState([])                 // TeachText documents saved to the disk: { id, label, text }
   const [notesText, setNotesText] = useState(NOTES_TEXT)
+  const [projectTexts, setProjectTexts] = useState(() => Object.fromEntries(PROJECT_FILES.map(f => [f.id, f.text])))
   const [tt, setTT] = useState(null)                   // TeachText's window: { docId, title, text, dirty } or null
   const [ttSave, setTTSave] = useState(null)           // the Save dialog: { then: null | 'close' | 'quit' }
   const [ttAsk, setTTAsk] = useState(null)             // "Save changes?" before 'close' | 'quit'
@@ -254,6 +256,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
       launch('teachtext', from, { docId: null, title: 'Untitled', text: '', dirty: false })
     } else if (item.id === 'fontmover') {
       launch('fontmover', from)
+    } else if (item.project) {
+      launch('teachtext', from, { docId: item.id, title: item.label, text: projectTexts[item.id], dirty: false })
     } else if (item.doc) {
       const d = docs.find(x => x.id === item.id)
       launch('teachtext', from, { docId: d.id, title: d.label, text: d.text, dirty: false })
@@ -283,6 +287,7 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
   // TeachText's File menu
   const ttCommit = (docId, text) => {
     if (docId === 'notes') setNotesText(text)
+    else if (docId in projectTexts) setProjectTexts(p => ({ ...p, [docId]: text }))
     else setDocs(prev => prev.map(d => d.id === docId ? { ...d, text } : d))
   }
   const ttCloseOrQuit = (then) => {
@@ -753,6 +758,8 @@ export default function DesktopScene({ completeObjective, active, reveal = REVEA
         return <FolderWindowContent items={SYSFOLDER_ITEMS} inFolder={DISK_K.inSysFolder} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'emptyfolder':
         return <FolderWindowContent items={[]} />
+      case 'projects':
+        return <FolderWindowContent items={PROJECT_FILES.map(f => ({ id: f.id, label: f.label, icon: 'notes', project: true }))} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'utilities':
         return <FolderWindowContent items={UTILITY_ITEMS} left={18} inFolder={DISK_K.inUtilities} available={DISK_K.available} selectedId={folderSel} onSelect={setFolderSel} onOpen={openInner} />
       case 'info':
