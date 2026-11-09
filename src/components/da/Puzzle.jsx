@@ -3,9 +3,20 @@
 // empty space, it slides into that space." It rescrambles whenever it is
 // closed, or chosen again from the Apple menu while open (the parent remounts
 // it); when solved it blinks a few times and beeps.
+//
+// Traced from docs/reference/mac system 1/macsystem100016.png: the window
+// (with its 16 cells cleared) is DA_ART.puzzle; each tile is a 19×19 sprite
+// cut from the same screenshot (puzzle-tiles.png: the dotted blank, then
+// 1–15), drawn in the cell it currently occupies.
 import { useEffect, useState } from 'react'
+import tilesSrc from '../../../assets/mac/da/puzzle-tiles.png'
 import styles from './da.module.css'
 import * as sfx from '../../audio/sfx'
+
+const mp = (n) => `calc(var(--mac-px) * ${n})`
+const CELL = 19
+const XS = [6, 26, 46, 66]    // cell columns in the traced window, Mac pixels
+const YS = [25, 45, 65, 85]   // cell rows
 
 const N = 4
 const SOLVED = [...Array(15).keys()].map(i => i + 1).concat([0])
@@ -51,10 +62,21 @@ export default function Puzzle() {
 
   return (
     <div className={`${styles.puzzle} ${blink ? styles.puzzleBlink : ''}`}>
-      {tiles.map((v, i) => v === 0
-        ? <span key={i} className={styles.puzzleGap} />
-        : <button key={i} type="button" className={styles.puzzleTile} onClick={() => click(i)}>{v}</button>
-      )}
+      {tiles.map((v, i) => (
+        <button
+          key={i}
+          type="button"
+          aria-label={v === 0 ? 'empty' : String(v)}
+          className={v === 0 ? `${styles.puzzleTile} ${styles.puzzleGap}` : styles.puzzleTile}
+          style={{
+            left: mp(XS[i % N]), top: mp(YS[Math.floor(i / N)]), width: mp(CELL), height: mp(CELL),
+            backgroundImage: `url(${tilesSrc})`,
+            backgroundSize: `${mp(CELL * 16)} ${mp(CELL)}`,
+            backgroundPosition: `${mp(-CELL * v)} 0`,
+          }}
+          onClick={() => click(i)}
+        />
+      ))}
     </div>
   )
 }

@@ -28,7 +28,7 @@ export const DA_WIDTH = {
 export const DA_VARIANT = {
   calculator: 'traced',
   notepad:    'doc',
-  puzzle:     'rdoc',
+  puzzle:     'traced',
   alarm:      'plain',
 }
 

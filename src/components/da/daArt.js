@@ -8,8 +8,11 @@
 // (an 11-pixel square) and closeInk the starburst's colour when it's pressed.
 
 import calculator from '../../../assets/mac/da/calculator.png'
+import puzzle from '../../../assets/mac/da/puzzle.png'
 
 export const DA_ART = {
   // macsystem100012.png / macsystem100013.png
   calculator: { src: calculator, w: 106, h: 169, titleH: 20, close: [9, 4], closeInk: '#fff' },
+  // macsystem100016.png, its 16 cells cleared (the tiles are sprites)
+  puzzle: { src: puzzle, w: 91, h: 110, titleH: 20, close: [9, 4], closeInk: '#fff' },
 }

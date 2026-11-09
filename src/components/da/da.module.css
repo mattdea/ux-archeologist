@@ -99,30 +99,22 @@
   opacity: 0.6;
 }
 
-/* ── Puzzle ── */
+/* ── Puzzle ── (traced art and tile sprites: see Puzzle.jsx) */
 .puzzle {
-  display: grid;
-  grid-template-columns: repeat(4, 28px);
-  grid-auto-rows: 28px;
-  gap: 2px;
-  padding: 8px;
-  background: var(--mac-white);
+  position: absolute;
+  inset: 0;
 }
 .puzzleTile {
-  background: var(--mac-white);
-  border: var(--border);
-  font-family: var(--font-chicago);
-  font-size: 14px;
-  color: var(--mac-black);
-  cursor: inherit;
+  position: absolute;
   padding: 0;
+  border: none;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  cursor: inherit;
 }
-.puzzleTile { box-shadow: inset -1px -1px 0 var(--mac-black), inset 1px 1px 0 var(--mac-white); }
-.puzzleGap {
-  background-image: repeating-conic-gradient(var(--mac-black) 0 25%, var(--mac-white) 0 50%);
-  background-size: 2px 2px;
-}
-.puzzleBlink .puzzleTile { background: var(--mac-black); color: var(--mac-white); }
+.puzzleGap { pointer-events: none; }
+/* Solved: the tiles blink */
+.puzzleBlink .puzzleTile:not(.puzzleGap) { filter: invert(1); }
 
 /* ── Alarm Clock ── */
 /* The clock row sits in the window's title bar (DraggableWindow 'plain') */
