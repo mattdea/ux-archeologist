@@ -31,21 +31,9 @@ Open items, roughly in priority order:
 
 ---
 
-## Routes
+## Navigation
 
-```
-/               → TitleScreen (museum entrance)
-/timeline       → Timeline / progression map
-/level/0        → Level 0 — 1971 Unix Terminal
-/level/1        → Level 1 — 1984 Macintosh Desktop
-/level/2        → Level 2 — 1995 Netscape Web
-/level/3        → Level 3 — 2007 iPhone
-/level/4        → Level 4 — 2016 Social Feed
-/level/5        → Level 5 — 2023 AI Interface
-/collection     → Full artifact collection / shareable finale
-```
-
-All levels are freely accessible. Sequential order is suggested but not enforced. The `/collection` page is always accessible.
+There is no URL routing: the address stays at `/` and `SharedLayout` swaps views in state (`useFadeNavigate`), fading out and in. Call sites pass path-like keys (`/timeline`, `/level/N`, `/`) that `SharedLayout`'s `PATH_TO_VIEW` maps to views; a reload starts at the title screen. All levels are freely accessible. `Collection.jsx` is a placeholder with no way in; the collection page is an idea on the backlog.
 
 ---
 
@@ -204,7 +192,6 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Artifact:** Unix terminal session
 **Discovery:** Command & Response
 **Container:** `src/components/terminal/` — TerminalBezel + TerminalScreen; 780×460px
-**Route:** `/level/0`
 
 **IntroModal:**
 - Era: `1971`
@@ -233,7 +220,6 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Artifact:** Macintosh System 1 desktop
 **Discovery:** Direct Manipulation
 **Container:** `MonitorBezel.jsx` — beige CRT; 780×755px, 620×415px screen. Drawn from `assets/MonitorBezel@2x.webp`, a headless-Chrome render of `MonitorBezel.svg` (the SVG's 13 blur filters rasterised on the level's first visible frame, a ~200ms stall that ate the page fade-in). `SharedLayout` also starts a view's fade-in only once frames are flowing again after the swap. Never put `will-change`, `transform` or `filter` on SharedLayout's `.content`: it becomes a stacking context above the HUD corners and blocks their clicks.
-**Route:** `/level/1`
 
 **IntroModal:**
 - Era: `1984`
@@ -310,7 +296,6 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Artifact:** Academic homepage viewed in Netscape Navigator
 **Discovery:** Hyperlink Navigation
 **Container:** `src/components/web/BrowserChrome.jsx` — no device bezel; 700×580px
-**Route:** `/level/2`
 
 **IntroModal:**
 - Era: `1995`
@@ -352,7 +337,6 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Artifact:** Original iPhone interface
 **Discovery:** Multi-Touch
 **Container:** `src/components/phone/PhoneFrame.jsx` — `assets/iphone.svg` at 385×735px; screen slot 320×480px
-**Route:** `/level/3`
 
 **IntroModal:**
 - Era: `2007`
@@ -371,7 +355,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Sleep/wake button (top bezel, 220×45px tap target): locks phone (plays `assets/phone/lock.mp3`); also wakes phone if off
 - Home button wakes phone if off
 - Tapping black screen wakes phone; 300ms pause + 450ms boot animation
-- Home screen: 2 swipeable pages, 12 icons + 4-app dock
+- Home screen: 2 swipeable pages, the 12 launch apps (the SMS app labelled **Text**, as until iPhone OS 3.0 in 2009; no Contacts icon, which arrived in iPhone OS 1.1.3, January 2008) + 4-app dock
 - Only Notes app is interactive (other icons are decorative)
 - Home button: returns to home screen from any app; also wakes phone if `phonePower === 'off'`
 - Notes app: list → detail slide transition, rubber-band scroll in detail view
@@ -409,7 +393,6 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **Artifact:** Instagram for iOS, spring 2016 (blue header, dark tab bar: the UI just before the May 2016 redesign)
 **Discovery:** Algorithmic Feed
 **Container:** `src/components/feed/GhostDevice.jsx` — hairline iPhone 6 outline and screen glow, 375×667px screen; no solid bezel and no side-button ticks (the hardware is fading out between Level 3 and Level 5)
-**Route:** `/level/4`
 
 **IntroModal:**
 - Era: `2016`
@@ -501,7 +484,6 @@ src/components/feed/
 **Artifact:** AI chat interface (Claude-inspired, curator persona)
 **Discovery:** Natural Language
 **Container:** Full-width chat panel — no device, no chrome, no window frame
-**Route:** `/level/5`
 
 **Persona:** The AI is the museum curator — the same voice that has written every IntroModal and DiscoveryCard. Slightly formal, warm, knowledgeable about interface history. It knows it is inside UX Archaeologist. When asked about itself, it is honest and matter-of-fact.
 
