@@ -32,7 +32,9 @@ import { useState, useLayoutEffect } from 'react'
  *    (src/shared/index-museum/): `data-hud="side"` is a column down the
  *    left; the artifact goes beside it, `sideGap` away, centred in the space
  *    left (not in the viewport) and between the top and bottom edges.
- *    `data-hud="top"` is always a top band, however tall. A plain
+ *    `data-hud="top"` is always a top band, however tall, and is not
+ *    mirrored at the bottom (the artifact may reach `edgeGap` from the
+ *    bottom edge). A plain
  *    `data-hud` is judged by where it sits, as above.
  *
  * Returns { scale, left, top } in viewport px for an absolutely positioned
@@ -96,12 +98,14 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
 
   let bandBottom = 0
   let side = null
+  let declaredTop = false
   const bottom = { L: null, R: null }
   document.querySelectorAll('[data-hud]').forEach(el => {
     if (!el.offsetWidth || !el.offsetHeight) return
     const r = layoutRect(el)
     const kind = el.getAttribute('data-hud')
     if (kind === 'side') { side = union(side, r); return }
+    if (kind === 'top') declaredTop = true
     if (kind === 'top' || r.top + r.bottom < H) bandBottom = Math.max(bandBottom, r.bottom)
     else bottom[r.left + r.right < W ? 'L' : 'R'] = union(bottom[r.left + r.right < W ? 'L' : 'R'], r)
   })
@@ -123,7 +127,9 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
 
   let best = null
   for (let mask = 0; mask < (1 << sides.length); mask++) {
-    let x0 = edgeGap, x1 = W - edgeGap, y1 = H - y0
+    // a declared top band (the index list above the artifact) isn't mirrored
+    // at the bottom: the artifact may use the height down to the edge gap
+    let x0 = edgeGap, x1 = W - edgeGap, y1 = declaredTop ? H - edgeGap : H - y0
     sides.forEach((side, i) => {
       const r = bottom[side]
       if ((mask >> i) & 1) {

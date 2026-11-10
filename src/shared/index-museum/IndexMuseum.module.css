@@ -57,7 +57,7 @@
 .line {
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, max-content) minmax(2ch, 1fr) auto auto;
+  grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, max-content) minmax(2ch, 1fr) auto;
   align-items: start;
   width: 100%;
   margin: 0;
@@ -81,7 +81,8 @@
   border-bottom: 1px dotted var(--ix-ink-2);
 }
 .space { min-width: 2ch; }
-.meta { color: var(--ix-ink-2); text-align: right; white-space: nowrap; }
+.end { white-space: nowrap; text-align: right; }
+.meta { color: var(--ix-ink-2); }
 .arrow { margin-left: 1ch; color: var(--ix-ink-2); }
 
 .note { grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, 1fr); }
@@ -236,7 +237,7 @@
   .text { flex: 0 1 auto; max-width: calc(100% - var(--ix-cursor) - var(--ix-mark)); }
   .note, .pictureLine { display: grid; }
   .leader, .space { display: none; }
-  .meta { margin-left: auto; padding-left: 2ch; }
+  .end { margin-left: auto; padding-left: 2ch; }
   .cards { grid-template-columns: minmax(0, 1fr); }
 }
 

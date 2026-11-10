@@ -70,8 +70,12 @@ function Line({ as = 'text', i = 0, onClick, href, mark = '', text, meta, arrow,
       <span className={s.mark}>{mark}</span>
       <span className={s.text}>{text}</span>
       {chooses && !bare ? <span className={s.leader} aria-hidden="true" /> : <span className={s.space} />}
-      {meta ? <span className={s.meta}>{meta}</span> : null}
-      {arrow ? <span className={s.arrow} aria-hidden="true">{arrow}</span> : null}
+      {meta || arrow ? (
+        <span className={s.end}>
+          {meta ? <span className={s.meta}>{meta}</span> : null}
+          {arrow ? <span className={s.arrow} aria-hidden="true">{arrow}</span> : null}
+        </span>
+      ) : null}
     </>
   )
   const common = { ref, className: cls, style: { '--i': Math.min(i, 30) }, ...(peek ?? {}) }
@@ -140,25 +144,38 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
   }, [inLevel, narrow, view])
 
-  // Keyboard, like a terminal menu: arrows move, Home / End jump, Escape closes
-  const onKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      if (asking) { e.preventDefault(); setAsking(false) }
-      else if (aboutOpen) { e.preventDefault(); setAboutOpen(false) }
-      return
+  // Keyboard, like a terminal menu: arrows move, Home / End jump, Escape
+  // closes. Listened for on window in the capture phase, so it runs before
+  // an artifact's own document-level listeners (Level 0's terminal pulls
+  // focus back on every keydown); while the list has focus, its keys stay
+  // with the list. Any other key (typing) goes on to the artifact as usual.
+  const openRef = useRef({ asking, aboutOpen })
+  openRef.current = { asking, aboutOpen }
+  useEffect(() => {
+    const MENU_KEYS = ['ArrowDown', 'ArrowUp', 'Home', 'End', 'Escape', 'Enter', ' ', 'Tab']
+    const onKey = (e) => {
+      const list = listRef.current
+      if (!list || !list.contains(e.target) || !MENU_KEYS.includes(e.key)) return
+      e.stopPropagation()
+      if (e.key === 'Escape') {
+        if (openRef.current.asking) { e.preventDefault(); setAsking(false) }
+        else if (openRef.current.aboutOpen) { e.preventDefault(); setAboutOpen(false) }
+        return
+      }
+      if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return   // Enter, Space, Tab: the browser's own
+      const items = [...list.querySelectorAll('[data-ix-nav]')]
+      if (!items.length) return
+      const at = items.indexOf(document.activeElement)
+      const next = e.key === 'Home' ? 0
+        : e.key === 'End' ? items.length - 1
+        : e.key === 'ArrowDown' ? (at < 0 ? 0 : Math.min(items.length - 1, at + 1))
+        : (at < 0 ? items.length - 1 : Math.max(0, at - 1))
+      e.preventDefault()
+      items[next].focus()
     }
-    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return
-    const items = [...listRef.current.querySelectorAll('[data-ix-nav]')]
-    if (!items.length) return
-    const at = items.indexOf(document.activeElement)
-    const next = e.key === 'Home' ? 0
-      : e.key === 'End' ? items.length - 1
-      : e.key === 'ArrowDown' ? (at < 0 ? 0 : Math.min(items.length - 1, at + 1))
-      : (at < 0 ? items.length - 1 : Math.max(0, at - 1))
-    e.preventDefault()
-    e.stopPropagation()
-    items[next].focus()
-  }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [])
 
   // ── The lines, in order. Keys are stable from view to view. ───────────
   const L = []
@@ -319,7 +336,6 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
           ref={listRef}
           className={s.list}
           aria-label={TITLE.name}
-          onKeyDown={onKeyDown}
           {...(inLevel ? { 'data-hud': narrow ? 'top' : 'side' } : {})}
         >
           {L}
