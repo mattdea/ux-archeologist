@@ -19,7 +19,7 @@ import { ROOMS, TITLE, ABOUT, WORDS, MOCK, isFound, foundLine, pad } from './con
 import { RoomPicture } from './CurrentCard'
 
 // One line of the list: [mark or year] text ......... meta
-function Row({ mark = '', text, meta, href, onClick, current, sub, external, peek }) {
+function Row({ mark = '', text, meta, href, onClick, current, lit, sub, external, peek }) {
   const inner = (
     <>
       <span className={s.mark}>{mark}</span>
@@ -28,7 +28,8 @@ function Row({ mark = '', text, meta, href, onClick, current, sub, external, pee
       <span className={s.meta}>{meta}</span>
     </>
   )
-  const cls = `${s.row} ${sub ? s.sub : ''} ${current ? s.current : ''}`
+  // `lit`: black like the current row, because its room's square is pointed at
+  const cls = `${s.row} ${sub ? s.sub : ''} ${current || lit ? s.current : ''}`
   if (href) {
     return (
       <a className={cls} href={href} onClick={onClick} aria-current={current ? 'page' : undefined} {...peek} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
@@ -76,7 +77,32 @@ function Card({ room, art, href }) {
   )
 }
 
-function Level({ room, href }) {
+// Six little squares, one a room, each with the room's picture and its year
+// under it: another way in, and in a room they are the HUD's progress dots
+// (the room you are in is the black one). They turn black under the pointer
+// like a row, and bring up the larger picture where there is room for it;
+// a square and its room's line light together.
+function Squares({ href, art, current, peek, peekAt }) {
+  return (
+    <div className={s.squares}>
+      {ROOMS.map(r => (
+        <a
+          key={r.level}
+          className={`${s.square} ${current === r.level || peek === r.level ? s.squareNow : ''}`}
+          href={href('level', r.level)}
+          aria-label={`${r.year} ${r.title}`}
+          aria-current={current === r.level ? 'page' : undefined}
+          {...peekAt?.(r.level)}
+        >
+          <span className={s.squareBox}><RoomPicture room={r} art={art} className={s.fill} /></span>
+          <span className={s.squareYear}>{r.year}</span>
+        </a>
+      ))}
+    </div>
+  )
+}
+
+function Level({ room, href, art }) {
   // 'all' is the mock's usual state, every piece at once; the other two are
   // the list as it would be while playing and after Continue
   const [phase, setPhase] = useState('all')
@@ -88,7 +114,7 @@ function Level({ room, href }) {
     <div className={`${s.page} ${s.levelPage}`}>
       <div className={s.list}>
         <Row text={TITLE.name} href={href('title')} />
-        <div className={s.gap} />
+        <Squares href={href} art={art} current={room.level} />
         {ROOMS.map(r => {
           const open = r.level === room.level
           return (
@@ -147,7 +173,7 @@ export default function Index2({ screen, level, href, art }) {
     onFocus: () => setPeek(n),
     onBlur: () => setPeek(p => (p === n ? null : p)),
   })
-  if (screen === 'level') return <Level room={ROOMS[level]} href={href} />
+  if (screen === 'level') return <Level room={ROOMS[level]} href={href} art={art} />
 
   return (
     <div className={`${s.page} ${screen === 'collection' ? s.collectionPage : s.listPage}`}>
@@ -162,11 +188,11 @@ export default function Index2({ screen, level, href, art }) {
           </>
         )}
 
-        {/* ── The six rooms ─────────────────────────────────────── */}
-        <div className={s.gap} />
+        {/* ── The six rooms: as squares, then as lines ──────────── */}
+        <Squares href={href} art={art} peek={peek} peekAt={peekAt} />
         {ROOMS.map(r => (
           <div key={r.level}>
-            <Row mark={r.year} text={r.title} meta={isFound(r.level) ? r.name : ''} href={href('level', r.level)} peek={peekAt(r.level)} />
+            <Row mark={r.year} text={r.title} meta={isFound(r.level) ? r.name : ''} href={href('level', r.level)} peek={peekAt(r.level)} lit={peek === r.level} />
             {screen === 'timeline' && r.objectives.map(o => (
               <Row key={o} sub text={`${isFound(r.level) ? '[x]' : '[ ]'} ${o}`} href={href('level', r.level)} peek={peekAt(r.level)} />
             ))}

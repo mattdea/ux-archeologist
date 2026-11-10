@@ -71,13 +71,28 @@ describe('Style lab', () => {
   it('B2: pointing at a room, or focusing it, shows its picture and year beside the list', () => {
     renderLab('#b2/timeline')
     expect(document.querySelector('[data-peek]')).toBeNull()
-    const row = document.querySelector('a[href="#b2/level/2"]')
+    const row = document.querySelector('a[href="#b2/level/2"]:not([aria-label])')
     fireEvent.mouseEnter(row)
     expect(document.querySelector('[data-peek="2"]').textContent).toBe(ROOMS[2].year)
     fireEvent.mouseLeave(row)
     expect(document.querySelector('[data-peek]')).toBeNull()
-    fireEvent.focus(document.querySelector('a[href="#b2/level/4"]'))
+    fireEvent.focus(document.querySelector('a[href="#b2/level/4"]:not([aria-label])'))
     expect(document.querySelector('[data-peek="4"]')).not.toBeNull()
+  })
+
+  it('B2: six little squares open the rooms, and in a room the one you are in is marked', () => {
+    renderLab('#b2/title')
+    const squares = () => ROOMS.map(r => screen.getByRole('link', { name: `${r.year} ${r.title}` }))
+    squares().forEach((sq, i) => {
+      expect(sq).toHaveAttribute('href', `#b2/level/${i}`)
+      expect(sq.textContent).toBe(ROOMS[i].year)
+    })
+    // a square brings up the picture too
+    fireEvent.mouseEnter(squares()[5])
+    expect(document.querySelector('[data-peek="5"]')).not.toBeNull()
+    cleanup()
+    renderLab('#b2/level/3')
+    expect(squares().map(sq => sq.getAttribute('aria-current'))).toEqual([null, null, null, 'page', null, null])
   })
 
   it('B2: Begin excavation leaves the list as it is while playing, Continue shows the discovery', () => {

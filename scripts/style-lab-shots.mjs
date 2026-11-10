@@ -41,7 +41,7 @@ const SCREENS_TWO_FRAMES = [...SCREENS.slice(0, 3), ['level/1', 'level-mac'], ['
 const TWO_FRAMES = ['b2', 'g']
 // Extra shots with the pointer over something: [hash, file name, selector]
 const HOVERS = {
-  b2: [['timeline', 'timeline-hover', '[data-lab-scroll] a[href="#b2/level/1"]']],
+  b2: [['timeline', 'timeline-hover', '[data-lab-scroll] a[href="#b2/level/1"]:not([aria-label])']],
 }
 const SIZES = [
   { width: 1440, height: 900, scale: 1 },
