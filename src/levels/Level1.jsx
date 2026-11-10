@@ -126,7 +126,7 @@ export default function Level1() {
         <IntroModal
           era="1984"
           title="The Desktop"
-          description="This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find."
+          description="It's 1984, and this is the Apple Macintosh. Until now, using a computer has meant memorizing commands. Here everything is where you can see it: files, folders, even a trash can, there to point at and pick up. Hardly anyone has held a mouse, so Apple packed a cassette tape in the box to teach you."
           objectives={OBJECTIVES}
           onBegin={() => setScreen('booting')}
         />

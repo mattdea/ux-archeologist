@@ -119,7 +119,7 @@ export default function Level5() {
         <IntroModal
           era="2023"
           title="The Conversation"
-          description="This is a large language model. There are no buttons to learn, no gestures to memorize. You type a sentence, and it types one back."
+          description="It's 2023, and this is a large language model, the kind of AI behind ChatGPT. Every interface so far has asked you to learn something first: commands, menus, links, gestures. This one has no buttons to learn and nothing to memorize. You write to it the way you'd write to a person, and it writes back."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}
         />

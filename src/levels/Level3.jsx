@@ -290,7 +290,7 @@ export default function Level3() {
         <IntroModal
           era="2007"
           title="The Touchscreen"
-          description="This is the original iPhone. There's no stylus, no keyboard, no instruction manual. Just a glass screen and your finger."
+          description="It's 2007, and this is the original iPhone. Other phones have plastic keyboards, small screens and sometimes a stylus. This one has no stylus, no keys, nothing to learn first. Just a sheet of glass and your finger."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}
         />

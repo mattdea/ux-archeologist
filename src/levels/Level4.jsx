@@ -119,7 +119,7 @@ export default function Level4() {
         <IntroModal
           era="2016"
           title="The Feed"
-          description="The interface stopped waiting for you. It started optimizing for your attention."
+          description="It's spring 2016, and this is Instagram on an iPhone 6. There's nothing to open and nothing to look for: the photos are already there when you arrive, and there are always more below. This year Instagram begins deciding which ones you see first, guessing at what will keep you looking."
           objectives={OBJECTIVES}
           onBegin={handleBeginExcavation}
         />

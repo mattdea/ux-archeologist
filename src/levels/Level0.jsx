@@ -107,7 +107,7 @@ export default function Level0() {
         <IntroModal
           era="1979"
           title="The Command Line"
-          description="This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something."
+          description="It's 1979, and this is a VT100 terminal, your line to a computer down the hall that the whole lab shares. There are no icons, no menus, no mouse. Just a blinking cursor, and it won't suggest a thing: the machine waits for you to know what to ask."
           objectives={OBJECTIVES}
           onBegin={() => setScreen('booting')}
         />

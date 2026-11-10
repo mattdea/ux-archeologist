@@ -221,7 +221,7 @@ export default function Level2() {
         <IntroModal
           era="1995"
           title="The Hyperlink"
-          description="This is Netscape Navigator, circa 1995. The web is a network of pages linked together by people — no search engine required. Follow the trail."
+          description="It's 1995, and this is Netscape Navigator, the browser most people use to get on the web. The web has no map, and no good way to search it yet. Every link was put there by a person, and following them is the only way around, so where you end up depends on whose pages you happen to find."
           objectives={OBJECTIVES}
           onBegin={() => {
             setScreen('loading')
