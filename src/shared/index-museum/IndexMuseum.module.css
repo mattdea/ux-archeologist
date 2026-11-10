@@ -10,7 +10,7 @@
  *   --ix-mark     6ch    years, ?, *, ←
  *   --ix-sub      2ch    a line under another line starts this much further in
  *   --ix-measure  64ch   longest line of running text
- *   --ix-list     72ch   the list on the title and timeline (56ch beside the cards)
+ *   --ix-list     76ch   the list on the title and timeline (56ch beside the cards)
  *   --ix-hud      50ch   the list in a level, where it is the HUD
  *   --ix-gutter   24px   page edge (16px at phone width)
  */
@@ -26,7 +26,7 @@
   --ix-mark: 6ch;
   --ix-sub: 2ch;
   --ix-measure: 64ch;
-  --ix-list: 72ch;
+  --ix-list: 76ch;
   --ix-hud: 50ch;
   --ix-gutter: 24px;
 

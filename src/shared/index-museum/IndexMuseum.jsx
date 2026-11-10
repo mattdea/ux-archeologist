@@ -261,7 +261,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
   }
 
-  if (view !== 'collection') push(<Gap key="after-rooms" i={n} />)
+  if (view !== 'collection' && !inLevel) push(<Gap key="after-rooms" i={n} />)
 
   // ── Collection ──
   if (!inLevel) {
