@@ -2,7 +2,7 @@
 
 Nothing here is in the code yet. Each item shows the **current** text (what's live), the **proposed** text, and a note where it changed. Edit the proposed lines in place, or reply in chat with the number (e.g. "1.3 keep current"). Once agreed, each surface goes in as its own commit and `design-spec.md` is updated to match.
 
-Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards give the context and leave the instructions to the objectives list (revised 9 Nov); discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
+Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards put you in the year and set what's new against what came before, with no instructions (revised 10 Nov); discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
 
 Historical claims carry a source and a confidence (high / medium / low).
 
@@ -19,9 +19,9 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 5. **No hype, no verdicts.** Explain what an interface did, what it replaced and what it cost. State costs as facts ("it can be wrong while sounding sure"), not judgements ("whose goals were not your own").
 6. **Museum words only in labels.** "Begin excavation", "Artifact Discovered", "Enter the exhibit" stay. Body text talks about the interfaces, not about digging.
 7. **Verbs match the hands.** On the iPhone and Instagram levels: tap, double-tap, drag. Everywhere else: click, double-click, drag, type, press Return.
-8. **Interesting, not dry** (added 9 Nov after your review). Open on a specific, telling detail from the time (a slogan, a cassette tape, what other phones looked like) instead of "This is a ___". Intro cards don't tell you what to do: the objectives list under them does. Don't lead with user numbers. The curator's voice never claims to be the AI in Level 5. Still no punchlines: the detail does the work.
+8. **Interesting, not dry** (9–10 Nov, after your reviews). Intro cards put you in the year ("It's 1984…", second person, present tense) and set what's new against what came before, using a specific detail from the time (a cassette tape, a plastic keyboard). They don't tell you what to do: the objectives list does. Don't lead with user numbers. The Level 5 chat never claims to be the curator. Still no punchlines: the detail does the work.
 9. **Lengths.**
-   - Intro card: 2 sentences, about 30–45 words: the context, and what was different about it.
+   - Intro card: 2–3 sentences, about 35–50 words: you in the year, what came before, what's new.
    - Discovery card: 3–4 sentences, about 55–75 words: the idea, what it replaced or made possible, the trade-off where there was one.
    - Objective: up to about 6 words, imperative.
    - Hint: one sentence that says exactly what to do, no "Try".
@@ -34,33 +34,33 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 
 ### 1.1 Level 0 · 1979 · The Command Line
 - **Current:** This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something.
-- **Proposed (revised again 9 Nov: no instructions):** This VT100 is wired to a PDP-11 in another room, a computer shared by everyone in the lab. Bell Labs has just finished the Seventh Edition of Unix, the version that went on to spread through universities.
-- **Note:** Drops "Log in as kerry…" (your note); the boot screen already says it. VT100, August 1978 (Wikipedia, "VT100", high); V7, January 1979, licensed widely to universities and the base of BSD (Wikipedia, "Version 7 Unix", high). "Everyone in the lab" is the exhibit's framing.
+- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 1979, and most people have never used a computer. You have an account on a PDP-11 down the hall at Bell Labs, shared by the whole lab, and this terminal is your way in: you type, and it types back.
+- **Note:** Personal computers were rare in 1979 (the Apple II, TRS-80 and PET sold in the hundreds of thousands in total; medium), so "most people have never used a computer" is a fair summary (medium). PDP-11s shared by many users ran V7 (V7 "Setting up Unix", high); VT100, 1978 (high).
 
 ### 1.2 Level 1 · 1984 · The Desktop
 - **Current:** This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find.
-- **Proposed (revised again 9 Nov: no instructions):** Apple sold the Macintosh in January 1984 as "the computer for the rest of us". It came with a cassette tape that walked you through using a mouse, because most buyers had never held one.
-- **Note:** Instructions dropped. Slogan from Apple's 1984 launch advertising (high). "A Guided Tour of Macintosh", an audio cassette and disk, came in the box (high).
+- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 1984, and until now using a computer has meant learning its commands. The Macintosh asks you to point at pictures instead, with a mouse you've probably never held, so Apple put a cassette tape in the box to teach you how.
+- **Note:** Keeps the cassette, which you liked. "A Guided Tour of Macintosh", an audio cassette and disk, came in the box (high). Most personal computers in 1984 used typed commands, e.g. MS-DOS and the Apple II (high).
 
 ### 1.3 Level 2 · 1995 · The Hyperlink
 - **Current:** This is Netscape Navigator, circa 1995. The web is a network of pages linked together by people — no search engine required. Follow the trail.
-- **Proposed (revised again 9 Nov: no instructions):** In 1995 there was no good way to search the web. You got around the way its builders did: one page pointed to the next, and almost every home page had a list of the author's favourite links.
-- **Note:** Instructions dropped. Search engines existed (WebCrawler, Lycos, 1994) but were small; AltaVista, the first large full-text index, launched 15 Dec 1995 (Wikipedia, "AltaVista", high). "Favourite links" lists were a common home-page feature (medium).
+- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 1995, and you've just got online. There's no good way to search yet, so you find things the way everyone does: one page points you to the next, and almost every home page ends with a list of its author's favourite links.
+- **Note:** Search engines existed (WebCrawler, Lycos, 1994) but were small; AltaVista launched 15 Dec 1995 (high). "Favourite links" lists were a common home-page feature (medium).
 
 ### 1.4 Level 3 · 2007 · The Touchscreen
 - **Current:** This is the original iPhone. There's no stylus, no keyboard, no instruction manual. Just a glass screen and your finger.
-- **Proposed (revised again 9 Nov: no instructions):** In 2007 most smartphones had a small screen above a plastic keyboard, and many came with a stylus. The iPhone, out that June, had one button on its face and a screen you worked with your finger; the keyboard appeared only when you needed it.
-- **Note:** The queues are gone (your note: they were there to show the excitement, but say nothing about the interface). It now sets the iPhone against what phones looked like, which is the point of the room. Keyboard smartphones (BlackBerry, Treo) and stylus devices (Windows Mobile) in 2007: high. Jobs made this comparison at the launch, Macworld, 9 Jan 2007 (high). On sale 29 June 2007 (Apple, high).
+- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 2007, and your phone probably has a plastic keyboard under a small screen, maybe with a stylus tucked in its side. The iPhone has one button on its face. Everything else, the keyboard included, is on the glass, under your finger.
+- **Note:** Keyboard smartphones (BlackBerry, Treo) and stylus devices (Windows Mobile, Palm) were common in 2007 (high); most phones overall still had number keypads (high), hence "probably". One home button on the face, on-screen keyboard (Apple, high).
 
 ### 1.5 Level 4 · 2016 · The Feed
 - **Current:** The interface stopped waiting for you. It started optimizing for your attention.
-- **Proposed (revised again 9 Nov: no instructions):** Instagram in spring 2016: mostly square photos, a blue bar along the top, and a feed about to stop running newest first. That March, Instagram said it would start choosing the order itself, putting first the posts it predicted you'd care about most.
-- **Note:** No user numbers (your note). The blue header is the pre-May-2016 design this level copies (spec, high). Square was the default until August 2015 and still most common (medium). Ranked feed announced 15 March 2016, rolled out in June (Instagram blog, high).
+- **Proposed (round 4, 10 Nov: you're there, before and after):** It's spring 2016. Since it launched in 2010, Instagram has shown the posts you follow in the order they were shared, newest first. Now it's starting to choose the order for you, putting first the posts it predicts you'll care about.
+- **Note:** Instagram launched 6 October 2010 (high). Ranked feed announced 15 March 2016, rolled out to everyone in June (Instagram blog, high), so "starting" fits spring.
 
 ### 1.6 Level 5 · 2023 · The Conversation
 - **Current:** This is a large language model. There are no buttons to learn, no gestures to memorize. You type a sentence, and it types one back.
-- **Proposed (revised again 9 Nov: no instructions):** When OpenAI released ChatGPT in November 2022, a new kind of software arrived as a plain chat window. There's nothing to learn first: you write to it the way you'd write to a person, about almost anything.
-- **Note:** No user numbers, and no "the curator is on the other end" (your note: you're the curator). ChatGPT released 30 November 2022 (OpenAI, high).
+- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 2023. Every computer you've used so far has made you learn its way of doing things: commands, menus, links, gestures. This one you just write to, the way you'd write to a person, about almost anything.
+- **Note:** The list echoes the earlier rooms. ChatGPT, released November 2022, made this kind of interface common in 2023 (high). No user numbers, and no claim about who's on the other end.
 
 ### 1.7 Labels on the intro card
 - "OBJECTIVES" and "Begin excavation": **keep** (labels).
