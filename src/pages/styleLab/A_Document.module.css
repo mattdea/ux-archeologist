@@ -1,0 +1,53 @@
+/* src/pages/styleLab/A_Document.module.css
+ * Concept A, "Unstyled document". Nearly all of this file undoes styling:
+ * every element inside .doc goes back to the browser's own defaults, and
+ * the few rules after that are the ones a 1996 page would have set with
+ * attributes (table borders, a grey cell, a link's border on its image). */
+
+.doc {
+  all: revert;
+  box-sizing: border-box;
+  min-height: 100cqh;
+  padding: 8px;
+  background: #fff;
+  color: #000;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: normal;
+  --lab-focus: #000;
+}
+
+/* Back to the browser (the collection's cards and pictures keep their own styles) */
+.doc :where(:not(.keep, .keep *)) { all: revert; }
+
+/* <table border="1" cellpadding="8"> */
+.doc table { border: 1px outset #808080; border-spacing: 2px; }
+.doc td { border: 1px inset #808080; padding: 8px; vertical-align: top; }
+
+/* A linked picture gets the link's colour as its border */
+.thumb { display: inline-block; margin: 0 6px 6px 0; border: 2px solid; vertical-align: top; }
+.thumb .keep { display: block; width: 104px; height: 78px; }
+
+/* The level frame: intro | artifact | discovery */
+.frame { width: 100%; }
+.side { width: 24%; }
+.artifactCell { background: #c0c0c0; text-align: center; vertical-align: middle !important; }
+.standin {
+  width: 100%;
+  margin: 0 auto;
+  max-height: 62cqh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  background: #999;
+  color: #000;
+}
+
+/* Phone width: the tables come apart into blocks */
+@container lab (max-width: 700px) {
+  .frame, .frame tbody, .frame tr, .frame td,
+  .cards, .cards tbody, .cards tr, .cards td { display: block; width: auto; }
+  .frame td, .cards td { margin: 2px; }
+  .side { width: auto; }
+}

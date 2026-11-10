@@ -106,6 +106,11 @@ export default function Timeline() {
           Card lab (dev)
         </button>
       )}
+      {import.meta.env.DEV && !confirmReset && (
+        <button className={styles.resetBtn} onClick={() => navigate('/style-lab')} style={{ animationDelay: '850ms' }}>
+          Style lab (dev)
+        </button>
+      )}
       </div>
 
       <div className={styles.links}>

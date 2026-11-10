@@ -45,7 +45,7 @@ const PATH_TO_VIEW = {
   '/level/5':         'level5',
   '/collection':      'collection',
   '/test/museum-ui':  'test',
-  ...(import.meta.env.DEV ? { '/card-lab': 'cardLab' } : {}),
+  ...(import.meta.env.DEV ? { '/card-lab': 'cardLab', '/style-lab': 'styleLab' } : {}),
 }
 
 // ── Level metadata (keyed by view) ─────────────────────────────────
@@ -59,7 +59,7 @@ const LEVEL_META = {
 }
 
 // Views where the HUD is hidden entirely
-const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection', 'cardLab']
+const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection', 'cardLab', 'styleLab']
 
 // Level numbers for dot rendering
 const LEVEL_NUMBERS = [0, 1, 2, 3, 4, 5]
@@ -91,9 +91,12 @@ function whenFramesSettle(cb, maxMs = 600) {
 }
 
 export default function SharedLayout({ children }) {
-  // initial view = title screen; on the dev server, /card-lab opens the card lab
+  // initial view = title screen; on the dev server, /card-lab opens the card
+  // lab and /style-lab the style lab
   const [view, setView]     = useState(() => (
-    import.meta.env.DEV && typeof window !== 'undefined' && window.location.pathname === '/card-lab' ? 'cardLab' : 'title'
+    import.meta.env.DEV && typeof window !== 'undefined' && ['/card-lab', '/style-lab'].includes(window.location.pathname)
+      ? PATH_TO_VIEW[window.location.pathname]
+      : 'title'
   ))
   const [fading, setFading] = useState(false)
   const pendingRef          = useRef(null)   // { view, options } waiting to fire

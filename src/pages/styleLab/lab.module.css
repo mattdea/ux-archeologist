@@ -1,0 +1,171 @@
+/* src/pages/styleLab/lab.module.css
+ * The style lab's own chrome (dev only): the index of concepts, the bar
+ * along the top of a concept and the stage a concept is drawn in. None of
+ * this is a concept; each concept's look is in its own module.
+ *
+ * The stage is a size container named "lab": concepts size things with
+ * cqw / cqh and switch layout with `@container lab (max-width: …)`, never
+ * with vw / vh / @media, so the same concept draws correctly full-size, at
+ * phone width and in the index's scaled-down thumbnails. */
+
+.root {
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #111;
+  font-family: system-ui, sans-serif;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* ── The bar along the top of a concept ─────────────────────────────── */
+.bar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+  padding: 7px 14px;
+  background: #111;
+  border-bottom: 1px solid #333;
+  font-size: 12px;
+  line-height: 18px;
+  color: #999;
+}
+.bar a,
+.bar button {
+  color: #ccc;
+  font: inherit;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.bar a:hover,
+.bar button:hover { color: #fff; }
+.bar a:focus-visible,
+.bar button:focus-visible,
+.index a:focus-visible,
+.index button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.bar [aria-current='page'],
+.bar [aria-pressed='true'] { color: #111; background: #ccc; }
+.barName { color: #fff; }
+.barGroup { display: flex; align-items: center; gap: 2px; }
+.barSpacer { flex: 1; }
+
+/* ── The stage ──────────────────────────────────────────────────────── */
+.stage {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  container: lab / size;
+  background: #fff;
+}
+.scroll {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+}
+
+/* Full-page screenshots (scripts/style-lab-shots.mjs): the stage keeps the
+   size it had (--cap-h), so cqh and container queries don't move, while its
+   contents spill out below it and the window is made tall enough to hold
+   them. */
+:global(html.labCapture) .stage { flex: 0 0 var(--cap-h); }
+:global(html.labCapture) .scroll { position: relative; inset: auto; min-height: 100%; overflow: visible; }
+
+/* ── The collection's current cards and pictures ────────────────────── */
+.cardWrap {
+  display: flex;
+  flex: none;
+  perspective: 1000px;
+}
+/* The cards' own focus ring is white, for the dark museum */
+.cardWrap > button:focus-visible { outline: 3px solid var(--lab-focus, #000); outline-offset: 4px; }
+
+.picture {
+  display: block;
+  overflow: hidden;
+}
+.picture img,
+.picture svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── The index ──────────────────────────────────────────────────────── */
+.index {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px 24px 64px;
+  color: #999;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.indexHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 24px;
+  margin-bottom: 22px;
+}
+.indexTitle { font-size: 13px; font-weight: 400; color: #fff; }
+.indexNote { max-width: 70ch; }
+.indexHead button {
+  margin-left: auto;
+  color: #ccc;
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.indexHead button:hover { color: #fff; }
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 18px;
+}
+@media (max-width: 1100px) { .columns { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 18px; } }
+@media (max-width: 640px) { .columns { grid-template-columns: minmax(0, 1fr); } }
+
+.concept { min-width: 0; }
+.conceptName { font-size: 13px; font-weight: 400; }
+.conceptName a { color: #fff; text-decoration: none; }
+.conceptName a:hover { text-decoration: underline; }
+.conceptBlurb { margin: 2px 0 10px; font-size: 11px; line-height: 1.45; min-height: 4.35em; }
+@media (max-width: 640px) { .conceptBlurb { min-height: 0; } }
+
+.thumbCell { position: relative; margin-bottom: 12px; }
+.thumbLink { color: #999; text-decoration: none; font-size: 11px; }
+.thumbLink::after { content: ''; position: absolute; inset: 0; }
+.thumbLink:hover { color: #fff; }
+.thumbCell:hover .thumb { outline: 1px solid #fff; }
+.thumb { outline: 1px solid #fff; }
+.thumb {
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1440 / 900;
+  overflow: hidden;
+  background: #fff;
+  margin-bottom: 4px;
+}
+.thumbStage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 900px;
+  overflow: hidden;
+  container: lab / size;
+  transform-origin: 0 0;
+  pointer-events: none;
+  user-select: none;
+}

@@ -17,6 +17,7 @@ const LOADERS = {
   collection: () => import('./pages/Collection'),
   test:       () => import('./pages/TestMuseumUI'),
   ...(import.meta.env.DEV ? { cardLab: () => import('./pages/CardLab') } : {}),
+  ...(import.meta.env.DEV ? { styleLab: () => import('./pages/StyleLab') } : {}),
 }
 
 const loading = {}

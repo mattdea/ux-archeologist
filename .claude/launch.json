@@ -9,6 +9,16 @@
       ],
       "port": 8888,
       "autoPort": false
+    },
+    {
+      "name": "vite",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"; exec npx vite --port 5199 --strictPort"
+      ],
+      "port": 5199,
+      "autoPort": false
     }
   ]
 }
