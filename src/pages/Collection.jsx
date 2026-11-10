@@ -86,8 +86,8 @@ function FaceDownCard({ a, onOpen }) {
 
 // Looks to compare while deciding (dev server only): 'card', the
 // collectible cards; 'museum', the same cards in the museum's own style
-// (square corners, white, sans, still); 'hybrid', the museum's square
-// corners and sans with the collectible's card stock, tilt and light.
+// (square corners, white, sans, still); 'hybrid', the museum look with
+// the collectible's lift, tilt and light.
 // Remembered per browser.
 const STYLE_KEY = 'ux-archaeologist:collection-style'
 const LOOKS = ['card', 'museum', 'hybrid']

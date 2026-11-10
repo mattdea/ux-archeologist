@@ -432,9 +432,9 @@
 .museum .backNote { font-size: 13px; }
 
 /* ── The hybrid look: museum shape and type, collectible feel ─────────
-   Square corners and sans titles from the museum look; the collectible's
-   card stock (colour and grain), its lift, its tilt towards the pointer
-   and the soft light that follows it. */
+   The museum look (square corners, white, sans titles) with the
+   collectible's lift, its tilt towards the pointer and the soft light that
+   follows it. */
 .museum.hybrid .card {
   transform: rotateX(var(--rx)) rotateY(var(--ry)) !important;
   transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 350ms ease, translate 350ms ease;
@@ -446,8 +446,7 @@
 .museum.hybrid .plate svg { transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1); }
 
 .museum.hybrid .front {
-  background-color: #f3eee3;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  background: #fff;   /* white, as the museum's cards (Matthew, 10 Nov 2026) */
   box-shadow: 0 26px 44px -26px rgba(0, 0, 0, 0.95);
 }
 .museum.hybrid .front:hover { box-shadow: 0 34px 56px -26px rgba(0, 0, 0, 1); }
