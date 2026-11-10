@@ -114,39 +114,26 @@ Today only Notes opens.
 
 ## Approved
 
-### Level 0: move from 1971 to 1979 · approved 9 Nov 2026
-Matthew's call. The terminal is a VT100 (August 1978), and its bezel, keyclick and bell are modelled on the VT100 manual. So the year moves to match the machine, rather than the machine to match the year. In 1971 Unix users typed on paper Teletypes (Model 33/37) on a PDP-11/20 (copy-pass §9.1–9.3, high). The VT100 and its sounds stay as they are.
-- **1979 facts to build on:**
-  - Version 7 Unix, released by Bell Labs in January 1979. **High** · [Wikipedia, Version 7 Unix](https://en.wikipedia.org/wiki/Version_7_Unix) · [TUHS V7 source tree](https://www.tuhs.org/cgi-bin/utree.pl?file=V7).
-  - The Bourne shell was V7's default `sh`. **High** (same).
-  - V7's main machine was the PDP-11, with the 11/70 (1975) typical. **Medium**: check it in the V7 manual's "Setting up Unix" before writing the boot text.
-  - Pipes (1973) and `mail` are both in V7. **High**.
-- **Change:**
-  - **Year label:** `1971` → `1979` in `SharedLayout.jsx` (HUD), `Level0.jsx` (intro and discovery), `Timeline.jsx`, and the `sfx.js` comment. If the timeline spaces entries by year, check it still looks right.
-  - **Boot text** (`useTerminal.js`): replace "PDP-11/45 UNIX", "UNIX Time-Sharing System v3" and "Mem = 256K" with V7 boot and login output, taken from the V7 manual or a SIMH V7 boot log on TUHS. Mark anything you reconstruct.
-  - **Dates:** `date`, Last login, and the mail and note headers move to 1979. Pick one working week, check the weekday for each date, and keep every date in the level consistent.
-  - **ken's mail:** drop the 11/40 and 11/45 lines and the "Mail version 1.0" banner (Berkeley Mail style). Use V7 `mail` output as its manual page describes it. Write a new body about something true of 1979 at Bell Labs, with a source; the V7 release going out to licensees is one option. Keep it short and plain.
-  - **dmr's note:** the copy pass proposes a 1971 note about the First Edition manual. Replace it with a 1979 note in the same spirit, for example the Seventh Edition manual. Add sources and a weekday check.
-  - **Curator (Level 5):** in `curatorFallbacks.js` and `curatorSystemPrompt.js`, 1971 → 1979 (including the `'1971'` keyword). Recheck "about fifty years" and "1971 to 2023" wherever they appear: 1979–2023 is 44 years.
-  - **`docs/copy-pass.md`:** Matthew hasn't reviewed it yet, so it must show 1979 when he does. Update every proposal that says 1971 (§1.1 intro, the site lines, the curator prompt and fallbacks, §7 notes file). In §9, mark items 1–3 "resolved by the move to 1979". Keep its rules: plain, matter-of-fact copy, and the term "Interface Artifacts".
-  - **`docs/design-spec.md`:** change Level 0's era, the timeline table, the Sound section's "1971 VT100", and Typography if it names the year. Add a line saying the year follows the VT100 (Matthew's call, 9 Nov 2026).
-- **Out of scope:** the copy pass's live-text changes (Matthew reviews them separately) and any visual change to the terminal.
-- **Check:** `npm test`, `npm run build`, and in the browser: the timeline, Level 0's intro, boot, `ls`, `mail`, `date` and the note, and the discovery card all show 1979. Then `grep -rn 1971 src docs` and explain any hit that's left.
-
-### Spec: museum cards and TeachText, matched to the build · approved 9 Nov 2026
-Docs only: change `docs/design-spec.md`, no code.
-- **Museum cards** (Matthew's call: the spec follows the build). Before editing, check what each card actually renders (font family, any top border) in the browser or CSS. The cards are IntroModal, DiscoveryCard, SmallScreenNotice and the timeline's titles. Then make the spec describe that:
-  - Museum Layer rules: drop "Thin 2px black accent line at top of each modal card", and change "Serif for level titles only" to what titles really use.
-  - Dialog System: IntroModal and DiscoveryCard lose "2px black accent line" and "serif title". DiscoveryCard's "Next excavation → `/timeline`" becomes the next level (Level 5 → timeline), if the copy pass hasn't already fixed it.
-  - Typography Tokens: Level titles.
-  - Color Tokens: remove the Accent line row.
-  - If any of this is still dead CSS (e.g. a 0px accent element in `IntroModal.module.css`), list it in the Done note for a later cleanup. Don't delete it in this item.
-- **TeachText** (Matthew's call: keep it, disclosed only in the spec). In Level 1's Utilities line, replace "TeachText 1988" with: "TeachText (earliest dated version 1.2, 1988; it replaced Apple's Edit between System 2, 1987, and System 7, 1991; a 1984 document would have opened in MacWrite)". Add the sources: [Wikipedia](https://en.wikipedia.org/wiki/TeachText), [Eclectic Light](https://eclecticlight.co/2024/05/25/a-short-history-of-styled-text-on-the-mac-teachtext-to-textedit-rtf/), [Macintosh Repository](https://www.macintoshrepository.org/2274-teachtext). Nothing visitor-facing changes.
-
+_Nothing approved right now._
 
 ---
 
 ## Done
+
+### Level 0: moved from 1971 to 1979 · 9 Nov 2026
+- Year label 1979 in the HUD, intro, discovery card and timeline (entries are evenly spaced, so nothing moved); `sfx.js` comment.
+- `useTerminal.js`: V7 boot on a PDP-11/70 (`Boot`, `: hp(0,0)unix`, `mem = …`, `#`, `^D`) from V7 "Setting up Unix"; V7 login (motd, then "You have mail.", no Last login) and V7 `mail` (postmark, `?` prompt, no Berkeley banner) from `login.c` / `mail.c` on TUHS. The mem value, the motd, the mail shortcut back to the shell and both messages' wording are reconstructed and marked.
+- Dates: one week, Tue 16 / Wed 17 Jan 1979 (1 Jan 1979 was a Monday).
+- ken's mail: Belle won the 1978 ACM computer chess championship, 4/4, December 1978 ([Wikipedia](https://en.wikipedia.org/wiki/Belle_(chess_machine)), [IEEE Spectrum](https://spectrum.ieee.org/in-1983-this-bell-labs-computer-was-the-first-machine-to-become-a-chess-master); high). dmr's note: the Seventh Edition manual (January 1979), tapes to licensees, Bourne's sh (TUHS V7 tree; high).
+- Curator: 1979 in the prompt and the fallback keyword; "fifty years" → "more than forty years" in two live fallbacks.
+- `docs/copy-pass.md` shows 1979 throughout (§7 now shows the built note and mail; §9 items 1–3 resolved). Spec: era, container table, sound line, a Year note and the session content.
+- Checked: tests (77) and build pass; in the browser the timeline, intro, boot, login, `date`, `mail`, the note, `man ls` and the discovery card show 1979, and all three objectives complete. `grep 1971` now hits only records: this backlog, `site-audit.md` (a dated report), and notes in `copy-pass.md` and the spec explaining the move.
+- Not changed (outside the item): `ls` prints the three names on one line (V7 printed one per line), the password echoes as `****` (V7 echoed nothing), `pwd` is `/usr/bell/kerry`, and `man ls` is the earlier page layout. Each is small; say if you want them made exact.
+
+### Spec: museum cards and TeachText matched to the build · 9 Nov 2026
+- Checked in the CSS and the browser: IntroModal, DiscoveryCard, the small-screen notice and the tracker have a 0px accent line and sans titles; About's card is the only one with a real 2px #111 line. The spec now says that (Museum Layer rules, Dialog System, Typography, Color Tokens: the Accent line row is gone). DiscoveryCard: "Continue" → the next level.
+- TeachText disclosure added to Level 1's Utilities line with the three sources.
+- **Dead CSS for a later cleanup** (not removed here): the 0px `.accentLine` rules and their empty `<div>`s in `IntroModal` (also used by `SmallScreenNotice`), `DiscoveryCard` and `ObjectiveTracker`.
 
 ### Decision: Level 1 keeps TeachText · 9 Nov 2026
 - Kept, disclosed only in the spec (Matthew's call). TeachText's earliest dated version is 1.2 (1988) · [Macintosh Repository](https://www.macintoshrepository.org/2274-teachtext). It replaced Edit between System 2 (1987) and System 7 (1991) · [Wikipedia](https://en.wikipedia.org/wiki/TeachText). **Medium**, as no source gives a first-ship date. A 1984 document would have opened in MacWrite, **high** · [Eclectic Light](https://eclecticlight.co/2024/05/25/a-short-history-of-styled-text-on-the-mac-teachtext-to-textedit-rtf/).
