@@ -1,0 +1,150 @@
+/* src/pages/styleLab/C_Canvas.module.css
+ * Concept C, "Canvas": a flat grey plane, hairline boxes, small Helvetica.
+ * Positions are set inline (C_Canvas.jsx places everything in plane
+ * coordinates); this file is only what the things look like. */
+
+.view {
+  position: relative;
+  height: 100cqh;
+  overflow: clip;
+  background: #d8d8d8;
+  color: #111;
+  font: 12px/1.45 Helvetica, Arial, sans-serif;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  --lab-focus: #111;
+}
+.view:active { cursor: grabbing; }
+.view:focus-visible { outline: 3px solid #111; outline-offset: -3px; }
+.view a:focus-visible,
+.view button:focus-visible { outline: 3px solid #111; outline-offset: 3px; }
+
+.world { position: absolute; left: 0; top: 0; will-change: transform; }
+.gliding { transition: transform 650ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+@media (prefers-reduced-motion: reduce) { .gliding { transition: none; } }
+
+.world > * { position: absolute; margin: 0; }
+
+/* ── Lines ──────────────────────────────────────────────────────────── */
+.lines { left: 0; top: 0; pointer-events: none; }
+.lines line, .lines polyline { fill: none; stroke: #111; stroke-width: 1; }
+.lines .dashed { stroke-dasharray: 4 4; }
+.lines .dotted { stroke-dasharray: 1 6; }
+
+/* ── Boxes ──────────────────────────────────────────────────────────── */
+.box {
+  box-sizing: border-box;
+  padding: 14px 16px 16px;
+  border: 1px solid #111;
+  background: #d8d8d8;
+  color: #111;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+.paper { background: #f2f2f2; }
+.dark { background: #111; color: #f2f2f2; border-color: #111; }
+.plain { padding: 0; }
+
+.titleBox { width: 560px; padding: 22px 24px 24px; }
+.big { margin: 0; font-size: 52px; line-height: 1; font-weight: 400; letter-spacing: -0.03em; }
+.sub { margin: 14px 0 0; font-size: 13px; }
+.label { font-size: 11px; white-space: nowrap; }
+.tag { margin: 0 0 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.body { margin: 0 0 10px; }
+.body a { color: inherit; }
+.body + .tag { margin-top: 14px; }
+.cardTitle { margin: 0 0 10px; font-size: 22px; line-height: 1.15; font-weight: 400; letter-spacing: -0.01em; }
+.year { margin: 0 0 8px; font-size: 44px; line-height: 1; letter-spacing: -0.03em; }
+.notice { margin: 0 0 14px; font-size: 15px; line-height: 1.3; font-weight: 400; }
+.hint { padding: 9px 14px; font-style: italic; text-align: center; }
+
+.action { display: flex; justify-content: space-between; gap: 18px; padding: 16px; cursor: pointer; white-space: nowrap; }
+.small { padding: 9px 12px; }
+a.box:hover, button.box:hover { background: #111; color: #f2f2f2; }
+a.dark:hover { background: #f2f2f2; color: #111; }
+
+.button {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid #111;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.button:hover { background: #f2f2f2; color: #111; }
+.dark .button { border-color: #f2f2f2; }
+
+.checks { margin: 0; padding: 0; list-style: none; }
+.checks li { display: flex; gap: 8px; align-items: baseline; padding: 2px 0; }
+.check {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  font-size: 12px;
+  line-height: 8px;
+  text-align: center;
+  transform: translateY(1px);
+}
+.done { text-decoration: line-through; }
+
+/* ── Pictures on the plane ──────────────────────────────────────────── */
+.tile { display: block; border: 1px solid #111; }
+.fill { width: 100%; height: 100%; }
+.tile:hover, .room:hover .roomBox { outline: 3px solid #111; }
+
+.room { display: block; color: #111; text-decoration: none; }
+.room > span { display: block; }
+.roomBox { box-sizing: border-box; border: 1px solid #111; margin-bottom: 8px; }
+.empty { background: repeating-linear-gradient(135deg, transparent 0 7px, #b9b9b9 7px 8px); }
+.roomYear { font-size: 10px; letter-spacing: 0.08em; }
+.roomTitle { font-size: 15px; }
+.roomName { font-size: 11px; }
+.tick { font-size: 10px; letter-spacing: 0.08em; transform: translateX(-50%); color: #444; }
+
+.card { transform-origin: 50% 40%; }
+
+.standin {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #111;
+  background: #9c9c9c;
+}
+
+/* ── Pinned to the window ───────────────────────────────────────────── */
+.pin { position: absolute; display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.pin a { color: #111; }
+.pinTopLeft { left: 20px; top: 16px; flex-direction: column; align-items: flex-start; gap: 0; font-size: 15px; }
+.pinTopRight { right: 20px; top: 20px; gap: 6px; }
+.pinBottomRight { right: 20px; bottom: 16px; flex-direction: column; align-items: flex-end; }
+.pinBottomRight .button { width: auto; margin: 0; padding: 10px 22px; }
+/* Pinned things pass over whatever is on the plane: keep an edge and a ground */
+.pin .button { outline: 1px solid #d8d8d8; }
+.pinBottomRight a, .pinTopLeft { background: #d8d8d8; padding: 2px 4px; }
+.readout { background: #d8d8d8; padding: 2px 4px; }
+.pinBottomLeft { left: 20px; bottom: 16px; align-items: flex-end; }
+
+.dot { display: block; width: 10px; height: 10px; border: 1px solid #111; }
+.dotDone { background: #777; }
+.dotNow { background: #111; }
+
+.mini { position: relative; border: 1px solid #111; background: #d8d8d8; }
+.miniRegion { position: absolute; background: #b4b4b4; }
+.miniRegion:hover, .miniRegion[aria-current] { background: #111; }
+.miniView { position: absolute; box-sizing: border-box; border: 1px solid #111; background: rgba(255, 255, 255, 0.45); pointer-events: none; }
+.readout { font: 10px/1 ui-monospace, Menlo, Monaco, monospace; white-space: nowrap; }
+
+/* Phone width: the title box narrows; everything else keeps its size and
+   its place, and you drag */
+@container lab (max-width: 600px) {
+  .titleBox { width: 330px; padding: 16px; }
+  .titleBox .big { font-size: 34px; }
+  .pinTopRight { top: 58px; left: 20px; right: auto; }
+}
