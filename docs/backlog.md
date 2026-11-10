@@ -28,7 +28,7 @@
 Museum layer, from arriving to finishing. All touch the title screen, timeline and `SharedLayout.jsx`, so design them as one route. "More motion" lives here as specific moments rather than an item of its own.
 
 #### "Start here" cue on the timeline
-E.g. a pulsing arrow at 1971 saying "Start here".
+E.g. a pulsing arrow at 1979 saying "Start here".
 - **Decide:** copy per state (nothing done · some done: point at the first unfinished? · all done: nothing, or link to the collection) · does it go away after the first click.
 
 #### Year carries from the timeline into the level

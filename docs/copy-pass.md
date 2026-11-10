@@ -2,7 +2,7 @@
 
 Nothing here is in the code yet. Each item shows the **current** text (what's live), the **proposed** text, and a note where it changed. Edit the proposed lines in place, or reply in chat with the number (e.g. "1.3 keep current"). Once agreed, each surface goes in as its own commit and `design-spec.md` is updated to match.
 
-Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards say what it is, the context, and how to start; discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0's note keeps 1971 and changes subject.
+Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards say what it is, the context, and how to start; discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
 
 Historical claims carry a source and a confidence (high / medium / low).
 
@@ -31,10 +31,10 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 
 ## 1. Intro cards
 
-### 1.1 Level 0 · 1971 · The Command Line
+### 1.1 Level 0 · 1979 · The Command Line
 - **Current:** This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something.
-- **Proposed:** A terminal connected to the Unix system at Bell Labs, 1971. There are no icons or menus: you type a command, press Return, and the computer prints a reply. Start by typing ls to list your files.
-- **Note:** "VT100" is out: it came out in 1978 (see 9.1). "Mainframe" is out: Unix ran on a PDP-11 minicomputer (Ritchie 1984, high). "Just a blinking cursor waiting…" is a rhythm line.
+- **Proposed:** A VT100 terminal connected to the Unix system at Bell Labs, 1979. There are no icons or menus: you type a command, press Return, and the computer prints a reply. Start by typing ls to list your files.
+- **Note:** The level moved from 1971 to 1979 (9 Nov 2026) so the year matches the VT100, which DEC introduced in August 1978 (Wikipedia, "VT100", high); Bell Labs released Seventh Edition Unix in January 1979 (Wikipedia, "Version 7 Unix", high). "Mainframe" is out: Unix ran on PDP-11 minicomputers, the 11/70 among them (V7 "Setting up Unix", high). "Just a blinking cursor waiting…" is a rhythm line.
 
 ### 1.2 Level 1 · 1984 · The Desktop
 - **Current:** This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find.
@@ -161,7 +161,7 @@ Notes: 0.1 now names the file, since `cat` alone does nothing useful. Commands a
 ### 5.1 Title screen
 - Title "Interface Artifacts": **keep**.
 - Subtitle, **current:** Explore how interfaces evolved through the decades.
-  **Proposed:** Six computer interfaces from 1971 to 2023, working as they did.
+  **Proposed:** Six computer interfaces from 1979 to 2023, working as they did.
 - "Enter the exhibit": **keep** (label). "A project by Matthew Dea": **keep**.
 
 ### 5.2 About
@@ -173,7 +173,7 @@ Notes: 0.1 now names the file, since `cat` alone does nothing useful. Commands a
   >
   > Type a command. Drag an icon. Follow a link. Swipe a screen. The history of computing is a history of how we learned to talk to machines — and how they learned to talk back.
 - **Proposed**, three paragraphs:
-  > This exhibit has six interfaces, one for each big change in how people used computers between 1971 and 2023: the command line, the desktop, the web, the touchscreen, the ranked feed and the chat with a language model.
+  > This exhibit has six interfaces, one for each big change in how people used computers between 1979 and 2023: the command line, the desktop, the web, the touchscreen, the ranked feed and the chat with a language model.
   >
   > Each is a working replica. You use it as people did at the time, complete three tasks, and then read what it changed.
   >
@@ -197,7 +197,7 @@ Notes: 0.1 now names the file, since `cat` alone does nothing useful. Commands a
 | Turn | Current | Proposed |
 |---|---|---|
 | 0 | What is this place? · Who are you? · Tell me about the levels I just played | What is this place? · Who are you? · What did the other rooms show? |
-| 1 | What changed between 1984 and now? · How does this conversation compare to the terminal? · What comes after this? | What changed between 1984 and now? · How is this like the 1971 terminal? · What might come next? |
+| 1 | What changed between 1984 and now? · How does this conversation compare to the terminal? · What comes after this? | What changed between 1984 and now? · How is this like the 1979 terminal? · What might come next? |
 | 2+ | What was the biggest leap in interface design? · Why did touchscreens change everything? · Is this the last interface? | Which change mattered most? · What did touchscreens change? · Is this the last interface? |
 
 "Levels I just played" assumes the visitor came in order; nothing is gated. "Change everything" is hype.
@@ -207,9 +207,9 @@ Used when the model can't be reached. Keywords stay as they are; only the replie
 
 | Topic | Current | Proposed |
 |---|---|---|
-| this place | This is UX Archaeologist, an interactive history of how people and computers learned to communicate. You've just walked through fifty years of that history. | This is Interface Artifacts, an exhibit of six working replicas of computer interfaces from 1971 to 2023. Each room has three tasks and a note on what that interface changed. |
+| this place | This is UX Archaeologist, an interactive history of how people and computers learned to communicate. You've just walked through more than forty years of that history. | This is Interface Artifacts, an exhibit of six working replicas of computer interfaces from 1979 to 2023. Each room has three tasks and a note on what that interface changed. |
 | who | I'm the voice that's been guiding you through each exhibit. I was designed to help you see the pattern connecting terminals, desktops, browsers, phones, and feeds to this conversation. | I'm the exhibit's curator, and I wrote the cards you've read in each room. I'm a language model, so I can be wrong; ask me about anything you've seen here. |
-| levels | Each level recreated a real interface from its era. The interactions you performed, typing commands, dragging icons, clicking links, swiping screens, were the actual innovations of their time. | Each room is a replica of a real interface: a Unix terminal from 1971, the 1984 Macintosh, Netscape in 1995, the 2007 iPhone, Instagram in 2016, and this chat. The tasks use the thing each one introduced, such as dragging an icon or following a link. |
+| levels | Each level recreated a real interface from its era. The interactions you performed, typing commands, dragging icons, clicking links, swiping screens, were the actual innovations of their time. | Each room is a replica of a real interface: a Unix terminal from 1979, the 1984 Macintosh, Netscape in 1995, the 2007 iPhone, Instagram in 2016, and this chat. The tasks use the thing each one introduced, such as dragging an icon or following a link. |
 | how built | This experience is a React application. Each level is a self-contained recreation of a historical interface, wrapped in a museum layer that tracks your progress across eras. | It's a web app built with React. Each room is its own recreation, and the museum around it keeps track of what you've finished. |
 | terminal | The Unix terminal was the first widely used conversational interface. You typed a precise instruction, the machine responded. Every interface since has been a variation on that same exchange. | At a Unix terminal you typed a command and the computer printed the result. Unix was written at Bell Labs by Ken Thompson and Dennis Ritchie from 1969, and its commands, such as ls and cat, are still in use. |
 | mac | The Macintosh introduced direct manipulation in 1984. Instead of remembering command syntax, you could point at objects and move them. It made computing accessible to people who had never touched a computer. | The Macintosh, in January 1984, let you work by pointing at pictures of files and folders and choosing commands from menus. Xerox and Apple's Lisa had done this first; the Mac sold it at $2,495. |
@@ -219,7 +219,7 @@ Used when the model can't be reached. Keywords stay as they are; only the replie
 | next | That's genuinely unclear. Each previous transition was obvious in hindsight but surprising at the time. The pattern suggests the next interface will feel more natural, not less, but what that looks like is not yet known. | Nobody knows. Voice assistants, glasses and agents that act for you are being tried now, and it isn't clear which will last. |
 | biggest | The jump from command-line to graphical interfaces in 1984 was probably the largest single leap. It expanded the potential user base from tens of thousands to hundreds of millions within a decade. | A common answer is the move from typed commands to windows, icons and a mouse, because it let people use a computer without learning its commands. It took over personal computers between 1984 and the mid-1990s. |
 | touchscreen | Touchscreens collapsed the distance between intention and action. A mouse cursor is a proxy for your hand. Touch removed that proxy entirely, which made interfaces feel immediate in a way that had not been possible before. | With a mouse you move a pointer that stands in for your hand. A touchscreen drops the pointer: you touch the thing you want, and with multi-touch you can use more than one finger. |
-| last | This is the last exhibit, but probably not the last interface. The history you just walked through covers about fifty years. It is unlikely the next fifty years produce nothing new. | This is the last room, but probably not the last interface. The exhibit covers about fifty years, and each of its interfaces was new within a decade or two of the one before. |
+| last | This is the last exhibit, but probably not the last interface. The history you just walked through covers more than forty years. It is unlikely the next forty produce nothing new. | This is the last room, but probably not the last interface. The exhibit covers more than forty years, and each of its interfaces was new within a decade or two of the one before. |
 | language model | Large language models made text the universal interface. You can ask for code, a translation, a summary, or a plan in the same input field. That generality is what makes this moment different from earlier chat interfaces. | A language model writes by predicting likely next words, learned from a very large amount of text. The same text box can take a question, a translation or a request for code, which earlier chat programs couldn't. |
 | default | That's an interesting question. I'm best at discussing interface history and the experience you just had. Ask me about any of the levels or how computing interfaces have changed over the decades. | I can only talk about interface history and this exhibit. Ask me about one of the rooms, or about how an interface you use came about. |
 
@@ -229,7 +229,7 @@ Dropped claims: "first widely used conversational interface" and "introduced dir
 - **Current:** see `src/components/chat/curatorSystemPrompt.js`.
 - **Proposed** (changes: the exhibit's name; voice guide points 1, 2, 5; rooms not levels; honesty about uncertainty):
 
-  > You are the curator of Interface Artifacts, a web exhibit of six working replicas of computer interfaces: a Unix terminal (1971), the Apple Macintosh desktop (1984), Netscape Navigator on the web (1995), the first iPhone (2007), the Instagram feed (2016), and this chat with a language model (2023). The visitor may have used any of them, in any order.
+  > You are the curator of Interface Artifacts, a web exhibit of six working replicas of computer interfaces: a Unix terminal (1979), the Apple Macintosh desktop (1984), Netscape Navigator on the web (1995), the first iPhone (2007), the Instagram feed (2016), and this chat with a language model (2023). The visitor may have used any of them, in any order.
   >
   > You wrote the intro and discovery cards in each room. Your voice is plain, warm and specific: you give dates, names and what things did. You state things plainly and stop. You do not use em dashes, rhetorical flourishes, hype words such as "revolutionary", or closing punchlines. When an interface had a cost or a trade-off, you state it as a fact, without judging it.
   >
@@ -245,27 +245,36 @@ Dropped claims: "first widely used conversational interface" and "introduced dir
 
 ## 7. Level 0's notes file
 
-The file is artifact content (what a 1971 user would find), but it was flagged with the copy items.
+**Done in the build** with the move to 1979 (9 Nov 2026), so it's no longer a proposal; shown here for review. The 1971 note about pipes is gone (pipes came in Version 3, 1973).
 
-- **Current:** dmr to unix-users, Tue Nov 2 1971, "Re: pipe behavior on empty input". Pipes were added in Version 3 Unix, 1973 (McIlroy, *A Research Unix Reader*, 1987; high).
-- **Proposed:**
-  ```
-  From: dmr
-  To: unix-users
-  Date: Tue Nov 2 09:04 EST 1971
-  Re: the manual
+```
+From: dmr
+To: unix-users
+Date: Tue Jan 16 09:04 EST 1979
+Re: the Seventh Edition
 
-  The programmer's manual is finished. Ken and I wrote a page for
-  every command and system call. Copies go out tomorrow, Nov 3.
-  If a page doesn't match what a command does, tell one of us.
+The Seventh Edition manual is finished, and tapes of the
+system go out to licensees this month. The shell is now
+Steve Bourne's sh. If a manual page doesn't match what a
+command does, tell one of us before the next printing.
 
-  The patent department is on the machine during the day,
-  typing applications with roff. Please run long jobs in the
-  evening.
+- Dennis
+```
 
-  - Dennis
-  ```
-- **Sources:** *UNIX Programmer's Manual*, First Edition, by K. Thompson and D. M. Ritchie, dated 3 November 1971 (scans at Bell Labs / TUHS, high). The patent department used Unix for preparing patent applications with roff on the PDP-11 in 1971 (Ritchie, "The Evolution of the Unix Time-sharing System", 1984, high). "During the day" and the request to run long jobs in the evening are reconstructed. 2 November 1971 was a Tuesday (high).
+ken's mail, also rewritten:
+
+```
+From ken Tue Jan 16 08:51:41 1979
+
+Belle won all four of its games at the ACM computer
+chess championship in December. Joe and I will be
+back on the hardware in the spring.
+
+- ken
+```
+
+- **Sources:** *UNIX Programmer's Manual*, Seventh Edition, Volume 1, K. Thompson and D. M. Ritchie, January 1979; V7 released to licensees January 1979; the Bourne shell is V7's `sh` (TUHS V7 tree; Wikipedia, "Version 7 Unix"; high). Belle, by Ken Thompson and Joe Condon, won the 1978 ACM North American Computer Chess Championship four games out of four, in December 1978 (Wikipedia, "Belle (chess machine)"; IEEE Spectrum; high). Both messages are reconstructed. 16 January 1979 was a Tuesday and the level's `date` reads Wednesday 17 January (1 January 1979 was a Monday; high).
+- If you want changes to these, say so in the review like any other item.
 
 ---
 
@@ -282,7 +291,7 @@ The file is artifact content (what a 1971 user would find), but it was flagged w
 
 Found while drafting. These are visual or artifact content, so they need your call separately.
 
-1. **Level 0's terminal is a VT100**, which DEC introduced in August 1978 (DEC; Wikipedia "VT100", high). In 1971 Unix users typed on Teletype Model 33 and 37 printing terminals, which printed on paper (First Edition manual's tty pages, high). The bezel, the screen and the keyclick sound (modelled on the VT100 manual) are all from 1978. The proposed intro avoids naming the model.
-2. **Level 0's boot text** says "PDP-11/45 UNIX" and "UNIX Time-Sharing System v3". The PDP-11/45 shipped in 1972 and Version 3 in February 1973; in 1971 Unix ran on a PDP-11/20 (Ritchie 1984; Wikipedia "PDP-11", high). "Mem = 256K": the 11/20 had 24K bytes of core (Ritchie 1984, high).
-3. **Level 0's mail from ken** mentions the 11/40 (1973) and the 11/45 (1972) (high). Its "Mail version 1.0 · Type ? for help" banner is the style of Berkeley Mail, 1978 (medium). The 1971 `mail` printed messages without a banner (First Edition manual, mail(I), medium).
+1. **Resolved by the move to 1979.** **Level 0's terminal is a VT100**, which DEC introduced in August 1978 (DEC; Wikipedia "VT100", high). In 1971 Unix users typed on Teletype Model 33 and 37 printing terminals, which printed on paper (First Edition manual's tty pages, high). The bezel, the screen and the keyclick sound (modelled on the VT100 manual) are all from 1978. The proposed intro avoids naming the model.
+2. **Resolved by the move to 1979** (V7 boot on a PDP-11/70). **Level 0's boot text** says "PDP-11/45 UNIX" and "UNIX Time-Sharing System v3". The PDP-11/45 shipped in 1972 and Version 3 in February 1973; in 1971 Unix ran on a PDP-11/20 (Ritchie 1984; Wikipedia "PDP-11", high). "Mem = 256K": the 11/20 had 24K bytes of core (Ritchie 1984, high).
+3. **Resolved by the move to 1979** (V7 `mail` output, new message). **Level 0's mail from ken** mentions the 11/40 (1973) and the 11/45 (1972) (high). Its "Mail version 1.0 · Type ? for help" banner is the style of Berkeley Mail, 1978 (medium). The 1971 `mail` printed messages without a banner (First Edition manual, mail(I), medium).
 4. **Level 3's second home screen** has App Store (July 2008) and iTunes (the Wi-Fi Music Store, September 2007) (Apple, high). Neither was there at the June 2007 launch.

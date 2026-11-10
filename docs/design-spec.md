@@ -161,7 +161,7 @@ White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artif
 
 ## Sound
 
-`src/audio/sfx.js` synthesises every effect with Web Audio except the recordings named below. Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1971 VT100 keyclick and bell (one keyboard speaker driven once per status byte, 1.271 ms, so near 787 Hz — derived from the manual's timing, not measured: one pulse = click, ~200 = bell, ~0.25 s) and the power-on bell from the self-test (VT100 Technical Manual §4.2.8), 600 ms into the boot (placement reconstructed: the manual gives the order of the tests, not their timing); 1984 startup beep, a 600 Hz square wave as on the 128K, 512K and Plus (the chord came with the Macintosh II in 1987; source: Wikipedia, "Macintosh startup"), played as the boot begins for about 1 s (Matthew's correction, 8 Nov 2026: 4 ms attack, held, 200 ms fade) — its level is reconstructed (the alert beep's peak, 0.08), no drive sound; 1995 a real dial-up recording (`assets/web/dialup.mp3`, 6.2s, volume 0.25) under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
+`src/audio/sfx.js` synthesises every effect with Web Audio except the recordings named below. Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1979 VT100 keyclick and bell (one keyboard speaker driven once per status byte, 1.271 ms, so near 787 Hz — derived from the manual's timing, not measured: one pulse = click, ~200 = bell, ~0.25 s) and the power-on bell from the self-test (VT100 Technical Manual §4.2.8), 600 ms into the boot (placement reconstructed: the manual gives the order of the tests, not their timing); 1984 startup beep, a 600 Hz square wave as on the 128K, 512K and Plus (the chord came with the Macintosh II in 1987; source: Wikipedia, "Macintosh startup"), played as the boot begins for about 1 s (Matthew's correction, 8 Nov 2026: 4 ms attack, held, 200 ms fade) — its level is reconstructed (the alert beep's peak, 0.08), no drive sound; 1995 a real dial-up recording (`assets/web/dialup.mp3`, 6.2s, volume 0.25) under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
 
 ## Period pointers
 
@@ -173,7 +173,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 | Level | Era | Container |
 |-------|-----|-----------|
-| 0 | 1971 | Green-screen terminal bezel (780×460px) |
+| 0 | 1979 | VT100 terminal bezel (780×460px) |
 | 1 | 1984 | Beige CRT monitor bezel (780×755px) |
 | 2 | 1995 | Browser chrome — no device bezel |
 | 3 | 2007 | iPhone silhouette (385×735px bezel, 320×480px screen) |
@@ -186,15 +186,17 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 ---
 
-### Level 0: 1971 — The Command Line
+### Level 0: 1979 — The Command Line
 **Status: Complete**
 
-**Artifact:** Unix terminal session
+**Year:** 1979, set by the machine (Matthew's call, 9 Nov 2026). The terminal, its bezel, keyclick and bell are the DEC VT100 (August 1978), so the level moved from 1971 to match it rather than swapping the hardware. In 1971 Unix users typed on paper Teletypes (Model 33/37) on a PDP-11/20.
+
+**Artifact:** Unix terminal session: a VT100 on Seventh Edition Unix (V7, released by Bell Labs January 1979) on a PDP-11/70.
 **Discovery:** Command & Response
 **Container:** `src/components/terminal/` — TerminalBezel + TerminalScreen; 780×460px
 
 **IntroModal:**
-- Era: `1971`
+- Era: `1979`
 - Title: `The Command Line`
 - Description: "Before icons, windows, or the web, there was a conversation. A researcher sat down at a terminal, typed a command, and waited. The machine replied. This was computing at its most direct — and its most demanding."
 
@@ -202,6 +204,8 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Black screen, green phosphor text
 - Monospace font throughout
 - Blinking cursor
+
+**Session content (`useTerminal.js`):** one working week, Tue 16 / Wed 17 Jan 1979. Boot as V7's "Setting up Unix" describes: `Boot`, `: hp(0,0)unix`, `mem = …` (value reconstructed), the single-user `#` and `^D` to go multi-user. V7 login (`login.c`): `login: `, `Password:`, the motd, then `You have mail.`; no "Last login". `mail` (`mail.c`): the postmark `From ken Tue Jan 16 08:51:41 1979`, the message, the `?` prompt; the level returns to the shell (reconstructed shortcut). The notes file is dmr's note on the Seventh Edition manual and release; ken's mail is about Belle winning the 1978 ACM computer chess championship (December 1978). Both messages are reconstructed; sources in the file's comments and `docs/copy-pass.md` §7. The motd and "(log in as kerry)" are the exhibit's.
 
 **Objectives (any order):**
 1. Read the notes file
@@ -611,7 +615,7 @@ src/components/chat/
 ### Artifact Layer
 Era-authentic only. Never use museum-layer easing inside the artifact.
 
-**Level 0 — 1971:**
+**Level 0 — 1979:**
 - Monospace text rendered character by character (typing animation)
 - Blinking cursor via step-end keyframes
 
