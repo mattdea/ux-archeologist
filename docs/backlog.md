@@ -13,7 +13,7 @@
 | 1. Visitor's journey | "Start here" cue on the timeline | Copy per state |
 | | Year carries from timeline into level | Edge cases |
 | | Collection page | What it shows, how it's reached |
-| 2. Curator's voice | Voice guide → copy pass | Write the guide first |
+| 2. Curator's voice | Copy pass: revisit later | Only if Matthew wants another round |
 | | Hints: feature + copy | Feature decisions, house style |
 | 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
 | | Netscape chrome | Version + references |
@@ -47,7 +47,7 @@ Year move (above) · timeline entry · modals opening and closing · IntroModal 
 
 ### 2. The curator's voice
 
-Writing work. Both items need the same first step: a short voice guide (Level 5's persona already sketches it: "slightly formal, warm, knowledgeable").
+Writing work. The voice guide is in `docs/copy-pass.md`; the copy pass went live on 10 Nov 2026.
 
 #### Copy pass: revisit later
 - **Matthew may want to revisit the copy** (10 Nov 2026). The copy pass went in on 10 Nov as "good for now"; the intro cards took six rounds and are the most likely to change again.
