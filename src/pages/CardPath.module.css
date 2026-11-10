@@ -101,9 +101,8 @@
 
 .frontFace { transform: rotateY(180deg); }
 
-/* only the face you can see takes clicks */
-.flip:not(.flipped) .frontFace,
-.flipped .backFace { pointer-events: none; }
+/* mid-turn, neither face takes clicks; at rest the card is plain again */
+.flip { pointer-events: none; }
 
 @keyframes entryIn {
   from { opacity: 0; transform: translateY(15px); }

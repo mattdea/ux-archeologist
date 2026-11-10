@@ -19,28 +19,34 @@ import { useFadeNavigate } from '../shared/SharedLayout'
 const FLIP_AFTER = 700   // ms: let the page fade in first
 const FLIP_STAGGER = 260 // ms between cards when several turn at once
 
-// One place on the path: both faces stacked, turned to the front once the
-// room is done. A card finished since the last visit starts face down and
-// turns over shortly after the page appears.
+const FLIP_MS = 900      // the turn itself (CardPath.module.css .inner)
+
+// One place on the path. At rest it's just the card, face down or face up.
+// Only while a card turns over are both faces stacked in a 3D flip: kept
+// any longer, a card tilting towards the pointer dips behind the flip's
+// plane and the wrapper takes its clicks.
 function PathCard({ a, done, seen, order, onOpen }) {
-  const [front, setFront] = useState(done && seen)
+  // 'down' → 'turning' (faces stacked, about to rotate) → 'rotating' → 'up'
+  const [stage, setStage] = useState(done && seen ? 'up' : 'down')
   useEffect(() => {
     if (!done || seen) return
-    const t = setTimeout(() => { setFront(true); markCardsSeen([a.level]) }, FLIP_AFTER + order * FLIP_STAGGER)
-    return () => clearTimeout(t)
+    const timers = []
+    timers.push(setTimeout(() => {
+      setStage('turning')
+      requestAnimationFrame(() => requestAnimationFrame(() => setStage('rotating')))
+      markCardsSeen([a.level])
+      timers.push(setTimeout(() => setStage('up'), FLIP_MS + 50))
+    }, FLIP_AFTER + order * FLIP_STAGGER))
+    return () => timers.forEach(clearTimeout)
   }, [done, seen, order, a.level])
 
+  if (stage === 'down') return <FaceDownCard a={a} onOpen={onOpen} />
+  if (stage === 'up') return <FoundCard a={a} onOpen={onOpen} />
   return (
-    <div className={`${path.flip} ${front ? path.flipped : ''}`}>
+    <div className={`${path.flip} ${stage === 'rotating' ? path.flipped : ''}`} aria-hidden="true">
       <div className={path.inner}>
-        <div className={`${path.face} ${path.backFace}`} aria-hidden={front || undefined}>
-          <FaceDownCard a={a} onOpen={onOpen} tabIndex={front ? -1 : undefined} />
-        </div>
-        {done && (
-          <div className={`${path.face} ${path.frontFace}`} aria-hidden={!front || undefined}>
-            <FoundCard a={a} onOpen={onOpen} tabIndex={front ? undefined : -1} />
-          </div>
-        )}
+        <div className={`${path.face} ${path.backFace}`}><FaceDownCard a={a} tabIndex={-1} /></div>
+        <div className={`${path.face} ${path.frontFace}`}><FoundCard a={a} tabIndex={-1} /></div>
       </div>
     </div>
   )
