@@ -19,13 +19,14 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 5. **No hype, no verdicts.** Explain what an interface did, what it replaced and what it cost. State costs as facts ("it can be wrong while sounding sure"), not judgements ("whose goals were not your own").
 6. **Museum words only in labels.** "Begin excavation", "Artifact Discovered", "Enter the exhibit" stay. Body text talks about the interfaces, not about digging.
 7. **Verbs match the hands.** On the iPhone and Instagram levels: tap, double-tap, drag. Everywhere else: click, double-click, drag, type, press Return.
-8. **Lengths.**
+8. **Interesting, not dry** (added 9 Nov after your review). Open on a specific, telling detail from the time (a slogan, a queue, a cassette tape, a number) instead of "This is a ___". Instructions come last and are woven in, not listed. Still no punchlines: the detail does the work.
+9. **Lengths.**
    - Intro card: 2–3 sentences, about 35–55 words: what it is, the context, how to start.
    - Discovery card: 3–4 sentences, about 55–75 words: the idea, what it replaced or made possible, the trade-off where there was one.
    - Objective: up to about 6 words, imperative.
    - Hint: one sentence that says exactly what to do, no "Try".
-9. **Plain punctuation.** No em dashes in body text (Level 5's prompt already bans them), no exclamation marks, no ellipses for effect.
-10. **Commands in hints** are written as plain words in the sentence ("Type ls and press Return"), without the double spaces used today.
+10. **Plain punctuation.** No em dashes in body text (Level 5's prompt already bans them), no exclamation marks, no ellipses for effect.
+11. **Commands in hints** are written as plain words in the sentence ("Type ls and press Return"), without the double spaces used today.
 
 ---
 
@@ -33,33 +34,33 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 
 ### 1.1 Level 0 · 1979 · The Command Line
 - **Current:** This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something.
-- **Proposed:** A VT100 terminal connected to the Unix system at Bell Labs, 1979. There are no icons or menus: you type a command, press Return, and the computer prints a reply. Start by typing ls to list your files.
-- **Note:** The level moved from 1971 to 1979 (9 Nov 2026) so the year matches the VT100, which DEC introduced in August 1978 (Wikipedia, "VT100", high); Bell Labs released Seventh Edition Unix in January 1979 (Wikipedia, "Version 7 Unix", high). "Mainframe" is out: Unix ran on PDP-11 minicomputers, the 11/70 among them (V7 "Setting up Unix", high). "Just a blinking cursor waiting…" is a rhythm line.
+- **Proposed (revised 9 Nov, less literal):** This VT100 is wired to a PDP-11 in another room, a computer shared by everyone in the lab. Bell Labs has just finished the Seventh Edition of Unix, the version that went on to spread through universities. Log in as kerry and type ls to see what's waiting for you.
+- **Note:** VT100, August 1978 (Wikipedia, "VT100", high); V7, January 1979, licensed widely to universities and the base of BSD (Wikipedia, "Version 7 Unix", high). Unix ran on PDP-11 minicomputers shared by many users (V7 "Setting up Unix", high). "Everyone in the lab" is the exhibit's framing. Your inbox and the note are waiting, so the last line is literal.
 
 ### 1.2 Level 1 · 1984 · The Desktop
 - **Current:** This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find.
-- **Proposed:** The Apple Macintosh, released in January 1984, with its first system software. Instead of typing commands, you move a pointer with the mouse: double-click an icon to open it, drag it to move it, and hold down the mouse on a menu title to see its commands.
-- **Note:** Release date: 24 January 1984 (Apple press release, high). "Hold down on a menu" is how 1984 pull-down menus worked (Macintosh owner's manual, 1984, high); clicking also works in the level. "See what you can find" is cut.
+- **Proposed (revised 9 Nov, less literal):** Apple sold the Macintosh in January 1984 as "the computer for the rest of us". It came with a cassette tape that walked you through using a mouse, because most buyers had never held one. Double-click to open things, drag them to move them, and hold the mouse down on a menu to see what it offers.
+- **Note:** Slogan from Apple's 1984 launch advertising (high). The Mac shipped with "A Guided Tour of Macintosh", an audio cassette and disk (high). Release 24 January 1984 (Apple, high). Pull-down menus held open while the button was down (owner's manual, 1984, high); clicking also works in the level.
 
 ### 1.3 Level 2 · 1995 · The Hyperlink
 - **Current:** This is Netscape Navigator, circa 1995. The web is a network of pages linked together by people — no search engine required. Follow the trail.
-- **Proposed:** Netscape Navigator in 1995, the browser most people used to reach the web that year. Pages link to other pages, and the links were put there by the people who wrote them. Click an underlined link to follow it, and use Back to return.
-- **Note:** Navigator's 1995 lead: about three quarters of browser use by late 1995 (contemporary surveys cited in Wikipedia, "Netscape Navigator", medium). "Follow the trail" is cut.
+- **Proposed (revised 9 Nov, less literal):** In 1995 there was no good way to search the web. You got around the way its builders did: one page pointed to the next, and almost every home page had a list of the author's favourite links. Click an underlined word to follow it, and Back to retrace your steps.
+- **Note:** Search engines existed (WebCrawler, Lycos, 1994) but were small; AltaVista, the first large full-text index, launched 15 Dec 1995 (Wikipedia, "AltaVista", high). "Favourite links" lists were a common home-page feature (medium). Netscape Navigator was the most used browser in 1995 (Wikipedia, "Netscape Navigator", medium).
 
 ### 1.4 Level 3 · 2007 · The Touchscreen
 - **Current:** This is the original iPhone. There's no stylus, no keyboard, no instruction manual. Just a glass screen and your finger.
-- **Proposed:** The first iPhone, released in the US in June 2007. It has no physical keyboard and no stylus: you use the screen with your finger, and the keyboard appears on screen when you need it. Drag the slider to unlock it.
-- **Note:** Released 29 June 2007 (Apple, high). Fixes the audit's "no keyboard" (it had an on-screen one). "No instruction manual" is dropped: it shipped with a short printed guide (medium).
+- **Proposed (revised 9 Nov, less literal):** When the iPhone went on sale in June 2007, people queued outside Apple stores for days. It had almost no buttons and no keyboard you could feel: everything happened on the glass. Slide your finger along the bottom of the screen to unlock it.
+- **Note:** On sale 29 June 2007, with queues reported days ahead in New York and elsewhere (contemporary press, high). One home button, the sleep/wake and volume buttons, and the ring switch; the keyboard was on screen (Apple, high).
 
 ### 1.5 Level 4 · 2016 · The Feed
 - **Current:** The interface stopped waiting for you. It started optimizing for your attention.
-- **Proposed:** Instagram for iPhone in spring 2016. That March, Instagram announced the feed would no longer be newest first: posts would be ordered by what it predicts you care about most. Drag the feed to scroll, and double-tap a photo to like it.
-- **Note:** Instagram blog, "See the Moments You Care About First", 15 March 2016 (high). The change rolled out to everyone in June 2016 (high), so the level shows the ranked feed slightly early; "announced" keeps the sentence true.
+- **Proposed (revised 9 Nov, less literal):** By 2016, 400 million people were posting to Instagram, far more than anyone could keep up with. That spring Instagram began choosing the order of your feed instead of showing the newest posts first. Scroll through, double-tap a photo to like it, and see who turns up.
+- **Note:** 400 million monthly users, September 2015 (Instagram, high; 500 million by June 2016). Ranked feed announced 15 March 2016, rolled out to everyone in June 2016 (Instagram blog, high). The level shows it in spring, so "began" fits.
 
 ### 1.6 Level 5 · 2023 · The Conversation
 - **Current:** This is a large language model. There are no buttons to learn, no gestures to memorize. You type a sentence, and it types one back.
-- **Proposed:** A chat with a large language model, the kind of interface that spread after OpenAI released ChatGPT in November 2022. You write in ordinary language and it writes back. Ask it about anything you've seen in the exhibit.
-- **Note:** ChatGPT released 30 November 2022 (OpenAI, high). The spec's "100 million people … within two months" is a UBS estimate reported by Reuters, 1 Feb 2023 (medium); left out.
+- **Proposed (revised 9 Nov, less literal):** Two months after ChatGPT launched in November 2022, an estimated 100 million people had tried it. There's nothing to learn first: you write to it the way you'd write to a person. The curator who wrote every card in this exhibit is on the other end, so ask it anything.
+- **Note:** ChatGPT released 30 November 2022 (OpenAI, high). 100 million users by January 2023 is a UBS estimate reported by Reuters, 1 February 2023 (medium), so "an estimated". The curator is the Level 5 persona (spec).
 
 ### 1.7 Labels on the intro card
 - "OBJECTIVES" and "Begin excavation": **keep** (labels).
@@ -72,8 +73,8 @@ Button stays **Continue**. Label "ARTIFACT DISCOVERED" stays.
 
 ### 2.1 Level 0 · Command & Response
 - **Current:** Every interaction you just had followed the same pattern: you typed a command, the machine responded, and you decided what to do next. No guidance, no suggestions, no undo. Every interface that came after this one tried to make that exchange easier, but the conversation underneath never changed.
-- **Proposed:** At a terminal you type a command, the computer runs it and prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from other people. In return, a few short words can do a lot, which is why programmers still work at a command line.
-- **Note:** Drops the closing line about "the conversation underneath". The trade-off is stated: hard to learn, powerful once learned.
+- **Proposed (revised 9 Nov):** At a terminal you type a command, the computer runs it and prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. They're short, like ls, cat and rm, because terminals were slow, and the same commands still work on every Mac and on most of the world's servers.
+- **Note:** Replaces "In return, a few short words can do a lot…" (your note). macOS is a certified UNIX and Linux runs most servers; both have ls, cat and rm (high). Short names for slow terminals is how Thompson and Ritchie's terseness is usually explained (medium).
 
 ### 2.2 Level 1 · Direct Manipulation
 - **Current:** Before this, using a computer meant memorizing commands and typing them precisely. The Macintosh replaced all of that with objects you could see and manipulate: folders, files, a trash can. Point at something, drag it somewhere, open it with a click. The computer finally spoke in a language people already understood.
@@ -87,18 +88,18 @@ Button stays **Continue**. Label "ARTIFACT DISCOVERED" stays.
 
 ### 2.4 Level 3 · Multi-Touch
 - **Current:** For thirty years, a layer of hardware stood between people and their software: a mouse, a keyboard, a stylus. The iPhone removed all of it. You touched the object itself, moved it with your finger, and the screen responded. The gap between intention and action had never been smaller.
-- **Proposed:** The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched things on the screen instead of moving a pointer. Lists scrolled with momentum and bounced at their ends, so the screen behaved like an object. Multi-touch had been shown in research labs for years; the iPhone put it in an everyday phone. Typing on glass, with no keys to feel, took getting used to.
-- **Note:** Multi-touch research since the 1980s, e.g. Jeff Han's 2006 TED demo (high). Drops "The gap … had never been smaller". "For thirty years, a layer of hardware" is dropped: styluses and mice weren't 30 years old on phones.
+- **Proposed (revised 9 Nov):** The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched things instead of moving a pointer. Lists kept moving after you let go and bounced when they hit the end, as if they had weight; Apple patented that bounce. Within a few years almost every phone worked this way.
+- **Note:** Replaces the research-labs and typing-on-glass sentences (your note). Rubber-band "bounce" scrolling: US patent 7,469,381, granted 2008, central to Apple v. Samsung (high). Touchscreen smartphones were the norm by about 2010–12 (medium).
 
 ### 2.5 Level 4 · Algorithmic Feed
 - **Current:** Earlier feeds showed you everything your friends posted, newest first. By 2016, an algorithm ranked the feed instead, ordering each post by how likely it was to keep you scrolling. Your closest friend's biggest news could sit beneath three strangers and an ad. The order was chosen for you, tuned to hold your attention, by a system whose goals were not your own.
-- **Proposed:** Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed orders posts by what it predicts you'll engage with, using your past likes and comments and who you interact with. You see more of what you respond to. The order isn't shown or explained, and a close friend's post can appear below brands and ads.
-- **Note:** "About 70%" and the ranking signals: Instagram blog, 15 Mar 2016 (high for what Instagram said). Replaces "keep you scrolling" and "goals were not your own" (verdicts) with what was announced. Now similar in length to the others (the backlog noted it was twice as long).
+- **Proposed (revised 9 Nov):** Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like and comment on, based on what you've responded to before. You can't see how it decides, and every like you give tells it what to show you next.
+- **Note:** Replaces "…a close friend's post can appear below brands and ads" (your note). "About 70%" and the ranking signals: Instagram blog, 15 Mar 2016 (high for what Instagram said).
 
 ### 2.6 Level 5 · Natural Language
 - **Current:** Every previous interface required you to learn its language: commands, clicks, menus, gestures. This one already speaks yours. But behind the fluency is a system you can't see, trained on text you didn't choose, shaped by decisions you can't inspect. The most natural interface ever built is also the least transparent.
-- **Proposed:** Here you didn't learn commands, menus or gestures: you wrote a sentence and got one back. A language model writes by predicting likely next words, having learned patterns from a very large amount of text. It can be wrong while sounding sure, and it can't show you why it answered as it did.
-- **Note:** Keeps the trade-offs as facts and drops "the most natural interface ever built…".
+- **Proposed (revised 9 Nov):** Here you didn't learn commands, menus or gestures; you just asked. You can hand it a question, a messy draft, a table of numbers or a photo, and it works out what you want. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did.
+- **Note:** Replaces "you wrote a sentence and got one back" (your note: you can give it almost anything). Models in 2023 took text, and GPT-4 and others also took images (OpenAI, March 2023, high).
 
 ---
 
