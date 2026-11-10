@@ -113,42 +113,18 @@ Today only Notes opens.
 
 ## Approved
 
-### Level 1: drag files between folders and the desktop · approved 10 Nov 2026
-Matthew's idea. He asked Claude to make the open decisions (marked *decided*), and approved it on 10 Nov 2026.
-- **Today:** icons only move within their own window, or between the desktop and the Trash. The spec says "Dragging between windows (into a folder, onto the disk) isn't built." Put Back works only for items in the Trash.
-- **Research first** (30 minutes at most), then mark each fact high, medium or low in the spec:
-  - The 1984 *Macintosh* owner's guide pages on moving icons and on Put Back.
-  - Any Finder 1.x screenshots of a folder highlighted under a dragged icon. infinitemac.org can show Finder 1.1 running.
-- **Build:**
-  - *Into a folder or the disk:* drop an icon on a folder icon or on the disk icon, or into an open folder or disk window, and the item moves there. On the same disk the Finder moved, not copied (**medium**).
-  - *Drop-target highlight:* while the dragged outline is over a folder, disk or Trash icon, that icon inverts. It reverts when the outline leaves or the drop ends (**medium**). An open window gets no highlight (*decided*).
-  - *Placement:* in an open window the icon lands where it's let go. In a closed folder it takes the first free slot on the Finder's 64-pixel grid, and you see it there when the folder opens (*decided*, reconstructed).
-  - *Out to the desktop:* drag an icon out of any window onto the bare desktop and it stays there, still belonging to its folder.
-  - *Put Back:* with a desktop item selected, Put Back sends it back to the window it came from, with the zoom outline, as it does for Trash items now. If the research shows Finder 1.1's Put Back worked only on the Trash, leave it out and note that in Done (*decided*: build it unless the research contradicts it).
-  - *Info lines:* every window's "N items NNNK in folder/disk" updates after a move.
-  - *Get Info:* the "Where" line follows the item.
-- **What can move** (*decided*):
-  - Documents (Notes, Budget, Letter, Sketch, saved TeachText files), folders (Projects, Empty Folder, Utilities) and the Utilities apps.
-  - **System** and **Finder** stay in the System Folder: dropped anywhere else, their outline snaps back to where it started. The System Folder itself, the disk and the Trash can't go into folders. All of this is reconstructed; Finder 1.1's real refusal is unknown.
-  - A folder dropped on itself, or into a folder inside it, snaps back (reconstructed).
-- **Memory** (*decided*): moves last for the session, like icon positions and saved documents, and reset on reload.
-- **Objectives** (*decided*):
-  - Opening Notes completes objective 1 wherever Notes is. Trashing Projects completes objective 2 from any window.
-  - The first hint, "Double-click the Notes icon on the desktop", drops "on the desktop" once Notes has been moved off it. The second hint does the same for Projects.
-  - Replay and revisits start with the original layout.
-- **Look:** dashed outlines at ~10fps, as now. No new museum-layer UI.
-- **Spec:** rewrite "Moving icons in windows" and the Put Back line, and remove "Dragging between windows … isn't built". List what's reconstructed.
-- **Check:** `npm test`, adding tests for a move, a refused move and Put Back. Then in the browser:
-  - Notes into Projects, Projects into Empty Folder, a Utilities app out to the desktop and back with Put Back.
-  - System refusing to leave.
-  - Every info line and Get Info "Where" correct.
-  - All three objectives completing after moves.
-
 _Nothing approved right now._
 
 ---
 
 ## Done
+
+### Level 1: drag files between folders and the desktop · 10 Nov 2026
+- **Research** (1984 *Macintosh* manual, vintageapple.org PDF): dragging "onto the desktop, onto a folder, disk, or Trash icon, or into an open folder, disk, or Trash window", moving on the same disk (p. 105, high); the folder icon "is highlighted" under a dragged icon and not after the drop (p. 38, high); the desktop as "a handy temporary resting place … the Finder will remember where the documents belong" (p. 104, high); Put Back "puts the selected documents, applications, or folders back into the folder or disk they came from most recently" (p. 107, high). So Put Back for desktop items is built, not left out. No Finder 1.x screenshot of a highlighted folder was found; infinitemac.org wasn't run.
+- **Built:** one record of where every item is (`place`: `loc` and `home`) drives the desktop, every folder window and the Trash. All icons share one HTML5 drag and outline; window icons can now leave their window. Drop-target highlight on folder, disk and Trash icons; moves into open windows (where let go) or closed folders (first free slot); out to the desktop; Put Back for desktop and Trash items; information lines and Get Info's Where follow; refusals snap back (System/Finder, System Folder, disk, folder into itself). Notes opens and completes objective 1 from any window; Projects trashed from any window completes objective 2; the first hint drops "on the desktop" once Notes moves.
+- **Reconstructed** (in the spec): first-free-slot placement, per-file sizes, the Where wording inside a folder, every refusal, Empty Trash keeping a folder that holds locked Notes.
+- **Checked:** 93 tests (6 new: a move, opening Notes from a folder, System refusing to leave, a folder into itself, Put Back, Get Info's Where). In the browser (drags dispatched from the page, since the browser tool's mouse drag doesn't start an HTML5 drag): Notes into Projects (4 items, 8K), Projects into Empty Folder, TeachText out to the desktop and back with Put Back (Utilities 4 → 5 items, 72K → 96K), System refusing, a folder refusing to go inside itself, Projects trashed from Empty Folder completing objective 2, Put Back from the Trash, Empty Trash keeping Projects because Notes inside is locked, and the inverted highlight on a closed folder. Not checked with a real hand-held mouse drag.
+- **Noticed, not fixed:** the console showed `MacScrollBar` errors (`toLocal` on a null track) when a scroll-bar drag outlives its window, e.g. a window closing mid-drag. Not part of this item.
 
 ### Copy pass applied · 10 Nov 2026
 - Live in the app, one commit per surface: intro cards, discovery cards, objectives and hints, title subtitle and About, Level 5's chips, fallbacks and system prompt. Text and sources: `docs/copy-pass.md`; spec synced.
