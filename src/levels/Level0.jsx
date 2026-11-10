@@ -93,7 +93,7 @@ export default function Level0() {
     if (screen === 'discovery') {
       addArtifact({
         name: 'Command & Response',
-        era: '1971',
+        era: '1979',
         description: DISCOVERY_DESCRIPTION,
       })
     }
@@ -105,7 +105,7 @@ export default function Level0() {
 
       {screen === 'intro' && (
         <IntroModal
-          era="1971"
+          era="1979"
           title="The Command Line"
           description="This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something."
           objectives={OBJECTIVES}
@@ -115,7 +115,7 @@ export default function Level0() {
 
       {screen === 'discovery' && (
         <DiscoveryCard
-          era="1971"
+          era="1979"
           artifactName="Command & Response"
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/1"

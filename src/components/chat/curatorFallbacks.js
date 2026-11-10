@@ -5,7 +5,7 @@
 export const FALLBACK_POOL = [
   {
     keywords: ['this place', 'what is this', 'place', 'where'],
-    response: "This is UX Archaeologist, an interactive history of how people and computers learned to communicate. You've just walked through fifty years of that history.",
+    response: "This is UX Archaeologist, an interactive history of how people and computers learned to communicate. You've just walked through more than forty years of that history.",
   },
   {
     keywords: ['who', 'you', 'are'],
@@ -20,7 +20,7 @@ export const FALLBACK_POOL = [
     response: "This experience is a React application. Each level is a self-contained recreation of a historical interface, wrapped in a museum layer that tracks your progress across eras.",
   },
   {
-    keywords: ['terminal', '1971', 'unix', 'command'],
+    keywords: ['terminal', '1979', 'unix', 'command'],
     response: "The Unix terminal was the first widely used conversational interface. You typed a precise instruction, the machine responded. Every interface since has been a variation on that same exchange.",
   },
   {
@@ -53,7 +53,7 @@ export const FALLBACK_POOL = [
   },
   {
     keywords: ['last', 'final', 'end', 'done'],
-    response: "This is the last exhibit, but probably not the last interface. The history you just walked through covers about fifty years. It is unlikely the next fifty years produce nothing new.",
+    response: "This is the last exhibit, but probably not the last interface. The history you just walked through covers more than forty years. It is unlikely the next forty produce nothing new.",
   },
   {
     keywords: ['language', 'model', 'ai', 'gpt', 'chatgpt', 'llm'],

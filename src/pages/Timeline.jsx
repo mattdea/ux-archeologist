@@ -6,7 +6,7 @@ import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
 
 const ENTRIES = [
-  { level: 0, year: '1971', title: 'The Command Line',  artifact: 'Command & Response',   path: '/level/0' },
+  { level: 0, year: '1979', title: 'The Command Line',  artifact: 'Command & Response',   path: '/level/0' },
   { level: 1, year: '1984', title: 'The Desktop',       artifact: 'Direct Manipulation',  path: '/level/1' },
   { level: 2, year: '1995', title: 'The Hyperlink',     artifact: 'Hyperlink Navigation', path: '/level/2' },
   { level: 3, year: '2007', title: 'The Touchscreen',   artifact: 'Multi-Touch',          path: '/level/3' },

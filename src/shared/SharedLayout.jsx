@@ -49,7 +49,7 @@ const PATH_TO_VIEW = {
 
 // ── Level metadata (keyed by view) ─────────────────────────────────
 const LEVEL_META = {
-  level0: { era: '1971', title: 'The Command Line',   level: 0 },
+  level0: { era: '1979', title: 'The Command Line',   level: 0 },
   level1: { era: '1984', title: 'The Desktop',        level: 1 },
   level2: { era: '1995', title: 'The Hyperlink',      level: 2 },
   level3: { era: '2007', title: 'The Touchscreen',    level: 3 },

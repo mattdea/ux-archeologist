@@ -1,6 +1,11 @@
 // src/components/terminal/useTerminal.js
 //
-// Owns all terminal state and logic for Level 0 (1971 Unix terminal).
+// Owns all terminal state and logic for Level 0 (1979: a VT100 on Seventh
+// Edition Unix at Bell Labs). The year follows the VT100 (Aug 1978).
+//
+// Every date in the level falls in one week: Tue 16 / Wed 17 Jan 1979
+// (1 Jan 1979 was a Monday). Sources: V7 "Setting up Unix" (boot), and V7
+// login.c / mail.c on TUHS (prompts, "You have mail.", the From line).
 // Returns { phase, history, currentInput, responding, streamingLine, onKeyDown }
 //
 // Phase progression: 'booting' → 'login' → 'password' → 'shell'
@@ -15,18 +20,19 @@ const COMMANDS = {
   ],
 
   'cat notes.txt': [
+    // Seventh Edition manual, title page dated January 1979 (Thompson and
+    // Ritchie); V7 released to licensees Jan 1979; Bourne's sh is V7's
+    // shell (all high: TUHS V7 tree, Wikipedia "Version 7 Unix"). The
+    // note itself is reconstructed.
     'From: dmr',
     'To: unix-users',
-    'Date: Tue Nov 2 09:04 EST 1971',
-    'Re: pipe behavior on empty input',
+    'Date: Tue Jan 16 09:04 EST 1979',
+    'Re: the Seventh Edition',
     '',
-    'Ken and I have been looking at the pipe issue you flagged last week.',
-    'It blocks on empty read rather than returning EOF. Not immediately',
-    'obvious why — likely the read() call in the kernel.',
-    '',
-    'Workaround for now: redirect from /dev/null if your source may be empty.',
-    '',
-    "Will have a patch in next week's distribution.",
+    'The Seventh Edition manual is finished, and tapes of the',
+    'system go out to licensees this month. The shell is now',
+    "Steve Bourne's sh. If a manual page doesn't match what a",
+    'command does, tell one of us before the next printing.',
     '',
     '- Dennis',
   ],
@@ -44,22 +50,23 @@ const COMMANDS = {
   // 'cat mail' intentionally absent — mail is a program, not a file.
   // Attempting it reveals the distinction (the discovery).
 
+  // V7 mail: no banner; each message starts with its postmark ("From ken"
+  // and the ctime date, mail.c) and is followed by a "?" prompt for d, s, q
+  // and so on. The level prints the message and returns to the shell, as
+  // if the reader pressed Return (reconstructed shortcut).
+  // Belle (Thompson and Condon) won the 1978 ACM North American Computer
+  // Chess Championship, 4 games of 4, in December 1978 (Wikipedia "Belle
+  // (chess machine)"; IEEE Spectrum; high). The message is reconstructed.
   mail: [
-    'Mail version 1.0',
-    'Type ? for help.',
-    '"/usr/mail/kerry": 1 message 1 unread',
-    '>N  1 ken             Tue Nov  2 08:51  Re: scheduler',
+    'From ken Tue Jan 16 08:51:41 1979',
     '',
-    'Message 1:',
-    'From ken Tue Nov  2 08:51:41 1971',
-    '',
-    'Looked at the scheduler issue you flagged. Not a bug — working as designed.',
-    'The priority decay is intentional. See the commentary in sched.c around line 340.',
-    '',
-    'Running low on core on the 11/40 again. Compiling anything non-trivial takes',
-    'the machine down for everyone else. Need to get the 11/45 approved before winter.',
+    'Belle won all four of its games at the ACM computer',
+    'chess championship in December. Joe and I will be',
+    'back on the hardware in the spring.',
     '',
     '- ken',
+    '',
+    '?',
   ],
 
   'man ls': [
@@ -82,33 +89,37 @@ const COMMANDS = {
 
   pwd:    ['/usr/bell/kerry'],
   whoami: ['kerry'],
-  date:   ['Wed Nov  3 14:22:08 EST 1971'],
+  date:   ['Wed Jan 17 14:22:08 EST 1979'],
   help:   ['help: command not found', 'Hint: try  ls,  cat,  man,  mail'],
 }
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
-// Two groups separated by a pause simulate hardware POST then OS load.
+// V7 on a PDP-11/70 ("Setting up Unix", Seventh Edition): the bootstrap
+// prints "Boot" and a ":" prompt, the operator names the kernel, and the
+// kernel prints the memory left for user programs. The single-user "#" and
+// the ^D that takes the system multi-user are as the guide describes; the
+// mem value is reconstructed. V7 getty prints only "login: ", so the
+// "(log in as kerry)" line is the exhibit's hint, not the machine's.
 const BOOT_GROUP_1 = [
-  'PDP-11/45 UNIX',
-  'Mem = 256K',
-  'Boot: /unix',
+  'Boot',
+  ': hp(0,0)unix',
+  'mem = 1035264',
   '',
 ]
 
 const BOOT_GROUP_2 = [
-  'UNIX Time-Sharing System v3',
-  'Bell Telephone Laboratories',
+  '# ^D',
   '',
-  '(login as kerry)',
+  '(log in as kerry)',
 ]
 
 // ── Welcome message shown after successful login ───────────────────────────────
+// V7 login prints /etc/motd, then "You have mail." when the mailbox isn't
+// empty; it has no "Last login" line (login.c). The motd text is the
+// exhibit's: a lab's message of the day for new users.
 const WELCOME_LINES = [
   '',
-  'Last login: Tue Nov  2 09:14:51 1971',
-  'You have mail.',
-  '',
-  'Welcome to the UNIX system.',
+  'Seventh Edition UNIX, Bell Laboratories, Murray Hill.',
   '',
   'Your home directory contains:',
   '  notes.txt  mail  readme',
@@ -123,6 +134,7 @@ const WELCOME_LINES = [
   '  man [cmd]',
   '    -> look up a manual page',
   '',
+  'You have mail.',
 ]
 
 // ms between each character during streaming — ~500 chars/sec, feels like fast baud

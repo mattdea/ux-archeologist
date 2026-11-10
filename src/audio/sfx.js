@@ -75,7 +75,7 @@ function filter(type, freq, q = 1) {
 }
 
 
-// ── 1971: VT100 ────────────────────────────────────────────────────
+// ── 1979: VT100 ────────────────────────────────────────────────────
 
 // The VT100 made both sounds with one small speaker in the keyboard, driven
 // by pulses from the terminal: a single pulse is the keyclick (SET-UP could
