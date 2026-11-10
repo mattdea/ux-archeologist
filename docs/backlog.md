@@ -50,11 +50,10 @@ Year move (above) · timeline entry · modals opening and closing · IntroModal 
 
 Writing work. Both items need the same first step: a short voice guide (Level 5's persona already sketches it: "slightly formal, warm, knowledgeable").
 
-#### Copy pass across the app
-- **Draft for review: `docs/copy-pass.md`** (9 Nov 2026): voice guide, current vs proposed text for every surface, Level 0 note, and facts flagged outside the copy.
-- **Surfaces:** title screen · About · timeline · 6 IntroModals · 6 DiscoveryCards · HUD tooltips · objectives · Level 5 chips and fallbacks.
-- **Noticed:** Level 1's intro is instructional, the rest are evocative one-liners · Level 4's discovery text is twice as long as the others · the spec's DiscoveryCard entry still says the button goes to `/timeline`.
-- **Decide:** one surface at a time or all at once.
+#### Copy pass: revisit later
+- **Matthew may want to revisit the copy** (10 Nov 2026). The copy pass went in on 10 Nov as "good for now"; the intro cards took six rounds and are the most likely to change again.
+- **Where it stands:** `docs/copy-pass.md` has the voice guide, every surface's old and new text with sources, and the notes from each round of review (what Matthew liked and didn't). Start there.
+- **What he's said about the intro cards so far:** keep the live text's mood ("no icons, no menus, no mouse. Just a blinking cursor"), name the device ("a VT100 terminal"), put the visitor in the year, add one period detail and a line of reflection; no instructions, no user counts. Too literal and too dry were both rejected.
 
 #### Hints: feature and copy
 - **Current hints:**
