@@ -2,7 +2,8 @@
  *
  * The index museum. One monospace stack at one size, on a grid of
  * characters (ch) across and 20px rows down: every column, leader and
- * indent lands on it. Black and one grey on white.
+ * indent lands on it. Black and one grey on white, or (dark theme,
+ * theme.js) light grey and one grey on #111.
  *
  * Grid tokens
  *   --ix-row      20px   one line; gaps are one row
@@ -33,6 +34,7 @@
   position: absolute;
   inset: 0;
   z-index: 5;
+  color-scheme: light;
   overflow: auto;
   background: var(--ix-paper);
   color: var(--ix-ink);
@@ -211,7 +213,19 @@
 /* The classic HUD's boxes (each level's tracker zone) draw nothing in the
    index museum; take them out so useArtifactFit doesn't measure them. */
 :global(html[data-museum="index"]) [data-hud]:not([data-hud="side"]):not([data-hud="top"]) { display: none !important; }
-:global(html[data-museum="index"]) body { background: #fff; }
+/* The room behind the list and the artifact (SharedLayout's .room and the
+   page), light or dark with the theme */
+:global(html[data-museum="index"]) { --ix-room: #fff; }
+:global(html[data-museum="index"][data-index-theme="dark"]) { --ix-room: #111; }
+:global(html[data-museum="index"]) body { background: var(--ix-room); }
+
+/* ── Dark: the same list, light on the classic museum's #111 ─────────── */
+:global(html[data-index-theme="dark"]) .ix {
+  --ix-ink: #e6e6e6;     /* 15:1 on #111 */
+  --ix-ink-2: #8a8a8a;   /* 5.5:1 on #111, the classic museum's secondary grey */
+  --ix-paper: #111;
+  color-scheme: dark;
+}
 
 /* ── Narrow: the list above, the artifact below ─────────────────────── */
 @media (max-width: 899.98px) {

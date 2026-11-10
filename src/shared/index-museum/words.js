@@ -48,6 +48,7 @@ export const WORDS = {
   notFound: 'not found',
   smallScreen: 'This experience was designed for larger screens.',
   smallScreenGo: 'Continue anyway',
+  dark: 'Dark mode',
 }
 
 export const pad = (n) => String(n).padStart(2, '0')

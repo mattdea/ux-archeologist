@@ -207,7 +207,7 @@ export default function SharedLayout({ children }) {
     <FadeNavCtx.Provider value={fadeNavigate}>
       <HudCtx.Provider value={notifyArtifactReady}>
         <ContinueCtx.Provider value={setContinueAction}>
-          <div className={styles.room} style={indexOn ? { background: '#fff' } : undefined}>
+          <div className={styles.room} style={indexOn ? { background: 'var(--ix-room)' } : undefined}>
 
             {indexOn && (
               <IndexMuseum view={view} navigate={fadeNavigate} continueAction={continueAction} hudReady={hudReady} />

@@ -36,6 +36,7 @@ import { setMuseumStyle } from '../museumStyle'
 import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS, pad } from './words'
 import DotPicture from './DotPicture'
+import { useIndexTheme, setIndexTheme } from './theme'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -59,7 +60,7 @@ function smallDismissed() {
 }
 
 // ── A line ──────────────────────────────────────────────────────────────
-function Line({ as = 'text', i = 0, onClick, href, mark = '', text, meta, arrow, sub, current, dim, quiet, bare, peek, focus, label }) {
+function Line({ as = 'text', i = 0, onClick, href, mark = '', text, meta, arrow, sub, current, dim, quiet, bare, peek, focus, label, pressed }) {
   const ref = useRef(null)
   useEffect(() => { if (focus) ref.current?.focus({ preventScroll: false }) }, [focus])
   const chooses = as === 'go' || as === 'ext'
@@ -79,7 +80,7 @@ function Line({ as = 'text', i = 0, onClick, href, mark = '', text, meta, arrow,
     </>
   )
   const common = { ref, className: cls, style: { '--i': Math.min(i, 30) }, ...(peek ?? {}) }
-  if (as === 'go') return <button type="button" data-ix-nav onClick={onClick} aria-current={current ? 'page' : undefined} aria-label={label} {...common}>{inner}</button>
+  if (as === 'go') return <button type="button" data-ix-nav onClick={onClick} aria-current={current ? 'page' : undefined} aria-label={label} aria-pressed={pressed} {...common}>{inner}</button>
   if (as === 'ext') return <a data-ix-nav href={href} target="_blank" rel="noopener noreferrer" {...common}>{inner}</a>
   return <div aria-current={current ? 'page' : undefined} {...common}>{inner}</div>
 }
@@ -99,6 +100,7 @@ const Gap = ({ i }) => <div className={s.gap} style={{ '--i': i }} aria-hidden="
 // ── The museum ──────────────────────────────────────────────────────────
 export default function IndexMuseum({ view, navigate, continueAction, hudReady }) {
   const slots = useIndexSlots()
+  const theme = useIndexTheme()
   const narrow = useMedia(NARROW)
   const small = useMedia(SMALL)
   const [smallGone, setSmallGone] = useState(smallDismissed)
@@ -306,6 +308,11 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
   }
 
+  // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
+  const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
+    pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
+  if (!inLevel && view !== 'collection') darkLine()
+
   if (view === 'title') {
     push(<Gap key="by-gap" i={n} />)
     push(<Note key="by" i={n} quiet>{TITLE.by}</Note>)
@@ -314,6 +321,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   if (inLevel || view === 'collection') {
     push(<Gap key="back-gap" i={n} />)
     push(<Line key="back" i={n} as="go" text={WORDS.backPlain} mark="←" arrow="→" onClick={() => navigate('/timeline')} />)
+    darkLine()
   }
 
   // ── Dev switches, on the timeline (grey, after everything) ──

@@ -185,7 +185,7 @@ Matthew is going with the B / B2 direction: one monospace list that is the whole
   - Take screenshots of the Index museum into `docs/museum-index/`.
 - **When the chat ends:** move this to Done with what changed and what Matthew decided along the way. Note anything still open under Ideas, "Museum restyle".
 - **Supersedes** the B2 iteration entry above. The lab stays as reference, and nothing further changes in B2.
-- **Status (10 Nov 2026):** first full version built and shown to Matthew; taking his changes next. `museum-classic` tagged at f2d13c0. What it does is in the spec, "Index museum"; screenshots in `docs/museum-index/`. Raised with Matthew, not changed: the Level 4 ghost iPhone's outline and glow vanish on white; Level 5's chat is a dark block on the white page. Not yet checked: keyboard only through a whole level (arrow keys, Tab and Escape were checked in Level 0 and on the title, timeline and collection), Safari, Firefox, a screen reader.
+- **Status (10 Nov 2026):** first full version built and shown to Matthew; taking his changes next. `museum-classic` tagged at f2d13c0. What it does is in the spec, "Index museum"; screenshots in `docs/museum-index/`. Raised with Matthew: the Level 4 ghost iPhone's outline and glow vanish on white; Level 5's chat is a dark block on the white page. Matthew's first change: a Dark mode line (light by default, remembered per browser), in which both look as designed. Not yet checked: keyboard only through a whole level (arrow keys, Tab and Escape were checked in Level 0 and on the title, timeline and collection), Safari, Firefox, a screen reader.
 
 ---
 

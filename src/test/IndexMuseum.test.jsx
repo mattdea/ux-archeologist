@@ -18,6 +18,7 @@ import { FadeNavCtx } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, resetAll } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import { computeFit } from '../hooks/useArtifactFit'
+import { setIndexTheme } from '../shared/index-museum/theme'
 
 // Node's built-in localStorage shadows jsdom's and doesn't store anything
 // here, so progress and the switch get an in-memory stand-in.
@@ -59,7 +60,7 @@ function FakeLevel() {
 
 describe('Index museum', () => {
   beforeEach(() => { vi.stubGlobal('localStorage', memoryStorage()); resetAll(); _resetIndexSlots(); act(() => setMuseumStyle('classic')) })
-  afterEach(() => { cleanup(); act(() => setMuseumStyle('classic')); resetAll(); vi.unstubAllGlobals() })
+  afterEach(() => { cleanup(); act(() => { setMuseumStyle('classic'); setIndexTheme('light') }); resetAll(); vi.unstubAllGlobals() })
 
   it('the switch is remembered and mirrored on <html>', () => {
     act(() => setMuseumStyle('index'))
@@ -191,6 +192,28 @@ describe('Index museum', () => {
     act(() => setMuseumStyle('index'))
     expect(list().textContent).toContain('[x]Open a thing')
     expect(list().textContent).toContain('[ ]Close a thing')
+  })
+
+  it('Dark mode: a toggle on every view, remembered and mirrored on <html>', () => {
+    renderIndex('title')
+    const dark = () => screen.getByText('Dark mode').closest('button')
+    expect(dark()).toHaveAttribute('aria-pressed', 'false')
+    expect(dark().textContent).toContain('[ ]')
+    fireEvent.click(dark())
+    expect(dark()).toHaveAttribute('aria-pressed', 'true')
+    expect(dark().textContent).toContain('[x]')
+    expect(document.documentElement.getAttribute('data-index-theme')).toBe('dark')
+    expect(localStorage.getItem('ux-archaeologist:index-theme')).toBe('dark')
+    cleanup()
+    for (const view of ['timeline', 'collection', 'level2']) {
+      renderIndex(view)
+      expect(dark()).toHaveAttribute('aria-pressed', 'true')
+      cleanup()
+    }
+    renderIndex('timeline')
+    fireEvent.click(dark())
+    expect(document.documentElement.getAttribute('data-index-theme')).toBe('light')
+    expect(localStorage.getItem('ux-archaeologist:index-theme')).toBeNull()
   })
 
   it('progress is the same in both museums', () => {
