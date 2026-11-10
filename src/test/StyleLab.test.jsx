@@ -95,6 +95,20 @@ describe('Style lab', () => {
     expect(squares().map(sq => sq.getAttribute('aria-current'))).toEqual([null, null, null, 'page', null, null])
   })
 
+  it('B2: the cards carry the dot illustrations; a card not found has none', () => {
+    renderLab('#b2/collection')
+    const cards = [...document.querySelectorAll('a[href^="#b2/level/"]')].filter(a => a.textContent.includes(TITLE.name))
+    expect(cards).toHaveLength(ROOMS.length)
+    cards.forEach((card, i) => {
+      const art = card.querySelector('[style*="--art"]')
+      if (MOCK.found.includes(i)) expect(art.getAttribute('style')).toMatch(new RegExp(`dots-${i}`))
+      else expect(art).toBeNull()
+    })
+    // with Illustrated chosen they show that picture instead
+    fireEvent.click(screen.getByRole('button', { name: 'Illustrated' }))
+    expect(document.querySelector('a[href="#b2/level/0"] img')).not.toBeNull()
+  })
+
   it('B2: Begin excavation leaves the list as it is while playing, Continue shows the discovery', () => {
     renderLab('#b2/level/1')
     const r = ROOMS[1]

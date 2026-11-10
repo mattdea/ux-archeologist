@@ -5,7 +5,8 @@
 //
 // 1. The collection's cards are redrawn in the list's own terms: monospace,
 //    1px rules, square corners, no shadow, and they turn black under the
-//    pointer like a row does. (B showed the current cream cards.)
+//    pointer like a row does. (B showed the current cream cards.) Their
+//    picture is the room's dot illustration.
 // 2. The level frame is laid out the way the game would have to be: the list
 //    is the HUD, in a narrow column, and the artifact is fitted into what is
 //    left, beside the list on a wide window and below it on a narrow one,
@@ -13,6 +14,12 @@
 //    intro card, objectives, hint and discovery card are rows of the list.
 //    "Begin excavation" and "Continue" work, so the list can be seen at the
 //    length it has while playing; the room's own row puts everything back.
+//
+// Since Matthew's read of round 2 (he dropped G but liked its dot
+// illustrations), they are B2's pictures: pointing at a room shows its
+// illustration beside the list, six little squares with the illustrations
+// open the rooms, and the cards carry them. Drawn and Illustrated are still
+// on the lab's art switch.
 import { useEffect, useState } from 'react'
 import s from './B2_Index.module.css'
 import { ROOMS, TITLE, ABOUT, WORDS, MOCK, isFound, foundLine, pad } from './content'
@@ -49,12 +56,13 @@ const Note = ({ children, mark = '' }) => (
 )
 
 // A collection card in the list's terms. Found: number and year, the
-// picture, the name, the room, the description. Not found: the same frame
-// with an empty picture box.
-function Card({ room, art, href }) {
+// room's dot illustration, the name, the room, the description. Not found:
+// the same frame, and the illustration's dot grid with nothing drawn on it.
+// A card and its line in the list light together.
+function Card({ room, art, href, lit, peek }) {
   const found = isFound(room.level)
   return (
-    <a className={`${s.card} ${found ? '' : s.blank}`} href={href}>
+    <a className={`${s.card} ${found ? '' : s.blank} ${lit ? s.cardLit : ''}`} href={href} {...peek}>
       <span className={s.cardHead}><span>No. {pad(room.level + 1)}</span><span>{room.year}</span></span>
       <span className={s.cardPicture}>{found && <RoomPicture room={room} art={art} className={s.fill} />}</span>
       <span className={s.cardBody}>
@@ -203,7 +211,7 @@ export default function Index2({ screen, level, href, art }) {
         <div className={s.gap} />
         <Row text={WORDS.collection} meta={foundLine} href={href('collection')} current={screen === 'collection'} mark={screen === 'collection' ? '>' : ''} />
         {screen === 'collection' && ROOMS.map(r => (
-          <Row key={r.level} sub mark={r.year} text={`No. ${pad(r.level + 1)}  ${isFound(r.level) ? r.name : WORDS.unfound}`} meta={r.title} href={href('level', r.level)} />
+          <Row key={r.level} sub mark={r.year} text={`No. ${pad(r.level + 1)}  ${isFound(r.level) ? r.name : WORDS.unfound}`} meta={r.title} href={href('level', r.level)} peek={peekAt(r.level)} lit={peek === r.level} />
         ))}
         <Row text={TITLE.about} meta={ABOUT.label} href={href('title')} />
         {screen === 'title' && (
@@ -232,7 +240,7 @@ export default function Index2({ screen, level, href, art }) {
 
       {screen === 'collection' && (
         <div className={s.cards}>
-          {ROOMS.map(r => <Card key={r.level} room={r} art={art} href={href('level', r.level)} />)}
+          {ROOMS.map(r => <Card key={r.level} room={r} art={art} href={href('level', r.level)} peek={peekAt(r.level)} lit={peek === r.level} />)}
         </div>
       )}
     </div>

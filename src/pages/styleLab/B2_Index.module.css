@@ -106,10 +106,14 @@ a.row:focus-visible, button.row:focus-visible { background: #000; color: #fff; }
 .cardBody > span { display: block; }
 .cardName { text-transform: uppercase; }
 .cardRule { height: 9px; margin-bottom: 9px; border-bottom: 1px dotted currentColor; }
-/* A room not finished: the same card with nothing in the picture box */
-.blank .cardPicture { background: repeating-linear-gradient(135deg, #fff 0 5px, #000 5px 6px); }
-.card:hover { background: #000; color: #fff; }
-.card:hover .cardHead, .card:hover .cardFoot, .card:hover .cardPicture { border-color: #fff; }
+/* A room not finished: the illustrations' dot grid with nothing drawn on it */
+.blank .cardPicture {
+  background-image: radial-gradient(circle, currentColor 0.9px, transparent 1.4px);
+  background-size: calc(100% / 13) calc(100% / 8);
+}
+.card:hover, .cardLit { background: #000; color: #fff; }
+.card:hover .cardHead, .card:hover .cardFoot, .card:hover .cardPicture,
+.cardLit .cardHead, .cardLit .cardFoot, .cardLit .cardPicture { border-color: #fff; }
 
 /* ── A room: the list is the HUD, the artifact takes the rest ───────── */
 .levelPage {
