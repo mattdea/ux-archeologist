@@ -19,7 +19,6 @@
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
 | | Instagram screens | Which screens + references |
-| 5. Look | Museum restyle, starting with a style lab | Which directions; whether the level frame is in the lab |
 
 ---
 
@@ -105,9 +104,11 @@ Today only Notes opens.
 - **Candidates:** comments view · Direct inbox · camera tab · hashtag page from TRENDING TAGS · Edit Profile.
 - **Needs:** dated reference screenshots for each, as the existing screens had.
 
-### 5. Look: the museum's own style
+---
 
-#### Museum restyle, starting with a style lab
+## Approved
+
+### Museum: style lab (restyle phase 1) · approved 10 Nov 2026
 Matthew wants the museum to look more like the personal sites he's been collecting: crude, unfinished, typographic, plain, sometimes silly. Concepts come first, and nothing in the game changes until one is picked.
 
 - **Scope:** the museum layer only. That means the title, timeline, collection, About, HUD (back link, era label, Continue), IntroModal, ObjectiveTracker, HintPill, DiscoveryCard and the small-screen notice. The artifacts keep their exact period look. A rough museum around exact artifacts is a good contrast, but the museum still has to read as the frame, not as another artifact. Watch this next to the 1995 Netscape level especially.
@@ -135,13 +136,8 @@ Matthew wants the museum to look more like the personal sites he's been collecti
   - Align the collection cards and card lab with the new style.
   - Rewrite the spec's museum section.
   - Delete the lab or keep it.
-- **Decide before approval:** all six directions or fewer · whether the level frame is in phase 1 (recommended: the HUD sits next to the artifact the whole time you play, so that's where a style succeeds or fails).
-
----
-
-## Approved
-
-_Nothing approved right now._
+- **Decided (10 Nov 2026):** all six directions, and the level frame is in phase 1. Build phase 1 only; phases 2 and 3 wait for Matthew.
+- **Done when:** `/style-lab` works on the dev server with all six concepts and their four screens each, it's missing from the production build (`npm run build`, then check the bundle), and no real museum component has changed. Screenshot each concept at 1440 and 375 wide for Matthew.
 
 ---
 
