@@ -135,7 +135,14 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
 
 ## Approved
 
-Nothing waiting.
+### Museum: style lab, B2 iteration with Matthew · approved 10 Nov 2026
+Matthew is iterating on B2 in a separate chat, live, while he looks at it. Work in B2 only (`src/pages/styleLab/B2_Index.jsx` and `.module.css`, plus the shared lab files if needed). Nothing outside the lab changes. He'll give more changes in that chat. Fold each one in, commit and push it on its own, and ask him when something is unclear rather than guessing.
+
+- **First change: remove the row of six squares** on every B2 screen (title, timeline, collection, both level frames), along with the links, hover states and "you are here" marking they carried.
+  - **Why:** the squares repeat the pictures. Pointing at a room's line already shows its dot illustration on the right, and that's the only picture interaction the title and timeline need.
+  - **Keep:** the hover and focus preview beside the list, and the dot illustrations on the collection cards.
+  - **In a level frame,** the squares marked the room you're in. Check that the room's highlighted line in the list does that job on its own. If it doesn't, show Matthew the options before adding anything.
+- **When the chat ends:** move this entry to Done with a list of what changed. Retake the B2 screenshots in `docs/style-lab/b2-index-refined/` and run the tests and the build. Update the "Museum restyle" entry under Ideas with where B2 stands.
 
 ---
 
