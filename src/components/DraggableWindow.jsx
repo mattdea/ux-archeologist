@@ -317,7 +317,7 @@ export default function DraggableWindow({
         {children}
         {type === 'projects' && !children && <ProjectsWindowContent />}
         {type === 'notes'    && <NotesWindowContent />}
-        {type === 'trash'    && (
+        {type === 'trash' && !children && (
           <TrashWindowContent
             contents={trashContents}
             selected={trashSelected}

@@ -72,7 +72,10 @@ export default function Level1() {
   }, [screen])
   const finishBoot = useCallback(() => setScreen('playing'), [])
 
-  const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
+  // The first hint says "on the desktop" only while Notes is there
+  const [notesPlace, setNotesPlace] = useState('desktop')
+  const hints = notesPlace === 'desktop' ? HINTS : [HINTS[0].replace(' on the desktop', ''), ...HINTS.slice(1)]
+  const hint = useHint(hints, { active: screen === 'playing', completedIndices })
 
   // Fits the artifact around the HUD corners, as large as the viewport allows
   const fit = useArtifactFit(BEZEL_W, BEZEL_H)
@@ -163,6 +166,7 @@ export default function Level1() {
                       active={screen === 'playing'}
                       reveal={reveal}
                       onDiskAccess={pulseDrive}
+                      onNotesPlace={setNotesPlace}
                     />
                   )}
                   {screen === 'booting' && (

@@ -635,6 +635,18 @@ export function DiskIcon({ selected }) {
   return <BitmapIcon bitmap={DISK} selected={selected} />
 }
 
+// The glyph for any Finder item. `inverted` draws it white on black, as for
+// a selection or a drop target under a dragged icon.
+const UTILITY_NAMES = ['diskcopy', 'fonts', 'fontmover', 'teachtext', 'sysversion']
+export function Glyph({ icon, inverted, full }) {
+  if (icon === 'folder') return <FolderIcon selected={inverted} />
+  if (icon === 'disk')   return <DiskIcon selected={inverted} />
+  if (icon === 'trash')  return <TrashIcon highlighted={inverted} full={full} />
+  if (icon === 'system') return <SystemFileIcon selected={inverted} />
+  if (UTILITY_NAMES.includes(icon)) return <UtilityIcon name={icon} selected={inverted} />
+  return <NotesIcon selected={inverted} />
+}
+
 const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
   const {
     label,
@@ -675,12 +687,13 @@ const DesktopIcon = forwardRef(function DesktopIcon(props, ref) {
       onTouchEnd={onTouchEnd}
       onMouseDown={onMouseDown}
       data-icon={props['data-icon']}
+      data-item={props['data-item']}
+      data-drop-target={props['data-drop-target']}
     >
       <IconShade opened={isOpened}>
-        {icon === 'folder' && <FolderIcon selected={isSelected} />}
-        {icon === 'disk'   && <DiskIcon   selected={isSelected} />}
-        {icon === 'notes'  && <NotesIcon  selected={isSelected} />}
-        {icon === 'trash'  && <TrashIcon  highlighted={isHighlighted} full={isFull} selected={isSelected} />}
+        {icon === 'trash'
+          ? <TrashIcon highlighted={isHighlighted} full={isFull} selected={isSelected} />
+          : <Glyph icon={icon} inverted={isSelected || isHighlighted} />}
       </IconShade>
       <span className={`${styles.label} ${isSelected ? styles.labelSelected : ''}`}>{label}</span>
     </div>
