@@ -124,6 +124,7 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
     - **G (punch card):** he doesn't like the direction. Dropped. He does like its dot illustrations.
     - **B2:** takes the dot illustrations. His examples: pointing at a level shows its small illustration on the right; little squares with the illustration in them open the levels; the collection cards change to match. Built the same day, see Done. B2 is the direction in hand.
     - G is still in the lab, and the six illustration files are in its folder (`src/pages/styleLab/g/`). Deleting G would mean moving them first.
+    - **B2 iteration (10 Nov 2026):** the row of six squares was removed (see Done). Then Matthew chose the B / B2 direction for the real museum: see Approved, "the index museum". B2 stays in the lab as reference and changes no further.
 - **Phase 3 (needs its own approval):**
   - Set up museum tokens on `:root` and restyle one component per commit.
   - Align the collection cards and card lab with the new style.
@@ -134,15 +135,6 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
 ---
 
 ## Approved
-
-### Museum: style lab, B2 iteration with Matthew · approved 10 Nov 2026
-Matthew is iterating on B2 in a separate chat, live, while he looks at it. Work in B2 only (`src/pages/styleLab/B2_Index.jsx` and `.module.css`, plus the shared lab files if needed). Nothing outside the lab changes. He'll give more changes in that chat. Fold each one in, commit and push it on its own, and ask him when something is unclear rather than guessing.
-
-- **First change: remove the row of six squares** on every B2 screen (title, timeline, collection, both level frames), along with the links, hover states and "you are here" marking they carried.
-  - **Why:** the squares repeat the pictures. Pointing at a room's line already shows its dot illustration on the right, and that's the only picture interaction the title and timeline need.
-  - **Keep:** the hover and focus preview beside the list, and the dot illustrations on the collection cards.
-  - **In a level frame,** the squares marked the room you're in. Check that the room's highlighted line in the list does that job on its own. If it doesn't, show Matthew the options before adding anything.
-- **When the chat ends:** move this entry to Done with a list of what changed. Retake the B2 screenshots in `docs/style-lab/b2-index-refined/` and run the tests and the build. Update the "Museum restyle" entry under Ideas with where B2 stands.
 
 ### Museum: the index museum, built for real behind a switch · approved 10 Nov 2026
 Matthew is going with the B / B2 direction: one monospace list that is the whole museum. B2 was a concept in the lab, not a finished design. This pass turns it into a complete museum that runs the real game, and keeps the current museum ("Classic") one switch away, because Matthew is still concepting. Run it as a live chat with Matthew. Build a first full version, show him, then take his changes one at a time, committing and pushing each.
@@ -197,6 +189,14 @@ Matthew is going with the B / B2 direction: one monospace list that is the whole
 ---
 
 ## Done
+
+### Museum: style lab, B2 iteration with Matthew · 10 Nov 2026
+From Approved. One change was made before the index museum entry superseded it.
+- **The row of six squares is gone** from every B2 screen (title, timeline, collection, both level frames), along with its links, hover states and "you are here" marking. A blank line sits where it was.
+- **Kept:** the hover and focus preview beside the list, and the dot illustrations on the collection cards; a card and its line still light together.
+- **In a level frame** the room's own line is black and its intro and objectives open under it, so it marks the room you're in without the squares. Nothing was added.
+- **Checked:** 149 tests (the squares test is now "no squares; in a room only its line is marked"); `npm run build`; the Mac frame, the timeline with the pointer on a line and the collection in the browser, no console errors. Screenshots in `docs/style-lab/b2-index-refined/` retaken.
+- **Superseded** by "the index museum, built for real behind a switch". The lab stays as reference.
 
 ### Museum: style lab, B2 takes the dot illustrations · 10 Nov 2026
 Asked for in chat after Matthew's read of round 2 (under Ideas, "Museum restyle"), not from Approved. Changed in B2 itself, not as a new concept; three commits, one per feature.
