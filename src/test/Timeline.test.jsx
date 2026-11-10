@@ -28,6 +28,7 @@ function memoryStorage() {
 describe('Timeline', () => {
   beforeEach(() => {
     vi.stubGlobal('localStorage', memoryStorage())
+    vi.stubGlobal('sessionStorage', memoryStorage())
     resetAll()
   })
   afterEach(() => vi.unstubAllGlobals())
@@ -64,5 +65,15 @@ describe('Timeline', () => {
     fireEvent.click(screen.getByText('Complete all (dev)'))
     expect([0, 1, 2, 3, 4, 5].every(isLevelComplete)).toBe(true)
     expect(screen.getByRole('button', { name: 'Collection · 6 of 6' })).toBeInTheDocument()
+  })
+
+  it('Reset also clears what a level kept for the visit (Level 1\'s ticks)', () => {
+    sessionStorage.setItem('l1_completed', JSON.stringify([0, 1, 2]))
+    sessionStorage.setItem('l1_notepad', '["a"]')
+    renderTimeline()
+    fireEvent.click(screen.getByText('Reset progress'))
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(sessionStorage.getItem('l1_completed')).toBeNull()
+    expect(sessionStorage.getItem('l1_notepad')).toBeNull()
   })
 })

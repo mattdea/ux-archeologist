@@ -37,8 +37,6 @@ const HINTS = [
 
 const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[4]
 
-// Evaluated once at module load — safe because localStorage doesn't change mid-session
-const ALREADY_DONE = isLevelComplete(4)
 
 export default function Level4() {
   const notifyArtifactReady = useArtifactReady()
@@ -48,13 +46,16 @@ export default function Level4() {
   const fit = useArtifactFit(UNIT_W, UNIT_H)
   const scale = fit.scale
 
+  // Read on each visit, not once when the code loads: levels load once per
+  // page, and progress changes in between (finishing it, Reset, Complete all)
+  const [alreadyDone] = useState(() => isLevelComplete(4))
   // Replay: skip 'intro', start at 'booting' (boot → playing in useEffect below)
-  const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
+  const [screen, setScreen] = useState(() => alreadyDone ? 'booting' : 'intro')
   const [trackerVisible, setTrackerVisible] = useState(false)
 
   // Independent objectives — all pre-completed on replay
   const [objectives, setObjectives] = useState(() => {
-    const done = ALREADY_DONE
+    const done = alreadyDone
     return { likeImani: done, tapSponsored: done, followNew: done }
   })
 

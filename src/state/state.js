@@ -58,7 +58,13 @@ export function getArtifacts() {
   return data.artifacts ?? []
 }
 
-/** Wipe all progress. Useful for development / testing. */
+// What a level keeps for the visit while it's unfinished (Level 1: the
+// objectives done so far and the Note Pad's pages). Reset clears it too, or
+// a reset level would come back with its old ticks.
+const SESSION_KEYS = ['l1_completed', 'l1_notepad']
+
+/** Wipe all progress, including what levels keep for the visit. */
 export function resetAll() {
   try { localStorage.removeItem(KEY) } catch { /* quota/private mode */ }
+  try { SESSION_KEYS.forEach(k => sessionStorage.removeItem(k)) } catch { /* storage blocked */ }
 }
