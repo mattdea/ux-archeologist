@@ -5,7 +5,8 @@ import { isLevelComplete, completeLevel, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
 import { ARTIFACTS } from '../data/artifacts'
-import { serifTitlesOn, setSerifTitles } from '../shared/devLooks'
+import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, forgetCardsSeen } from '../shared/devLooks'
+import CardPath from './CardPath'
 
 const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.title, artifact: a.name, path: a.path }))
 
@@ -13,16 +14,21 @@ export default function Timeline() {
   const navigate = useFadeNavigate()
   const [showAbout, setShowAbout] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
-  const [, refresh] = useState(0)   // re-read progress after Complete all
+  const [tick, refresh] = useState(0)   // re-read progress after Complete all
   // Testing aid, dev server only: mark all six levels done, e.g. to see the
   // collection's cards filled in. Never shown in the production build.
   const completeAll = () => { ARTIFACTS.forEach(a => completeLevel(a.level)); refresh(n => n + 1) }
 
-  return (
-    <div className={styles.timeline}>
-      <span className={styles.pageTitle}>Interface Artifacts</span>
+  // Dev switch under consideration: the timeline as a path of the
+  // collection's cards (CardPath)
+  const cards = cardTimelineOn()
 
-      {ENTRIES.map((entry, i) => {
+  return (
+    <div className={cards ? styles.cardsMode : styles.timeline}>
+      {cards && <CardPath key={tick} />}
+      {!cards && <span className={styles.pageTitle}>Interface Artifacts</span>}
+
+      {!cards && ENTRIES.map((entry, i) => {
         const complete = isLevelComplete(entry.level)
         const delay    = `${i * 150}ms`
 
@@ -58,7 +64,7 @@ export default function Timeline() {
           <button
             type="button"
             className={styles.resetChoice}
-            onClick={() => { resetAll(); navigate('/') }}
+            onClick={() => { resetAll(); forgetCardsSeen(); navigate('/') }}
           >
             Reset
           </button>
@@ -90,12 +96,19 @@ export default function Timeline() {
           Serif titles (dev): {serifTitlesOn() ? 'on' : 'off'}
         </button>
       )}
+      {import.meta.env.DEV && !confirmReset && (
+        <button className={styles.resetBtn} onClick={() => { setCardTimeline(!cards); refresh(n => n + 1) }} style={{ animationDelay: '850ms' }}>
+          Timeline (dev): {cards ? 'cards' : 'line'}
+        </button>
+      )}
       </div>
 
       <div className={styles.links}>
-        <button className={styles.aboutLink} onClick={() => navigate('/collection')}>
-          Collection · {ENTRIES.filter(e => isLevelComplete(e.level)).length} of {ENTRIES.length}
-        </button>
+        {!cards && (
+          <button className={styles.aboutLink} onClick={() => navigate('/collection')}>
+            Collection · {ENTRIES.filter(e => isLevelComplete(e.level)).length} of {ENTRIES.length}
+          </button>
+        )}
         <button className={styles.aboutLink} onClick={() => setShowAbout(true)}>About</button>
       </div>
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}

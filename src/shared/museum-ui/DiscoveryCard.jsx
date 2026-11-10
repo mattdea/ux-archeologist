@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef } from 'react'
 import styles from './DiscoveryCard.module.css'
 import { useFadeNavigate } from '../SharedLayout'
+import { cardTimelineOn } from '../devLooks'
 
 export default function DiscoveryCard({ era, artifactName, description, nextUrl }) {
   const navigate = useFadeNavigate()
@@ -19,7 +20,7 @@ export default function DiscoveryCard({ era, artifactName, description, nextUrl 
           <hr className={styles.divider} />
           <h2 id={titleId} className={styles.artifactName}>{artifactName}</h2>
           <p className={styles.description}>{description}</p>
-          <button ref={buttonRef} type="button" className={styles.nextBtn} onClick={() => navigate(nextUrl)}>
+          <button ref={buttonRef} type="button" className={styles.nextBtn} onClick={() => navigate(cardTimelineOn() ? '/timeline' : nextUrl)}>
             Continue
           </button>
         </div>
