@@ -15,8 +15,11 @@ import * as sfx from '../../audio/sfx'
 
 // ── Command registry ──────────────────────────────────────────────────────────
 const COMMANDS = {
+  // V7 ls prints one name per line, sorted (no multi-column output until BSD).
   ls: [
-    'notes.txt    mail    readme',
+    'mail',
+    'notes.txt',
+    'readme',
   ],
 
   'cat notes.txt': [
@@ -69,28 +72,120 @@ const COMMANDS = {
     '?',
   ],
 
+  // V7's ls(1), set from /usr/man/man1/ls.1 on TUHS as nroff -man would
+  // print it, filled to the screen's 57 columns (layout reconstructed; no pager in V7,
+  // so the start scrolls away as it did).
   'man ls': [
-    "LS(1)                    UNIX Programmer's Manual                   LS(1)",
+    "LS(1)          UNIX Programmer's Manual          LS(1)",
     '',
     'NAME',
-    '     ls — list contents of directory',
+    '     ls - list contents of directory',
     '',
     'SYNOPSIS',
-    '     ls [ −ltuacdrfs ] [ file ]',
+    '     ls [ -ltasdrucifg ] name ...',
     '',
     'DESCRIPTION',
-    '     For each directory argument, ls lists the contents.',
-    '     For each file argument, the name is printed.',
-    '     With no arguments, the current directory is listed.',
+    '     For each directory argument, ls lists the contents',
+    '     of the directory; for each file argument, ls repeats',
+    '     its name and any other information requested.  The',
+    '     output is sorted alphabetically by default.  When no',
+    '     argument is given, the current directory is listed.',
+    '     When several arguments are given, the arguments are',
+    '     first sorted appropriately, but file arguments',
+    '     appear before directories and their contents.  There',
+    '     are several options:',
     '',
-    'SEE ALSO',
-    '     l(1), lc(1)',
+    '     -l   List in long format, giving mode, number of',
+    '          links, owner, size in bytes, and time of last',
+    '          modification for each file.  (See below.)  If',
+    '          the file is a special file the size field will',
+    '          instead contain the major and minor device',
+    '          numbers.',
+    '',
+    '     -t   Sort by time modified (latest first) instead of',
+    '          by name, as is normal.',
+    '',
+    "     -a   List all entries; usually `.' and `..' are",
+    '          suppressed.',
+    '',
+    '     -s   Give size in blocks, including indirect blocks,',
+    '          for each entry.',
+    '',
+    '     -d   If argument is a directory, list only its name,',
+    '          not its contents (mostly used with -l to get',
+    '          status on directory).',
+    '',
+    '     -r   Reverse the order of sort to get reverse',
+    '          alphabetic or oldest first as appropriate.',
+    '',
+    '     -u   Use time of last access instead of last',
+    '          modification for sorting (-t) or printing (-l).',
+    '',
+    '     -c   Use time of last modification to inode (mode,',
+    '          etc.) instead of last modification to file for',
+    '          sorting (-t) or printing (-l).',
+    '',
+    '     -i   Print i-number in first column of the report',
+    '          for each file listed.',
+    '',
+    '     -f   Force each argument to be interpreted as a',
+    '          directory and list the name found in each slot.',
+    '          This option turns off -l, -t, -s, and -r, and',
+    '          turns on -a; the order is the order in which',
+    '          entries appear in the directory.',
+    '',
+    '     -g   Give group ID instead of owner ID in long',
+    '          listing.',
+    '',
+    '     The mode printed under the -l option contains 11',
+    '     characters which are interpreted as follows: the',
+    '     first character is',
+    '',
+    '     d  if the entry is a directory;',
+    '     b  if the entry is a block-type special file;',
+    '     c  if the entry is a character-type special file;',
+    '     -  if the entry is a plain file.',
+    '',
+    '     The next 9 characters are interpreted as three sets',
+    '     of three bits each.  The first set refers to owner',
+    '     permissions; the next to permissions to others in',
+    '     the same user-group; and the last to all others.',
+    '     Within each set the three characters indicate',
+    '     permission respectively to read, to write, or to',
+    '     execute the file as a program.  For a directory,',
+    "     `execute' permission is interpreted to mean",
+    '     permission to search the directory for a specified',
+    '     file.  The permissions are indicated as follows:',
+    '',
+    '     r  if the file is readable;',
+    '     w  if the file is writable;',
+    '     x  if the file is executable;',
+    '     -  if the indicated permission is not granted.',
+    '',
+    '     The group-execute permission character is given as s',
+    '     if the file has set-group-ID mode; likewise the',
+    '     user-execute permission character is given as s if',
+    '     the file has set-user-ID mode.',
+    '',
+    "     The last character of the mode (normally `x' or `-')",
+    '     is t if the 1000 bit of the mode is on.  See',
+    '     chmod(1) for the meaning of this mode.',
+    '',
+    '     When the sizes of the files in a directory are',
+    '     listed, a total count of blocks, including indirect',
+    '     blocks is printed.',
+    '',
+    'FILES',
+    "     /etc/passwd to get user ID's for `ls -l'.",
+    "     /etc/group to get group ID's for `ls -g'.",
   ],
 
-  pwd:    ['/usr/bell/kerry'],
-  whoami: ['kerry'],
+  // V7 home directories sit under /usr (its /etc/passwd has dmr at
+  // /usr/dmr). V7 had no whoami (it arrived with BSD), so it isn't here
+  // and the shell answers "whoami: not found".
+  pwd:    ['/usr/kerry'],
   date:   ['Wed Jan 17 14:22:08 EST 1979'],
-  help:   ['help: command not found', 'Hint: try  ls,  cat,  man,  mail'],
+  help:   ['help: not found', 'Hint: try  ls,  cat,  man,  mail'],
 }
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
@@ -137,8 +232,11 @@ const WELCOME_LINES = [
   'You have mail.',
 ]
 
-// ms between each character during streaming — ~500 chars/sec, feels like fast baud
-const CHAR_DELAY = 2
+// Output speed: 9600 baud, the VT100's usual line speed (10 bits a
+// character, so 960 characters a second). Browsers clamp short timers to
+// about 4 ms, so the stream sends CHARS_PER_TICK characters every TICK_MS.
+const TICK_MS = 4
+const CHARS_PER_TICK = 4
 
 // ── Hook ──────────────────────────────────────────────────────────────────────
 export default function useTerminal({ onObjectiveComplete, completedIndices, replay = false } = {}) {
@@ -177,7 +275,7 @@ export default function useTerminal({ onObjectiveComplete, completedIndices, rep
 
   // ── Streaming engine ──────────────────────────────────────────────────────
   //
-  // Recursively advances through `lines`, typing each character with CHAR_DELAY.
+  // Recursively advances through `lines`, typing CHARS_PER_TICK characters every TICK_MS (9600 baud).
   // Blank lines commit instantly (no character loop).
   // When all lines are done, calls optional `onDone` callback then clears flags.
   //
@@ -209,9 +307,10 @@ export default function useTerminal({ onObjectiveComplete, completedIndices, rep
     }
 
     // Type the next character.
-    setStreamingLine(line.slice(0, charIdx + 1))
+    const next = Math.min(charIdx + CHARS_PER_TICK, line.length)
+    setStreamingLine(line.slice(0, next))
     timeoutRef.current = setTimeout(
-      () => beginStreaming(lines, lineIdx, charIdx + 1, onDone), CHAR_DELAY
+      () => beginStreaming(lines, lineIdx, next, onDone), TICK_MS
     )
   }
 
@@ -268,7 +367,7 @@ export default function useTerminal({ onObjectiveComplete, completedIndices, rep
       }
 
       if (phase === 'password') {
-        setHistory(h => [...h, { type: 'input', text: 'Password: ****' }])
+        setHistory(h => [...h, { type: 'input', text: 'Password:' }])   // getpass() doesn't echo
         setCurrentInput('')
         // Stream the expanded welcome; transition to shell when done.
         startStream(WELCOME_LINES, 800, () => setPhase('shell'))

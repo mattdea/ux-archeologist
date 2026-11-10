@@ -71,11 +71,12 @@ export default function TerminalScreen({ phase, history, currentInput, respondin
         - height: 100%  so it fills the CRT glass
         - overflowY: auto  enables scroll when output grows beyond the screen
         - boxSizing: border-box  so the existing padding is counted inside height
+        - whiteSpace: pre-wrap  keeps runs of spaces (man page indents, columns)
       */}
       <div
         className={styles.content}
         ref={scrollRef}
-        style={{ height: '100%', overflowY: 'auto', boxSizing: 'border-box' }}
+        style={{ height: '100%', overflowY: 'auto', boxSizing: 'border-box', whiteSpace: 'pre-wrap' }}
       >
 
         {/* Committed history lines */}
