@@ -138,8 +138,10 @@ async function main() {
         return Math.ceil(bar.getBoundingClientRect().height + Math.max(stage.getBoundingClientRect().height, scroll.scrollHeight))
       })()`)
       const height = Math.min(Math.max(total, size.height), MAX_HEIGHT)
-      if (height !== size.height) {
-        await page('Emulation.setDeviceMetricsOverride', { width: size.width, height, deviceScaleFactor: size.scale, mobile: size.width < 600 })
+      // WebP stops at 16383 pixels a side: a very long page at 2× is taken at 1×
+      const scale = height * size.scale > 16000 ? 1 : size.scale
+      if (height !== size.height || scale !== size.scale) {
+        await page('Emulation.setDeviceMetricsOverride', { width: size.width, height, deviceScaleFactor: scale, mobile: size.width < 600 })
         await sleep(300)
       }
       const { data } = await page('Page.captureScreenshot', { format: 'webp', quality: 82 })

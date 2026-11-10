@@ -1,0 +1,232 @@
+/* src/pages/styleLab/G_PunchCard.module.css
+ * Concept G, "Punch card": cream paper, black ink, one teal (links only),
+ * dashed rules. Dot capitals for headings and captions, Helvetica for
+ * reading, monospace for numbers. The cards' cut corner is a clip-path;
+ * their hairline edge is a second, slightly larger clipped shape behind. */
+
+.page {
+  box-sizing: border-box;
+  min-height: 100cqh;
+  padding: clamp(16px, 2.5cqw, 36px);
+  padding-bottom: 64px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.28 Helvetica, Arial, sans-serif;
+  --paper: #f6f1e3;
+  --card: #e9e3d0;
+  --edge: #8f8875;
+  --ink: #141414;
+  --teal: #09657a;
+  --grey: #676255;
+  --mono: ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  --dash: 1px dashed var(--ink);
+  --lab-focus: #141414;
+}
+.page :where(p, h1, h2, h3, ol) { margin: 0; padding: 0; font-weight: 400; }
+.page :where(ol) { list-style: none; }
+.page :where(button) { font: inherit; background: none; border: none; padding: 0; cursor: pointer; text-align: left; }
+.page a:focus-visible, .page button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+/* ── Dot capitals ───────────────────────────────────────────────────── */
+.dots { display: block; position: relative; line-height: 1; }
+/* the text itself, for screen readers, search and copying */
+.real { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.words { display: flex; flex-wrap: wrap; gap: 0.5em 0.62em; }
+.word { flex: none; height: 1em; fill: currentColor; overflow: visible; }
+
+.huge { font-size: clamp(40px, 5.6cqw, 84px); }
+.big { font-size: clamp(28px, 3cqw, 44px); }
+/* small captions: grey, leaning, as in the reference (darker, for AA) */
+.caption { font-size: 13px; color: var(--grey); }
+.caption .words { transform: skewX(-10deg); transform-origin: left bottom; gap: 0.55em 0.62em; }
+
+/* ── Links: teal, each word underlined on its own ───────────────────── */
+.link { color: var(--teal); font-weight: 700; text-decoration: none; }
+.w { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.link:hover { background: var(--teal); color: var(--paper); }
+.links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+
+.mono, .num, .year, .cellYear { font-family: var(--mono); }
+.mono { font-size: 14px; }
+
+/* ── Notes numbered from 0, down a dashed rule ──────────────────────── */
+.notes { border-left: var(--dash); }
+.noteItem, .recordNote { display: grid; grid-template-columns: 34px minmax(0, 1fr); padding: 0 0 22px 12px; }
+.noteItem:last-child { padding-bottom: 2px; }
+.num { font-size: 16px; font-weight: 700; }
+.noteBody > * + * { margin-top: 10px; }
+.column { max-width: 400px; }
+.column > * + * { margin-top: 18px; }
+
+/* A heading sits under a dashed rule */
+.masthead { border-top: var(--dash); padding-top: 14px; }
+.masthead > * + * { margin-top: 16px; }
+.lede { font-size: 21px; max-width: 30em; }
+
+/* ── Cards ──────────────────────────────────────────────────────────── */
+.card {
+  display: block;
+  padding: 1px;
+  background: var(--edge);
+  clip-path: polygon(3.15% 0, 100% 0, 100% 100%, 0 100%, 0 7.14%);
+}
+.cardFace {
+  display: block;
+  position: relative;
+  aspect-ratio: 826 / 364;
+  background: var(--card);
+  clip-path: polygon(3.15% 0, 100% 0, 100% 100%, 0 100%, 0 7.14%);
+}
+.cardSvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.field text { font: 9px var(--mono); fill: #a59e8a; }
+.cardGround { fill: var(--card); }
+.print circle { fill: var(--ink); }
+.holes rect { fill: var(--ink); }
+.cardWindow { position: absolute; display: block; }
+.cardWindow > * { width: 100%; height: 100%; aspect-ratio: auto; }
+
+/* The picture: dots in the ink's colour, or one of the other art sets */
+.pictureBox { display: block; width: 100%; aspect-ratio: 400 / 340; }
+.dotArt {
+  background: currentColor;
+  -webkit-mask: var(--art) center / contain no-repeat;
+  mask: var(--art) center / contain no-repeat;
+}
+
+/* A card of text keeps the corner and the edge, at whatever height it needs */
+.textCard, .textCard > .cardFace { clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px); }
+.textCard > .cardFace { aspect-ratio: auto; padding: 16px 16px 18px; }
+.textCard > .cardFace > * + * { margin-top: 12px; }
+.printLine { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 0 0 12px 12px; border-bottom: var(--dash); }
+.cardPrint { font-size: 17px; padding-top: 2px; }
+.yearPunch { flex: none; width: 26px; }
+.yearPunch .field text { font-size: 8px; }
+
+/* ── Title ──────────────────────────────────────────────────────────── */
+.title {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 400px) minmax(0, 1fr);
+  gap: 44px 56px;
+  align-items: start;
+}
+.title .masthead { grid-column: 1 / -1; }
+.titleCard > * + * { margin-top: 14px; }
+/* the card stood on end, as in the reference */
+.upright { width: 250px; height: 567px; padding: 0; background: none; clip-path: none; position: relative; }
+.upright > .cardFace {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 567px;
+  transform-origin: 0 0;
+  transform: rotate(90deg);
+  outline: 1px solid var(--edge);
+  outline-offset: -1px;
+}
+
+/* ── Timeline: a specimen table and its notes ───────────────────────── */
+.timeline { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: 36px 56px; align-items: start; }
+.timeline .masthead { grid-column: 1 / -1; }
+.key { min-width: 0; }
+.axis { display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 0; }
+.axisLabel { display: flex; align-items: center; gap: 10px; padding: 0 12px; }
+.table { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; background: var(--ink); }
+.cell { display: block; padding: 8px 18px 14px; background: var(--paper); color: var(--ink); text-decoration: none; }
+.cell:hover, .cell:focus-visible { color: var(--teal); }
+.cell:focus-visible { outline-offset: -6px !important; }
+.cellYear { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 4px; font-size: 24px; letter-spacing: 0.06em; }
+.keyCaption { margin-top: 6px; }
+.keyCaption .words { justify-content: flex-end; }
+
+/* A ring that fills when it is punched */
+.ring { display: inline-block; flex: none; width: 11px; height: 11px; border: 2px solid currentColor; border-radius: 50%; }
+.punched { background: currentColor; }
+
+/* ── Collection: a card and its note, record after record ───────────── */
+.collection > * + * { margin-top: 28px; }
+.record {
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 420px);
+  gap: 20px 44px;
+  align-items: start;
+  padding: 24px 0;
+  border-top: var(--dash);
+}
+.cardLink { display: block; color: var(--ink); text-decoration: none; }
+.cardLink:hover { color: var(--teal); }
+.cardLink:hover .print circle, .cardLink:hover .holes rect { fill: var(--teal); }
+.recordNote { border-left: var(--dash); padding-bottom: 2px; }
+
+/* ── A room ─────────────────────────────────────────────────────────── */
+.level {
+  display: grid;
+  grid-template-columns: minmax(250px, 310px) minmax(0, 1fr) minmax(260px, 330px);
+  gap: 36px;
+  align-items: start;
+}
+/* the side columns are a window tall, so the objectives and Continue sit at
+   its foot as they do in the game */
+.left, .right { display: flex; flex-direction: column; gap: 22px; min-width: 0; min-height: calc(100cqh - 100px); }
+.middle { min-height: calc(100cqh - 100px); }
+.era > * + * { margin-top: 10px; }
+.eraYear { font-size: 30px; }
+.eraTitle { font-size: 17px; }
+.tracker { margin-top: auto; }
+.tracker > * + * { margin-top: 12px; }
+.tracker .noteItem { padding-bottom: 12px; }
+.objective { display: flex; align-items: baseline; gap: 10px; }
+.objective .ring { translate: 0 1px; }
+.done > span:last-child { text-decoration: line-through; }
+.intro .noteItem { padding-bottom: 6px; }
+
+.middle { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-width: 0; }
+.standin {
+  box-sizing: border-box;
+  /* as large as the column and the window's height allow, up to 1.35× */
+  width: min(100%, calc((100cqh - 170px) * var(--w) / var(--h)), calc(var(--w) * 1.35px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink);
+  background: #a9a596;
+  font: 12px var(--mono);
+}
+.hint .words { justify-content: center; }
+
+.rooms { display: flex; justify-content: flex-end; gap: 8px; }
+.rooms .ring { color: var(--ink); }
+.rooms .now { color: var(--teal); }
+.discoveryPicture { width: 44%; margin: 0 auto; }
+.year { font-size: 34px; line-height: 1; }
+.name { font-size: 19px; }
+.exit { margin-top: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+/* ── Narrower ───────────────────────────────────────────────────────── */
+@container lab (max-width: 1000px) {
+  .title { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .titleCard { grid-column: 1 / -1; order: 3; }
+  .upright { width: 100%; max-width: 567px; height: auto; }
+  .upright > .cardFace { position: relative; left: 0; width: 100%; transform: none; }
+  .timeline { grid-template-columns: minmax(0, 1fr); }
+  .record { grid-template-columns: minmax(0, 1fr); }
+  .level { grid-template-columns: minmax(0, 1fr); }
+  .left, .right, .middle { min-height: 0; }
+  .tracker, .exit { margin-top: 0; }
+  .standin { width: min(100%, calc((100cqh - 60px) * var(--w) / var(--h)), calc(var(--w) * 1.35px)); }
+  .rooms { justify-content: flex-start; }
+  .left { display: contents; }
+  .era { order: -3; }
+  .intro { order: -2; }
+  .middle { order: -1; }
+  .tracker { order: -1; }
+  .level { display: flex; flex-direction: column; gap: 24px; }
+}
+@container lab (max-width: 600px) {
+  .page { font-size: 16px; }
+  .title { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  .cell { padding: 4px 6px 10px; }
+  .cellYear { font-size: 15px; gap: 6px; }
+  .cellYear .ring { width: 7px; height: 7px; }
+  .axis { grid-template-columns: 1fr; gap: 6px; }
+  .axisLabel { padding: 0; }
+}

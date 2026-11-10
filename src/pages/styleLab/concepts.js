@@ -8,6 +8,7 @@ import ColourField from './D_ColourField'
 import Specimen from './E_Specimen'
 import Notebook from './F_Notebook'
 import Index2 from './B2_Index'
+import PunchCardConcept from './G_PunchCard'
 
 export const SCREENS = [
   { id: 'title', label: 'Title' },
@@ -73,5 +74,14 @@ export const CONCEPTS = [
     blurb: 'B again, with the cards redrawn as monospace boxes with 1px rules, and a level frame where the list is the HUD and the artifact is fitted beside or below it.',
     Component: Index2,
     frames: TWO_FRAMES,
+  },
+  {
+    id: 'g',
+    letter: 'G',
+    name: 'Punch card',
+    blurb: 'Cream paper and black ink, headings in inked 5 × 7 dot capitals, notes numbered from 0 down dashed rules, teal links, and the artifacts as punched 80-column cards.',
+    Component: PunchCardConcept,
+    frames: TWO_FRAMES,
+    dotArt: true,
   },
 ]

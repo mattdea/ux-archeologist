@@ -54,7 +54,7 @@
 .bar [aria-current='page'],
 .bar [aria-pressed='true'] { color: #111; background: #ccc; }
 .barName { color: #fff; }
-.barGroup { display: flex; align-items: center; gap: 2px; }
+.barGroup { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; }
 .barSpacer { flex: 1; }
 
 /* ── The stage ──────────────────────────────────────────────────────── */
