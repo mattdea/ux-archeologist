@@ -55,24 +55,6 @@ a.row:focus-visible, button.row:focus-visible { background: #000; color: #fff; }
 .note { grid-template-columns: 6ch minmax(0, 1fr); }
 .noteText { max-width: 68ch; margin: 0; }
 
-/* ── The rooms as little squares ────────────────────────────────────── */
-.squares {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 2ch;
-  /* a line of space above, and in step with the list's text column */
-  margin: 18px 0 18px 6ch;
-}
-.square { display: block; width: 10ch; color: #000; text-decoration: none; }
-/* six across in the narrower columns beside the cards and the artifact */
-.collectionPage .square, .levelPage .square { width: 7ch; }
-.collectionPage .squares, .levelPage .squares { gap: 0 1.8ch; }
-.squareBox { display: block; position: relative; aspect-ratio: 1; border: 1px solid #000; background: #fff; overflow: hidden; }
-.squareYear { display: block; text-align: center; }
-.square:hover .squareBox, .square:focus-visible .squareBox, .squareNow .squareBox { background: #000; color: #fff; }
-.square:hover .squareYear, .square:focus-visible .squareYear, .squareNow .squareYear { background: #000; color: #fff; }
-.square:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
-
 /* ── Title and timeline: the list, and a place beside it for a picture ── */
 .listPage { grid-template-columns: minmax(0, 82ch) minmax(0, 1fr); }
 .peek { position: sticky; top: 22px; min-width: 0; }
@@ -163,8 +145,4 @@ a.row:focus-visible, button.row:focus-visible { background: #000; color: #fff; }
   .lead { display: none; }
   .meta { margin-left: auto; padding-left: 2ch; }
   .sub .text, .sub .noteText { padding-left: 2ch; }
-  /* three to a line, larger */
-  .squares { margin-left: 5ch; gap: 9px 2ch; }
-  .square, .collectionPage .square, .levelPage .square { width: calc((100% - 4ch) / 3); }
-  .collectionPage .squares, .levelPage .squares { gap: 9px 2ch; }
 }

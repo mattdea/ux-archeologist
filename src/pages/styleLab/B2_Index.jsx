@@ -17,9 +17,9 @@
 //
 // Since Matthew's read of round 2 (he dropped G but liked its dot
 // illustrations), they are B2's pictures: pointing at a room shows its
-// illustration beside the list, six little squares with the illustrations
-// open the rooms, and the cards carry them. Drawn and Illustrated are still
-// on the lab's art switch.
+// illustration beside the list, and the cards carry them. (A row of six
+// little squares with the illustrations was tried and taken out: it repeated
+// the pictures.) Drawn and Illustrated are still on the lab's art switch.
 import { useEffect, useState } from 'react'
 import s from './B2_Index.module.css'
 import { ROOMS, TITLE, ABOUT, WORDS, MOCK, isFound, foundLine, pad } from './content'
@@ -35,7 +35,7 @@ function Row({ mark = '', text, meta, href, onClick, current, lit, sub, external
       <span className={s.meta}>{meta}</span>
     </>
   )
-  // `lit`: black like the current row, because its room's square is pointed at
+  // `lit`: black like the current row, because its room's card is pointed at
   const cls = `${s.row} ${sub ? s.sub : ''} ${current || lit ? s.current : ''}`
   if (href) {
     return (
@@ -85,31 +85,6 @@ function Card({ room, art, href, lit, peek }) {
   )
 }
 
-// Six little squares, one a room, each with the room's picture and its year
-// under it: another way in, and in a room they are the HUD's progress dots
-// (the room you are in is the black one). They turn black under the pointer
-// like a row, and bring up the larger picture where there is room for it;
-// a square and its room's line light together.
-function Squares({ href, art, current, peek, peekAt }) {
-  return (
-    <div className={s.squares}>
-      {ROOMS.map(r => (
-        <a
-          key={r.level}
-          className={`${s.square} ${current === r.level || peek === r.level ? s.squareNow : ''}`}
-          href={href('level', r.level)}
-          aria-label={`${r.year} ${r.title}`}
-          aria-current={current === r.level ? 'page' : undefined}
-          {...peekAt?.(r.level)}
-        >
-          <span className={s.squareBox}><RoomPicture room={r} art={art} className={s.fill} /></span>
-          <span className={s.squareYear}>{r.year}</span>
-        </a>
-      ))}
-    </div>
-  )
-}
-
 function Level({ room, href, art }) {
   // 'all' is the mock's usual state, every piece at once; the other two are
   // the list as it would be while playing and after Continue
@@ -122,7 +97,7 @@ function Level({ room, href, art }) {
     <div className={`${s.page} ${s.levelPage}`}>
       <div className={s.list}>
         <Row text={TITLE.name} href={href('title')} />
-        <Squares href={href} art={art} current={room.level} />
+        <div className={s.gap} />
         {ROOMS.map(r => {
           const open = r.level === room.level
           return (
@@ -196,8 +171,8 @@ export default function Index2({ screen, level, href, art }) {
           </>
         )}
 
-        {/* ── The six rooms: as squares, then as lines ──────────── */}
-        <Squares href={href} art={art} peek={peek} peekAt={peekAt} />
+        {/* ── The six rooms ─────────────────────────────────────── */}
+        <div className={s.gap} />
         {ROOMS.map(r => (
           <div key={r.level}>
             <Row mark={r.year} text={r.title} meta={isFound(r.level) ? r.name : ''} href={href('level', r.level)} peek={peekAt(r.level)} lit={peek === r.level} />

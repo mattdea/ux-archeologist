@@ -80,19 +80,18 @@ describe('Style lab', () => {
     expect(document.querySelector('[data-peek="4"]')).not.toBeNull()
   })
 
-  it('B2: six little squares open the rooms, and in a room the one you are in is marked', () => {
-    renderLab('#b2/title')
-    const squares = () => ROOMS.map(r => screen.getByRole('link', { name: `${r.year} ${r.title}` }))
-    squares().forEach((sq, i) => {
-      expect(sq).toHaveAttribute('href', `#b2/level/${i}`)
-      expect(sq.textContent).toBe(ROOMS[i].year)
-    })
-    // a square brings up the picture too
-    fireEvent.mouseEnter(squares()[5])
-    expect(document.querySelector('[data-peek="5"]')).not.toBeNull()
-    cleanup()
+  it('B2: no row of squares; in a room, its line in the list is the one marked', () => {
+    for (const hash of ['#b2/title', '#b2/timeline', '#b2/collection', '#b2/level/3']) {
+      renderLab(hash)
+      expect(document.querySelectorAll('a[aria-label][href^="#b2/level/"]')).toHaveLength(0)
+      cleanup()
+    }
     renderLab('#b2/level/3')
-    expect(squares().map(sq => sq.getAttribute('aria-current'))).toEqual([null, null, null, 'page', null, null])
+    // (the lab bar's own tab for this frame is marked too; leave it out)
+    const marked = [...document.querySelectorAll('a[href^="#b2/level/"][aria-current="page"]')].filter(a => ROOMS.some(r => a.textContent.startsWith(r.year)))
+    expect(marked).toHaveLength(1)
+    expect(marked[0].getAttribute('href')).toBe('#b2/level/3')
+    expect(marked[0].textContent).toContain(ROOMS[3].title)
   })
 
   it('B2: the cards carry the dot illustrations; a card not found has none', () => {
