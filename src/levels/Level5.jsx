@@ -17,16 +17,16 @@ import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import ChatPanel from '../components/chat/ChatPanel'
 
 const OBJECTIVES = [
-  'Start a conversation',
+  'Send a message',
   'Ask a follow-up question',
-  'Regenerate a response',
+  'Regenerate a reply',
 ]
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
-  'Tap one of the suggestions, or type a question and press Enter',
-  'Ask about something the curator just said',
-  'Tap the circular arrow under a reply',
+  'Click a suggestion, or type a question and press Enter',
+  'Ask about something in the last reply',
+  'Click the circular arrow under a reply',
 ]
 
 const DISCOVERY_DESCRIPTION =

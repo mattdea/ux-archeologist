@@ -20,14 +20,14 @@ const DISCOVERY_DESCRIPTION =
   "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people. The researcher Ben Shneiderman called this style direct manipulation in 1983. Some tasks took longer with a mouse than with a typed command."
 
 const OBJECTIVES = [
-  'Find the document on this computer',
+  'Open the Notes document',
   'Delete the Projects folder',
-  'Discover what commands are available',
+  'Look through the menus',
 ]
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
-  'Double-click the Notes icon',
+  'Double-click the Notes icon on the desktop',
   'Drag the Projects folder onto the Trash',
   'Click File in the menu bar at the top of the screen',
 ]

@@ -29,8 +29,8 @@ const OBJECTIVES = [
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
-  'Scroll the feed until you find Imani Brooks, then double-tap her photo',
-  'Find a post marked Sponsored and tap its Learn More button',
+  "Scroll to Imani Brooks's post and double-tap her photo",
+  'Tap Learn More on a post marked Sponsored',
   'Tap a name to open a profile, then tap Follow',
 ]
 

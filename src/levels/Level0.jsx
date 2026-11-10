@@ -16,15 +16,15 @@ import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Read the notes file',
-  'Check your messages',
+  'Read your mail',
   'Look up a command in the manual',
 ]
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
-  'Try typing  ls  to see what files are here, then  cat  one of them',
-  'Try typing  mail',
-  'Try typing  man  followed by a command, like  man ls',
+  'Type ls and press Return to list your files, then type cat notes.txt to read one',
+  'Type mail and press Return',
+  "Type man and a command's name, such as man ls",
 ]
 
 // Bezel pixel dimensions — must match .bezel in TerminalBezel.module.css

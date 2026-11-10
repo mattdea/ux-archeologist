@@ -35,15 +35,15 @@ import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const OBJECTIVES = [
   'Slide to unlock',
-  'Explore the Notes app',
-  'Swipe between screens',
+  'Open a note',
+  'Swipe to the second home screen',
 ]
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
   'Drag the arrow all the way to the right',
-  'Tap the Notes icon on the home screen',
-  'Drag the home screen to the left to see the next page',
+  'Tap Notes on the home screen, then tap a note',
+  'Drag the home screen to the left',
 ]
 
 // Native bezel dimensions derived from iphone.svg measurements.

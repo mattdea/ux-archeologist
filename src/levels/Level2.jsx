@@ -35,15 +35,15 @@ const hostOf = url => new URL(url).host
 // ── Objective definitions ───────────────────────────────────────────
 const OBJECTIVES = [
   'Navigate to a new page',
-  'Return to a previous page',
-  "Find 'A Brief History of the Web'",
+  'Go back a page',
+  'Find "A Brief History of the Web"',
 ]
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
   'Click any underlined link',
-  'Use the Back button in the toolbar',
-  'Look under Computers and Internet for an archive of old machines',
+  'Click Back in the toolbar',
+  'On Yahoo!, click Computers and Internet and look for an archive of old computers',
 ]
 
 // Maps objective key → OBJECTIVES array index
