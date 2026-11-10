@@ -6,6 +6,7 @@ import '../components/era-cursors.css'
 import MonitorBezel from '../components/MonitorBezel'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import { ARTIFACTS } from '../data/artifacts'
 import DesktopScene, { REVEAL_ALL } from '../components/DesktopScene'
 import BootSequence from '../components/BootSequence'
 import * as sfx from '../audio/sfx'
@@ -16,8 +17,7 @@ import HintPill from '../shared/museum-ui/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
-const DISCOVERY_DESCRIPTION =
-  "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people. The researcher Ben Shneiderman called this style direct manipulation in 1983. Some tasks took longer with a mouse than with a typed command."
+const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[1]
 
 const OBJECTIVES = [
   'Open the Notes document',
@@ -101,7 +101,7 @@ export default function Level1() {
   // Record artifact when discovery card appears
   useEffect(() => {
     if (screen === 'discovery') {
-      addArtifact({ name: 'Direct Manipulation', era: '1984', description: DISCOVERY_DESCRIPTION })
+      addArtifact({ name: ARTIFACT_NAME, era: '1984', description: DISCOVERY_DESCRIPTION })
     }
   }, [screen])
 
@@ -138,7 +138,7 @@ export default function Level1() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="1984"
-          artifactName="Direct Manipulation"
+          artifactName={ARTIFACT_NAME}
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/2"
         />

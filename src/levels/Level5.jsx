@@ -14,6 +14,7 @@ import useHint from '../shared/museum-ui/useHint'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import { ARTIFACTS } from '../data/artifacts'
 import ChatPanel from '../components/chat/ChatPanel'
 
 const OBJECTIVES = [
@@ -29,8 +30,7 @@ const HINTS = [
   'Click the circular arrow under a reply',
 ]
 
-const DISCOVERY_DESCRIPTION =
-  "Here you didn't learn commands, menus or gestures; you just asked. You can hand it a question, a messy draft, a table of numbers or a photo, and it works out what you want. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did."
+const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[5]
 
 const ALREADY_DONE = isLevelComplete(5)
 
@@ -90,7 +90,7 @@ export default function Level5() {
   // Record artifact when discovery card appears
   useEffect(() => {
     if (screen === 'discovery') {
-      addArtifact({ name: 'Natural Language', era: '2023', description: DISCOVERY_DESCRIPTION })
+      addArtifact({ name: ARTIFACT_NAME, era: '2023', description: DISCOVERY_DESCRIPTION })
     }
   }, [screen])
 
@@ -126,7 +126,7 @@ export default function Level5() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="2023"
-          artifactName="Natural Language"
+          artifactName={ARTIFACT_NAME}
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/timeline"
         />

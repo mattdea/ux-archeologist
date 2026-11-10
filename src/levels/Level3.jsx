@@ -18,6 +18,7 @@ import NotesApp from '../components/notes/NotesApp'
 import useArtifactFit from '../hooks/useArtifactFit'
 import '../components/phone/phone-theme.css'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import { ARTIFACTS } from '../data/artifacts'
 import unlockSoundSrc from '../../assets/phone/unlock.mp3'
 import lockSoundSrc from '../../assets/phone/lock.mp3'
 import IntroModal from '../shared/museum-ui/IntroModal'
@@ -53,8 +54,7 @@ const BEZEL_H = 735
 
 // Matches --bottom-zone-height in Level3.module.css
 
-const DISCOVERY_DESCRIPTION =
-  "The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched things instead of moving a pointer. Lists kept moving after you let go and bounced when they hit the end, as if they had weight; Apple patented that bounce. Within a few years almost every phone worked this way."
+const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[3]
 
 export default function Level3() {
   const notifyArtifactReady = useArtifactReady()
@@ -145,7 +145,7 @@ export default function Level3() {
   useEffect(() => {
     if (museumScreen === 'artifact') {
       addArtifact({
-        name: 'Multi-Touch',
+        name: ARTIFACT_NAME,
         era: '2007',
         description: DISCOVERY_DESCRIPTION,
       })
@@ -297,7 +297,7 @@ export default function Level3() {
       {museumScreen === 'artifact' && (
         <DiscoveryCard
           era="2007"
-          artifactName="Multi-Touch"
+          artifactName={ARTIFACT_NAME}
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/4"
         />

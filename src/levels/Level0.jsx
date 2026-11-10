@@ -7,6 +7,7 @@ import useTerminal from '../components/terminal/useTerminal'
 import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import { ARTIFACTS } from '../data/artifacts'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
@@ -33,8 +34,7 @@ const BEZEL_H = 460   // must match TerminalBezel.module.css
 
 // Matches --bottom-zone-height in Level0.module.css
 
-const DISCOVERY_DESCRIPTION =
-  "At a terminal you type a command, the computer runs it and prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. They're short, like ls, cat and rm, because terminals were slow, and the same commands still work on every Mac and on most of the world's servers."
+const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[0]
 
 export default function Level0() {
   // 'intro' → 'booting' → 'playing' → 'discovery'
@@ -90,7 +90,7 @@ export default function Level0() {
   useEffect(() => {
     if (screen === 'discovery') {
       addArtifact({
-        name: 'Command & Response',
+        name: ARTIFACT_NAME,
         era: '1979',
         description: DISCOVERY_DESCRIPTION,
       })
@@ -114,7 +114,7 @@ export default function Level0() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="1979"
-          artifactName="Command & Response"
+          artifactName={ARTIFACT_NAME}
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/1"
         />

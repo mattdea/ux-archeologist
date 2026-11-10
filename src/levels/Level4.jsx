@@ -16,6 +16,7 @@ import useHint from '../shared/museum-ui/useHint'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import { ARTIFACTS } from '../data/artifacts'
 import FeedApp from '../components/feed/FeedApp'
 import GhostDevice, { UNIT_W, UNIT_H } from '../components/feed/GhostDevice'
 import useArtifactFit from '../hooks/useArtifactFit'
@@ -34,8 +35,7 @@ const HINTS = [
   'Tap a name to open a profile, then tap Follow',
 ]
 
-const DISCOVERY_DESCRIPTION =
-  "Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like and comment on, based on what you've responded to before. You can't see how it decides, and every like you give tells it what to show you next."
+const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[4]
 
 // Evaluated once at module load — safe because localStorage doesn't change mid-session
 const ALREADY_DONE = isLevelComplete(4)
@@ -96,7 +96,7 @@ export default function Level4() {
   // Record artifact when discovery card appears
   useEffect(() => {
     if (screen === 'discovery') {
-      addArtifact({ name: 'Algorithmic Feed', era: '2016', description: DISCOVERY_DESCRIPTION })
+      addArtifact({ name: ARTIFACT_NAME, era: '2016', description: DISCOVERY_DESCRIPTION })
     }
   }, [screen])
 
@@ -126,7 +126,7 @@ export default function Level4() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="2016"
-          artifactName="Algorithmic Feed"
+          artifactName={ARTIFACT_NAME}
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/5"
         />

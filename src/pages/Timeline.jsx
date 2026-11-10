@@ -4,15 +4,9 @@ import styles from './Timeline.module.css'
 import { isLevelComplete, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
+import { ARTIFACTS } from '../data/artifacts'
 
-const ENTRIES = [
-  { level: 0, year: '1979', title: 'The Command Line',  artifact: 'Command & Response',   path: '/level/0' },
-  { level: 1, year: '1984', title: 'The Desktop',       artifact: 'Direct Manipulation',  path: '/level/1' },
-  { level: 2, year: '1995', title: 'The Hyperlink',     artifact: 'Hyperlink Navigation', path: '/level/2' },
-  { level: 3, year: '2007', title: 'The Touchscreen',   artifact: 'Multi-Touch',          path: '/level/3' },
-  { level: 4, year: '2016', title: 'The Feed',          artifact: 'Algorithmic Feed',     path: '/level/4' },
-  { level: 5, year: '2023', title: 'The Conversation',  artifact: 'Natural Language',     path: '/level/5' },
-]
+const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.title, artifact: a.name, path: a.path }))
 
 export default function Timeline() {
   const navigate = useFadeNavigate()

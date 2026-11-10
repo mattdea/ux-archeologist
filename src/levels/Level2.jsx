@@ -12,6 +12,7 @@ import useNetscapeLoad from '../components/web/useNetscapeLoad'
 import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
+import { ARTIFACTS } from '../data/artifacts'
 import IntroModal from '../shared/museum-ui/IntroModal'
 import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
@@ -19,8 +20,7 @@ import HintPill from '../shared/museum-ui/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
-const DISCOVERY_DESCRIPTION =
-  "On the early web, every link was put there by the person who wrote the page, and you found things by following them from page to page. Directories such as Yahoo! were lists of sites sorted by hand. Finding something specific could take a long time, and search engines such as AltaVista, launched in December 1995, took over that job."
+const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[2]
 
 // ── Page metadata ───────────────────────────────────────────────────
 // kb: fake document size for the status bar's "47% of 23K" line.
@@ -104,7 +104,7 @@ export default function Level2() {
   // Record artifact when discovery card appears
   useEffect(() => {
     if (screen === 'discovery') {
-      addArtifact({ name: 'Hyperlink Navigation', era: '1995', description: DISCOVERY_DESCRIPTION })
+      addArtifact({ name: ARTIFACT_NAME, era: '1995', description: DISCOVERY_DESCRIPTION })
     }
   }, [screen])
 
@@ -233,7 +233,7 @@ export default function Level2() {
       {screen === 'discovery' && (
         <DiscoveryCard
           era="1995"
-          artifactName="Hyperlink Navigation"
+          artifactName={ARTIFACT_NAME}
           description={DISCOVERY_DESCRIPTION}
           nextUrl="/level/3"
         />
