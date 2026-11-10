@@ -2,8 +2,8 @@
 // scripts/style-lab-shots.mjs
 //
 // Full-page screenshots of the style lab (docs/backlog.md, museum restyle
-// phase 1): every concept's four screens at 1440 and 375 wide, plus the
-// index, into docs/style-lab/<concept>/<width>-<screen>.webp.
+// phase 1): every concept's screens at 1440 and 375 wide, plus the index,
+// into docs/style-lab/<concept>/<width>-<screen>.webp.
 //
 //   node scripts/style-lab-shots.mjs                  all concepts
 //   node scripts/style-lab-shots.mjs a c              only concepts a and c
@@ -31,8 +31,14 @@ const CONCEPTS = {
   d: 'd-colour-field',
   e: 'e-specimen-sheet',
   f: 'f-notebook',
+  b2: 'b2-index-refined',
+  g: 'g-punch-card',
 }
-const SCREENS = ['title', 'timeline', 'collection', 'level']
+// [hash after the concept's id, file name]. Round 2's concepts show the
+// level frame twice: around the Mac (room 1) and the iPhone (room 3).
+const SCREENS = [['title', 'title'], ['timeline', 'timeline'], ['collection', 'collection'], ['level', 'level']]
+const SCREENS_TWO_FRAMES = [...SCREENS.slice(0, 3), ['level/1', 'level-mac'], ['level/3', 'level-iphone']]
+const TWO_FRAMES = ['b2', 'g']
 const SIZES = [
   { width: 1440, height: 900, scale: 1 },
   { width: 375, height: 812, scale: 2 },
@@ -148,8 +154,8 @@ async function main() {
           await shoot('', size, join(OUT, `index-${size.width}.webp`))
           continue
         }
-        for (const screen of SCREENS) {
-          await shoot(`#${id}/${screen}`, size, join(OUT, CONCEPTS[id], `${size.width}-${screen}.webp`))
+        for (const [hash, name] of TWO_FRAMES.includes(id) ? SCREENS_TWO_FRAMES : SCREENS) {
+          await shoot(`#${id}/${hash}`, size, join(OUT, CONCEPTS[id], `${size.width}-${name}.webp`))
         }
       }
     }

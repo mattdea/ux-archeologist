@@ -1,0 +1,135 @@
+/* src/pages/styleLab/B2_Index.module.css
+ * Concept B2, "Index, refined": B's list (one size of monospace, black on
+ * white, hierarchy by indent, emphasis by a row turning black), plus cards
+ * drawn in the same terms and a level frame that fits the artifact into
+ * what the list leaves. */
+
+.page {
+  box-sizing: border-box;
+  min-height: 100cqh;
+  padding: 22px 24px 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 82ch);
+  gap: 0 6ch;
+  align-items: start;
+  background: #fff;
+  color: #000;
+  font: 12px/18px ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  --lab-focus: #000;
+}
+
+.list { min-width: 0; }
+.gap { height: 18px; }
+
+/* ── A line ─────────────────────────────────────────────────────────── */
+.row {
+  display: grid;
+  grid-template-columns: 6ch auto minmax(2ch, 1fr) auto;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: default;
+}
+a.row, button.row { cursor: pointer; }
+.sub .text, .sub .noteText { padding-left: 4ch; }
+.text { min-width: 0; white-space: pre-wrap; }
+.meta { text-align: right; }
+.lead {
+  height: 12px;
+  margin: 0 1ch;
+  border-bottom: 1px dotted currentColor;
+}
+/* No leader to nowhere */
+.meta:empty { display: none; }
+.row:has(.meta:empty) .lead { visibility: hidden; }
+
+a.row:hover, button.row:hover, .current { background: #000; color: #fff; }
+a.row:focus-visible, button.row:focus-visible, .card:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+a.row:focus-visible, button.row:focus-visible { background: #000; color: #fff; }
+
+.note { grid-template-columns: 6ch minmax(0, 1fr); }
+.noteText { max-width: 68ch; margin: 0; }
+
+/* ── Collection: the list, then the cards on the same grid ──────────── */
+.collectionPage { grid-template-columns: minmax(0, 60ch) minmax(0, 1fr); }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 2ch;
+  align-items: stretch;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+}
+.card > span { display: block; }
+.cardHead, .cardFoot { display: flex !important; justify-content: space-between; padding: 0 1ch; }
+.cardHead { border-bottom: 1px solid #000; }
+.cardFoot { margin-top: auto; border-top: 1px solid #000; }
+.cardPicture { position: relative; aspect-ratio: 16 / 10; border-bottom: 1px solid #000; overflow: hidden; }
+.fill { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cardBody { padding: 9px 1ch 18px; }
+.cardBody > span { display: block; }
+.cardName { text-transform: uppercase; }
+.cardRule { height: 9px; margin-bottom: 9px; border-bottom: 1px dotted currentColor; }
+/* A room not finished: the same card with nothing in the picture box */
+.blank .cardPicture { background: repeating-linear-gradient(135deg, #fff 0 5px, #000 5px 6px); }
+.card:hover { background: #000; color: #fff; }
+.card:hover .cardHead, .card:hover .cardFoot, .card:hover .cardPicture { border-color: #fff; }
+
+/* ── A room: the list is the HUD, the artifact takes the rest ───────── */
+.levelPage {
+  grid-template-columns: minmax(0, 58ch) minmax(0, 1fr);
+  padding-bottom: 22px;
+}
+.fitArea {
+  position: sticky;
+  top: 22px;
+  min-width: 0;
+  /* the window's height, less the page's top and bottom padding */
+  height: calc(100cqh - 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.standin {
+  box-sizing: border-box;
+  /* as large as fits beside the list, in the window's height, up to 1.35× */
+  width: min(100%, calc((100cqh - 44px) * var(--w) / var(--h)), calc(var(--w) * 1.35px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  background: #d4d4d4;
+}
+
+/* Too narrow for the list and the artifact side by side: the list goes
+   above, and the artifact is fitted to the width (and to one screenful) */
+@container lab (max-width: 900px) {
+  .page, .collectionPage, .levelPage { grid-template-columns: minmax(0, 82ch); }
+  .cards { margin-top: 18px; grid-template-columns: repeat(auto-fill, minmax(34ch, 1fr)); }
+  .fitArea { position: static; height: auto; margin-top: 18px; }
+  .standin { width: min(100%, calc((100cqh - 32px) * var(--w) / var(--h)), calc(var(--w) * 1.35px)); }
+}
+
+/* Phone width: no leaders; what was on the right stays on the line if it
+   fits, or drops under it */
+@container lab (max-width: 600px) {
+  .page { padding: 16px 16px 48px; }
+  .row { display: flex; flex-wrap: wrap; }
+  .mark { flex: 0 0 5ch; }
+  .text { flex: 0 1 auto; max-width: calc(100% - 5ch); }
+  .note { display: grid; grid-template-columns: 5ch minmax(0, 1fr); }
+  .lead { display: none; }
+  .meta { margin-left: auto; padding-left: 2ch; }
+  .sub .text, .sub .noteText { padding-left: 2ch; }
+}

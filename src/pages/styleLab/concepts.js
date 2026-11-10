@@ -1,18 +1,26 @@
 // src/pages/styleLab/concepts.js
-// The lab's concepts, in the order of the backlog's directions, and the
-// four screens each one draws.
+// The lab's concepts, in the order of the backlog's directions (round 1's
+// A–F, then round 2's B2 and G), and the four screens each one draws.
 import Document from './A_Document'
 import Index from './B_Index'
 import Canvas from './C_Canvas'
 import ColourField from './D_ColourField'
 import Specimen from './E_Specimen'
 import Notebook from './F_Notebook'
+import Index2 from './B2_Index'
 
 export const SCREENS = [
   { id: 'title', label: 'Title' },
   { id: 'timeline', label: 'Timeline' },
   { id: 'collection', label: 'Collection' },
   { id: 'level', label: 'Level frame' },
+]
+
+// Round 2's concepts show the level frame twice: around a wide artifact
+// (the Mac, room 1) and a tall one (the iPhone, room 3)
+const TWO_FRAMES = [
+  { level: 1, label: 'Level frame · Mac' },
+  { level: 3, label: 'Level frame · iPhone' },
 ]
 
 export const CONCEPTS = [
@@ -57,5 +65,13 @@ export const CONCEPTS = [
     name: 'Notebook',
     blurb: 'Someone’s own page: pale paper, Times, toggles in thin boxes, a running clock, highlighter links, things taped in crooked.',
     Component: Notebook,
+  },
+  {
+    id: 'b2',
+    letter: 'B2',
+    name: 'Index, refined',
+    blurb: 'B again, with the cards redrawn as monospace boxes with 1px rules, and a level frame where the list is the HUD and the artifact is fitted beside or below it.',
+    Component: Index2,
+    frames: TWO_FRAMES,
   },
 ]

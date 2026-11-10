@@ -43,6 +43,7 @@
   border: none;
   padding: 2px 6px;
   cursor: pointer;
+  white-space: nowrap;
 }
 .bar a:hover,
 .bar button:hover { color: #fff; }
@@ -129,17 +130,16 @@
 
 .columns {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 28px 18px;
 }
-@media (max-width: 1100px) { .columns { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 18px; } }
 @media (max-width: 640px) { .columns { grid-template-columns: minmax(0, 1fr); } }
 
 .concept { min-width: 0; }
 .conceptName { font-size: 13px; font-weight: 400; }
 .conceptName a { color: #fff; text-decoration: none; }
 .conceptName a:hover { text-decoration: underline; }
-.conceptBlurb { margin: 2px 0 10px; font-size: 11px; line-height: 1.45; min-height: 4.35em; }
+.conceptBlurb { margin: 2px 0 10px; font-size: 11px; line-height: 1.45; min-height: 7.25em; }
 @media (max-width: 640px) { .conceptBlurb { min-height: 0; } }
 
 .thumbCell { position: relative; margin-bottom: 12px; }
