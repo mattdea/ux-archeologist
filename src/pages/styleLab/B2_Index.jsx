@@ -16,10 +16,10 @@
 import { useEffect, useState } from 'react'
 import s from './B2_Index.module.css'
 import { ROOMS, TITLE, ABOUT, WORDS, MOCK, isFound, foundLine, pad } from './content'
-import { ArtifactPicture } from './CurrentCard'
+import { RoomPicture } from './CurrentCard'
 
 // One line of the list: [mark or year] text ......... meta
-function Row({ mark = '', text, meta, href, onClick, current, sub, external }) {
+function Row({ mark = '', text, meta, href, onClick, current, sub, external, peek }) {
   const inner = (
     <>
       <span className={s.mark}>{mark}</span>
@@ -31,7 +31,7 @@ function Row({ mark = '', text, meta, href, onClick, current, sub, external }) {
   const cls = `${s.row} ${sub ? s.sub : ''} ${current ? s.current : ''}`
   if (href) {
     return (
-      <a className={cls} href={href} onClick={onClick} aria-current={current ? 'page' : undefined} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+      <a className={cls} href={href} onClick={onClick} aria-current={current ? 'page' : undefined} {...peek} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
         {inner}
       </a>
     )
@@ -55,7 +55,7 @@ function Card({ room, art, href }) {
   return (
     <a className={`${s.card} ${found ? '' : s.blank}`} href={href}>
       <span className={s.cardHead}><span>No. {pad(room.level + 1)}</span><span>{room.year}</span></span>
-      <span className={s.cardPicture}>{found && <ArtifactPicture room={room} art={art} className={s.fill} />}</span>
+      <span className={s.cardPicture}>{found && <RoomPicture room={room} art={art} className={s.fill} />}</span>
       <span className={s.cardBody}>
         {found ? (
           <>
@@ -139,10 +139,18 @@ function Level({ room, href }) {
 }
 
 export default function Index2({ screen, level, href, art }) {
+  // The room under the pointer or holding focus: its picture shows on the right
+  const [peek, setPeek] = useState(null)
+  const peekAt = (n) => ({
+    onMouseEnter: () => setPeek(n),
+    onMouseLeave: () => setPeek(p => (p === n ? null : p)),
+    onFocus: () => setPeek(n),
+    onBlur: () => setPeek(p => (p === n ? null : p)),
+  })
   if (screen === 'level') return <Level room={ROOMS[level]} href={href} />
 
   return (
-    <div className={`${s.page} ${screen === 'collection' ? s.collectionPage : ''}`}>
+    <div className={`${s.page} ${screen === 'collection' ? s.collectionPage : s.listPage}`}>
       <div className={s.list}>
         {/* ── The title ─────────────────────────────────────────── */}
         <Row text={TITLE.name} href={href('title')} current={screen === 'title'} mark={screen === 'title' ? '>' : ''} />
@@ -158,9 +166,9 @@ export default function Index2({ screen, level, href, art }) {
         <div className={s.gap} />
         {ROOMS.map(r => (
           <div key={r.level}>
-            <Row mark={r.year} text={r.title} meta={isFound(r.level) ? r.name : ''} href={href('level', r.level)} />
+            <Row mark={r.year} text={r.title} meta={isFound(r.level) ? r.name : ''} href={href('level', r.level)} peek={peekAt(r.level)} />
             {screen === 'timeline' && r.objectives.map(o => (
-              <Row key={o} sub text={`${isFound(r.level) ? '[x]' : '[ ]'} ${o}`} href={href('level', r.level)} />
+              <Row key={o} sub text={`${isFound(r.level) ? '[x]' : '[ ]'} ${o}`} href={href('level', r.level)} peek={peekAt(r.level)} />
             ))}
           </div>
         ))}
@@ -182,6 +190,19 @@ export default function Index2({ screen, level, href, art }) {
         {screen !== 'collection' && <Row text={WORDS.reset} onClick={() => {}} />}
         {screen === 'collection' && <Row text={WORDS.back} href={href('timeline')} />}
       </div>
+
+      {/* Beside the list on the title and the timeline: nothing, until a
+          room is pointed at or focused, then its picture and year */}
+      {screen !== 'collection' && (
+        <div className={s.peek} aria-hidden="true">
+          {peek !== null && (
+            <div className={s.peekBox} data-peek={peek}>
+              <RoomPicture room={ROOMS[peek]} art={art} className={s.peekArt} />
+              <span className={s.peekYear}>{ROOMS[peek].year}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {screen === 'collection' && (
         <div className={s.cards}>

@@ -39,6 +39,10 @@ const CONCEPTS = {
 const SCREENS = [['title', 'title'], ['timeline', 'timeline'], ['collection', 'collection'], ['level', 'level']]
 const SCREENS_TWO_FRAMES = [...SCREENS.slice(0, 3), ['level/1', 'level-mac'], ['level/3', 'level-iphone']]
 const TWO_FRAMES = ['b2', 'g']
+// Extra shots with the pointer over something: [hash, file name, selector]
+const HOVERS = {
+  b2: [['timeline', 'timeline-hover', '[data-lab-scroll] a[href="#b2/level/1"]']],
+}
 const SIZES = [
   { width: 1440, height: 900, scale: 1 },
   { width: 375, height: 812, scale: 2 },
@@ -104,15 +108,15 @@ async function main() {
       source: "try { sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1') } catch {}",
     })
 
-    const shoot = async (hash, size, file) => {
+    const shoot = async (hash, size, file, hover) => {
       for (let attempt = 1; ; attempt++) {
-        try { return await shootOnce(hash, size, file) } catch (err) {
+        try { return await shootOnce(hash, size, file, hover) } catch (err) {
           if (attempt === 3) throw err
           console.log(`  retrying ${hash || 'index'} at ${size.width} (${err.message})`)
         }
       }
     }
-    const shootOnce = async (hash, size, file) => {
+    const shootOnce = async (hash, size, file, hover) => {
       await page('Emulation.setDeviceMetricsOverride', { width: size.width, height: size.height, deviceScaleFactor: size.scale, mobile: size.width < 600 })
       await page('Page.navigate', { url: 'about:blank' })
       await page('Page.navigate', { url: `${BASE}/style-lab${hash}` })
@@ -127,6 +131,12 @@ async function main() {
         await sleep(100)
       }
       await sleep(900)
+      if (hover) {
+        // Put the pointer on the middle of the thing
+        const at = await evaluate(`(() => { const r = document.querySelector(${JSON.stringify(hover)}).getBoundingClientRect(); return [r.left + Math.min(r.width / 2, 120), r.top + r.height / 2] })()`)
+        await page('Input.dispatchMouseEvent', { type: 'mouseMoved', x: at[0], y: at[1] })
+        await sleep(200)
+      }
       // Freeze the stage at this size and let the page run on below it
       const total = await evaluate(`(() => {
         const scroll = document.querySelector('[data-lab-scroll]')
@@ -158,6 +168,12 @@ async function main() {
         }
         for (const [hash, name] of TWO_FRAMES.includes(id) ? SCREENS_TWO_FRAMES : SCREENS) {
           await shoot(`#${id}/${hash}`, size, join(OUT, CONCEPTS[id], `${size.width}-${name}.webp`))
+        }
+        // hovering needs a pointer: wide shots only
+        if (size.width >= 600) {
+          for (const [hash, name, selector] of HOVERS[id] ?? []) {
+            await shoot(`#${id}/${hash}`, size, join(OUT, CONCEPTS[id], `${size.width}-${name}.webp`), selector)
+          }
         }
       }
     }

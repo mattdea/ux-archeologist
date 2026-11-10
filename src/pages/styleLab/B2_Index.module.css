@@ -55,6 +55,13 @@ a.row:focus-visible, button.row:focus-visible { background: #000; color: #fff; }
 .note { grid-template-columns: 6ch minmax(0, 1fr); }
 .noteText { max-width: 68ch; margin: 0; }
 
+/* ── Title and timeline: the list, and a place beside it for a picture ── */
+.listPage { grid-template-columns: minmax(0, 82ch) minmax(0, 1fr); }
+.peek { position: sticky; top: 22px; min-width: 0; }
+.peekBox { width: 34ch; }
+.peekArt { width: 100%; aspect-ratio: 400 / 340; }
+.peekYear { display: block; text-align: center; }
+
 /* ── Collection: the list, then the cards on the same grid ──────────── */
 .collectionPage { grid-template-columns: minmax(0, 60ch) minmax(0, 1fr); }
 .cards {
@@ -115,7 +122,9 @@ a.row:focus-visible, button.row:focus-visible { background: #000; color: #fff; }
 /* Too narrow for the list and the artifact side by side: the list goes
    above, and the artifact is fitted to the width (and to one screenful) */
 @container lab (max-width: 900px) {
-  .page, .collectionPage, .levelPage { grid-template-columns: minmax(0, 82ch); }
+  .page, .listPage, .collectionPage, .levelPage { grid-template-columns: minmax(0, 82ch); }
+  /* no room beside the list, and no pointer to hover with on most narrow screens */
+  .peek { display: none; }
   .cards { margin-top: 18px; grid-template-columns: repeat(auto-fill, minmax(34ch, 1fr)); }
   .fitArea { position: static; height: auto; margin-top: 18px; }
   .standin { width: min(100%, calc((100cqh - 32px) * var(--w) / var(--h)), calc(var(--w) * 1.35px)); }

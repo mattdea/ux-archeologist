@@ -99,6 +99,14 @@
   object-fit: cover;
 }
 
+/* A dot illustration: a mask filled with the text's colour */
+.dotArt {
+  display: block;
+  background: currentColor;
+  -webkit-mask: var(--art) center / contain no-repeat;
+  mask: var(--art) center / contain no-repeat;
+}
+
 /* ── The index ──────────────────────────────────────────────────────── */
 .index {
   flex: 1;

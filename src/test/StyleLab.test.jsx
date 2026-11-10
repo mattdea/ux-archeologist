@@ -54,7 +54,7 @@ describe('Style lab', () => {
     expect(holes).toEqual([1, 9, 7, 9].map(rowY))
   })
 
-  it('G: the art switch offers Dots, and only there', () => {
+  it('the art switch offers Dots in G and B2, and not elsewhere', () => {
     renderLab('#g/timeline')
     expect(screen.getByRole('button', { name: 'Dots' })).toHaveAttribute('aria-pressed', 'true')
     fireEvent.click(screen.getByRole('button', { name: 'Drawn' }))
@@ -62,7 +62,22 @@ describe('Style lab', () => {
     expect(screen.getByRole('button', { name: 'Drawn' })).toHaveAttribute('aria-pressed', 'true')
     cleanup()
     renderLab('#b2/timeline')
+    expect(screen.getByRole('button', { name: 'Dots' })).toBeInTheDocument()
+    cleanup()
+    renderLab('#b/timeline')
     expect(screen.queryByRole('button', { name: 'Dots' })).toBeNull()
+  })
+
+  it('B2: pointing at a room, or focusing it, shows its picture and year beside the list', () => {
+    renderLab('#b2/timeline')
+    expect(document.querySelector('[data-peek]')).toBeNull()
+    const row = document.querySelector('a[href="#b2/level/2"]')
+    fireEvent.mouseEnter(row)
+    expect(document.querySelector('[data-peek="2"]').textContent).toBe(ROOMS[2].year)
+    fireEvent.mouseLeave(row)
+    expect(document.querySelector('[data-peek]')).toBeNull()
+    fireEvent.focus(document.querySelector('a[href="#b2/level/4"]'))
+    expect(document.querySelector('[data-peek="4"]')).not.toBeNull()
   })
 
   it('B2: Begin excavation leaves the list as it is while playing, Continue shows the discovery', () => {

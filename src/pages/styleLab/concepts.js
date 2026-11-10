@@ -74,6 +74,7 @@ export const CONCEPTS = [
     blurb: 'B again, with the cards redrawn as monospace boxes with 1px rules, and a level frame where the list is the HUD and the artifact is fitted beside or below it.',
     Component: Index2,
     frames: TWO_FRAMES,
+    dotArt: true,
   },
   {
     id: 'g',
