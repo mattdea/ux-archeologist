@@ -120,6 +120,10 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
     - **D (colour field):** he likes it, but it feels derivative. Dropped.
     - **A, C, F:** not picked.
   - **Round 2 built 10 Nov 2026:** B2 (B refined) and G (punch card), see Done. B+E was not picked. Open `/style-lab#b2/title` and `/style-lab#g/title`, or `docs/style-lab/b2-index-refined/` and `g-punch-card/`.
+  - **Matthew's read of round 2 (10 Nov 2026):**
+    - **G (punch card):** he doesn't like the direction. Dropped. He does like its dot illustrations.
+    - **B2:** takes the dot illustrations. His examples: pointing at a level shows its small illustration on the right; little squares with the illustration in them open the levels; the collection cards change to match. Built the same day, see Done. B2 is the direction in hand.
+    - G is still in the lab, and the six illustration files are in its folder (`src/pages/styleLab/g/`). Deleting G would mean moving them first.
 - **Phase 3 (needs its own approval):**
   - Set up museum tokens on `:root` and restyle one component per commit.
   - Align the collection cards and card lab with the new style.
@@ -136,6 +140,18 @@ Nothing waiting.
 ---
 
 ## Done
+
+### Museum: style lab, B2 takes the dot illustrations · 10 Nov 2026
+Asked for in chat after Matthew's read of round 2 (under Ideas, "Museum restyle"), not from Approved. Changed in B2 itself, not as a new concept; three commits, one per feature.
+- **Pointing at a room shows its picture.** On the title and timeline, the space right of the list is empty until a room's line (or one of its objectives) is under the pointer or has keyboard focus. Then that room's dot illustration appears there, 34 characters wide, with its year under it, and goes when the pointer leaves. It is hidden under 900px wide, where there is no room beside the list.
+- **Six little squares open the rooms.** A row of 1px boxes under the title line, each with a room's illustration and its year below, on every B2 screen. They are links to the rooms. They turn black with white dots under the pointer, as a row does. In a level frame they stand in for the HUD's progress dots: the room you are in is the black one. Six across on a wide window (10 characters each, 7 beside the cards and the artifact), three to a line at phone width.
+- **A square, its room's line and its card light together,** and any of them brings up the larger picture where there is one.
+- **Collection cards** carry the dot illustration in the picture box, black on white, and white on black when the card is lit. A room not found shows the illustration's dot grid with nothing drawn on it (it was a hatched box).
+- **Art switch:** B2 now has Drawn · Illustrated · Dots, Dots by default; the other two swap the pictures in the squares, the preview and the cards. The illustrations are the same six ink masks G uses, now shared in the lab (`DotArt`, `RoomPicture` in `styleLab/CurrentCard.jsx`).
+- **Screenshots:** `docs/style-lab/b2-index-refined/` retaken, with two new ones taken with the pointer on a line: `1440-timeline-hover.webp` and `1440-collection-hover.webp` (the script can now hover before a shot).
+- **Checked:** 149 tests (3 new: the picture appears on hover and on focus and goes on leaving; the six squares link to the rooms, carry the year, bring up the picture and mark the current room; found cards carry `dots-N`, unfound ones none, and Illustrated swaps them). `npm run build`: nothing from the lab in `dist/` beyond the existing view key. Looked over: the two hover screenshots, both level frames at 1440, the title at 375. Not checked by hand: keyboard focus (covered by the test), a screen reader, Safari or Firefox.
+- **Not done:** the preview doesn't show in a level frame or on the collection, where the artifact and the cards have that space. G was left as it is.
+- **No museum component, style or copy changed.**
 
 ### Museum: style lab round 2, B2 and G · 10 Nov 2026
 - **Built:** two more concepts in the dev-only `/style-lab`, after A–F on the index. Same shared text and fixed state. Each shows the title, timeline, collection and the level frame twice, around the Mac (780 × 755) and the iPhone (385 × 735). The lab bar has a tab for each frame.

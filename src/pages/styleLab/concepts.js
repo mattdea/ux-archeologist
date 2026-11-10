@@ -71,7 +71,7 @@ export const CONCEPTS = [
     id: 'b2',
     letter: 'B2',
     name: 'Index, refined',
-    blurb: 'B again, with the cards redrawn as monospace boxes with 1px rules, and a level frame where the list is the HUD and the artifact is fitted beside or below it.',
+    blurb: 'B again: cards as monospace boxes, the list as the HUD with the artifact fitted beside or below it, and the dot illustrations (on hover, in six little squares, on the cards).',
     Component: Index2,
     frames: TWO_FRAMES,
     dotArt: true,
