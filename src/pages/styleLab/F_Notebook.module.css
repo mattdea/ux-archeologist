@@ -1,0 +1,231 @@
+/* src/pages/styleLab/F_Notebook.module.css
+ * Concept F, "Notebook": pale yellow paper, Times for the writing,
+ * monospace for the notes in the margin, thin black boxes with a pastel
+ * strip along the top, highlighter for links. Things that were stuck in
+ * (cards, the artifact, the sticky notes) sit a degree or two off square. */
+
+.page {
+  box-sizing: border-box;
+  min-height: 100cqh;
+  padding: 14px clamp(14px, 3cqw, 40px) 72px;
+  background: #fffbcf;
+  color: #111;
+  font: 17px/1.4 'Times New Roman', Times, serif;
+  --mono: ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  --green: #0a5a31;
+  --lime: #c6f56a;
+  --pink: #ffc0e2;
+  --cyan: #a9ecff;
+  --lab-focus: #111;
+}
+.page :where(p, h1, h2, h3, ul) { margin: 0; padding: 0; }
+.page :where(a) { color: inherit; }
+.page :where(button:not([data-current-card] *)) { font: inherit; color: inherit; cursor: pointer; }
+.page a:focus-visible, .page button:focus-visible, .page summary:focus-visible, .page input:focus-visible { outline: 3px solid #111; outline-offset: 2px; }
+
+/* ── The clock in the corner ────────────────────────────────────────── */
+.clock {
+  position: sticky;
+  top: 12px;
+  z-index: 2;
+  width: fit-content;
+  margin-left: auto !important;
+  padding: 2px 8px 4px;
+  background: #fffbcf;
+  border: 1px solid #111;
+  font-family: var(--mono);
+  text-align: right;
+  color: var(--green);
+}
+.time { display: block; font-size: 24px; line-height: 1.2; letter-spacing: 0.02em; }
+.time i { font-style: normal; padding: 0 0.18em; animation: blink 1s step-end infinite; }
+.date { display: block; font-size: 11px; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── The column of writing ──────────────────────────────────────────── */
+.column {
+  max-width: 600px;
+  margin-left: clamp(0px, 8cqw, 150px);
+  margin-top: -18px;
+}
+.wide { max-width: 900px; }
+.full { max-width: none; margin-left: 0; }
+.column > * + * { margin-top: 14px; }
+
+.title {
+  font-size: clamp(42px, 8.5cqw, 88px);
+  line-height: 0.95;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  /* drawn under the fill, so half of this shows: a 2px outline */
+  -webkit-text-stroke: 4px #111;
+  paint-order: stroke fill;
+  /* the title's hard pink double, as on the reference (no blur) */
+  text-shadow: 5px 5px 0 #ff8fcf;
+  padding-right: 0.1em;
+}
+.smaller { font-size: clamp(38px, 6cqw, 64px); }
+.star {
+  display: inline-block;
+  margin-right: 0.15em;
+  font-style: normal;
+  font-size: 0.6em;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  color: var(--green);
+  vertical-align: 0.25em;
+  animation: turn 14s linear infinite;
+}
+@keyframes turn { to { rotate: 360deg; } }
+.lede { font-size: 21px; font-style: italic; max-width: 24em; }
+.note { font: 11px/1.5 var(--mono); color: var(--green); letter-spacing: 0.02em; }
+
+/* Highlighter: every plain link */
+.hl {
+  padding: 0 3px;
+  border: none;
+  background: var(--lime);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.hl:hover { background: var(--pink); }
+.links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+
+/* A boxed button with its little triangle, like a toggle that goes somewhere */
+.btn {
+  display: inline-block;
+  padding: 2px 12px 3px 8px;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  text-decoration: none;
+}
+.btn::before { content: '▶'; display: inline-block; margin-right: 8px; font-size: 0.62em; vertical-align: 0.2em; }
+.btn:hover { background: var(--lime); }
+
+/* ── Toggles ────────────────────────────────────────────────────────── */
+.toggle { width: fit-content; max-width: 100%; border: 1px solid #111; background: #fffef0; }
+.block { width: auto; }
+.page summary { list-style: none; cursor: pointer; padding: 2px 12px 3px 8px; }
+.page summary::-webkit-details-marker { display: none; }
+.page summary::before { content: '▶'; display: inline-block; margin-right: 8px; font-size: 0.62em; vertical-align: 0.2em; }
+.page details[open] > summary::before { rotate: 90deg; }
+.page summary:hover { background: var(--lime); }
+.toggleBody { padding: 4px 12px 12px 8px; border-top: 1px solid #111; }
+.toggleBody > * + * { margin-top: 10px; }
+
+/* ── Boxes with a strip ─────────────────────────────────────────────── */
+.box { border: 1px solid #111; background: #fffef0; }
+.strip { padding: 1px 8px 2px; border-bottom: 1px solid #111; font: 11px/1.6 var(--mono); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; }
+.cyan { background: var(--cyan); }
+.green { background: #bff5a3; }
+.pink { background: var(--pink); }
+.boxBody { padding: 8px; }
+.boxBody > * + * { margin-top: 10px; }
+
+/* The timeline's entries: toggles without their own boxes, ruled apart */
+.entry + .entry { border-top: 1px dashed #111; margin-top: 0; }
+.boxBody > .entry + .entry { margin-top: 0; }
+.entry > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 10px; padding: 5px 4px; }
+.entry > summary::before { align-self: center; margin-right: 0; }
+.year { font-family: var(--mono); font-size: 0.72em; color: var(--green); }
+.entryTitle { font-size: 21px; }
+.found { margin-left: auto; font: 11px/1.5 var(--mono); color: var(--green); }
+.entryBody { padding: 2px 4px 12px 24px; }
+.entryBody > * + * { margin-top: 10px; }
+
+.checks, .plainList { list-style: none; }
+.checks label { display: flex; align-items: baseline; gap: 8px; cursor: pointer; }
+.checks input { accent-color: var(--green); width: 14px; height: 14px; margin: 0; flex: none; translate: 0 1px; }
+.checks input:checked + span { text-decoration: line-through; }
+.plainList li::before { content: '– '; }
+
+/* ── Collection: cards taped in ─────────────────────────────────────── */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px 28px; align-items: start; }
+.cards .toggle { margin: 0; background: none; border: none; }
+.cards .toggle > summary { width: fit-content; border: 1px solid #111; background: #fffef0; }
+.cards .toggle > summary:hover { background: var(--lime); }
+.taped { position: relative; width: fit-content; margin: 22px 0 0 6px; }
+.tape {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: -12px;
+  width: 84px;
+  height: 24px;
+  translate: -50% 0;
+  rotate: -3deg;
+  background: rgba(169, 236, 255, 0.72);
+  border-left: 1px dashed rgba(0, 0, 0, 0.25);
+  border-right: 1px dashed rgba(0, 0, 0, 0.25);
+}
+
+/* ── A room ─────────────────────────────────────────────────────────── */
+.dots { display: inline-flex; gap: 4px; font-family: var(--mono); color: var(--green); }
+.dots a { text-decoration: none; }
+.dots a[aria-current] { text-decoration: underline wavy; text-underline-offset: 4px; }
+.roomHead { font-size: clamp(30px, 4cqw, 44px); line-height: 1.1; font-weight: 400; font-style: italic; }
+.roomHead .year { font-style: normal; font-size: 0.45em; }
+.wavy { text-decoration: underline wavy var(--green) 1.5px; text-underline-offset: 6px; }
+
+.room {
+  display: grid;
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr) minmax(250px, 320px);
+  gap: 30px;
+  align-items: start;
+  margin-top: 24px !important;
+}
+.notes > * + * { margin-top: 16px; }
+.middle { min-width: 0; }
+.artifact {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, calc(58cqh * var(--w) / var(--h)));
+  margin: 6px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #111;
+  background: #a9a9a2;
+  font: 11px var(--mono);
+  rotate: -0.5deg;
+}
+.tapeLeft { left: 0; top: -8px; rotate: -38deg; translate: -40% 0; }
+.tapeRight { left: auto; right: 0; top: -8px; rotate: 38deg; translate: 40% 0; }
+.under { margin-top: 26px !important; text-align: right; }
+
+/* Sticky notes: the hint (pink) and the small-screen notice (yellow) */
+.sticky {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  padding: 12px 14px 16px;
+  background: var(--pink);
+  font-style: italic;
+  rotate: 1.5deg;
+  margin-left: 14px !important;
+}
+.yellow { background: #ffe45c; font-style: normal; rotate: -1.2deg; }
+.yellow > * + * { margin-top: 10px; }
+
+.bigYear { font: 40px/1 var(--mono); color: var(--green); }
+.name { font-size: 24px; line-height: 1.1; font-style: italic; }
+
+@media (prefers-reduced-motion: reduce) {
+  .star, .time i { animation: none; }
+}
+
+/* ── Narrower ───────────────────────────────────────────────────────── */
+@container lab (max-width: 1000px) {
+  .room { grid-template-columns: minmax(0, 1fr); max-width: 600px; }
+}
+@container lab (max-width: 600px) {
+  .page { font-size: 16px; }
+  .column { margin-top: 10px; }
+  .time { font-size: 18px; }
+  .entryBody { padding-left: 8px; }
+  .found { margin-left: 22px; flex-basis: 100%; }
+}

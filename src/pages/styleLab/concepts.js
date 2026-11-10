@@ -6,6 +6,7 @@ import Index from './B_Index'
 import Canvas from './C_Canvas'
 import ColourField from './D_ColourField'
 import Specimen from './E_Specimen'
+import Notebook from './F_Notebook'
 
 export const SCREENS = [
   { id: 'title', label: 'Title' },
@@ -49,5 +50,12 @@ export const CONCEPTS = [
     name: 'Specimen sheet',
     blurb: 'A catalogue sheet: a strict grid of small pictures and blocks of text, each numbered, with tiny captions. Nothing is bigger than anything else.',
     Component: Specimen,
+  },
+  {
+    id: 'f',
+    letter: 'F',
+    name: 'Notebook',
+    blurb: 'Someone’s own page: pale paper, Times, toggles in thin boxes, a running clock, highlighter links, things taped in crooked.',
+    Component: Notebook,
   },
 ]
