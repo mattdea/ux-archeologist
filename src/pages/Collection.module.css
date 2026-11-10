@@ -54,7 +54,7 @@
   display: grid;
   grid-template-columns: minmax(0, 300px);
   justify-content: center;
-  gap: 40px 32px;
+  gap: 32px 28px;
   align-items: stretch;
 }
 
@@ -82,9 +82,9 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 470px;
+  min-height: 0;
   margin: 0;
-  padding: 16px 16px 13px;
+  padding: 13px 13px 11px;
   box-sizing: border-box;
   border: none;
   border-radius: 14px;
@@ -155,8 +155,8 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
-  margin: 10px 0 14px;
-  aspect-ratio: 4 / 3;
+  margin: 8px 0 11px;
+  aspect-ratio: 16 / 10;
   padding: 6px 8px 2px;
   border-radius: 8px;
   overflow: hidden;
@@ -176,7 +176,7 @@
 .name {
   padding: 0 3px;
   font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  font-size: 29px;
+  font-size: 26px;
   font-weight: 400;
   line-height: 1.02;
   letter-spacing: -0.005em;
@@ -184,7 +184,7 @@
 }
 
 .room {
-  margin-top: 7px;
+  margin-top: 5px;
   padding: 0 3px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 9.5px;
@@ -196,15 +196,15 @@
 
 .rule {
   height: 1px;
-  margin: 12px 3px 10px;
+  margin: 10px 3px 8px;
   background: rgba(42, 38, 32, 0.16);
 }
 
 .description {
   padding: 0 3px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 11.5px;
-  line-height: 1.55;
+  font-size: 11px;
+  line-height: 1.5;
   color: #4c463d;
 }
 
@@ -212,7 +212,7 @@
   display: flex !important;
   justify-content: space-between;
   margin-top: auto;
-  padding: 12px 3px 0;
+  padding: 10px 3px 0;
   font-family: 'Courier New', monospace;
   font-size: 9.5px;
   letter-spacing: 0.14em;
@@ -236,6 +236,7 @@
 
 /* ── A card not found yet: lying face down ──────────────────────────── */
 .back {
+  min-height: 400px;
   color: #8a8a8a;
   background:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 7px),
@@ -359,14 +360,14 @@
   background: #fff;
   box-shadow: none;
   color: #111;
-  padding: 20px 20px 16px;
+  padding: 15px 15px 11px;
 }
 .museum .front:hover { box-shadow: 0 0 0 1px #fff; }
 .museum .front::before { display: none; }
 
 .museum .top {
   padding: 0;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   color: #737373;
 }
@@ -374,7 +375,7 @@
 
 .museum .plate {
   border-radius: 0;
-  margin: 14px 0 18px;
+  margin: 10px 0 12px;
   box-shadow: none;
 }
 .museum .plate svg { filter: none; }
@@ -383,7 +384,7 @@
 .museum .name {
   padding: 0;
   font-family: system-ui, sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.2;
   color: #111;
@@ -391,7 +392,7 @@
 
 .museum .room {
   padding: 0;
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -399,19 +400,19 @@
 }
 
 .museum .rule {
-  margin: 14px 0 12px;
+  margin: 10px 0 9px;
   background: #e8e8e8;
 }
 
 .museum .description {
   padding: 0;
-  font-size: 12.5px;
-  line-height: 1.65;
+  font-size: 11.5px;
+  line-height: 1.55;
   color: #555;
 }
 
 .museum .foot {
-  padding: 14px 0 0;
+  padding: 10px 0 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 10px;
   letter-spacing: 0.08em;
