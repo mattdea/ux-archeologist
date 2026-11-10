@@ -12,7 +12,6 @@
 |---|---|---|
 | 1. Visitor's journey | "Start here" cue on the timeline | Copy per state |
 | | Year carries from timeline into level | Edge cases |
-| | Collection page | What it shows, how it's reached |
 | 2. Curator's voice | Copy pass: revisit later | Only if Matthew wants another round |
 | | Hints: feature + copy | Feature decisions, house style |
 | 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
@@ -35,10 +34,6 @@ E.g. a pulsing arrow at 1979 saying "Start here".
 The timeline's year label and the HUD's era label share a typeface; as the level fades in, the year slides to the top-left corner.
 - **Decide:** reverse move on "Back to timeline" · routes that don't start at the timeline (dots, Next excavation, direct URL): plain fade? · reduced motion: plain fade.
 - **Touches:** `Timeline.jsx`, `SharedLayout.jsx`.
-
-#### Collection page
-- **Today:** `/collection` exists but is a 4-line placeholder nothing links to. `addArtifact()` already saves each discovery.
-- **Decide:** what it shows (six artifact cards, undiscovered ones as outlines?) · how it's reached (after Level 5 instead of `/timeline`, which reverses the 8 Nov decision; a HUD link; the timeline) · does "shareable" mean an image or link.
 
 #### Motion moments to consider
 Year move (above) · timeline entry · modals opening and closing · IntroModal → boot hand-off · discovery card arrival. Today the museum mostly fades (300ms); the tracker slides up and Continue rises with an overshoot.
@@ -112,6 +107,42 @@ Today only Notes opens.
 ---
 
 ## Approved
+
+### Museum: collection page · approved 10 Nov 2026
+Matthew asked Claude to make the decisions; all of them are marked *decided*. The page shows the six artifacts a visitor collects by finishing each room.
+- **Today:**
+  - `src/pages/Collection.jsx` renders "Collection — placeholder", and nothing links to it.
+  - Every level calls `addArtifact()` on discovery, and `getArtifacts()` reads them back.
+  - The view key `collection` already exists in `views.js` and `SharedLayout.jsx` (navigation is state-based; the URL stays at `/`).
+- **One source for the text** (*decided*):
+  - Add `src/data/artifacts.js`, listing the six artifacts in timeline order: level, year, room title, artifact name, discovery description.
+  - Each level imports its `DISCOVERY_DESCRIPTION` and name from it instead of defining them inline. The timeline's `ENTRIES` read from it too.
+  - The collection decides found or not with `isLevelComplete(n)`, and takes its text from this file, not from the copies saved in localStorage, so copy changes show up.
+  - Change no wording; move the current text as it is.
+- **What it shows** (*decided*):
+  - A page title, "Collection", and a count, "N of 6 found".
+  - Six cards in timeline order: 3 × 2 at 1024px and wider, 2 columns from 600px, 1 column below that.
+  - A **found** card is a white museum card, reusing DiscoveryCard's styles and adding no new card style. It shows the mono year, the artifact name, the room title in the label style, the discovery description, and a thumbnail of the artifact.
+  - A **not-found** card is an outline (1px border, no fill) showing the year and the room title, with the line "Finish this room to add it." No name, no description, no thumbnail.
+  - With nothing found, all six are outlines. No other empty-state copy.
+  - Every card is a button that opens its room, with a visible focus ring.
+  - Cards fade in staggered, the way the timeline's entries do (reuse its animation and delay), and not at all under reduced motion.
+  - Copy is plain and matter-of-fact, in the voice guide in `docs/copy-pass.md`.
+- **Thumbnails** (*decided*):
+  - One per room, in `assets/collection/level0.webp` … `level5.webp`. Take each in the browser with the room in its playing state, cropped to the device or screen with no museum UI. Make them about 480px wide and under 60 KB each.
+  - Level 5 has no device, so crop to the chat column.
+  - If a file is missing, the card still renders without it.
+- **How visitors get there** (*decided*):
+  - A link on the timeline, "Collection · N of 6", next to About and Reset progress, in their style.
+  - The collection page has its own "← Back to timeline", like the HUD's. Add `collection` to `HUD_HIDDEN_VIEWS`.
+  - Level 5's discovery card **still goes to the timeline** (Matthew's 8 Nov decision); the new timeline link is the way in. No HUD link.
+  - Reset progress empties the collection.
+- **Not in this item** (*decided*): sharing, as an image or link. Add it to Ideas if wanted later.
+- **Spec:** describe the page under the museum layer, the data file under architecture, and the timeline link. Remove the placeholder mentions.
+- **Check:**
+  - `npm test`, adding a test that renders the page with 0, 3 and 6 rooms done.
+  - `npm run build`.
+  - In the browser at 1440, 1024, 700 and 375 wide: the page fresh, with some rooms done and with all done; every card opens its room; the back link and keyboard focus work; Reset empties it.
 
 _Nothing approved right now._
 
