@@ -160,10 +160,17 @@
 }
 
 /* ── Dev helper: Reset progress ───────────────────────────────────── */
-.resetBtn {
+/* Reset progress (and, on the dev server, Complete all), bottom left */
+.leftLinks {
   position: fixed;
   bottom: 24px;
   left: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+
+.resetBtn {
   background: none;
   border: none;
   padding: 0;
@@ -183,9 +190,6 @@
 
 /* Reset confirmation: same place and type as the Reset link */
 .resetConfirm {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
   display: flex;
   align-items: baseline;
   gap: 16px;

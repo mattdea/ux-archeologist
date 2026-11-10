@@ -1,7 +1,7 @@
 // src/pages/Timeline.jsx
 import { useState } from 'react'
 import styles from './Timeline.module.css'
-import { isLevelComplete, resetAll } from '../state/state'
+import { isLevelComplete, completeLevel, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
 import { ARTIFACTS } from '../data/artifacts'
@@ -12,6 +12,10 @@ export default function Timeline() {
   const navigate = useFadeNavigate()
   const [showAbout, setShowAbout] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
+  const [, refresh] = useState(0)   // re-read progress after Complete all
+  // Testing aid, dev server only: mark all six levels done, e.g. to see the
+  // collection's cards filled in. Never shown in the production build.
+  const completeAll = () => { ARTIFACTS.forEach(a => completeLevel(a.level)); refresh(n => n + 1) }
 
   return (
     <div className={styles.timeline}>
@@ -46,6 +50,7 @@ export default function Timeline() {
       })}
 
       {/* ── Reset progress: asks once before wiping every level ───── */}
+      <div className={styles.leftLinks}>
       {confirmReset ? (
         <div className={styles.resetConfirm} role="group" aria-label="Reset all six levels?">
           <span className={styles.resetQuestion}>Reset all six levels?</span>
@@ -74,6 +79,12 @@ export default function Timeline() {
           Reset progress
         </button>
       )}
+      {import.meta.env.DEV && !confirmReset && (
+        <button className={styles.resetBtn} onClick={completeAll} style={{ animationDelay: '850ms' }}>
+          Complete all (dev)
+        </button>
+      )}
+      </div>
 
       <div className={styles.links}>
         <button className={styles.aboutLink} onClick={() => navigate('/collection')}>

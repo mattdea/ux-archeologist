@@ -58,4 +58,11 @@ describe('Timeline', () => {
     expect(isLevelComplete(0)).toBe(false)
     expect(navigate).toHaveBeenCalledWith('/')
   })
+
+  it('on the dev server, Complete all marks every level done', () => {
+    renderTimeline()
+    fireEvent.click(screen.getByText('Complete all (dev)'))
+    expect([0, 1, 2, 3, 4, 5].every(isLevelComplete)).toBe(true)
+    expect(screen.getByRole('button', { name: 'Collection · 6 of 6' })).toBeInTheDocument()
+  })
 })
