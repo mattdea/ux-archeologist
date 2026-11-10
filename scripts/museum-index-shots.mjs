@@ -4,8 +4,8 @@
 // Screenshots of the index museum (backlog, "the index museum") into
 // docs/museum-index/<width>-<name>.webp, at 1440 × 900 and 375 × 812: the
 // title, timeline, collection, About, every room's intro, and a room
-// playing, with its hint, and at its discovery; then some of them again in
-// the dark theme (names starting "dark-").
+// playing, with its hint, and at its discovery, in the light theme; then
+// some of them again in the default dark theme (names starting "dark-").
 //
 //   node scripts/museum-index-shots.mjs              all shots
 //   node scripts/museum-index-shots.mjs level-1      only names containing "level-1"
@@ -42,7 +42,7 @@ const SHOTS = [
   ['level-1-discovery', [1], [['click', 'The Desktop'], ['wait', 7000], ['click', 'Continue'], ['wait', 600]]],
   ['level-3-playing', [3], [['click', 'The Touchscreen'], ['wait', 3500]]],
   ['level-2-hint', [], [['click', 'The Hyperlink'], ['wait', 2000], ['click', 'Begin excavation'], ['wait', 16000]]],
-  // the dark theme (a name starting "dark-" turns it on)
+  // the dark theme, the default (the other shots are taken in light)
   ['dark-title', SOME, []],
   ['dark-collection', SOME, [['click', 'Collection'], ['wait', 900]]],
   ['dark-level-0-intro', [], [['click', 'The Command Line'], ['wait', 2500]]],
@@ -119,7 +119,7 @@ async function main() {
           localStorage.clear()
           localStorage.setItem('ux-archaeologist:museum', 'index')
           localStorage.setItem('ux-archaeologist-progress', ${JSON.stringify(JSON.stringify({ completedLevels: found }))})
-          ${name.startsWith('dark-') ? "localStorage.setItem('ux-archaeologist:index-theme', 'dark')" : ''}
+          ${name.startsWith('dark-') ? '' : "localStorage.setItem('ux-archaeologist:index-theme', 'light')"}
           sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1')
         } catch {}`
         const { identifier } = await page('Page.addScriptToEvaluateOnNewDocument', { source: setup })

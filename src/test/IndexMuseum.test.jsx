@@ -60,7 +60,7 @@ function FakeLevel() {
 
 describe('Index museum', () => {
   beforeEach(() => { vi.stubGlobal('localStorage', memoryStorage()); resetAll(); _resetIndexSlots(); act(() => setMuseumStyle('classic')) })
-  afterEach(() => { cleanup(); act(() => { setMuseumStyle('classic'); setIndexTheme('light') }); resetAll(); vi.unstubAllGlobals() })
+  afterEach(() => { cleanup(); act(() => { setMuseumStyle('classic'); setIndexTheme('dark') }); resetAll(); vi.unstubAllGlobals() })
 
   it('the switch is remembered and mirrored on <html>', () => {
     act(() => setMuseumStyle('index'))
@@ -194,25 +194,28 @@ describe('Index museum', () => {
     expect(list().textContent).toContain('[ ]Close a thing')
   })
 
-  it('Dark mode: a toggle on every view, remembered and mirrored on <html>', () => {
+  it('Dark mode: on by default, a toggle on every view, remembered and mirrored on <html>', () => {
+    act(() => setIndexTheme('dark'))
     renderIndex('title')
     const dark = () => screen.getByText('Dark mode').closest('button')
-    expect(dark()).toHaveAttribute('aria-pressed', 'false')
-    expect(dark().textContent).toContain('[ ]')
-    fireEvent.click(dark())
     expect(dark()).toHaveAttribute('aria-pressed', 'true')
     expect(dark().textContent).toContain('[x]')
     expect(document.documentElement.getAttribute('data-index-theme')).toBe('dark')
-    expect(localStorage.getItem('ux-archaeologist:index-theme')).toBe('dark')
+    expect(localStorage.getItem('ux-archaeologist:index-theme')).toBeNull()
+    fireEvent.click(dark())
+    expect(dark()).toHaveAttribute('aria-pressed', 'false')
+    expect(dark().textContent).toContain('[ ]')
+    expect(document.documentElement.getAttribute('data-index-theme')).toBe('light')
+    expect(localStorage.getItem('ux-archaeologist:index-theme')).toBe('light')
     cleanup()
     for (const view of ['timeline', 'collection', 'level2']) {
       renderIndex(view)
-      expect(dark()).toHaveAttribute('aria-pressed', 'true')
+      expect(dark()).toHaveAttribute('aria-pressed', 'false')
       cleanup()
     }
     renderIndex('timeline')
     fireEvent.click(dark())
-    expect(document.documentElement.getAttribute('data-index-theme')).toBe('light')
+    expect(document.documentElement.getAttribute('data-index-theme')).toBe('dark')
     expect(localStorage.getItem('ux-archaeologist:index-theme')).toBeNull()
   })
 

@@ -1,7 +1,8 @@
 // src/shared/index-museum/theme.js
 //
 // The index museum's light or dark theme, chosen with the "Dark mode" line
-// in the list and remembered per browser. Light is the default. Mirrored as
+// in the list and remembered per browser. Dark is the default (Matthew,
+// 10 Nov 2026). Mirrored as
 // data-index-theme="light|dark" on <html>, which IndexMuseum.module.css keys
 // its colour tokens on (and the room behind the artifact, via --ix-room).
 // Dark suits the artifacts, which were designed on the classic museum's
@@ -12,7 +13,7 @@ const KEY = 'ux-archaeologist:index-theme'
 const listeners = new Set()
 
 function read() {
-  try { return localStorage.getItem(KEY) === 'dark' ? 'dark' : 'light' } catch { return 'light' }
+  try { return localStorage.getItem(KEY) === 'light' ? 'light' : 'dark' } catch { return 'dark' }
 }
 
 let current = read()
@@ -26,7 +27,7 @@ export function indexTheme() { return current }
 
 export function setIndexTheme(theme) {
   const next = theme === 'dark' ? 'dark' : 'light'
-  try { next === 'dark' ? localStorage.setItem(KEY, 'dark') : localStorage.removeItem(KEY) } catch { /* storage blocked: for this visit only */ }
+  try { next === 'light' ? localStorage.setItem(KEY, 'light') : localStorage.removeItem(KEY) } catch { /* storage blocked: for this visit only */ }
   if (next === current) return
   current = next
   mirror()
@@ -36,5 +37,5 @@ export function setIndexTheme(theme) {
 function subscribe(l) { listeners.add(l); return () => listeners.delete(l) }
 
 export function useIndexTheme() {
-  return useSyncExternalStore(subscribe, indexTheme, () => 'light')
+  return useSyncExternalStore(subscribe, indexTheme, () => 'dark')
 }
