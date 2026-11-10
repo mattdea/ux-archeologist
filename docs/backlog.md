@@ -19,7 +19,7 @@
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
 | | Instagram screens | Which screens + references |
-| 5. Museum restyle | Phases 2 and 3 | Matthew's pick from the style lab |
+| 5. Museum restyle | Round 2: B, and B with E's grid | Approval of round 2 |
 
 ---
 
@@ -113,7 +113,17 @@ Phase 1, the style lab, is built (see Done, 10 Nov 2026). Open `/style-lab` on t
 
 - **Why:** Matthew wants the museum to look more like the personal sites he's been collecting: crude, unfinished, typographic, plain, sometimes silly. Nothing in the game changes until a direction is picked.
 - **Scope:** the museum layer only: the title, timeline, collection, About, HUD (back link, era label, Continue), IntroModal, ObjectiveTracker, HintPill, DiscoveryCard and the small-screen notice. The artifacts keep their exact period look. The museum still has to read as the frame, not as another artifact. Watch this next to the 1995 Netscape level especially.
-- **Phase 2:** Matthew picks one direction or a mix, for example B's timeline in D's colours.
+- **Phase 2:** Matthew picks one direction or a mix.
+  - **Matthew's read (10 Nov 2026):**
+    - **B (index):** his favourite. He likes the monospace list, the grid it sits on, the highlighted (inverted) row, and how simple it is.
+    - **E (specimen sheet):** he likes the direction, but each row shows the same room three times: the illustrated picture, the drawn picture and the card, which has the picture on it again. One picture per room.
+    - **D (colour field):** he likes it, but it feels derivative. Dropped.
+    - **A, C, F:** not picked.
+  - **Proposed round 2 (still in the lab, nothing in the game changes):**
+    - **B2, B refined:** the same four screens. The collection cards are redrawn in B's terms (monospace, 1px rules, no shadows or rounded corners), because the current cream cards with shadows sit oddly next to the list. B's level frame goes from desktop to phone width with the list above the artifact.
+    - **B+E:** B's list stays as the frame and the HUD. Where pictures appear (timeline, collection, discovery), they sit in E's numbered grid with tiny captions, one picture per room in the chosen art set.
+    - **Watch:** in B the list is the HUD, so the intro card, objective tracker, hint and discovery card all become rows in it. That's a bigger change to the museum than a reskin: it touches every level's wiring. Round 2 should show it in two levels (one wide artifact, the Mac; one tall, the iPhone) to check `useArtifactFit` still places the artifact well beside or below the list.
+    - **Decide on approval:** whether both variants or B2 only.
 - **Phase 3 (needs its own approval):**
   - Set up museum tokens on `:root` and restyle one component per commit.
   - Align the collection cards and card lab with the new style.
