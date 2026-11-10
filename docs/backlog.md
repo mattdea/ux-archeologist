@@ -114,6 +114,25 @@ Today only Notes opens.
 
 ## Approved
 
+### Level 0: move from 1971 to 1979 · approved 9 Nov 2026
+Matthew's call. The terminal is a VT100 (August 1978), and its bezel, keyclick and bell are modelled on the VT100 manual. So the year moves to match the machine, rather than the machine to match the year. In 1971 Unix users typed on paper Teletypes (Model 33/37) on a PDP-11/20 (copy-pass §9.1–9.3, high). The VT100 and its sounds stay as they are.
+- **1979 facts to build on:**
+  - Version 7 Unix, released by Bell Labs in January 1979. **High** · [Wikipedia, Version 7 Unix](https://en.wikipedia.org/wiki/Version_7_Unix) · [TUHS V7 source tree](https://www.tuhs.org/cgi-bin/utree.pl?file=V7).
+  - The Bourne shell was V7's default `sh`. **High** (same).
+  - V7's main machine was the PDP-11, with the 11/70 (1975) typical. **Medium**: check it in the V7 manual's "Setting up Unix" before writing the boot text.
+  - Pipes (1973) and `mail` are both in V7. **High**.
+- **Change:**
+  - **Year label:** `1971` → `1979` in `SharedLayout.jsx` (HUD), `Level0.jsx` (intro and discovery), `Timeline.jsx`, and the `sfx.js` comment. If the timeline spaces entries by year, check it still looks right.
+  - **Boot text** (`useTerminal.js`): replace "PDP-11/45 UNIX", "UNIX Time-Sharing System v3" and "Mem = 256K" with V7 boot and login output, taken from the V7 manual or a SIMH V7 boot log on TUHS. Mark anything you reconstruct.
+  - **Dates:** `date`, Last login, and the mail and note headers move to 1979. Pick one working week, check the weekday for each date, and keep every date in the level consistent.
+  - **ken's mail:** drop the 11/40 and 11/45 lines and the "Mail version 1.0" banner (Berkeley Mail style). Use V7 `mail` output as its manual page describes it. Write a new body about something true of 1979 at Bell Labs, with a source; the V7 release going out to licensees is one option. Keep it short and plain.
+  - **dmr's note:** the copy pass proposes a 1971 note about the First Edition manual. Replace it with a 1979 note in the same spirit, for example the Seventh Edition manual. Add sources and a weekday check.
+  - **Curator (Level 5):** in `curatorFallbacks.js` and `curatorSystemPrompt.js`, 1971 → 1979 (including the `'1971'` keyword). Recheck "about fifty years" and "1971 to 2023" wherever they appear: 1979–2023 is 44 years.
+  - **`docs/copy-pass.md`:** Matthew hasn't reviewed it yet, so it must show 1979 when he does. Update every proposal that says 1971 (§1.1 intro, the site lines, the curator prompt and fallbacks, §7 notes file). In §9, mark items 1–3 "resolved by the move to 1979". Keep its rules: plain, matter-of-fact copy, and the term "Interface Artifacts".
+  - **`docs/design-spec.md`:** change Level 0's era, the timeline table, the Sound section's "1971 VT100", and Typography if it names the year. Add a line saying the year follows the VT100 (Matthew's call, 9 Nov 2026).
+- **Out of scope:** the copy pass's live-text changes (Matthew reviews them separately) and any visual change to the terminal.
+- **Check:** `npm test`, `npm run build`, and in the browser: the timeline, Level 0's intro, boot, `ls`, `mail`, `date` and the note, and the discovery card all show 1979. Then `grep -rn 1971 src docs` and explain any hit that's left.
+
 ### Spec: museum cards and TeachText, matched to the build · approved 9 Nov 2026
 Docs only: change `docs/design-spec.md`, no code.
 - **Museum cards** (Matthew's call: the spec follows the build). Before editing, check what each card actually renders (font family, any top border) in the browser or CSS. The cards are IntroModal, DiscoveryCard, SmallScreenNotice and the timeline's titles. Then make the spec describe that:
