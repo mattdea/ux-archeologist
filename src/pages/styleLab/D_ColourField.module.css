@@ -1,0 +1,204 @@
+/* src/pages/styleLab/D_ColourField.module.css
+ * Concept D, "Colour field": one flat colour per field (--field), black
+ * Helvetica, hard 2px edges. Sizes are in cqw so the type fills the window
+ * at any width. No transitions anywhere. */
+
+.page {
+  min-height: 100cqh;
+  background: #000;
+  color: #000;
+  font: 700 clamp(14px, 1.25cqw, 18px) / 1.35 Helvetica, Arial, sans-serif;
+  --pad: clamp(16px, 2.2cqw, 40px);
+  --edge: 2px solid #000;
+  --lab-focus: #000;
+}
+.page :where(p, h1, h2, ul) { margin: 0; padding: 0; }
+.page :where(a, button) { color: inherit; font: inherit; }
+.page a:focus-visible, .page button:focus-visible { outline: 4px solid #000; outline-offset: 3px; }
+.black a:focus-visible, .black button:focus-visible { outline-color: var(--field); }
+
+/* ── A field ────────────────────────────────────────────────────────── */
+.field {
+  box-sizing: border-box;
+  min-height: 100cqh;
+  padding: var(--pad);
+  background: var(--field);
+  display: flex;
+  flex-direction: column;
+}
+.field + .field { border-top: var(--edge); }
+
+.giant {
+  font-size: 19.5cqw;
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+  font-weight: 700;
+  margin-left: -0.05em !important;
+}
+.giant span { display: block; }
+.huge { font-size: clamp(34px, 8cqw, 130px); line-height: 0.9; letter-spacing: -0.05em; font-weight: 700; }
+.lede { font-size: clamp(18px, 2.3cqw, 36px); line-height: 1.12; letter-spacing: -0.02em; max-width: 22ch; }
+
+/* A black slab with the field's colour for its text: every button */
+.slab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2em;
+  box-sizing: border-box;
+  padding: 0.7em 1em;
+  border: var(--edge);
+  background: #000;
+  color: var(--field) !important;
+  font-size: clamp(16px, 1.9cqw, 30px) !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+}
+.slab:hover { background: var(--field); color: #000 !important; }
+.slabs { display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto !important; padding-top: var(--pad) !important; }
+
+/* A ruled line of small things along the bottom of a field */
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 24px;
+  margin-top: var(--pad) !important;
+  padding-top: 12px !important;
+  border-top: var(--edge);
+}
+
+/* ── Title ──────────────────────────────────────────────────────────── */
+.titleFoot {
+  margin-top: auto;
+  padding-top: var(--pad);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--pad);
+}
+.aboutField .columns {
+  margin-top: var(--pad);
+  columns: 2 30ch;
+  column-gap: var(--pad);
+  max-width: 110ch;
+  font-size: clamp(16px, 1.5cqw, 22px);
+  font-weight: 400;
+  line-height: 1.3;
+}
+.aboutField .columns p { margin-bottom: 0.9em; break-inside: avoid; }
+
+/* ── Timeline: six tiles ────────────────────────────────────────────── */
+.timeline { min-height: 100cqh; display: flex; flex-direction: column; background: #fff; }
+.tiles { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; }
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--pad) * 0.7) var(--pad) var(--pad);
+  background: var(--field);
+  border-right: var(--edge);
+  border-bottom: var(--edge);
+  text-decoration: none;
+  overflow: hidden;
+}
+.tile:nth-child(3n) { border-right: none; }
+.tile:hover, .tile:focus-visible { background: #000; color: var(--field); }
+.tile:focus-visible { outline-offset: -8px !important; outline-color: var(--field) !important; }
+.tileYear { font-size: 11.5cqw; line-height: 0.85; letter-spacing: -0.07em; margin-left: -0.05em; }
+.tileArrow { position: absolute; right: var(--pad); top: calc(var(--pad) * 0.6); font-size: 3.2cqw; line-height: 1; }
+.tileTitle { margin-top: auto; padding-top: 12px; font-size: clamp(18px, 2.3cqw, 36px); line-height: 1.05; letter-spacing: -0.03em; }
+.tileName { font-weight: 400; margin-top: 4px; }
+.timelineStrip { margin: 0 !important; padding: 12px var(--pad) !important; border-top: none; background: #fff; }
+.stripLinks { display: flex; flex-wrap: wrap; gap: 6px 24px; }
+.stripLinks a, .stripLinks button { background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.stripLinks a:hover, .stripLinks button:hover { background: #000; color: #fff; }
+
+/* ── Collection ─────────────────────────────────────────────────────── */
+.collectionField .lede { margin-top: 0.6em; }
+.cards { font-weight: 400; display: flex; flex-wrap: wrap; gap: var(--pad); margin-top: calc(var(--pad) * 1.5); align-items: stretch; }
+
+/* ── A room ─────────────────────────────────────────────────────────── */
+.levelField {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 2.1fr) minmax(260px, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'hud hud hud'
+    'intro artifact discovery'
+    'tracker artifact exit';
+  gap: var(--pad);
+  align-items: start;
+}
+.hud { grid-area: hud; display: flex; justify-content: space-between; align-items: flex-start; gap: var(--pad); }
+.hudEra { display: flex; align-items: baseline; gap: 0.5em; flex-wrap: wrap; }
+.hudYear { font-size: clamp(48px, 6.5cqw, 110px); line-height: 0.8; letter-spacing: -0.07em; margin-left: -0.05em; }
+.hudTitle { font-size: clamp(18px, 2.3cqw, 36px); letter-spacing: -0.03em; }
+.dots { display: flex; gap: 6px; }
+.dot { display: block; width: 18px; height: 18px; box-sizing: border-box; border: var(--edge); }
+.dot:hover { background: #000; }
+.dotDone { background: #000; }
+.dotNow { background: #fff; }
+
+.box { box-sizing: border-box; padding: clamp(14px, 1.4cqw, 22px); border: var(--edge); font-weight: 400; font-size: clamp(14px, 1.1cqw, 16px); }
+.box > * + * { margin-top: 12px !important; }
+.white { background: #fff; }
+.black { background: #000; color: var(--field); }
+.small { font-weight: 700; }
+.boxTitle { font-size: clamp(22px, 2.3cqw, 36px); line-height: 1; letter-spacing: -0.03em; font-weight: 700; }
+.bigYear { font-size: clamp(56px, 7cqw, 110px); line-height: 0.8; letter-spacing: -0.07em; font-weight: 700; margin-left: -0.05em !important; }
+.box .slab { width: 100%; font-size: clamp(15px, 1.4cqw, 22px) !important; }
+.slabField { background: var(--field); color: #000 !important; border-color: var(--field); }
+.slabField:hover { background: #000; color: var(--field) !important; }
+
+.intro { grid-area: intro; }
+.discovery { grid-area: discovery; }
+.tracker { grid-area: tracker; align-self: end; font-weight: 700; }
+.exit { grid-area: exit; align-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.cont { color: #fff !important; }
+.cont:hover { background: #fff; }
+.back { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.back:hover { background: #000; color: var(--field); }
+
+.artifact { grid-area: artifact; display: flex; flex-direction: column; align-items: center; gap: 16px; min-width: 0; }
+.standin {
+  box-sizing: border-box;
+  /* as wide as the column, or as wide as its proportions allow in 52% of the window's height */
+  width: min(100%, calc(52cqh * var(--w) / var(--h)), calc(var(--w) * 1.35px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--edge);
+  background: #8f8f8f;
+}
+.hint { padding: 0.6em 1em; font-style: italic; text-align: center; max-width: 100%; }
+
+.checks { list-style: none; }
+.checks li { display: flex; gap: 0.6em; align-items: baseline; padding: 0.15em 0; }
+.check { flex: none; width: 0.75em; height: 0.75em; border: var(--edge); transform: translateY(0.08em); }
+.checkDone { background: #000; }
+.done { text-decoration: line-through; text-decoration-thickness: 2px; }
+
+.noticeField { min-height: 0; }
+
+/* ── Phone width ────────────────────────────────────────────────────── */
+@container lab (max-width: 700px) {
+  .giant { font-size: 21cqw; }
+  .tiles { grid-template-columns: 1fr; }
+  .tile { border-right: none; min-height: 21cqh; }
+  .tileYear { font-size: 27cqw; }
+  .tileArrow { font-size: 9cqw; }
+  .levelField {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: 'hud' 'intro' 'artifact' 'tracker' 'discovery' 'exit';
+  }
+  .hud { flex-direction: column; gap: 12px; }
+  .hudYear { font-size: 27cqw; }
+  .exit { align-items: stretch; }
+  .cards { justify-content: center; }
+}

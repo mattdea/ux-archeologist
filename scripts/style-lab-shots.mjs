@@ -72,9 +72,15 @@ async function main() {
       waiting.delete(msg.id)
       msg.error ? w.reject(new Error(msg.error.message)) : w.resolve(msg.result)
     }
+    // Every command gets 20s; a navigation caught by a dev-server reload can
+    // otherwise wait for ever
     const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
       const id = ++nextId
-      waiting.set(id, { resolve, reject })
+      const timer = setTimeout(() => { waiting.delete(id); reject(new Error(`${method} timed out`)) }, 20000)
+      waiting.set(id, {
+        resolve: (v) => { clearTimeout(timer); resolve(v) },
+        reject: (e) => { clearTimeout(timer); reject(e) },
+      })
       ws.send(JSON.stringify({ id, method, params, sessionId }))
     })
 
@@ -93,6 +99,14 @@ async function main() {
     })
 
     const shoot = async (hash, size, file) => {
+      for (let attempt = 1; ; attempt++) {
+        try { return await shootOnce(hash, size, file) } catch (err) {
+          if (attempt === 3) throw err
+          console.log(`  retrying ${hash || 'index'} at ${size.width} (${err.message})`)
+        }
+      }
+    }
+    const shootOnce = async (hash, size, file) => {
       await page('Emulation.setDeviceMetricsOverride', { width: size.width, height: size.height, deviceScaleFactor: size.scale, mobile: size.width < 600 })
       await page('Page.navigate', { url: 'about:blank' })
       await page('Page.navigate', { url: `${BASE}/style-lab${hash}` })
