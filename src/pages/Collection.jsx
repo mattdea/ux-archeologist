@@ -84,11 +84,14 @@ function FaceDownCard({ a, onOpen }) {
   )
 }
 
-// Two looks to compare while deciding (dev server only): 'card', the
-// collectible cards, and 'museum', the same cards in the museum's own
-// style (square corners, white, sans, still). Remembered per browser.
+// Looks to compare while deciding (dev server only): 'card', the
+// collectible cards; 'museum', the same cards in the museum's own style
+// (square corners, white, sans, still); 'hybrid', the museum's square
+// corners and sans with the collectible's card stock, tilt and light.
+// Remembered per browser.
 const STYLE_KEY = 'ux-archaeologist:collection-style'
-const readStyle = () => { try { return localStorage.getItem(STYLE_KEY) === 'museum' ? 'museum' : 'card' } catch { return 'card' } }
+const LOOKS = ['card', 'museum', 'hybrid']
+const readStyle = () => { try { const v = localStorage.getItem(STYLE_KEY); return LOOKS.includes(v) ? v : 'card' } catch { return 'card' } }
 
 export default function Collection() {
   const navigate = useFadeNavigate()
@@ -97,11 +100,11 @@ export default function Collection() {
   const chooseLook = (v) => { setLook(v); try { localStorage.setItem(STYLE_KEY, v) } catch { /* storage blocked */ } }
 
   return (
-    <div className={`${styles.page} ${look === 'museum' ? styles.museum : ''}`}>
+    <div className={`${styles.page} ${look !== 'card' ? styles.museum : ''} ${look === 'hybrid' ? styles.hybrid : ''}`}>
       {import.meta.env.DEV && (
         <div className={styles.lookSwitch} role="group" aria-label="Card style (dev)">
           <span>Card style (dev):</span>
-          {[['card', 'Collectible'], ['museum', 'Museum']].map(([v, label]) => (
+          {[['card', 'Collectible'], ['museum', 'Museum'], ['hybrid', 'Hybrid']].map(([v, label]) => (
             <button key={v} type="button" aria-pressed={look === v} className={look === v ? styles.lookOn : ''} onClick={() => chooseLook(v)}>
               {label}
             </button>
