@@ -13,7 +13,8 @@
   --lab-focus: #000;
 }
 .page :where(p, h1, h2, ul) { margin: 0; padding: 0; }
-.page :where(a, button) { color: inherit; font: inherit; }
+/* (not the collection's cards, which are buttons with their own look) */
+.page :where(a, button:not([data-current-card] *)) { color: inherit; font: inherit; }
 .page a:focus-visible, .page button:focus-visible { outline: 4px solid #000; outline-offset: 3px; }
 .black a:focus-visible, .black button:focus-visible { outline-color: var(--field); }
 

@@ -5,6 +5,7 @@ import Document from './A_Document'
 import Index from './B_Index'
 import Canvas from './C_Canvas'
 import ColourField from './D_ColourField'
+import Specimen from './E_Specimen'
 
 export const SCREENS = [
   { id: 'title', label: 'Title' },
@@ -41,5 +42,12 @@ export const CONCEPTS = [
     name: 'Colour field',
     blurb: 'One flat, loud colour per page and per era, black Helvetica as large as it goes, hard-edged boxes. Nothing fades.',
     Component: ColourField,
+  },
+  {
+    id: 'e',
+    letter: 'E',
+    name: 'Specimen sheet',
+    blurb: 'A catalogue sheet: a strict grid of small pictures and blocks of text, each numbered, with tiny captions. Nothing is bigger than anything else.',
+    Component: Specimen,
   },
 ]

@@ -9,11 +9,12 @@ import { PLATES, ILLUSTRATIONS, ILLUSTRATION_GROUND } from '../collection/cardAr
 import { isFound } from './content'
 import lab from './lab.module.css'
 
+// data-current-card lets a concept's resets skip the card (`:not([data-current-card] *)`)
 /** One current card, `width` px wide (the card's own type doesn't scale; use `zoom` to shrink it whole). */
 export function CurrentCard({ room, art, onOpen, width = 300, zoom = 1, faceUp }) {
   const up = faceUp ?? isFound(room.level)
   return (
-    <div className={lab.cardWrap} style={{ width, zoom }}>
+    <div className={lab.cardWrap} style={{ width, zoom }} data-current-card>
       {up
         ? <FoundCard a={room} art={art} onOpen={onOpen} />
         : <FaceDownCard a={room} onOpen={onOpen} />}
