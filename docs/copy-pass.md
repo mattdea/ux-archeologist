@@ -111,16 +111,16 @@ Button stays **Continue**. Label "ARTIFACT DISCOVERED" stays.
 | 0.2 | Check your messages | Read your mail | the command is `mail` |
 | 0.3 | Look up a command in the manual | Look up a command in the manual | keep |
 | 1.1 | Find the document on this computer | Open the Notes document | says which one |
-| 1.2 | Delete the Projects folder | Put the Projects folder in the Trash | 1984 wording: Trash, not delete |
+| 1.2 | Delete the Projects folder | Delete the Projects folder | keep (your call, 9 Nov) |
 | 1.3 | Discover what commands are available | Look through the menus | plainer |
-| 2.1 | Navigate to a new page | Follow a link | |
+| 2.1 | Navigate to a new page | Navigate to a new page | keep (your call, 9 Nov) |
 | 2.2 | Return to a previous page | Go back a page | |
 | 2.3 | Find 'A Brief History of the Web' | Find "A Brief History of the Web" | straight double quotes |
 | 3.1 | Slide to unlock | Slide to unlock | keep (the iPhone's own words) |
 | 3.2 | Explore the Notes app | Open a note | says what completes it |
 | 3.3 | Swipe between screens | Swipe to the second home screen | |
 | 4.1 | Like Imani's post | Like Imani's post | keep |
-| 4.2 | Learn more about a sponsored post | Open a sponsored post's link | completes when the in-app browser opens |
+| 4.2 | Learn more about a sponsored post | Learn more about a sponsored post | keep (your call, 9 Nov) |
 | 4.3 | Follow someone new | Follow someone new | keep |
 | 5.1 | Start a conversation | Send a message | |
 | 5.2 | Ask a follow-up question | Ask a follow-up question | keep |
@@ -173,13 +173,13 @@ Notes: 0.1 now names the file, since `cat` alone does nothing useful. Commands a
   > This exhibit recreates six of those moments as working replicas you can explore the way their original users did.
   >
   > Type a command. Drag an icon. Follow a link. Swipe a screen. The history of computing is a history of how we learned to talk to machines — and how they learned to talk back.
-- **Proposed**, three paragraphs:
-  > This exhibit has six interfaces, one for each big change in how people used computers between 1979 and 2023: the command line, the desktop, the web, the touchscreen, the ranked feed and the chat with a language model.
+- **Proposed** (revised 9 Nov: the current text's ideas with the faithfulness note), three paragraphs:
+  > Every interface you've ever used was someone's radical idea. The command line, the desktop, the hyperlink and the touchscreen each feel inevitable now, but each was a leap of imagination when it was new.
   >
-  > Each is a working replica. You use it as people did at the time, complete three tasks, and then read what it changed.
+  > This exhibit recreates six of those moments as working replicas you can explore the way their first users did. Type a command. Drag an icon. Follow a link. Swipe a screen. Scroll a feed. Ask a question.
   >
   > The replicas follow photographs, manuals and recordings from their time. Where no record survives of how something looked or behaved, the details are reconstructed.
-- **Note:** Removes "radical idea", "leap of imagination", the imperative list and the closing line. The third paragraph is new: it says how faithful the replicas are, which the project documents.
+- **Note:** Keeps your opening and the list of actions, now six, one per room (scroll a feed, ask a question added). The em dash becomes "and … each" (voice guide 10). The closing line about learning to talk to machines goes; the third paragraph says how faithful the replicas are instead.
 - "Designed by Matthew Dea", "Built with React + Vite.", Portfolio, LinkedIn: **keep**.
 
 ### 5.3 Timeline
