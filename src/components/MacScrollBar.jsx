@@ -76,7 +76,16 @@ export default function MacScrollBar({
     return () => ro.disconnect()
   }, [vertical, active])
 
-  useLayoutEffect(() => () => timers.current.forEach(clearTimeout), [])
+  // Presses add document listeners that run until the button comes up. If
+  // the bar goes first (its window closes, or there's no longer anything to
+  // scroll), end them here so they never touch a track that's gone.
+  const releases = useRef(new Set())
+  const onRelease = (fn) => { releases.current.add(fn); return () => releases.current.delete(fn) }
+  useLayoutEffect(() => () => {
+    timers.current.forEach(clearTimeout)
+    releases.current.forEach(fn => fn())
+    releases.current.clear()
+  }, [])
 
   const scrollable = active && max > 0
   const travel = Math.max(0, trackLen - THUMB + 2)        // thumb borders overlap the arrows'
@@ -91,6 +100,7 @@ export default function MacScrollBar({
   }
 
   const along = (clientX, clientY) => {
+    if (!trackRef.current) return null
     const p = toLocal(trackRef.current, clientX, clientY)
     return vertical ? p.y : p.x
   }
@@ -102,8 +112,10 @@ export default function MacScrollBar({
       timers.current.forEach(clearTimeout)
       timers.current = []
       document.removeEventListener('mouseup', stop)
+      forget()
       onUp?.()
     }
+    const forget = onRelease(stop)
     const tick = () => {
       if (step() === false) return
       timers.current = [setTimeout(tick, REPEAT_EVERY)]
@@ -126,7 +138,7 @@ export default function MacScrollBar({
     e.preventDefault()
     e.stopPropagation()
     let pointer = along(e.clientX, e.clientY)
-    const move = ev => { pointer = along(ev.clientX, ev.clientY) }
+    const move = ev => { pointer = along(ev.clientX, ev.clientY) ?? pointer }
     document.addEventListener('mousemove', move)
     const dir = pointer < thumbAt(valueRef.current) ? -1 : 1
     hold(() => {
@@ -146,13 +158,18 @@ export default function MacScrollBar({
     const place = (cx, cy) => clamp(along(cx, cy) - grab, -1, travel - 1)
     setGhost(start)
     const move = ev => setGhost(place(ev.clientX, ev.clientY))
-    const up = ev => {
+    const end = () => {
       document.removeEventListener('mousemove', move)
       document.removeEventListener('mouseup', up)
+      forget()
+    }
+    const up = ev => {
+      end()
       const at = place(ev.clientX, ev.clientY)
       setGhost(null)
       if (travel > 0) set(((at + 1) / travel) * max)
     }
+    const forget = onRelease(end)   // unmounted mid-drag: drop it, don't scroll
     document.addEventListener('mousemove', move)
     document.addEventListener('mouseup', up)
   }

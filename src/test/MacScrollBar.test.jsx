@@ -30,6 +30,26 @@ const setup = (props = {}) => {
 }
 
 describe('MacScrollBar', () => {
+  // A window can close (or stop needing a bar) while its bar is held: the
+  // drag must end quietly instead of reading a track that's gone
+  it.each([['thumb', '[data-thumb]'], ['track', '[data-track]'], ['arrow', '[data-arrow="inc"]']])(
+    'a %s press that outlives the bar ends quietly', (_, sel) => {
+      const errors = []
+      const onError = (e) => { errors.push(e.error ?? e.message); e.preventDefault() }
+      window.addEventListener('error', onError)
+      const { container, onChange, unmount } = setup()
+      const el = container.querySelector(sel)
+      fireEvent.mouseDown(el, { button: 0, clientX: 8, clientY: sel === '[data-track]' ? 90 : 10, target: el })
+      onChange.mockClear()
+      unmount()
+      fireEvent.mouseMove(document, { clientX: 8, clientY: 60 })
+      act(() => { vi.advanceTimersByTime(1000) })
+      fireEvent.mouseUp(document, { clientX: 8, clientY: 60 })
+      window.removeEventListener('error', onError)
+      expect(errors).toEqual([])
+      expect(onChange).not.toHaveBeenCalled()
+    })
+
   it('scrolls a line per arrow press and repeats while held', () => {
     const { container, onChange } = setup()
     fireEvent.mouseDown(container.querySelector('[data-arrow="inc"]'), { button: 0 })
