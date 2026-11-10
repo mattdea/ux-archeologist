@@ -16,7 +16,6 @@
 | 2. Curator's voice | Voice guide → copy pass | Write the guide first |
 | | Hints: feature + copy | Feature decisions, house style |
 | 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
-| | Mac: drag files between folders and the desktop | Edge cases, references |
 | | Netscape chrome | Version + references |
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
@@ -82,25 +81,6 @@ Rounds 1–4 are in Done.
   - *TeachText / Font Mover* (built 9 Nov 2026, see spec "Utilities folder and applications"): TeachText's Open... dialog, Font Mover's font moving, and Disk Copy / SysVersion have no screenshots yet. Send them to build those.
 - **Rule:** everything must be something Finder 1.0/1.1 did.
 
-#### Mac: drag files between folders and the desktop
-Matthew's idea (10 Nov 2026): drag a file out of a folder into another folder, or out onto the desktop.
-- **Today:**
-  - Icons move only within their own window, or between the desktop and the Trash. The spec says "Dragging between windows (into a folder, onto the disk) isn't built."
-  - Notes and Projects already sit on the desktop as items "dragged out of the disk window".
-  - Put Back works only for items in the Trash.
-- **What the 1984 Finder did (verify before building):**
-  - Dragging an icon onto a folder icon, or into an open folder or disk window on the same disk, moved it there. While the pointer was over a folder or disk icon, that icon highlighted (inverted) as a drop target. **Medium** (*Macintosh* owner's guide, 1984).
-  - Dragging onto another disk copied the file instead. There is no second disk here, so this doesn't come up. **Medium**.
-  - An icon dragged onto the desktop stayed there but still belonged to its folder. **Put Back** sent it home. **Medium**: check whether Finder 1.1's Put Back covered desktop items or only the Trash.
-  - A folder couldn't be dropped into itself or into a folder inside it. **Low**: find the real behaviour; it may simply have refused.
-- **Look for:** screenshots of a folder highlighted under a dragged icon, and the 1984 owner's guide's pages on moving and Put Back. Put them in `docs/reference/mac system 1/` when you find them.
-- **Decide:**
-  - Which items can move. Can the System Folder's System and Finder? Are the Utilities apps locked? Do Projects' Budget, Letter and Sketch move?
-  - Does a moved file keep its new place for the session, like icon positions do now?
-  - Does Get Info's "Where" line follow the move?
-  - Do the objectives still read correctly if Notes is moved into a folder?
-- **Touches:** `DesktopScene.jsx` (icon model, drop targets), `FolderWindowContent.jsx`, `desktopDrag.js`, and the spec's "Moving icons in windows" and Put Back lines.
-
 #### Netscape chrome
 - **Decide first:** which Navigator version and platform. Throbber = Navigator 1.1+; cursors = Windows 95 (shipped Aug 1995).
 - **Then:** dated reference screenshots into `docs/reference/`, a difference list, fixes.
@@ -132,6 +112,37 @@ Today only Notes opens.
 ---
 
 ## Approved
+
+### Level 1: drag files between folders and the desktop · approved 10 Nov 2026
+Matthew's idea. He asked Claude to make the open decisions (marked *decided*), and approved it on 10 Nov 2026.
+- **Today:** icons only move within their own window, or between the desktop and the Trash. The spec says "Dragging between windows (into a folder, onto the disk) isn't built." Put Back works only for items in the Trash.
+- **Research first** (30 minutes at most), then mark each fact high, medium or low in the spec:
+  - The 1984 *Macintosh* owner's guide pages on moving icons and on Put Back.
+  - Any Finder 1.x screenshots of a folder highlighted under a dragged icon. infinitemac.org can show Finder 1.1 running.
+- **Build:**
+  - *Into a folder or the disk:* drop an icon on a folder icon or on the disk icon, or into an open folder or disk window, and the item moves there. On the same disk the Finder moved, not copied (**medium**).
+  - *Drop-target highlight:* while the dragged outline is over a folder, disk or Trash icon, that icon inverts. It reverts when the outline leaves or the drop ends (**medium**). An open window gets no highlight (*decided*).
+  - *Placement:* in an open window the icon lands where it's let go. In a closed folder it takes the first free slot on the Finder's 64-pixel grid, and you see it there when the folder opens (*decided*, reconstructed).
+  - *Out to the desktop:* drag an icon out of any window onto the bare desktop and it stays there, still belonging to its folder.
+  - *Put Back:* with a desktop item selected, Put Back sends it back to the window it came from, with the zoom outline, as it does for Trash items now. If the research shows Finder 1.1's Put Back worked only on the Trash, leave it out and note that in Done (*decided*: build it unless the research contradicts it).
+  - *Info lines:* every window's "N items NNNK in folder/disk" updates after a move.
+  - *Get Info:* the "Where" line follows the item.
+- **What can move** (*decided*):
+  - Documents (Notes, Budget, Letter, Sketch, saved TeachText files), folders (Projects, Empty Folder, Utilities) and the Utilities apps.
+  - **System** and **Finder** stay in the System Folder: dropped anywhere else, their outline snaps back to where it started. The System Folder itself, the disk and the Trash can't go into folders. All of this is reconstructed; Finder 1.1's real refusal is unknown.
+  - A folder dropped on itself, or into a folder inside it, snaps back (reconstructed).
+- **Memory** (*decided*): moves last for the session, like icon positions and saved documents, and reset on reload.
+- **Objectives** (*decided*):
+  - Opening Notes completes objective 1 wherever Notes is. Trashing Projects completes objective 2 from any window.
+  - The first hint, "Double-click the Notes icon on the desktop", drops "on the desktop" once Notes has been moved off it. The second hint does the same for Projects.
+  - Replay and revisits start with the original layout.
+- **Look:** dashed outlines at ~10fps, as now. No new museum-layer UI.
+- **Spec:** rewrite "Moving icons in windows" and the Put Back line, and remove "Dragging between windows … isn't built". List what's reconstructed.
+- **Check:** `npm test`, adding tests for a move, a refused move and Put Back. Then in the browser:
+  - Notes into Projects, Projects into Empty Folder, a Utilities app out to the desktop and back with Put Back.
+  - System refusing to leave.
+  - Every info line and Get Info "Where" correct.
+  - All three objectives completing after moves.
 
 _Nothing approved right now._
 
