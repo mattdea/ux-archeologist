@@ -172,6 +172,18 @@ Matthew is going with the B / B2 direction: one monospace list that is the whole
   - **Phone width:** the list above the artifact. It still has to fit the small-screen notice's rules.
   - **The museum still reads as the frame,** next to every artifact. Watch Level 0, a monospace terminal, where the list and the artifact could blur. Show Matthew how it looks there.
   - **Copy stays as it is,** and the voice rules hold.
+- **Readability (Matthew, 10 Nov 2026):** he loves the look, but the concept is hard to read and navigate. Part of that is the lab showing every piece of the HUD at once, which the game never does: one room's intro, objectives, hint, Continue, discovery and the small-screen notice all open together. The rest won't fix itself, so the first version should solve it:
+  - **Hierarchy with one size.** Every line is the same size and weight, so room names, body text, objectives and links look alike. Use a second ink (a grey that passes AA) for secondary text: the leaders, the artifact names on the right, `[ ]` and the hint. That leaves black for what matters now. Keep the inverted row for one meaning.
+  - **What's clickable.** "Enter the exhibit", "Collection" and "Reset progress" look like plain text, and so do the room pairs with leaders. Give every link one consistent mark, for example a trailing `→` or `↗`, an underline, or the `>` in the marker column on hover. Use leaders for one meaning only.
+  - **Hover and current are different things.** The inverted row is both "the room you're in" and "under the pointer". Pick one: inverted means current or keyboard focus, and pointer hover gets something lighter.
+  - **One thing open at a time,** matching the screen states:
+    - intro: the room's intro and Begin
+    - playing: objectives, the hint when it comes, then Continue, with the intro folded away behind its line
+    - discovery: the artifact's text and the next room
+  - **Quieter while playing.** The other five rooms don't need full lines during play. Grey them or fold them to one line, so the eye goes from the current room to the artifact.
+  - **The artifact first.** In the concept the list takes about 40% of the width and the artifact sits low and small. In play the list should be narrow (a measure that fits the objectives, about 40ch) and the artifact as large as `useArtifactFit` allows, centred in the space left.
+  - **Paragraphs need a blank line between them** (About, intros), and long body text keeps a readable measure of about 60ch.
+  - **Rooms not found yet** end abruptly (2016 and 2023 have no right-hand side). Give them a quiet right side in grey, for example `[ ]` or `not found`, so the rows don't look broken.
 - **Not in this pass:** a dark version, sharing, new copy, changes to the artifacts.
 - **Spec:** add an "Index museum" section to `docs/design-spec.md` covering its grid, states, keyboard and how the switch works. Leave the Classic sections as they are.
 - **Checks:**
