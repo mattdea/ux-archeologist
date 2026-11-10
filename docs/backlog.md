@@ -19,6 +19,7 @@
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
 | | Instagram screens | Which screens + references |
+| 5. Museum restyle | Phases 2 and 3 | Matthew's pick from the style lab |
 
 ---
 
@@ -106,42 +107,53 @@ Today only Notes opens.
 
 ---
 
-## Approved
+### 5. Museum restyle: phases 2 and 3
 
-### Museum: style lab (restyle phase 1) · approved 10 Nov 2026
-Matthew wants the museum to look more like the personal sites he's been collecting: crude, unfinished, typographic, plain, sometimes silly. Concepts come first, and nothing in the game changes until one is picked.
+Phase 1, the style lab, is built (see Done, 10 Nov 2026). Open `/style-lab` on the dev server, or the screenshots in `docs/style-lab/`.
 
-- **Scope:** the museum layer only. That means the title, timeline, collection, About, HUD (back link, era label, Continue), IntroModal, ObjectiveTracker, HintPill, DiscoveryCard and the small-screen notice. The artifacts keep their exact period look. A rough museum around exact artifacts is a good contrast, but the museum still has to read as the frame, not as another artifact. Watch this next to the 1995 Netscape level especially.
-- **Phase 1, the style lab (build this first):**
-  - A dev-only page at `/style-lab`, set up like `/card-lab` (`import.meta.env.DEV` in `views.js` and `SharedLayout.jsx`, plus a "Style lab (dev)" link on the timeline).
-  - One concept per direction below. Each is a static mock that uses the real text from `src/data/artifacts.js` and the level intros.
-  - Each concept shows four screens: the title, the timeline, the collection (with the current cards and illustrations) and one level frame. The level frame is a grey box standing in for the artifact, with the intro card, objective tracker, hint and discovery card around it.
-  - The page opens on an index of all the concepts side by side, with a link into each one.
-  - The lab doesn't import or change the real museum components, so it can be deleted in one go.
-- **Directions:** the names in brackets are from Matthew's reference board.
-  - **A. Unstyled document:** browser defaults like Times, blue and purple underlined links, `<hr>` and bordered tables. The timeline is a bulleted list. (Ken Kifer's Bike Pages, Harald Peter Ström)
-  - **B. Index:** one monospace list with years in a left column, dense rows, and every line a link. The site reads like a table of contents. (Christoph Labacher's Notes, Brendan Howell, Paul Bernhard)
-  - **C. Canvas:** the six rooms are boxes scattered on a large plane that you drag around, so the timeline is a map. (Alberto Cinco Jr., Camilo Garcia A., ribo.zone)
-  - **D. Colour field:** one flat, saturated background per page or per era, with black system sans and hard-edged boxes. (Benjamin Earl, Elliott Cost, Justin Liang)
-  - **E. Specimen sheet:** a contact-sheet grid of artifact pictures with tiny captions, like a catalogue. (nice.rocks, Damon Zucconi)
-  - **F. Notebook:** pale paper, `<details>` toggles, a live clock and small silly touches. (polinsski, Maxwell Neely-Cohen, juwee's girlblog)
-- **Rules for every concept:**
-  - System fonts only (Times, Helvetica/Arial, ui-monospace), so no web fonts.
-  - No shadows, rounded corners or gradients unless the direction calls for them.
-  - Text keeps WCAG AA contrast, focus stays visible, everything works by keyboard, and motion stops under reduced motion.
-  - Copy stays as it is. Crude means the layout, not the words.
+- **Why:** Matthew wants the museum to look more like the personal sites he's been collecting: crude, unfinished, typographic, plain, sometimes silly. Nothing in the game changes until a direction is picked.
+- **Scope:** the museum layer only: the title, timeline, collection, About, HUD (back link, era label, Continue), IntroModal, ObjectiveTracker, HintPill, DiscoveryCard and the small-screen notice. The artifacts keep their exact period look. The museum still has to read as the frame, not as another artifact. Watch this next to the 1995 Netscape level especially.
 - **Phase 2:** Matthew picks one direction or a mix, for example B's timeline in D's colours.
 - **Phase 3 (needs its own approval):**
   - Set up museum tokens on `:root` and restyle one component per commit.
   - Align the collection cards and card lab with the new style.
   - Rewrite the spec's museum section.
   - Delete the lab or keep it.
-- **Decided (10 Nov 2026):** all six directions, and the level frame is in phase 1. Build phase 1 only; phases 2 and 3 wait for Matthew.
-- **Done when:** `/style-lab` works on the dev server with all six concepts and their four screens each, it's missing from the production build (`npm run build`, then check the bundle), and no real museum component has changed. Screenshot each concept at 1440 and 375 wide for Matthew.
+- **Rules that held for every concept, and should hold for the restyle:** system fonts only (Times, Helvetica/Arial, ui-monospace); no shadows, rounded corners or gradients unless the direction calls for them; WCAG AA contrast, visible focus, everything by keyboard, no motion under reduced motion; copy stays as it is.
+
+---
+
+## Approved
+
+Nothing waiting.
 
 ---
 
 ## Done
+
+### Museum: style lab (restyle phase 1) · 10 Nov 2026
+- **Built:** a dev-only page at `/style-lab` ("Style lab (dev)" on the timeline). It opens on an index of six concepts side by side, each with live thumbnails of its four screens (title, timeline, collection, level frame) linking into it. Inside a concept, a bar along the top switches screen, concept and card art (Drawn · Illustrated); every screen has its own address (`/style-lab#d/level/3`). The mocks use the museum's real text (`src/data/artifacts.js`, and the rest copied word for word into `src/pages/styleLab/content.js`) with a fixed state: four rooms found, the first objective done, the hint for the second.
+  - **A. Unstyled document:** everything handed back to the browser (`all: revert`): Times, blue and purple links, `<hr>`, bulleted lists, bordered tables, the browser's own buttons, checkboxes and fieldsets.
+  - **B. Index:** one 12px monospace list with years on the left and dotted leaders. There are no pages; a screen is the list with one entry opened in place, and the list is the HUD.
+  - **C. Canvas:** one 4000 × 2700 grey plane. The screens are places on it and going to one slides the plane. The timeline is a map at 48px to the year, the rooms drawn in their artifacts' proportions. Drag, scroll or arrow keys; Tab brings the focused thing into view; a minimap and coordinates in the corner.
+  - **D. Colour field:** one flat colour per page and per era (six new saturated ones, not the card palette, because black text fails on navy and brown), black Helvetica bold up to a fifth of the window wide, 2px hard edges, no transitions.
+  - **E. Specimen sheet:** white, an eight-column grid of numbered cells with 10px captions; the timeline is a matrix (a row per room: both pictures, the card, the intro, the objectives); the artifact is the one large cell, with a scale bar.
+  - **F. Notebook:** pale yellow paper, Times, `<details>` toggles in thin boxes, pastel header strips, a running clock, highlighter links, cards and the artifact taped in a degree or two off square, sticky notes, real checkboxes.
+- **Files:** `src/pages/StyleLab.jsx`, `src/pages/styleLab/` (one `.jsx` and one `.module.css` per concept, `content.js`, `concepts.js`, `CurrentCard.jsx`, `lab.module.css`), `src/test/StyleLab.test.jsx`, `scripts/style-lab-shots.mjs`, `docs/style-lab/`. To delete the lab, remove those and the three dev-only hooks below.
+- **Screenshots:** `docs/style-lab/<concept>/<1440|375>-<screen>.webp`, full page, plus `index-1440.webp` and `index-375.webp` (50 files). Retake with `node scripts/style-lab-shots.mjs` while the dev server runs on 5199 (the `vite` entry in `.claude/launch.json`).
+- **Checked:** 134 tests (25 new: the index links into every screen, and each concept's four screens carry the real text). `npm run build`: no style-lab chunk, route or text in `dist/`; the only trace is the view key `styleLab` in SharedLayout's hidden-HUD list, beside `cardLab`. Every screen was screenshotted at 1440 and 375 and about thirty of the fifty pictures were looked over, at least one of each concept at each width. In the browser: C's drag, wheel, arrow keys and focus-follow; Tab reaching F's toggles and checkboxes with a visible focus ring; no console errors. Not checked: a screen reader, real touch dragging on C, and Safari or Firefox (Chrome only).
+- **Real files touched (dev-only hooks, as the entry asked):** `src/views.js` (the chunk), `src/shared/SharedLayout.jsx` (path, hidden HUD, opening at `/style-lab`), `src/pages/Timeline.jsx` (the link). No museum component, style or copy changed.
+- **Interpretations:**
+  - "With the current cards" and "doesn't import the real museum components" pull apart. The collection screens import the collection's own card components and art (`src/pages/collection/`), read-only, as the card lab does, so they always show the current cards. Nothing else from the museum is imported.
+  - The level frame shows every piece at once (HUD, intro card, tracker, hint, discovery card, small-screen notice) around the grey box, though the game never shows them together. About is on each title screen.
+  - Words the lab adds, none of them museum copy: "artifact" on the grey box, running numbers and frame sizes (E), coordinates (C), the clock and date (F).
+  - Screenshots are committed (5 MB of WebP) rather than left outside the repo, so they open from the file pane and on GitHub.
+- **Also added:** a `vite` entry in `.claude/launch.json` (plain Vite on 5199), because port 8888 was held by another chat's dev server.
+- **Noticed:**
+  - C at phone width shows only a corner of the plane. That is the concept, but it is the least usable of the six on a phone.
+  - A beside the 1995 Netscape level is the risk the entry flagged: the frame and the artifact would both be Times with blue links.
+  - The cards' own focus ring is white (made for the dark museum); the lab overrides it. A light museum would need that changed in `Collection.module.css`.
+- **Next:** phases 2 and 3 are under Ideas, "Museum restyle".
 
 ### Museum: collection page · 10 Nov 2026
 - **Built:** `src/data/artifacts.js` is the one source for the six artifacts (levels' discovery cards and addArtifact, the timeline's entries, the collection), no wording changed. `src/pages/Collection.jsx`: title and "N of 6 found", six cards in a 3/2/1-column grid, found cards in DiscoveryCard's styles with a room thumbnail, unfinished rooms as outlines with "Finish this room to add it.", every card a button into its room, the timeline's staggered fade (none under reduced motion). Timeline link "Collection · N of 6" beside About; the page's own "Back to timeline"; no HUD there.

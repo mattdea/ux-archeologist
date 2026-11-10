@@ -170,6 +170,7 @@ const World = memo(function World({ level, art, href, go }) {
 // ── The window onto the plane ────────────────────────────────────────
 export default function Canvas({ screen, level, href, go, art, thumb }) {
   const view = useRef(null)
+  const world = useRef(null)
   const [size, setSize] = useState({ w: 1440, h: 860 })
   const [pos, setPos] = useState(() => targetFor(screen, { w: 1440, h: 860 }))
   const [gliding, setGliding] = useState(false)
@@ -253,18 +254,18 @@ export default function Canvas({ screen, level, href, go, art, thumb }) {
     setGliding(false)
     setPos(p => clamp({ x: p.x + step[0], y: p.y + step[1] }))
   }
-  // Whatever takes focus is brought into view
+  // Whatever takes focus is brought into view. Measured on the plane (the
+  // target against the plane's own box), so it is right even while the
+  // plane is still sliding from the last move.
   const onFocus = (e) => {
-    const el = view.current
-    if (!el || e.target === el || !e.target.matches?.(':focus-visible')) return
-    const v = el.getBoundingClientRect(), r = e.target.getBoundingClientRect()
+    const plane = world.current
+    if (!plane || !plane.contains(e.target) || !e.target.matches?.(':focus-visible')) return
+    const w = plane.getBoundingClientRect(), r = e.target.getBoundingClientRect()
+    const x = r.left - w.left, y = r.top - w.top
     const m = 48
-    if (r.left >= v.left + m && r.right <= v.right - m && r.top >= v.top + m && r.bottom <= v.bottom - m) return
+    if (x >= pos.x + m && x + r.width <= pos.x + size.w - m && y >= pos.y + m && y + r.height <= pos.y + size.h - m) return
     setGliding(!reducedMotion())
-    setPos(p => clamp({
-      x: p.x + (r.left + r.width / 2) - (v.left + v.width / 2),
-      y: p.y + (r.top + r.height / 2) - (v.top + v.height / 2),
-    }))
+    setPos(clamp({ x: x + r.width / 2 - size.w / 2, y: y + r.height / 2 - size.h / 2 }))
   }
 
   const room = ROOMS[level]
@@ -286,6 +287,7 @@ export default function Canvas({ screen, level, href, go, art, thumb }) {
       onDragStart={(e) => e.preventDefault()}
     >
       <div
+        ref={world}
         className={`${s.world} ${gliding ? s.gliding : ''}`}
         style={{ width: WORLD.w, height: WORLD.h, transform: `translate(${-pos.x}px, ${-pos.y}px)` }}
         onTransitionEnd={() => setGliding(false)}
