@@ -1,9 +1,10 @@
 /* src/pages/Collection.module.css
- * Layout for the collection page. Found cards take DiscoveryCard's own
- * styles (white card, mono year, label, name, description); this file only
- * places them, adds the thumbnail strip, and draws the outline card for a
- * room not yet finished. The fade-in is the timeline's (entryIn, 150ms
- * stagger), and none under reduced motion. */
+ * The collection as a set of cards. A found card is printed card stock: a
+ * warm off-white face with a fine grain, a thin inner frame, a set number
+ * and year, the device on its era plate, the artifact's name in a serif,
+ * and the description as small print. A card not found lies face down.
+ * Cards lift and tilt a little towards the pointer and catch a soft light;
+ * no foil, no holograms. Under reduced motion they stay still. */
 
 .page {
   position: relative;
@@ -11,11 +12,12 @@
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
-  padding: 88px 24px 96px;
+  padding: 92px 24px 104px;
+  /* a little light from above, like a display case */
+  background: radial-gradient(ellipse 70% 45% at 50% -8%, rgba(255, 255, 255, 0.06), transparent 70%);
 }
 
-/* Title and count, top-left in the HUD's type; in the page's flow, so
-   cards never scroll under them */
+/* Title and count, top-left in the HUD's type, in the page's flow */
 .header {
   position: absolute;
   top: 20px;
@@ -49,117 +51,264 @@
   list-style: none;
   margin: 0 auto;
   padding: 0;
-  max-width: 1180px;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  align-items: stretch;   /* outlines fill their row, so rows stay even */
+  grid-template-columns: minmax(0, 300px);
+  justify-content: center;
+  gap: 40px 32px;
+  align-items: stretch;
 }
 
 @media (min-width: 600px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
+  .grid { grid-template-columns: repeat(2, minmax(0, 300px)); }
 }
 
 @media (min-width: 1024px) {
-  .grid { grid-template-columns: repeat(3, 1fr); }
+  .grid { grid-template-columns: repeat(3, minmax(0, 300px)); }
 }
 
 .cell {
-  min-width: 0;
   display: flex;
+  min-width: 0;
+  perspective: 1000px;
   animation: entryIn 400ms ease-out both;
 }
 
-/* Every card is a button that opens its room */
+/* ── Every card ──────────────────────────────────────────────────────── */
 .card {
-  display: block;
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  min-height: 470px;
   margin: 0;
-  padding: 0;
+  padding: 16px 16px 13px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 14px;
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 350ms ease, translate 350ms ease;
 }
 
-.card span {
-  display: block;
-}
+.card span { display: block; }
+
+.card:hover { translate: 0 -4px; }
 
 .card:focus { outline: none; }
 .card:focus-visible {
   outline: 2px solid #fff;
-  outline-offset: 3px;
+  outline-offset: 5px;
 }
 
-.card.found {
-  width: 100%;
-  align-self: flex-start;   /* DiscoveryCard's card is a fixed 380px; here it fills its column */
-  border: none;
+/* ── A found card ────────────────────────────────────────────────────── */
+.front {
+  color: #1f1c18;
+  background-color: #f3eee3;
+  /* fine paper grain */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 26px 44px -26px rgba(0, 0, 0, 0.95);
 }
 
-/* The room's artifact, cropped from the device, on the museum's dark ground */
-.thumb {
-  background: #111;
-  height: 170px;
+.front:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 34px 56px -26px rgba(0, 0, 0, 1);
+}
+
+/* the thin printed frame inside the edge */
+.front::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(42, 38, 32, 0.16);
+  border-radius: 9px;
+  pointer-events: none;
+}
+
+.top {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2px 3px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #6f675c;
+}
+
+.number { text-transform: uppercase; }
+.year { font-weight: 700; color: #3a342c; }
+
+/* the device on its era plate */
+.plate {
+  position: relative;
   display: flex !important;
   align-items: center;
   justify-content: center;
+  margin: 10px 0 14px;
+  aspect-ratio: 4 / 3;
+  padding: 6px 8px 2px;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.14),
+    inset 0 18px 30px -18px rgba(255, 255, 255, 0.35),
+    inset 0 -20px 30px -20px rgba(0, 0, 0, 0.25);
 }
 
-.thumb img {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+.plate svg {
+  filter: drop-shadow(0 7px 8px rgba(0, 0, 0, 0.28));
+  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Not found yet: an outline, no fill */
-.missing {
-  background: none;
-  height: 100%;
-  display: flex;                 /* a button centres its contents; keep them at the top */
+.card:hover .plate svg { transform: scale(1.04); }
+
+.name {
+  padding: 0 3px;
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 29px;
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+  color: #18150f;
+}
+
+.room {
+  margin-top: 7px;
+  padding: 0 3px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #7a7166;
+}
+
+.rule {
+  height: 1px;
+  margin: 12px 3px 10px;
+  background: rgba(42, 38, 32, 0.16);
+}
+
+.description {
+  padding: 0 3px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: #4c463d;
+}
+
+.foot {
+  display: flex !important;
+  justify-content: space-between;
+  margin-top: auto;
+  padding: 12px 3px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8b8378;
+}
+
+/* soft light where the pointer is */
+.sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, 0.45), transparent 48%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.card:hover .sheen { opacity: 1; }
+
+/* ── A card not found yet: lying face down ──────────────────────────── */
+.back {
+  color: #8a8a8a;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 7px),
+    #181818;
+  box-shadow:
+    0 0 0 1px #2e2e2e,
+    0 26px 44px -30px rgba(0, 0, 0, 0.95);
+}
+
+.back:hover { box-shadow: 0 0 0 1px #444, 0 30px 50px -30px #000; }
+
+.backInner {
+  position: absolute;
+  inset: 8px;
+  display: flex !important;
   flex-direction: column;
-  justify-content: flex-start;
-  border: 1px solid #444;
-  padding: 20px 24px;
-  min-height: 132px;
-  box-sizing: border-box;
-  transition: border-color 150ms ease;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid #2c2c2c;
+  border-radius: 9px;
+  text-align: center;
 }
 
-.missing:hover,
-.missing:focus-visible {
-  border-color: #777;
+.backNumber {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6f6f6f;
 }
 
-.missingYear {
+.backSeal {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  border: 1px solid #3a3a3a;
+  background: #141414;
+  box-shadow: 0 0 0 6px #181818, 0 0 0 7px #2a2a2a;
+}
+
+.backYear {
   font-family: 'Courier New', monospace;
   font-size: 17px;
   font-weight: 500;
-  color: #8a8a8a;
-  line-height: 1;
-  margin-bottom: 12px;
+  letter-spacing: 0.08em;
+  color: #a3a3a3;
 }
 
-.missingTitle {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #ccc;
-  line-height: 1.2;
-  margin-bottom: 8px;
+.backRoom {
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 24px;
+  line-height: 1.05;
+  color: #cfcfcf;
 }
 
-.missingNote {
+.backNote {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   color: #8a8a8a;
-  line-height: 1.5;
 }
 
 /* "← Back to timeline", where the HUD puts it */
-.back {
+.backLink {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -179,5 +328,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cell, .header, .back { animation: none; }
+  .cell, .header, .backLink { animation: none; }
+  .card { transform: none !important; transition: none; }
+  .card:hover { translate: none; }
+  .plate svg, .card:hover .plate svg { transform: none; transition: none; }
+  .sheen { display: none !important; }
 }
