@@ -19,6 +19,7 @@
 | 4. Depth | Netscape pages or search | Pages vs search |
 | | iPhone apps | Which apps |
 | | Instagram screens | Which screens + references |
+| 5. Look | Museum restyle, starting with a style lab | Which directions; whether the level frame is in the lab |
 
 ---
 
@@ -103,6 +104,38 @@ Today only Notes opens.
 - **Guardrail:** spring 2016, before the May redesign. Stories (Aug 2016) is out. **High** (cite Instagram's announcement on approval). Direct (revamped Sept 2015, per Instagram's blog post of 1 Sep 2015) is in.
 - **Candidates:** comments view · Direct inbox · camera tab · hashtag page from TRENDING TAGS · Edit Profile.
 - **Needs:** dated reference screenshots for each, as the existing screens had.
+
+### 5. Look: the museum's own style
+
+#### Museum restyle, starting with a style lab
+Matthew wants the museum to look more like the personal sites he's been collecting: crude, unfinished, typographic, plain, sometimes silly. Concepts come first, and nothing in the game changes until one is picked.
+
+- **Scope:** the museum layer only. That means the title, timeline, collection, About, HUD (back link, era label, Continue), IntroModal, ObjectiveTracker, HintPill, DiscoveryCard and the small-screen notice. The artifacts keep their exact period look. A rough museum around exact artifacts is a good contrast, but the museum still has to read as the frame, not as another artifact. Watch this next to the 1995 Netscape level especially.
+- **Phase 1, the style lab (build this first):**
+  - A dev-only page at `/style-lab`, set up like `/card-lab` (`import.meta.env.DEV` in `views.js` and `SharedLayout.jsx`, plus a "Style lab (dev)" link on the timeline).
+  - One concept per direction below. Each is a static mock that uses the real text from `src/data/artifacts.js` and the level intros.
+  - Each concept shows four screens: the title, the timeline, the collection (with the current cards and illustrations) and one level frame. The level frame is a grey box standing in for the artifact, with the intro card, objective tracker, hint and discovery card around it.
+  - The page opens on an index of all the concepts side by side, with a link into each one.
+  - The lab doesn't import or change the real museum components, so it can be deleted in one go.
+- **Directions:** the names in brackets are from Matthew's reference board.
+  - **A. Unstyled document:** browser defaults like Times, blue and purple underlined links, `<hr>` and bordered tables. The timeline is a bulleted list. (Ken Kifer's Bike Pages, Harald Peter Ström)
+  - **B. Index:** one monospace list with years in a left column, dense rows, and every line a link. The site reads like a table of contents. (Christoph Labacher's Notes, Brendan Howell, Paul Bernhard)
+  - **C. Canvas:** the six rooms are boxes scattered on a large plane that you drag around, so the timeline is a map. (Alberto Cinco Jr., Camilo Garcia A., ribo.zone)
+  - **D. Colour field:** one flat, saturated background per page or per era, with black system sans and hard-edged boxes. (Benjamin Earl, Elliott Cost, Justin Liang)
+  - **E. Specimen sheet:** a contact-sheet grid of artifact pictures with tiny captions, like a catalogue. (nice.rocks, Damon Zucconi)
+  - **F. Notebook:** pale paper, `<details>` toggles, a live clock and small silly touches. (polinsski, Maxwell Neely-Cohen, juwee's girlblog)
+- **Rules for every concept:**
+  - System fonts only (Times, Helvetica/Arial, ui-monospace), so no web fonts.
+  - No shadows, rounded corners or gradients unless the direction calls for them.
+  - Text keeps WCAG AA contrast, focus stays visible, everything works by keyboard, and motion stops under reduced motion.
+  - Copy stays as it is. Crude means the layout, not the words.
+- **Phase 2:** Matthew picks one direction or a mix, for example B's timeline in D's colours.
+- **Phase 3 (needs its own approval):**
+  - Set up museum tokens on `:root` and restyle one component per commit.
+  - Align the collection cards and card lab with the new style.
+  - Rewrite the spec's museum section.
+  - Delete the lab or keep it.
+- **Decide before approval:** all six directions or fewer · whether the level frame is in phase 1 (recommended: the HUD sits next to the artifact the whole time you play, so that's where a style succeeds or fails).
 
 ---
 
