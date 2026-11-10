@@ -235,3 +235,12 @@
   color: #ccc;
   text-decoration: underline;
 }
+
+/* Dev look under consideration (src/shared/devLooks.js): the HUD's level
+   title (and the dot tooltip's) in the collection cards' serif */
+:global([data-serif-titles]) .levelTitle {
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  letter-spacing: 0;
+  color: #b3b3b3;
+}

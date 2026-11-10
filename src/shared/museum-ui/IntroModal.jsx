@@ -13,7 +13,7 @@ export default function IntroModal({ era, title, description, objectives, onBegi
         <div className={styles.accentLine} />
         <div className={styles.body}>
           <span className={styles.eraLabel}>{era}</span>
-          <h1 id={titleId} className={styles.title}>{title}</h1>
+          <h1 id={titleId} className={`${styles.title} ${styles.levelTitle}`}>{title}</h1>
           {description && <p className={styles.description}>{description}</p>}
           <hr className={styles.divider} />
           <p className={styles.objectivesLabel}>Objectives</p>

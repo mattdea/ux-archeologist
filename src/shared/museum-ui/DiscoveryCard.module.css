@@ -100,3 +100,11 @@
 .nextBtn:hover {
   background: #2a2a2a;
 }
+
+/* Dev look under consideration (src/shared/devLooks.js) */
+:global([data-serif-titles]) .artifactName {
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.05;
+}

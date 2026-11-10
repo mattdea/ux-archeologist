@@ -259,3 +259,11 @@
 @media (prefers-reduced-motion: reduce) {
   .entry { animation-name: fadeIn; }
 }
+
+/* Dev look under consideration (src/shared/devLooks.js) */
+:global([data-serif-titles]) .title {
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.05;
+}

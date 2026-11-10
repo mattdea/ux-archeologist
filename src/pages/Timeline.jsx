@@ -5,6 +5,7 @@ import { isLevelComplete, completeLevel, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
 import { ARTIFACTS } from '../data/artifacts'
+import { serifTitlesOn, setSerifTitles } from '../shared/devLooks'
 
 const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.title, artifact: a.name, path: a.path }))
 
@@ -82,6 +83,11 @@ export default function Timeline() {
       {import.meta.env.DEV && !confirmReset && (
         <button className={styles.resetBtn} onClick={completeAll} style={{ animationDelay: '850ms' }}>
           Complete all (dev)
+        </button>
+      )}
+      {import.meta.env.DEV && !confirmReset && (
+        <button className={styles.resetBtn} onClick={() => { setSerifTitles(!serifTitlesOn()); refresh(n => n + 1) }} style={{ animationDelay: '850ms' }}>
+          Serif titles (dev): {serifTitlesOn() ? 'on' : 'off'}
         </button>
       )}
       </div>
