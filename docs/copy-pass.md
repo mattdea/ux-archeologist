@@ -2,7 +2,7 @@
 
 Nothing here is in the code yet. Each item shows the **current** text (what's live), the **proposed** text, and a note where it changed. Edit the proposed lines in place, or reply in chat with the number (e.g. "1.3 keep current"). Once agreed, each surface goes in as its own commit and `design-spec.md` is updated to match.
 
-Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards put you in the year and set what's new against what came before, with no instructions (revised 10 Nov); discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
+Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards put you in the year, keep the live text's mood and add a period detail and a line of reflection, with no instructions (revised 10 Nov); discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
 
 Historical claims carry a source and a confidence (high / medium / low).
 
@@ -13,15 +13,15 @@ Historical claims carry a source and a confidence (high / medium / low).
 Who's speaking: the curator, the same voice on every card, in the hints and in Level 5's chat.
 
 1. **Say what's true and stop.** Short, factual sentences. If a line is there only for rhythm or effect, cut it.
-2. **No closing punchlines.** No "You just had it yourself", "It learned yours", "The most natural interface ever built is also the least transparent". The last sentence carries information like the others.
+2. **No closing punchlines on discovery cards, hints or About.** (Intro cards may end on a short mood line taken from the live text, such as "Just a sheet of glass and your finger"; your call, 10 Nov.) No "You just had it yourself", "It learned yours", "The most natural interface ever built is also the least transparent". The last sentence carries information like the others.
 3. **Address the visitor as "you".** Use "you" for what the visitor does, and "people" or "users" for the past ("people typed commands").
 4. **Name things exactly.** Product, year, company: "the Apple Macintosh, January 1984", not "a revolutionary computer". Avoid "revolutionary", "changed everything", "for the first time" unless it's a sourced first.
 5. **No hype, no verdicts.** Explain what an interface did, what it replaced and what it cost. State costs as facts ("it can be wrong while sounding sure"), not judgements ("whose goals were not your own").
 6. **Museum words only in labels.** "Begin excavation", "Artifact Discovered", "Enter the exhibit" stay. Body text talks about the interfaces, not about digging.
 7. **Verbs match the hands.** On the iPhone and Instagram levels: tap, double-tap, drag. Everywhere else: click, double-click, drag, type, press Return.
-8. **Interesting, not dry** (9–10 Nov, after your reviews). Intro cards put you in the year ("It's 1984…", second person, present tense) and set what's new against what came before, using a specific detail from the time (a cassette tape, a plastic keyboard). They don't tell you what to do: the objectives list does. Don't lead with user numbers. The Level 5 chat never claims to be the curator. Still no punchlines: the detail does the work.
+8. **Interesting, not dry** (9–10 Nov, after your reviews). Intro cards put you in the year ("It's 1984…", second person, present tense), keep the live text's mood ("no icons, no menus, no mouse. Just a blinking cursor") and add one specific detail from the time and one line of reflection on what it's like to use. They don't tell you what to do: the objectives list does. Don't lead with user numbers. The Level 5 chat never claims to be the curator.
 9. **Lengths.**
-   - Intro card: 2–3 sentences, about 35–50 words: you in the year, what came before, what's new.
+   - Intro card: 3–4 short sentences, about 40–55 words: you in the year, what's missing or new, a line of reflection.
    - Discovery card: 3–4 sentences, about 55–75 words: the idea, what it replaced or made possible, the trade-off where there was one.
    - Objective: up to about 6 words, imperative.
    - Hint: one sentence that says exactly what to do, no "Try".
@@ -34,33 +34,33 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 
 ### 1.1 Level 0 · 1979 · The Command Line
 - **Current:** This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something.
-- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 1979, and most people have never used a computer. You have an account on a PDP-11 down the hall at Bell Labs, shared by the whole lab, and this terminal is your way in: you type, and it types back.
-- **Note:** Personal computers were rare in 1979 (the Apple II, TRS-80 and PET sold in the hundreds of thousands in total; medium), so "most people have never used a computer" is a fair summary (medium). PDP-11s shared by many users ran V7 (V7 "Setting up Unix", high); VT100, 1978 (high).
+- **Proposed (round 5, 10 Nov: the current text's mood with the period detail):** It's 1979, and this terminal is your line to a computer down the hall, shared by everyone in the lab. There are no icons, no menus, no mouse. Just a blinking cursor, and it won't suggest a thing: the machine waits for you to know what to ask.
+- **Note:** From the current text: "no icons, no menus, no mouse. Just a blinking cursor". From the draft: the year and the shared PDP-11. "Mainframe" is gone (Unix ran on PDP-11 minicomputers; V7 "Setting up Unix", high). The last clause is the reflection: nothing on screen tells you what's possible.
 
 ### 1.2 Level 1 · 1984 · The Desktop
 - **Current:** This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find.
-- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 1984, and until now using a computer has meant learning its commands. The Macintosh asks you to point at pictures instead, with a mouse you've probably never held, so Apple put a cassette tape in the box to teach you how.
-- **Note:** Keeps the cassette, which you liked. "A Guided Tour of Macintosh", an audio cassette and disk, came in the box (high). Most personal computers in 1984 used typed commands, e.g. MS-DOS and the Apple II (high).
+- **Proposed (round 5, 10 Nov: the current text's mood with the period detail):** It's 1984, and until now using a computer has meant memorizing its commands. The Macintosh puts everything where you can see it: files, folders, even a trash can, there to point at and pick up. Apple packed a cassette tape in the box to teach you the mouse, because hardly anyone had held one.
+- **Note:** From the current text: pointing at objects instead of typing commands. From the draft: the year, the before-and-after and the cassette ("A Guided Tour of Macintosh", high). "See what you can find" is gone.
 
 ### 1.3 Level 2 · 1995 · The Hyperlink
 - **Current:** This is Netscape Navigator, circa 1995. The web is a network of pages linked together by people — no search engine required. Follow the trail.
-- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 1995, and you've just got online. There's no good way to search yet, so you find things the way everyone does: one page points you to the next, and almost every home page ends with a list of its author's favourite links.
-- **Note:** Search engines existed (WebCrawler, Lycos, 1994) but were small; AltaVista launched 15 Dec 1995 (high). "Favourite links" lists were a common home-page feature (medium).
+- **Proposed (round 5, 10 Nov: the current text's mood with the period detail):** It's 1995, and the web has no map. There's no good way to search it yet. Every link was put there by a person, and following them is the only way around, so where you end up depends on whose pages you happen to find.
+- **Note:** From the current text: "pages linked together by people", "no search engine". From the draft: the year. The last clause is the reflection. Search engines existed in 1995 but were small; AltaVista launched that December (high).
 
 ### 1.4 Level 3 · 2007 · The Touchscreen
 - **Current:** This is the original iPhone. There's no stylus, no keyboard, no instruction manual. Just a glass screen and your finger.
-- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 2007, and your phone probably has a plastic keyboard under a small screen, maybe with a stylus tucked in its side. The iPhone has one button on its face. Everything else, the keyboard included, is on the glass, under your finger.
-- **Note:** Keyboard smartphones (BlackBerry, Treo) and stylus devices (Windows Mobile, Palm) were common in 2007 (high); most phones overall still had number keypads (high), hence "probably". One home button on the face, on-screen keyboard (Apple, high).
+- **Proposed (round 5, 10 Nov: the current text's mood with the period detail):** It's 2007, and phones have plastic keyboards, small screens and sometimes a stylus. The first iPhone has none of that. No stylus, no keys, nothing to learn first. Just a sheet of glass and your finger.
+- **Note:** From the current text: "no stylus, no keyboard… Just a glass screen and your finger". "No keys" replaces "no keyboard" (it had an on-screen one; site audit), and "no instruction manual" becomes "nothing to learn first". From the draft: what 2007 phones looked like (high).
 
 ### 1.5 Level 4 · 2016 · The Feed
 - **Current:** The interface stopped waiting for you. It started optimizing for your attention.
-- **Proposed (round 4, 10 Nov: you're there, before and after):** It's spring 2016. Since it launched in 2010, Instagram has shown the posts you follow in the order they were shared, newest first. Now it's starting to choose the order for you, putting first the posts it predicts you'll care about.
-- **Note:** Instagram launched 6 October 2010 (high). Ranked feed announced 15 March 2016, rolled out to everyone in June (Instagram blog, high), so "starting" fits spring.
+- **Proposed (round 5, 10 Nov: the current text's mood with the period detail):** It's spring 2016. Every interface before this one waited for you to do something. Instagram's feed has stopped waiting: instead of showing posts in the order they were shared, it now decides what you see first, based on what it thinks will keep you looking.
+- **Note:** From the current text: "The interface stopped waiting for you. It started optimizing for your attention." From the draft: the year and what actually changed (ranked feed announced 15 March 2016; Instagram blog, high). "Keep you looking" is the current text's "optimizing for your attention" in plainer words; Instagram's own phrase was "the moments you care about". Swap in "what it thinks you'll care about" if you want it neutral.
 
 ### 1.6 Level 5 · 2023 · The Conversation
 - **Current:** This is a large language model. There are no buttons to learn, no gestures to memorize. You type a sentence, and it types one back.
-- **Proposed (round 4, 10 Nov: you're there, before and after):** It's 2023. Every computer you've used so far has made you learn its way of doing things: commands, menus, links, gestures. This one you just write to, the way you'd write to a person, about almost anything.
-- **Note:** The list echoes the earlier rooms. ChatGPT, released November 2022, made this kind of interface common in 2023 (high). No user numbers, and no claim about who's on the other end.
+- **Proposed (round 5, 10 Nov: the current text's mood with the period detail):** It's 2023. Every interface so far has asked you to learn something first: commands, menus, links, gestures. This one has no buttons to learn and nothing to memorize. You write to it the way you'd write to a person, and it writes back.
+- **Note:** From the current text: "no buttons to learn, no gestures to memorize… it types one back". From the draft: the year and the look back over the earlier rooms. "You type a sentence" is now "you write to it the way you'd write to a person", since you can give it almost anything.
 
 ### 1.7 Labels on the intro card
 - "OBJECTIVES" and "Begin excavation": **keep** (labels).
