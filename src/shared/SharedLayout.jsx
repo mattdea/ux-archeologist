@@ -58,7 +58,7 @@ const LEVEL_META = {
 }
 
 // Views where the HUD is hidden entirely
-const HUD_HIDDEN_VIEWS = ['title', 'timeline']
+const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection']
 
 // Level numbers for dot rendering
 const LEVEL_NUMBERS = [0, 1, 2, 3, 4, 5]

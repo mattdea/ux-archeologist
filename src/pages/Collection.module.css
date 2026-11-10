@@ -1,0 +1,183 @@
+/* src/pages/Collection.module.css
+ * Layout for the collection page. Found cards take DiscoveryCard's own
+ * styles (white card, mono year, label, name, description); this file only
+ * places them, adds the thumbnail strip, and draws the outline card for a
+ * room not yet finished. The fade-in is the timeline's (entryIn, 150ms
+ * stagger), and none under reduced motion. */
+
+.page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 88px 24px 96px;
+}
+
+/* Title and count, top-left in the HUD's type; in the page's flow, so
+   cards never scroll under them */
+.header {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fadeIn 400ms ease-out both;
+}
+
+.title {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.count {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #8a8a8a;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+/* Six cards: 3 × 2 from 1024px, 2 columns from 600px, 1 below */
+.grid {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 1180px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch;   /* outlines fill their row, so rows stay even */
+}
+
+@media (min-width: 600px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.cell {
+  min-width: 0;
+  display: flex;
+  animation: entryIn 400ms ease-out both;
+}
+
+/* Every card is a button that opens its room */
+.card {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card span {
+  display: block;
+}
+
+.card:focus { outline: none; }
+.card:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.card.found {
+  width: 100%;
+  align-self: flex-start;   /* DiscoveryCard's card is a fixed 380px; here it fills its column */
+  border: none;
+}
+
+/* The room's artifact, cropped from the device, on the museum's dark ground */
+.thumb {
+  background: #111;
+  height: 170px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.thumb img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Not found yet: an outline, no fill */
+.missing {
+  background: none;
+  height: 100%;
+  display: flex;                 /* a button centres its contents; keep them at the top */
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid #444;
+  padding: 20px 24px;
+  min-height: 132px;
+  box-sizing: border-box;
+  transition: border-color 150ms ease;
+}
+
+.missing:hover,
+.missing:focus-visible {
+  border-color: #777;
+}
+
+.missingYear {
+  font-family: 'Courier New', monospace;
+  font-size: 17px;
+  font-weight: 500;
+  color: #8a8a8a;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.missingTitle {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ccc;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.missingNote {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  color: #8a8a8a;
+  line-height: 1.5;
+}
+
+/* "← Back to timeline", where the HUD puts it */
+.back {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 4px 0 4px 8px;
+  background: #111;   /* cards scroll behind it on small screens */
+  animation: fadeIn 400ms ease-out both;
+}
+
+@keyframes entryIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell, .header, .back { animation: none; }
+}

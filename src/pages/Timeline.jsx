@@ -75,7 +75,12 @@ export default function Timeline() {
         </button>
       )}
 
-      <button className={styles.aboutLink} onClick={() => setShowAbout(true)}>About</button>
+      <div className={styles.links}>
+        <button className={styles.aboutLink} onClick={() => navigate('/collection')}>
+          Collection · {ENTRIES.filter(e => isLevelComplete(e.level)).length} of {ENTRIES.length}
+        </button>
+        <button className={styles.aboutLink} onClick={() => setShowAbout(true)}>About</button>
+      </div>
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
     </div>
   )

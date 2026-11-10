@@ -211,11 +211,17 @@
   text-decoration: underline;
 }
 
-/* ── About link ───────────────────────────────────────────────────── */
-.aboutLink {
+/* ── Collection and About links, bottom right ───────────────────── */
+.links {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  display: flex;
+  gap: 24px;
+  animation: fadeIn 400ms ease-out both;
+}
+
+.aboutLink {
   background: none;
   border: none;
   padding: 0;
@@ -228,7 +234,8 @@
   animation: fadeIn 400ms ease-out both;
 }
 
-.aboutLink:hover {
+.aboutLink:hover,
+.aboutLink:focus-visible {
   color: #ccc;
   text-decoration: underline;
 }
