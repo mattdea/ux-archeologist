@@ -1,0 +1,245 @@
+/* src/shared/index-museum/IndexMuseum.module.css
+ *
+ * The index museum. One monospace stack at one size, on a grid of
+ * characters (ch) across and 20px rows down: every column, leader and
+ * indent lands on it. Black and one grey on white.
+ *
+ * Grid tokens
+ *   --ix-row      20px   one line; gaps are one row
+ *   --ix-cursor   2ch    the > cursor column
+ *   --ix-mark     6ch    years, ?, *, ←
+ *   --ix-sub      2ch    a line under another line starts this much further in
+ *   --ix-measure  64ch   longest line of running text
+ *   --ix-list     72ch   the list on the title and timeline (56ch beside the cards)
+ *   --ix-hud      50ch   the list in a level, where it is the HUD
+ *   --ix-gutter   24px   page edge (16px at phone width)
+ */
+
+.ix {
+  --ix-ink: #000;
+  --ix-ink-2: #666;      /* the second ink: 5.7:1 on white */
+  --ix-paper: #fff;
+  --ix-size: 13px;
+  --ix-row: 20px;
+  --ix-font: ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  --ix-cursor: 2ch;
+  --ix-mark: 6ch;
+  --ix-sub: 2ch;
+  --ix-measure: 64ch;
+  --ix-list: 72ch;
+  --ix-hud: 50ch;
+  --ix-gutter: 24px;
+
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: auto;
+  background: var(--ix-paper);
+  color: var(--ix-ink);
+  font: var(--ix-size) / var(--ix-row) var(--ix-font);
+  text-align: left;
+}
+
+.page {
+  box-sizing: border-box;
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, var(--ix-list)) minmax(0, 1fr);
+  column-gap: 6ch;
+  align-items: start;
+  padding: var(--ix-row) var(--ix-gutter) calc(var(--ix-row) * 3);
+}
+
+.list { min-width: 0; }
+.gap { height: var(--ix-row); }
+
+/* ── A line: [cursor][mark][text][leader][meta][arrow] ────────────────── */
+.line {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, max-content) minmax(2ch, 1fr) auto auto;
+  align-items: start;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+.cursor::before { content: '\00a0'; }
+.mark { white-space: pre; }
+.text { min-width: 0; }
+.sub .text, .sub .noteText { padding-left: var(--ix-sub); }
+.leader {
+  align-self: start;
+  height: 14px;          /* the dots sit on the text's baseline */
+  margin: 0 1ch;
+  border-bottom: 1px dotted var(--ix-ink-2);
+}
+.space { min-width: 2ch; }
+.meta { color: var(--ix-ink-2); text-align: right; white-space: nowrap; }
+.arrow { margin-left: 1ch; color: var(--ix-ink-2); }
+
+.note { grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, 1fr); }
+.noteText { max-width: var(--ix-measure); margin: 0; }
+.italic { font-style: italic; }
+
+/* The second ink */
+.quiet, .dim { color: var(--ix-ink-2); }
+.box { color: var(--ix-ink-2); }
+/* an objective: [ ] then its text, wrapping under the text, not the box */
+.check { display: grid; grid-template-columns: 4ch minmax(0, 1fr); }
+.struck { text-decoration: line-through; }
+
+/* ── States ─────────────────────────────────────────────────────────── */
+.choose { cursor: pointer; }
+/* Pointer: the lighter one. The > cursor, an underline, full ink. */
+.choose:hover { color: var(--ix-ink); }
+.choose:hover .cursor::before { content: '>'; }
+.choose:hover .text { text-decoration: underline; text-underline-offset: 3px; }
+.choose:hover .arrow { color: inherit; }
+
+/* Where you are, and keyboard focus: the inverted line */
+.current,
+.choose:focus-visible {
+  background: var(--ix-ink);
+  color: var(--ix-paper);
+  outline: none;
+}
+.current .meta, .current .arrow, .current .box,
+.choose:focus-visible .meta, .choose:focus-visible .arrow, .choose:focus-visible .leader,
+.choose:focus-visible .quiet { color: var(--ix-paper); border-color: var(--ix-paper); }
+.choose:focus-visible .cursor::before { content: '>'; }
+.choose:focus-visible .text { text-decoration: none; }
+
+/* ── Typing in: a line that is new to the list draws in from the left ── */
+.line, .gap {
+  animation: ixType 160ms steps(8, end) both;
+  animation-delay: calc(var(--i, 0) * 14ms);
+}
+@keyframes ixType {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* ── Pictures ───────────────────────────────────────────────────────── */
+.dots {
+  display: block;
+  background: currentColor;
+  -webkit-mask: var(--art) center / contain no-repeat;
+  mask: var(--art) center / contain no-repeat;
+}
+.pictureLine { grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, 1fr); margin: calc(var(--ix-row) / 2) 0; }
+.discoveryPicture { width: min(30ch, 100%); aspect-ratio: 400 / 340; margin-left: var(--ix-sub); }
+
+/* Beside the list on the title and timeline: the peeked room */
+.aside { position: sticky; top: var(--ix-row); min-width: 0; }
+.peekBox { width: 34ch; }
+.peekPicture { width: 100%; aspect-ratio: 400 / 340; }
+.peekYear { display: block; text-align: center; }
+
+/* ── Collection: the list, then the cards on the same grid ──────────── */
+.collectionView { --ix-list: 56ch; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30ch, 1fr));
+  gap: var(--ix-row) 2ch;
+  align-items: stretch;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ix-ink);
+  border-radius: 0;
+  background: var(--ix-paper);
+  color: var(--ix-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.card > span { display: block; }
+.cardHead, .cardFoot { display: flex !important; justify-content: space-between; padding: 0 1ch; }
+.cardHead { border-bottom: 1px solid currentColor; }
+.cardFoot { margin-top: auto; border-top: 1px solid currentColor; color: var(--ix-ink-2); }
+.cardPicture { position: relative; aspect-ratio: 16 / 10; border-bottom: 1px solid currentColor; overflow: hidden; }
+.fill { position: absolute; inset: 8px; }
+.cardBody { padding: calc(var(--ix-row) / 2) 1ch var(--ix-row); }
+.cardBody > span { display: block; }
+.cardName { text-transform: uppercase; }
+.cardRoom { color: var(--ix-ink-2); }
+.cardRule { height: calc(var(--ix-row) / 2); margin-bottom: calc(var(--ix-row) / 2); border-bottom: 1px dotted var(--ix-ink-2); }
+/* A room not finished: the illustrations' dot grid with nothing drawn on it */
+.dotGrid {
+  inset: 0;
+  color: var(--ix-ink-2);
+  background-image: radial-gradient(circle, currentColor 0.9px, transparent 1.4px);
+  background-size: calc(100% / 13) calc(100% / 8);
+}
+.blank .cardName { color: var(--ix-ink-2); }
+.card:hover, .cardLit { background: var(--ix-ink); color: var(--ix-paper); }
+.card:hover .cardRoom, .cardLit .cardRoom, .card:hover .cardFoot, .cardLit .cardFoot,
+.card:hover .blank .cardName, .cardLit.blank .cardName, .card.blank:hover .cardName { color: var(--ix-paper); }
+.card:hover .cardRule, .cardLit .cardRule { border-color: var(--ix-paper); }
+
+/* ── In a level: the list is the HUD, the artifact takes the rest ───── */
+.levelView {
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+}
+.levelView .page { display: block; padding: 0; min-height: 0; }
+.levelView .list {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: calc(var(--ix-hud) + 2 * var(--ix-gutter));
+  padding: var(--ix-row) var(--ix-gutter);
+  overflow-y: auto;
+  background: var(--ix-paper);
+  pointer-events: auto;
+}
+
+/* The classic HUD's boxes (each level's tracker zone) draw nothing in the
+   index museum; take them out so useArtifactFit doesn't measure them. */
+:global(html[data-museum="index"]) [data-hud]:not([data-hud="side"]):not([data-hud="top"]) { display: none !important; }
+:global(html[data-museum="index"]) body { background: #fff; }
+
+/* ── Narrow: the list above, the artifact below ─────────────────────── */
+@media (max-width: 899.98px) {
+  .page { grid-template-columns: minmax(0, 1fr); }
+  .aside { display: none; }
+  .cards { margin-top: var(--ix-row); }
+  .levelView .list {
+    right: 0;
+    bottom: auto;
+    width: auto;
+    max-height: 50vh;
+    border-bottom: 1px solid var(--ix-ink);
+  }
+}
+
+/* ── Phone width: no leaders; the right side stays on the line if it
+      fits, or drops under it ─────────────────────────────────────────── */
+@media (max-width: 599.98px) {
+  .ix { --ix-gutter: 16px; --ix-mark: 5ch; }
+  .line { display: flex; flex-wrap: wrap; }
+  .cursor { flex: 0 0 var(--ix-cursor); }
+  .mark { flex: 0 0 var(--ix-mark); }
+  .text { flex: 0 1 auto; max-width: calc(100% - var(--ix-cursor) - var(--ix-mark)); }
+  .note, .pictureLine { display: grid; }
+  .leader, .space { display: none; }
+  .meta { margin-left: auto; padding-left: 2ch; }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line, .gap { animation: none; }
+}

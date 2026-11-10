@@ -28,6 +28,13 @@ import { useState, useLayoutEffect } from 'react'
  *    <html>: --hint-top (artifact bottom + hintGap) and --hint-max (the
  *    artifact's width), removed again on unmount.
  *
+ *  - Two kinds of HUD can say what they are, for the index museum's list
+ *    (src/shared/index-museum/): `data-hud="side"` is a column down the
+ *    left; the artifact goes beside it, `sideGap` away, centred in the space
+ *    left (not in the viewport) and between the top and bottom edges.
+ *    `data-hud="top"` is always a top band, however tall. A plain
+ *    `data-hud` is judged by where it sits, as above.
+ *
  * Returns { scale, left, top } in viewport px for an absolutely positioned
  * wrapper of width*scale × height*scale. Recomputes on resize and once
  * after mount (so the tracker is measured once it has laid out).
@@ -88,11 +95,14 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
   const H = window.innerHeight
 
   let bandBottom = 0
+  let side = null
   const bottom = { L: null, R: null }
   document.querySelectorAll('[data-hud]').forEach(el => {
     if (!el.offsetWidth || !el.offsetHeight) return
     const r = layoutRect(el)
-    if (r.top + r.bottom < H) bandBottom = Math.max(bandBottom, r.bottom)
+    const kind = el.getAttribute('data-hud')
+    if (kind === 'side') { side = union(side, r); return }
+    if (kind === 'top' || r.top + r.bottom < H) bandBottom = Math.max(bandBottom, r.bottom)
     else bottom[r.left + r.right < W ? 'L' : 'R'] = union(bottom[r.left + r.right < W ? 'L' : 'R'], r)
   })
 
@@ -100,6 +110,15 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
   // an artifact beside the bottom HUD never sits closer to the floor than
   // to the ceiling.
   const y0 = bandBottom ? bandBottom + bandGap : edgeGap
+
+  // A side column: the artifact takes the rest of the width, centred there
+  if (side) {
+    const x0 = side.right + sideGap, x1 = W - edgeGap, y1 = H - edgeGap
+    const rw = Math.max(1, x1 - x0), rh = Math.max(1, y1 - y0)
+    const scale = Math.min(rw / width, rh / height, maxScale)
+    return { scale, left: x0 + (rw - width * scale) / 2, top: y0 + (rh - height * scale) / 2 }
+  }
+
   const sides = Object.keys(bottom).filter(k => bottom[k])
 
   let best = null

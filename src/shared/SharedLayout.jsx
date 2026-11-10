@@ -4,6 +4,8 @@ import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
 import SmallScreenNotice from './museum-ui/SmallScreenNotice'
 import { loadView, warmMacBezel } from '../views'
+import { useMuseumStyle } from './museumStyle'
+import IndexMuseum from './index-museum/IndexMuseum'
 
 // ── Fade-navigate context ──────────────────────────────────────────
 // Provides a navigate() that fades content out before swapping the view.
@@ -61,6 +63,9 @@ const LEVEL_META = {
 // Views where the HUD is hidden entirely
 const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection', 'cardLab', 'styleLab']
 
+// Views the index museum leaves alone (dev workbenches, the test page)
+const INDEX_SKIPS = ['cardLab', 'styleLab', 'test']
+
 // Level numbers for dot rendering
 const LEVEL_NUMBERS = [0, 1, 2, 3, 4, 5]
 
@@ -115,7 +120,11 @@ export default function SharedLayout({ children }) {
   const [hoverDot, setHoverDot] = useState(null)
   const hoverMeta = hoverDot === null ? null : LEVEL_META['level' + hoverDot]
 
-  const showHUD    = !HUD_HIDDEN_VIEWS.includes(view)
+  // Classic or index (src/shared/museumStyle.js): the HUD below is
+  // classic's; the index museum draws its own list instead
+  const museum     = useMuseumStyle()
+  const indexOn    = museum === 'index' && !INDEX_SKIPS.includes(view)
+  const showHUD    = !indexOn && !HUD_HIDDEN_VIEWS.includes(view)
   const meta       = LEVEL_META[view] || {}
   const activeLevel = meta.level ?? null
 
@@ -198,7 +207,11 @@ export default function SharedLayout({ children }) {
     <FadeNavCtx.Provider value={fadeNavigate}>
       <HudCtx.Provider value={notifyArtifactReady}>
         <ContinueCtx.Provider value={setContinueAction}>
-          <div className={styles.room}>
+          <div className={styles.room} style={indexOn ? { background: '#fff' } : undefined}>
+
+            {indexOn && (
+              <IndexMuseum view={view} navigate={fadeNavigate} continueAction={continueAction} hudReady={hudReady} />
+            )}
 
             {showHUD && (
               <>
@@ -269,7 +282,7 @@ export default function SharedLayout({ children }) {
             </div>
 
             {/* Phone-width visitors: "best on a computer", above everything */}
-            <SmallScreenNotice />
+            {!indexOn && <SmallScreenNotice />}
 
           </div>
         </ContinueCtx.Provider>

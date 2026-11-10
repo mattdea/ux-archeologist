@@ -21,16 +21,16 @@ import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import unlockSoundSrc from '../../assets/phone/unlock.mp3'
 import lockSoundSrc from '../../assets/phone/lock.mp3'
-import IntroModal from '../shared/museum-ui/IntroModal'
+import IntroModal from '../shared/museum/IntroModal'
 
 function playSound(src) {
   const audio = new Audio(src)
   audio.volume = 0.5
   audio.play().catch(() => {})
 }
-import ObjectiveTracker from '../shared/museum-ui/ObjectiveTracker'
-import DiscoveryCard from '../shared/museum-ui/DiscoveryCard'
-import HintPill from '../shared/museum-ui/HintPill'
+import ObjectiveTracker from '../shared/museum/ObjectiveTracker'
+import DiscoveryCard from '../shared/museum/DiscoveryCard'
+import HintPill from '../shared/museum/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 

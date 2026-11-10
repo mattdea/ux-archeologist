@@ -7,6 +7,7 @@ import AboutModal from '../shared/museum-ui/AboutModal'
 import { ARTIFACTS } from '../data/artifacts'
 import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, forgetCardsSeen } from '../shared/devLooks'
 import CardPath from './CardPath'
+import { setMuseumStyle } from '../shared/museumStyle'
 
 const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.title, artifact: a.name, path: a.path }))
 
@@ -99,6 +100,11 @@ export default function Timeline() {
       {import.meta.env.DEV && !confirmReset && (
         <button className={styles.resetBtn} onClick={() => { setCardTimeline(!cards); refresh(n => n + 1) }} style={{ animationDelay: '850ms' }}>
           Timeline (dev): {cards ? 'cards' : 'line'}
+        </button>
+      )}
+      {import.meta.env.DEV && !confirmReset && (
+        <button className={styles.resetBtn} onClick={() => setMuseumStyle('index')} style={{ animationDelay: '850ms' }}>
+          Museum (dev): Classic
         </button>
       )}
       {import.meta.env.DEV && !confirmReset && (

@@ -8,6 +8,8 @@
 .levelPage {
   position: fixed;
   inset: 0;
+  /* the index museum's list, when it is beside or above the chat (0 otherwise) */
+  left: var(--museum-inset-left, 0px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,7 +21,7 @@
    Zone 3: the chat should fill the height, not float in the middle. */
 .topSpacer {
   flex: 0 0 auto;
-  height: 84px;
+  height: var(--museum-inset-top, 84px);
 }
 
 /* Zone 2 — expands to fill remaining height; holds the chat panel */
