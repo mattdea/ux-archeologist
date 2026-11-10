@@ -7,7 +7,7 @@
 // print. A room not finished yet is a card lying face down. Every card
 // opens its room. Found or not comes from isLevelComplete(n); the text from
 // src/data/artifacts.js. Reached from the timeline's "Collection · N of 6".
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import styles from './Collection.module.css'
 import hud from '../shared/SharedLayout.module.css'
 import DeviceArt from './collection/DeviceArt'
@@ -15,9 +15,10 @@ import { ARTIFACTS } from '../data/artifacts'
 import { isLevelComplete } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 
-// Each era's plate behind its device: phosphor green, Platinum blue-grey,
-// Netscape teal, brushed steel, a 2016 sunset, late-night charcoal
-const PLATES = ['#1f4a35', '#9db0bd', '#3f7a80', '#aeb8c2', '#f1b8a0', '#3a332d']
+// Each era's plate behind its device, as one palette: the same muted
+// strength and near-equal lightness, the hue moving through the eras —
+// phosphor sage, Platinum blue, Netscape teal, pewter, 2016 clay, umber
+const PLATES = ['#5b7d68', '#7d93a6', '#4f8487', '#89909b', '#c48c78', '#7a6a5d']
 const pad = (n) => String(n).padStart(2, '0')
 
 // A card tilts a few degrees towards the pointer and catches a soft light
@@ -83,12 +84,30 @@ function FaceDownCard({ a, onOpen }) {
   )
 }
 
+// Two looks to compare while deciding (dev server only): 'card', the
+// collectible cards, and 'museum', the same cards in the museum's own
+// style (square corners, white, sans, still). Remembered per browser.
+const STYLE_KEY = 'ux-archaeologist:collection-style'
+const readStyle = () => { try { return localStorage.getItem(STYLE_KEY) === 'museum' ? 'museum' : 'card' } catch { return 'card' } }
+
 export default function Collection() {
   const navigate = useFadeNavigate()
   const found = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
+  const [look, setLook] = useState(() => (import.meta.env.DEV ? readStyle() : 'card'))
+  const chooseLook = (v) => { setLook(v); try { localStorage.setItem(STYLE_KEY, v) } catch { /* storage blocked */ } }
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${look === 'museum' ? styles.museum : ''}`}>
+      {import.meta.env.DEV && (
+        <div className={styles.lookSwitch} role="group" aria-label="Card style (dev)">
+          <span>Card style (dev):</span>
+          {[['card', 'Collectible'], ['museum', 'Museum']].map(([v, label]) => (
+            <button key={v} type="button" aria-pressed={look === v} className={look === v ? styles.lookOn : ''} onClick={() => chooseLook(v)}>
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
       <div className={styles.header}>
         <h1 className={styles.title}>Collection</h1>
         <span className={styles.count}>{found} of {ARTIFACTS.length} found</span>

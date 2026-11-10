@@ -317,6 +317,119 @@
   animation: fadeIn 400ms ease-out both;
 }
 
+/* ── Dev only: switch between the two looks ─────────────────────────── */
+.lookSwitch {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  color: #777;
+}
+
+.lookSwitch button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #999;
+  cursor: pointer;
+}
+
+.lookSwitch button:hover,
+.lookSwitch button:focus-visible { color: #ccc; text-decoration: underline; }
+.lookSwitch .lookOn { color: #fff; text-decoration: underline; }
+
+/* ── The museum look: the same cards in the HUD and modals' own style ──
+   White, square corners (the museum's 2px at most), system sans for the
+   name, DiscoveryCard's label and year type, no grain, frame, tilt or
+   shine: "the museum is still". Plates keep their colours, squared. */
+.museum .card {
+  border-radius: 0;
+  transform: none !important;
+  transition: none;
+}
+.museum .card:hover { translate: none; }
+.museum .sheen { display: none !important; }
+
+.museum .front {
+  background: #fff;
+  box-shadow: none;
+  color: #111;
+  padding: 20px 20px 16px;
+}
+.museum .front:hover { box-shadow: 0 0 0 1px #fff; }
+.museum .front::before { display: none; }
+
+.museum .top {
+  padding: 0;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: #737373;
+}
+.museum .year { font-weight: 500; color: #737373; }
+
+.museum .plate {
+  border-radius: 0;
+  margin: 14px 0 18px;
+  box-shadow: none;
+}
+.museum .plate svg { filter: none; }
+.museum .card:hover .plate svg { transform: none; }
+
+.museum .name {
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #111;
+}
+
+.museum .room {
+  padding: 0;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #737373;
+}
+
+.museum .rule {
+  margin: 14px 0 12px;
+  background: #e8e8e8;
+}
+
+.museum .description {
+  padding: 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: #555;
+}
+
+.museum .foot {
+  padding: 14px 0 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #737373;
+}
+
+.museum .back {
+  background: none;
+  box-shadow: inset 0 0 0 1px #444;
+}
+.museum .back:hover { box-shadow: inset 0 0 0 1px #777; }
+.museum .backInner { border: none; inset: 0; align-items: flex-start; justify-content: flex-start; padding: 20px; text-align: left; gap: 8px; }
+.museum .backNumber { position: static; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.1em; color: #8a8a8a; }
+.museum .backSeal { width: auto; height: auto; margin: 0; border: none; background: none; box-shadow: none; display: block !important; }
+.museum .backYear { font-size: 13px; letter-spacing: 0.1em; color: #8a8a8a; }
+.museum .backRoom { font-family: system-ui, sans-serif; font-size: 18px; font-weight: 500; color: #ccc; }
+.museum .backNote { font-size: 13px; }
+
 @keyframes entryIn {
   from { opacity: 0; transform: translateY(15px); }
   to   { opacity: 1; transform: translateY(0); }
