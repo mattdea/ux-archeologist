@@ -3,11 +3,11 @@ import styles from './SuggestionChips.module.css'
 
 export const CHIPS_BY_TURN = [
   // Turn 0 — initial, before any message
-  ['What is this place?', 'Who are you?', 'Tell me about the levels I just played'],
+  ['What is this place?', 'Who are you?', 'What did the other rooms show?'],
   // Turn 1 — after first AI response
-  ['What changed between 1984 and now?', 'How does this conversation compare to the terminal?', 'What comes after this?'],
+  ['What changed between 1984 and now?', 'How is this like the 1979 terminal?', 'What might come next?'],
   // Turn 2+ — after subsequent responses
-  ['What was the biggest leap in interface design?', 'Why did touchscreens change everything?', 'Is this the last interface?'],
+  ['Which change mattered most?', 'What did touchscreens change?', 'Is this the last interface?'],
 ]
 
 export function getChipsForTurn(turnCount) {
