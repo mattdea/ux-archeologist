@@ -144,6 +144,44 @@ Matthew is iterating on B2 in a separate chat, live, while he looks at it. Work 
   - **In a level frame,** the squares marked the room you're in. Check that the room's highlighted line in the list does that job on its own. If it doesn't, show Matthew the options before adding anything.
 - **When the chat ends:** move this entry to Done with a list of what changed. Retake the B2 screenshots in `docs/style-lab/b2-index-refined/` and run the tests and the build. Update the "Museum restyle" entry under Ideas with where B2 stands.
 
+### Museum: the index museum, built for real behind a switch · approved 10 Nov 2026
+Matthew is going with the B / B2 direction: one monospace list that is the whole museum. B2 was a concept in the lab, not a finished design. This pass turns it into a complete museum that runs the real game, and keeps the current museum ("Classic") one switch away, because Matthew is still concepting. Run it as a live chat with Matthew. Build a first full version, show him, then take his changes one at a time, committing and pushing each.
+
+- **Keeping Classic:**
+  - **Restore point:** before any code changes, tag the current commit `museum-classic` and push the tag.
+  - **Both museums live in the code.** A switch decides which one renders: Classic or Index. It's dev-only and remembered per browser, like the looks in `src/shared/devLooks.js`, and it shows next to the other dev switches. Production stays Classic until Matthew says otherwise.
+  - **Classic isn't touched.** The Index museum is new components beside the existing ones in `src/shared/museum-ui/`, `SharedLayout`, `Timeline`, `Collection` and the title. Classic's files, styles and copy don't change.
+  - **The switch swaps presentation only.** Each level's screen state machine, objectives, hints, `useArtifactFit`, progress and sounds are shared, so flipping it mid-game keeps your place. One place in the code decides which museum renders; levels don't each check it.
+  - **Fit around the HUD:** the list is the HUD, so mark it `data-hud` so `useArtifactFit` places the artifact beside it (wide) or below it (narrow). Check every level's artifact, not just the Mac and iPhone.
+- **Start from:** B2 in the lab as it stands (`src/pages/styleLab/B2_Index.jsx`, screenshots in `docs/style-lab/b2-index-refined/`), plus Matthew's notes under Ideas, "Museum restyle". He likes:
+  - the monospace list and the grid it sits on
+  - the inverted highlighted row
+  - the dot illustrations, shown beside the list when you point at a room
+  - how simple it is
+  The row of squares is gone, and stays gone.
+- **What "fully designed" means here.** The concept skipped these, and the first version should settle each one:
+  - **Grid and type:** one monospace stack, sized in `ch` and line-height rows, so every column, leader and indent lands on the grid. At most two sizes. Write the grid down as tokens.
+  - **Every state of a line:** rest, hover, keyboard focus, current room, done `[x]`, not done `[ ]`, links that leave the site. The inverted row stays the main highlight.
+  - **Keyboard like a terminal menu:** arrow keys move the highlight, Enter opens, Escape closes what's open. Tab order still works for screen readers.
+  - **Every museum surface:** title, timeline, collection, About, the reset confirmation, the small-screen notice, and each of the six levels through every screen state:
+    - intro: the room's line opens with its intro text and Begin
+    - booting: what the list does while the artifact boots
+    - playing: objectives, the hint line after 10 s, Continue
+    - discovery: the artifact's text and the dot picture, then on to the next room
+  - **Moving between views:** what replaces the current fade, for example the list redrawing in place. Nothing moves under reduced motion.
+  - **Phone width:** the list above the artifact. It still has to fit the small-screen notice's rules.
+  - **The museum still reads as the frame,** next to every artifact. Watch Level 0, a monospace terminal, where the list and the artifact could blur. Show Matthew how it looks there.
+  - **Copy stays as it is,** and the voice rules hold.
+- **Not in this pass:** a dark version, sharing, new copy, changes to the artifacts.
+- **Spec:** add an "Index museum" section to `docs/design-spec.md` covering its grid, states, keyboard and how the switch works. Leave the Classic sections as they are.
+- **Checks:**
+  - Tests cover the switch: both museums render every view, and switching keeps progress.
+  - Run `npm run build`.
+  - Check in the browser: all six levels in both museums at 1440 and 375 wide, keyboard only through one full level, and no console errors.
+  - Take screenshots of the Index museum into `docs/museum-index/`.
+- **When the chat ends:** move this to Done with what changed and what Matthew decided along the way. Note anything still open under Ideas, "Museum restyle".
+- **Supersedes** the B2 iteration entry above. The lab stays as reference, and nothing further changes in B2.
+
 ---
 
 ## Done
