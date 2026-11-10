@@ -2,7 +2,7 @@
 
 Nothing here is in the code yet. Each item shows the **current** text (what's live), the **proposed** text, and a note where it changed. Edit the proposed lines in place, or reply in chat with the number (e.g. "1.3 keep current"). Once agreed, each surface goes in as its own commit and `design-spec.md` is updated to match.
 
-Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards say what it is, the context, and how to start; discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
+Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards give the context and leave the instructions to the objectives list (revised 9 Nov); discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
 
 Historical claims carry a source and a confidence (high / medium / low).
 
@@ -19,9 +19,9 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 5. **No hype, no verdicts.** Explain what an interface did, what it replaced and what it cost. State costs as facts ("it can be wrong while sounding sure"), not judgements ("whose goals were not your own").
 6. **Museum words only in labels.** "Begin excavation", "Artifact Discovered", "Enter the exhibit" stay. Body text talks about the interfaces, not about digging.
 7. **Verbs match the hands.** On the iPhone and Instagram levels: tap, double-tap, drag. Everywhere else: click, double-click, drag, type, press Return.
-8. **Interesting, not dry** (added 9 Nov after your review). Open on a specific, telling detail from the time (a slogan, a queue, a cassette tape, a number) instead of "This is a ___". Instructions come last and are woven in, not listed. Still no punchlines: the detail does the work.
+8. **Interesting, not dry** (added 9 Nov after your review). Open on a specific, telling detail from the time (a slogan, a cassette tape, what other phones looked like) instead of "This is a ___". Intro cards don't tell you what to do: the objectives list under them does. Don't lead with user numbers. The curator's voice never claims to be the AI in Level 5. Still no punchlines: the detail does the work.
 9. **Lengths.**
-   - Intro card: 2–3 sentences, about 35–55 words: what it is, the context, how to start.
+   - Intro card: 2 sentences, about 30–45 words: the context, and what was different about it.
    - Discovery card: 3–4 sentences, about 55–75 words: the idea, what it replaced or made possible, the trade-off where there was one.
    - Objective: up to about 6 words, imperative.
    - Hint: one sentence that says exactly what to do, no "Try".
@@ -34,33 +34,33 @@ Who's speaking: the curator, the same voice on every card, in the hints and in L
 
 ### 1.1 Level 0 · 1979 · The Command Line
 - **Current:** This is a VT100 terminal connected to a Unix mainframe. There are no icons, no menus, no mouse. Just a blinking cursor waiting for you to type something.
-- **Proposed (revised 9 Nov, less literal):** This VT100 is wired to a PDP-11 in another room, a computer shared by everyone in the lab. Bell Labs has just finished the Seventh Edition of Unix, the version that went on to spread through universities. Log in as kerry and type ls to see what's waiting for you.
-- **Note:** VT100, August 1978 (Wikipedia, "VT100", high); V7, January 1979, licensed widely to universities and the base of BSD (Wikipedia, "Version 7 Unix", high). Unix ran on PDP-11 minicomputers shared by many users (V7 "Setting up Unix", high). "Everyone in the lab" is the exhibit's framing. Your inbox and the note are waiting, so the last line is literal.
+- **Proposed (revised again 9 Nov: no instructions):** This VT100 is wired to a PDP-11 in another room, a computer shared by everyone in the lab. Bell Labs has just finished the Seventh Edition of Unix, the version that went on to spread through universities.
+- **Note:** Drops "Log in as kerry…" (your note); the boot screen already says it. VT100, August 1978 (Wikipedia, "VT100", high); V7, January 1979, licensed widely to universities and the base of BSD (Wikipedia, "Version 7 Unix", high). "Everyone in the lab" is the exhibit's framing.
 
 ### 1.2 Level 1 · 1984 · The Desktop
 - **Current:** This is a 1984 Macintosh running System 1. Instead of typing commands, you can point at objects, open folders, and drag files around. See what you can find.
-- **Proposed (revised 9 Nov, less literal):** Apple sold the Macintosh in January 1984 as "the computer for the rest of us". It came with a cassette tape that walked you through using a mouse, because most buyers had never held one. Double-click to open things, drag them to move them, and hold the mouse down on a menu to see what it offers.
-- **Note:** Slogan from Apple's 1984 launch advertising (high). The Mac shipped with "A Guided Tour of Macintosh", an audio cassette and disk (high). Release 24 January 1984 (Apple, high). Pull-down menus held open while the button was down (owner's manual, 1984, high); clicking also works in the level.
+- **Proposed (revised again 9 Nov: no instructions):** Apple sold the Macintosh in January 1984 as "the computer for the rest of us". It came with a cassette tape that walked you through using a mouse, because most buyers had never held one.
+- **Note:** Instructions dropped. Slogan from Apple's 1984 launch advertising (high). "A Guided Tour of Macintosh", an audio cassette and disk, came in the box (high).
 
 ### 1.3 Level 2 · 1995 · The Hyperlink
 - **Current:** This is Netscape Navigator, circa 1995. The web is a network of pages linked together by people — no search engine required. Follow the trail.
-- **Proposed (revised 9 Nov, less literal):** In 1995 there was no good way to search the web. You got around the way its builders did: one page pointed to the next, and almost every home page had a list of the author's favourite links. Click an underlined word to follow it, and Back to retrace your steps.
-- **Note:** Search engines existed (WebCrawler, Lycos, 1994) but were small; AltaVista, the first large full-text index, launched 15 Dec 1995 (Wikipedia, "AltaVista", high). "Favourite links" lists were a common home-page feature (medium). Netscape Navigator was the most used browser in 1995 (Wikipedia, "Netscape Navigator", medium).
+- **Proposed (revised again 9 Nov: no instructions):** In 1995 there was no good way to search the web. You got around the way its builders did: one page pointed to the next, and almost every home page had a list of the author's favourite links.
+- **Note:** Instructions dropped. Search engines existed (WebCrawler, Lycos, 1994) but were small; AltaVista, the first large full-text index, launched 15 Dec 1995 (Wikipedia, "AltaVista", high). "Favourite links" lists were a common home-page feature (medium).
 
 ### 1.4 Level 3 · 2007 · The Touchscreen
 - **Current:** This is the original iPhone. There's no stylus, no keyboard, no instruction manual. Just a glass screen and your finger.
-- **Proposed (revised 9 Nov, less literal):** When the iPhone went on sale in June 2007, people queued outside Apple stores for days. It had almost no buttons and no keyboard you could feel: everything happened on the glass. Slide your finger along the bottom of the screen to unlock it.
-- **Note:** On sale 29 June 2007, with queues reported days ahead in New York and elsewhere (contemporary press, high). One home button, the sleep/wake and volume buttons, and the ring switch; the keyboard was on screen (Apple, high).
+- **Proposed (revised again 9 Nov: no instructions):** In 2007 most smartphones had a small screen above a plastic keyboard, and many came with a stylus. The iPhone, out that June, had one button on its face and a screen you worked with your finger; the keyboard appeared only when you needed it.
+- **Note:** The queues are gone (your note: they were there to show the excitement, but say nothing about the interface). It now sets the iPhone against what phones looked like, which is the point of the room. Keyboard smartphones (BlackBerry, Treo) and stylus devices (Windows Mobile) in 2007: high. Jobs made this comparison at the launch, Macworld, 9 Jan 2007 (high). On sale 29 June 2007 (Apple, high).
 
 ### 1.5 Level 4 · 2016 · The Feed
 - **Current:** The interface stopped waiting for you. It started optimizing for your attention.
-- **Proposed (revised 9 Nov, less literal):** By 2016, 400 million people were posting to Instagram, far more than anyone could keep up with. That spring Instagram began choosing the order of your feed instead of showing the newest posts first. Scroll through, double-tap a photo to like it, and see who turns up.
-- **Note:** 400 million monthly users, September 2015 (Instagram, high; 500 million by June 2016). Ranked feed announced 15 March 2016, rolled out to everyone in June 2016 (Instagram blog, high). The level shows it in spring, so "began" fits.
+- **Proposed (revised again 9 Nov: no instructions):** Instagram in spring 2016: mostly square photos, a blue bar along the top, and a feed about to stop running newest first. That March, Instagram said it would start choosing the order itself, putting first the posts it predicted you'd care about most.
+- **Note:** No user numbers (your note). The blue header is the pre-May-2016 design this level copies (spec, high). Square was the default until August 2015 and still most common (medium). Ranked feed announced 15 March 2016, rolled out in June (Instagram blog, high).
 
 ### 1.6 Level 5 · 2023 · The Conversation
 - **Current:** This is a large language model. There are no buttons to learn, no gestures to memorize. You type a sentence, and it types one back.
-- **Proposed (revised 9 Nov, less literal):** Two months after ChatGPT launched in November 2022, an estimated 100 million people had tried it. There's nothing to learn first: you write to it the way you'd write to a person. The curator who wrote every card in this exhibit is on the other end, so ask it anything.
-- **Note:** ChatGPT released 30 November 2022 (OpenAI, high). 100 million users by January 2023 is a UBS estimate reported by Reuters, 1 February 2023 (medium), so "an estimated". The curator is the Level 5 persona (spec).
+- **Proposed (revised again 9 Nov: no instructions):** When OpenAI released ChatGPT in November 2022, a new kind of software arrived as a plain chat window. There's nothing to learn first: you write to it the way you'd write to a person, about almost anything.
+- **Note:** No user numbers, and no "the curator is on the other end" (your note: you're the curator). ChatGPT released 30 November 2022 (OpenAI, high).
 
 ### 1.7 Labels on the intro card
 - "OBJECTIVES" and "Begin excavation": **keep** (labels).
@@ -209,7 +209,7 @@ Used when the model can't be reached. Keywords stay as they are; only the replie
 | Topic | Current | Proposed |
 |---|---|---|
 | this place | This is UX Archaeologist, an interactive history of how people and computers learned to communicate. You've just walked through more than forty years of that history. | This is Interface Artifacts, an exhibit of six working replicas of computer interfaces from 1979 to 2023. Each room has three tasks and a note on what that interface changed. |
-| who | I'm the voice that's been guiding you through each exhibit. I was designed to help you see the pattern connecting terminals, desktops, browsers, phones, and feeds to this conversation. | I'm the exhibit's curator, and I wrote the cards you've read in each room. I'm a language model, so I can be wrong; ask me about anything you've seen here. |
+| who | I'm the voice that's been guiding you through each exhibit. I was designed to help you see the pattern connecting terminals, desktops, browsers, phones, and feeds to this conversation. | I'm the exhibit's guide, a language model you can ask about anything you've seen here. I can be wrong, so treat what I say as a starting point. |
 | levels | Each level recreated a real interface from its era. The interactions you performed, typing commands, dragging icons, clicking links, swiping screens, were the actual innovations of their time. | Each room is a replica of a real interface: a Unix terminal from 1979, the 1984 Macintosh, Netscape in 1995, the 2007 iPhone, Instagram in 2016, and this chat. The tasks use the thing each one introduced, such as dragging an icon or following a link. |
 | how built | This experience is a React application. Each level is a self-contained recreation of a historical interface, wrapped in a museum layer that tracks your progress across eras. | It's a web app built with React. Each room is its own recreation, and the museum around it keeps track of what you've finished. |
 | terminal | The Unix terminal was the first widely used conversational interface. You typed a precise instruction, the machine responded. Every interface since has been a variation on that same exchange. | At a Unix terminal you typed a command and the computer printed the result. Unix was written at Bell Labs by Ken Thompson and Dennis Ritchie from 1969, and its commands, such as ls and cat, are still in use. |
@@ -227,12 +227,13 @@ Used when the model can't be reached. Keywords stay as they are; only the replie
 Dropped claims: "first widely used conversational interface" and "introduced direct manipulation" (not true: Sketchpad 1963, Xerox), "tens of thousands to hundreds of millions" (no source). "From 1969": Thompson's first Unix on the PDP-7 (Ritchie 1984, high). "Took over personal computers by the mid-1990s": Windows 95 (medium; it's a summary).
 
 ### 6.3 System prompt
+- **Revised 9 Nov:** the chat is the exhibit's *guide*, not its curator, and never claims to have written the cards (you're the curator). The spec's Level 5 persona ("the AI is the museum curator… the same voice that has written every IntroModal") would change to match; say if you'd rather keep that idea.
 - **Current:** see `src/components/chat/curatorSystemPrompt.js`.
 - **Proposed** (changes: the exhibit's name; voice guide points 1, 2, 5; rooms not levels; honesty about uncertainty):
 
-  > You are the curator of Interface Artifacts, a web exhibit of six working replicas of computer interfaces: a Unix terminal (1979), the Apple Macintosh desktop (1984), Netscape Navigator on the web (1995), the first iPhone (2007), the Instagram feed (2016), and this chat with a language model (2023). The visitor may have used any of them, in any order.
+  > You are the guide in the last room of Interface Artifacts, a web exhibit of six working replicas of computer interfaces: a Unix terminal (1979), the Apple Macintosh desktop (1984), Netscape Navigator on the web (1995), the first iPhone (2007), the Instagram feed (2016), and this chat with a language model (2023). The visitor may have used any of them, in any order.
   >
-  > You wrote the intro and discovery cards in each room. Your voice is plain, warm and specific: you give dates, names and what things did. You state things plainly and stop. You do not use em dashes, rhetorical flourishes, hype words such as "revolutionary", or closing punchlines. When an interface had a cost or a trade-off, you state it as a fact, without judging it.
+  > You are the exhibit's guide, not its author: the exhibit was made by Matthew Dea, and you don't claim to have written its cards. Your voice is plain, warm and specific: you give dates, names and what things did. You state things plainly and stop. You do not use em dashes, rhetorical flourishes, hype words such as "revolutionary", or closing punchlines. When an interface had a cost or a trade-off, you state it as a fact, without judging it.
   >
   > Rules:
   > - Keep every reply to 2–3 sentences. Never exceed 3 sentences.
@@ -240,7 +241,7 @@ Dropped claims: "first widely used conversational interface" and "introduced dir
   > - If you are not sure of a fact, say so rather than guess.
   > - You are a language model. If asked, say so plainly.
   > - Plain text only: no markdown, bullet points or numbered lists.
-  > - Do not offer to help with other tasks. You are the exhibit's curator, not an assistant.
+  > - Do not offer to help with other tasks. You are the exhibit's guide, not an assistant.
 
 ---
 
