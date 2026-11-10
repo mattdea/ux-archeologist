@@ -109,7 +109,7 @@ Today only Notes opens.
 
 ### 5. Museum restyle: phases 2 and 3
 
-Phase 1, the style lab, is built (see Done, 10 Nov 2026). Open `/style-lab` on the dev server, or the screenshots in `docs/style-lab/`.
+Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/style-lab` on the dev server, or the screenshots in `docs/style-lab/`.
 
 - **Why:** Matthew wants the museum to look more like the personal sites he's been collecting: crude, unfinished, typographic, plain, sometimes silly. Nothing in the game changes until a direction is picked.
 - **Scope:** the museum layer only: the title, timeline, collection, About, HUD (back link, era label, Continue), IntroModal, ObjectiveTracker, HintPill, DiscoveryCard and the small-screen notice. The artifacts keep their exact period look. The museum still has to read as the frame, not as another artifact. Watch this next to the 1995 Netscape level especially.
@@ -119,7 +119,7 @@ Phase 1, the style lab, is built (see Done, 10 Nov 2026). Open `/style-lab` on t
     - **E (specimen sheet):** he likes the direction, but each row shows the same room three times: the illustrated picture, the drawn picture and the card, which has the picture on it again. One picture per room.
     - **D (colour field):** he likes it, but it feels derivative. Dropped.
     - **A, C, F:** not picked.
-  - **Round 2 approved 10 Nov 2026:** B2 and G, see Approved. B+E was not picked.
+  - **Round 2 built 10 Nov 2026:** B2 (B refined) and G (punch card), see Done. B+E was not picked. Open `/style-lab#b2/title` and `/style-lab#g/title`, or `docs/style-lab/b2-index-refined/` and `g-punch-card/`.
 - **Phase 3 (needs its own approval):**
   - Set up museum tokens on `:root` and restyle one component per commit.
   - Align the collection cards and card lab with the new style.
@@ -131,37 +131,46 @@ Phase 1, the style lab, is built (see Done, 10 Nov 2026). Open `/style-lab` on t
 
 ## Approved
 
-### Museum: style lab round 2, B2 and G · approved 10 Nov 2026
-Two more concepts in the existing dev-only `/style-lab`, next to A–F, built the same way (one `.jsx` and `.module.css` each, the same shared text and fixed state, the same four screens, screenshots at 1440 and 375 in `docs/style-lab/`). Nothing outside the lab changes. Background and the first round are under Ideas, "Museum restyle", and in Done.
-
-- **B2, B refined:** the same four screens. The collection cards are redrawn in B's terms (monospace, 1px rules, no shadows or rounded corners), because the current cream cards with shadows sit oddly next to the list. B's level frame goes from desktop to phone width with the list above the artifact.
-  - **Watch:** in B the list is the HUD, so the intro card, objective tracker, hint and discovery card all become rows in it. That's a bigger change to the museum than a reskin: it touches every level's wiring. Show it in two levels (one wide artifact, the Mac; one tall, the iPhone) to check `useArtifactFit` still places the artifact well beside or below the list.
-- **G, punch card:** references are in `docs/reference/style-lab/`: `g-punch-card-doc.webp` (a document about punch cards and the IBM 029's printed characters) and `g-dot-illustrations.webp` (Matthew's six room illustrations in dots, made with ChatGPT). `board-personal-sites.webp` is the original board.
-  - **Paper and ink:** a warm cream page and black ink. One teal accent, used only for links, which are underlined word by word as in the reference. Dashed rules, like the perforation on a card, divide columns and sections.
-  - **Type, three voices:**
-    - Headings in 5×7 dot-matrix capitals. Draw them as dots in SVG from a 5×7 glyph table, with a little variation in dot size and position so they look inked, not digital. The real text sits behind them for screen readers and search. A ready-made dot font (for example Doto on Google Fonts, to be verified) is the fallback.
-    - Body text in Helvetica/Arial at about 17px.
-    - Numbers and captions in ui-monospace. Small captions are grey dot-matrix capitals, darker than the reference so they pass AA.
-  - **Numbered notes:** text sits in narrow columns of notes numbered from 0, with a dashed rule down the left. The levels are already numbered 0 to 5, so the rooms are notes 0 to 5.
-  - **Title:** "INTERFACE ARTIFACTS" in large dot capitals under a dashed rule. The intro text is notes 0–2 in a column, and a card sits beside it.
-  - **Timeline:** a specimen table like the 029 code key. Six cells in a 3×2 grid, each with the room's dot illustration on a faint dot grid and its year. The axis labels are the room numbers and titles. Hover or focus inks the cell's dots teal. A notes column beside the table has the room titles and artifact names.
-  - **Collection:** each artifact is a punch card, an 80-column card with the top corner cut off. The artifact name is printed along the top in dot capitals, as the 029 printed each column's character. The dot illustration is in the middle, and the year is punched as holes in the digit rows. An unfound room is a blank, unpunched card.
-  - **Level frame:** the artifact sits in the middle. The era label is in dot capitals in the top-left. Objectives are notes 0–2 down a dashed rule, with an open ring before each one that fills as a punched hole when it's done. The hint is a grey dot-capital caption, and Continue is a teal link. The intro and discovery cards are punch cards.
-  - **Illustrations:** for the lab, crop the six from the sheet. If G is picked, redraw them as SVG dots so they stay sharp at any size and can turn teal. They would then be a third art set beside Drawn and Illustrated.
-  - **Breaks the lab rules:** it needs dot lettering, so it isn't system fonts only. The ink texture is the one decoration.
-  - **Watch:**
-    - Punch cards come before every room in the game, the 1979 terminal included. The museum dressed as an older medium is a nice idea, but it brings its own era.
-    - Next to Level 0, the dot capitals and cream paper may read as part of the terminal.
-    - Inked dot lettering costs legibility at small sizes, so keep it for headings and captions.
-  - **History (verify before any of it reaches copy):**
-    - 80-column cards, digits punched as one hole in rows 0–9, and the cut corner used to orient cards: **high** · [Wikipedia, Punched card](https://en.wikipedia.org/wiki/Punched_card).
-    - The IBM 029 printed each column's character at the top of the card in a 5×7 dot matrix made by a code plate: **medium** · Matthew's reference document, and [Wikipedia, Keypunch](https://en.wikipedia.org/wiki/Keypunch). The reference says 1965. The 029 is usually dated 1964, with System/360.
-- **Both concepts:** the level frame is shown twice, once around a wide artifact (the Mac, 780 × 755) and once around a tall one (the iPhone, 385 × 735), at 1440 and 375 wide. The art switch in the lab bar keeps working; G adds its dot art as a third choice.
-- **Done when:** both concepts are on the lab index with their screens; tests cover their real text like the other concepts; `npm run build` has no lab trace beyond the existing one; the screenshots are committed; no museum component, style or copy changed. One commit + push per concept.
+Nothing waiting.
 
 ---
 
 ## Done
+
+### Museum: style lab round 2, B2 and G · 10 Nov 2026
+- **Built:** two more concepts in the dev-only `/style-lab`, after A–F on the index. Same shared text and fixed state. Each shows the title, timeline, collection and the level frame twice, around the Mac (780 × 755) and the iPhone (385 × 735). The lab bar has a tab for each frame.
+  - **B2, Index refined** (`B2_Index.jsx`, `.module.css`): B's list unchanged on the title and timeline.
+    - *Cards:* redrawn as monospace boxes with 1px rules and square corners: number and year, the picture, the name in capitals, the room, a dotted rule, the description, a foot line. An unfound room is the same box with a hatched picture space and "Finish this room to add it." A card turns black under the pointer, as a row does.
+    - *Level frame:* the list is a 58-character column and is the whole HUD (title, six rooms, back link, small-screen line; Collection and About are left off, as in today's HUD). The open room's rows are the intro, Begin excavation, the objectives, the hint, Continue and the discovery. The artifact is fitted into what is left, up to 1.35×: beside the list from 900px wide, below it when narrower. At 1440 × 900 the Mac comes out at about 845 × 818 (1.08×) and the iPhone at 428 × 818 (1.11×). At 375 wide the Mac is 343 × 332 and the iPhone 343 × 655, under the list.
+    - *Begin excavation and Continue work*, so the list can be seen at its playing length (objectives, hint, Continue) and after Continue (objectives ticked, the discovery rows). The room's own row puts everything back.
+  - **G, Punch card** (`G_PunchCard.jsx`, `.module.css`, `g/glyphs.js`, `g/dots-0…5.webp`):
+    - *Paper and ink:* cream `#f6f1e3`, ink `#141414`, cards `#e9e3d0`. Teal `#09657a` for links only, each word underlined on its own (darker than the reference's teal, which fails AA on cream; this one is 5.9:1 on the page and 5.2:1 on a card). Grey captions `#676255` (4.7:1 on a card). Dashed 1px rules.
+    - *Dot capitals:* headings and captions are drawn as SVG dots from a 5 × 7 table (A–Z, 0–9 and the punctuation the copy uses), one SVG a word so they wrap. Each dot is moved and resized a little by a seeded random source, so the "ink" is the same on every render. The real text sits beside the drawing, visually hidden, and the drawing is `aria-hidden`. Captions are 13px, grey and slanted.
+    - *Notes:* numbered from 0 down a dashed rule: the About paragraphs (0–2), the rooms on the timeline (0–5), the objectives (0–2), the collection's records (0–5).
+    - *Title:* the name in dot capitals across the page under a dashed rule, the subtitle and "Enter the exhibit", then a card stood on end beside the notes, as in the reference. The card is printed and punched with the name and the six years.
+    - *Timeline:* a 3 × 2 table with 2px rules. Each cell has the room's dot illustration and its year, with a ring that is filled when the room is found. Room numbers and titles run along the top and bottom as axis labels. A cell under the pointer or with focus turns its dots and year teal. The notes column has the titles as links and the artifact names.
+    - *Collection:* each artifact is an 80-column card with the corner cut: twelve rows, the digit rows printed faintly, a print line along the top. A found card is printed and punched with the year and the artifact's name, and the picture sits over the middle columns. An unfound room is a blank card. The description is a numbered note beside the card.
+    - *Level frame:* the era in dot capitals top left; the intro, discovery and small-screen cards are cut-corner cards with a dot-capital print line and the year punched in a four-column strip; the objectives are notes 0–2 with a ring that fills; the hint is a grey dot caption under the artifact; Continue and the back link are teal. The Mac comes out at about 656 × 635 (0.84×) between the two side columns, the iPhone at 363 × 693 (0.94×).
+    - *Art:* the lab bar offers Drawn · Illustrated · Dots in G (Dots by default) and the first two elsewhere. The six dot illustrations are cropped from `g-dot-illustrations.webp` (400 × 340 each) and turned into ink-only masks with ImageMagick, so they sit on the page's own cream and take the ink's colour. Their faint dot grid comes with them.
+- **Lab changes:** the index lays its concepts out in as many columns as fit (eight at 1440). `scripts/style-lab-shots.mjs` shoots both level frames for B2 and G, retries a failed shot, and takes a page too long for WebP at 2× (the index at 375) at 1×.
+- **Screenshots:** `docs/style-lab/b2-index-refined/` and `g-punch-card/`: title, timeline, collection, level-mac and level-iphone at 1440 and 375 (20 files), and the two index pictures retaken. The folder is now 7.5 MB.
+- **Checked:** 146 tests (12 new: both level frames on the index and from a bare `#b2/level`; B2's Begin and Continue; G's headings keep their text beside the dots; G's first card is punched 1-9-7-9 in its first four columns and two cards are blank; Dots is offered in G only; the shared four-screen text checks now run for B2 and G). `npm run build`: no chunk, route, text or picture from the lab in `dist/`, only the existing `styleLab` view key. In the browser: a timeline cell's dots and year turn `#09657a` under the pointer; Drawn and Illustrated swap the pictures in G's timeline and cards; no console errors. Twelve of the twenty new screenshots were looked over (every screen of G at 1440, B2's collection and both level frames, four at 375). Not checked: keyboard focus on G's cells by hand (the rule is shared with hover), a screen reader, Safari or Firefox.
+- **No museum component, style or copy changed.** Nothing outside `src/pages/StyleLab.jsx`, `src/pages/styleLab/`, the lab's test, script and screenshots was touched.
+- **Interpretations:**
+  - *Cards are punched in full.* The entry asked for the name printed along the top and the year punched in the digit rows. The 029 printed a character above the column it punched, so each found card carries "1979 COMMAND & RESPONSE" printed and punched column by column: the year is four single holes in the digit rows, and the letters are a zone hole and a digit hole each. The picture sits right of centre so it clears those columns.
+  - *The description is beside the card,* not on it, as a numbered note. The entry didn't place it.
+  - *The lettering is a generic 5 × 7 face,* not traced from the 029's code plate. Doto, the fallback font, was not loaded or checked: the SVG dots needed no font, and nothing was added to `index.html`.
+  - *Rings are round* (a 50% radius), which the level frame's "open ring" asks for. Dot lettering, rings and the dot jitter are G's departures from the lab rules.
+  - *Order:* B2 and G come after F on the index and in the bar, as round 2, not beside B.
+- **History used (decoration only, none in copy):**
+  - The card code: a figure is one hole in its own row; A–I are a 12 punch and 1–9, J–R an 11 punch and 1–9, S–Z a 0 punch and 2–9. **High** · [Wikipedia, Punched card](https://en.wikipedia.org/wiki/Punched_card). "&" as a 12 punch and "-" as an 11 punch: **medium**, same article. Written from memory this session and not looked up again.
+  - 80 columns, twelve rows, a cut corner: **high**, as in the entry.
+- **On the entry's watches:**
+  - *B2 touches every level's wiring.* The mock supports that reading: the tracker, hint and both cards are rows, and the artifact's place depends on the list's width. With the list at 58 characters the Mac is larger than today, which also answers spec open item 1 (the 330px tracker limiting the Mac). Under about 1250px wide the Mac drops below 1× beside the list.
+  - *G next to Level 0* can't be judged here: the lab's artifact is a grey box. It needs a real level behind it.
+  - *Small dot lettering:* the 13px captions are readable but slow. The cards' print line is one character a column, about 6px wide on a 560px card: authentic, and not readable at a glance, which is why the name is also in the note.
+- **Noticed:** with every piece shown at once, G's level frame is taller than a 900px window (the discovery and small-screen cards stack on the right). In the game they'd never be up together.
+- **Next:** Matthew's pick between B2 and G, or a mix. Phase 3 is under Ideas, "Museum restyle".
 
 ### Museum: style lab (restyle phase 1) · 10 Nov 2026
 - **Built:** a dev-only page at `/style-lab` ("Style lab (dev)" on the timeline). It opens on an index of six concepts side by side, each with live thumbnails of its four screens (title, timeline, collection, level frame) linking into it. Inside a concept, a bar along the top switches screen, concept and card art (Drawn · Illustrated); every screen has its own address (`/style-lab#d/level/3`). The mocks use the museum's real text (`src/data/artifacts.js`, and the rest copied word for word into `src/pages/styleLab/content.js`) with a fixed state: four rooms found, the first objective done, the hint for the second.
