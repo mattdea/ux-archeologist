@@ -13,7 +13,7 @@ import { ARTIFACTS } from '../../data/artifacts'
 // Each era's plate behind its device, as one palette: the same muted
 // strength and near-equal lightness, the hue moving through the eras —
 // phosphor sage, Platinum blue, Netscape teal, pewter, 2016 clay, umber
-const PLATES = ['#5b7d68', '#7d93a6', '#4f8487', '#89909b', '#c48c78', '#7a6a5d']
+const PLATES = ['#0d4b88', '#edb30a', '#84b6fd', '#539267', '#e46868', '#9a6b59']
 const pad = (n) => String(n).padStart(2, '0')
 
 // Matthew's illustrations, one per room, each on its own ground; the plate
