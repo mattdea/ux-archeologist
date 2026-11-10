@@ -14,3 +14,10 @@ export const readCardLook = () => { try { const v = localStorage.getItem(STYLE_K
 export const saveCardLook = (v) => { try { localStorage.setItem(STYLE_KEY, v) } catch { /* storage blocked */ } }
 /** Class names for an ancestor of the cards, for a look */
 export const lookClass = (look) => `${look !== 'card' ? styles.museum : ''} ${look === 'hybrid' ? styles.hybrid : ''}`
+
+// Which art on the found cards (dev switch): 'drawn', the flat SVG
+// drawings (DeviceArt), or 'illustrated', Matthew's illustrations
+// (assets/collection/illustration-N.webp). Remembered per browser.
+const ART_KEY = 'ux-archaeologist:card-art'
+export const readCardArt = () => { try { return localStorage.getItem(ART_KEY) === 'illustrated' ? 'illustrated' : 'drawn' } catch { return 'drawn' } }
+export const saveCardArt = (v) => { try { localStorage.setItem(ART_KEY, v) } catch { /* storage blocked */ } }

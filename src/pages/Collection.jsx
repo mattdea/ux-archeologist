@@ -11,7 +11,7 @@ import { useState } from 'react'
 import styles from './Collection.module.css'
 import hud from '../shared/SharedLayout.module.css'
 import { FoundCard, FaceDownCard } from './collection/cards'
-import { readCardLook, saveCardLook, lookClass } from './collection/cardLook'
+import { readCardLook, saveCardLook, lookClass, readCardArt, saveCardArt } from './collection/cardLook'
 import { ARTIFACTS } from '../data/artifacts'
 import { isLevelComplete } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
@@ -21,10 +21,12 @@ export default function Collection() {
   const found = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
   const [look, setLook] = useState(() => (import.meta.env.DEV ? readCardLook() : 'card'))
   const chooseLook = (v) => { setLook(v); saveCardLook(v) }
+  const [art, setArt] = useState(() => (import.meta.env.DEV ? readCardArt() : 'drawn'))
 
   return (
     <div className={`${styles.page} ${lookClass(look)}`}>
       {import.meta.env.DEV && (
+        <div className={styles.switches}>
         <div className={styles.lookSwitch} role="group" aria-label="Card style (dev)">
           <span>Card style (dev):</span>
           {[['card', 'Collectible'], ['museum', 'Museum'], ['hybrid', 'Hybrid']].map(([v, label]) => (
@@ -33,6 +35,15 @@ export default function Collection() {
             </button>
           ))}
         </div>
+        <div className={styles.lookSwitch} role="group" aria-label="Card art (dev)">
+          <span>Art (dev):</span>
+          {[['drawn', 'Drawn'], ['illustrated', 'Illustrated']].map(([v, label]) => (
+            <button key={v} type="button" aria-pressed={art === v} className={art === v ? styles.lookOn : ''} onClick={() => { setArt(v); saveCardArt(v) }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
       )}
       <div className={styles.header}>
         <h1 className={styles.title}>Collection</h1>
@@ -43,7 +54,7 @@ export default function Collection() {
         {ARTIFACTS.map((a, i) => (
           <li key={a.level} className={styles.cell} style={{ animationDelay: `${i * 150}ms` }}>
             {isLevelComplete(a.level)
-              ? <FoundCard a={a} onOpen={() => navigate(a.path)} />
+              ? <FoundCard a={a} art={art} onOpen={() => navigate(a.path)} />
               : <FaceDownCard a={a} onOpen={() => navigate(a.path)} />}
           </li>
         ))}

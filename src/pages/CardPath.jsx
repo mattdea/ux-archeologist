@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import styles from './Collection.module.css'
 import path from './CardPath.module.css'
 import { FoundCard, FaceDownCard } from './collection/cards'
-import { readCardLook, saveCardLook, lookClass } from './collection/cardLook'
+import { readCardLook, saveCardLook, lookClass, readCardArt, saveCardArt } from './collection/cardLook'
 import { ARTIFACTS } from '../data/artifacts'
 import { isLevelComplete } from '../state/state'
 import { cardsSeen, markCardsSeen } from '../shared/devLooks'
@@ -25,7 +25,7 @@ const FLIP_MS = 900      // the turn itself (CardPath.module.css .inner)
 // Only while a card turns over are both faces stacked in a 3D flip: kept
 // any longer, a card tilting towards the pointer dips behind the flip's
 // plane and the wrapper takes its clicks.
-function PathCard({ a, done, seen, order, onOpen }) {
+function PathCard({ a, done, seen, order, onOpen, art }) {
   // 'down' → 'turning' (faces stacked, about to rotate) → 'rotating' → 'up'
   const [stage, setStage] = useState(done && seen ? 'up' : 'down')
   useEffect(() => {
@@ -41,12 +41,12 @@ function PathCard({ a, done, seen, order, onOpen }) {
   }, [done, seen, order, a.level])
 
   if (stage === 'down') return <FaceDownCard a={a} onOpen={onOpen} />
-  if (stage === 'up') return <FoundCard a={a} onOpen={onOpen} />
+  if (stage === 'up') return <FoundCard a={a} art={art} onOpen={onOpen} />
   return (
     <div className={`${path.flip} ${stage === 'rotating' ? path.flipped : ''}`} aria-hidden="true">
       <div className={path.inner}>
         <div className={`${path.face} ${path.backFace}`}><FaceDownCard a={a} tabIndex={-1} /></div>
-        <div className={`${path.face} ${path.frontFace}`}><FoundCard a={a} tabIndex={-1} /></div>
+        <div className={`${path.face} ${path.frontFace}`}><FoundCard a={a} art={art} tabIndex={-1} /></div>
       </div>
     </div>
   )
@@ -55,12 +55,14 @@ function PathCard({ a, done, seen, order, onOpen }) {
 export default function CardPath() {
   const navigate = useFadeNavigate()
   const [look, setLook] = useState(readCardLook)
+  const [art, setArt] = useState(readCardArt)
   const [seen] = useState(cardsSeen)          // as it was when the page opened
   const found = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
   const toTurn = ARTIFACTS.filter(a => isLevelComplete(a.level) && !seen.includes(a.level)).map(a => a.level)
 
   return (
     <div className={`${styles.page} ${path.page} ${lookClass(look)}`}>
+      <div className={styles.switches}>
       <div className={styles.lookSwitch} role="group" aria-label="Card style (dev)">
         <span>Card style (dev):</span>
         {[['card', 'Collectible'], ['museum', 'Museum'], ['hybrid', 'Hybrid']].map(([v, label]) => (
@@ -69,6 +71,15 @@ export default function CardPath() {
           </button>
         ))}
       </div>
+      <div className={styles.lookSwitch} role="group" aria-label="Card art (dev)">
+        <span>Art (dev):</span>
+        {[['drawn', 'Drawn'], ['illustrated', 'Illustrated']].map(([v, label]) => (
+          <button key={v} type="button" aria-pressed={art === v} className={art === v ? styles.lookOn : ''} onClick={() => { setArt(v); saveCardArt(v) }}>
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
       <div className={styles.header}>
         <h1 className={styles.title}>Interface Artifacts</h1>
         <span className={styles.count}>{found} of {ARTIFACTS.length} found</span>
@@ -84,6 +95,7 @@ export default function CardPath() {
               seen={seen.includes(a.level)}
               order={Math.max(0, toTurn.indexOf(a.level))}
               onOpen={() => navigate(a.path)}
+              art={art}
             />
           </li>
         ))}
