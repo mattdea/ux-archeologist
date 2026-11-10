@@ -30,9 +30,7 @@ const HINTS = [
 ]
 
 const DISCOVERY_DESCRIPTION =
-  "Every previous interface required you to learn its language: commands, clicks, menus, gestures. " +
-  "This one already speaks yours. But behind the fluency is a system you can't see, trained on text you didn't choose, " +
-  "shaped by decisions you can't inspect. The most natural interface ever built is also the least transparent."
+  "Here you didn't learn commands, menus or gestures; you just asked. You can hand it a question, a messy draft, a table of numbers or a photo, and it works out what you want. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did."
 
 const ALREADY_DONE = isLevelComplete(5)
 

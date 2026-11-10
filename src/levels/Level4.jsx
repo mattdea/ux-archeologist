@@ -35,9 +35,7 @@ const HINTS = [
 ]
 
 const DISCOVERY_DESCRIPTION =
-  'Earlier feeds showed you everything your friends posted, newest first. By 2016, an algorithm ranked the feed instead, ' +
-  'ordering each post by how likely it was to keep you scrolling. Your closest friend\'s biggest news could sit beneath ' +
-  'three strangers and an ad. The order was chosen for you, tuned to hold your attention, by a system whose goals were not your own.'
+  "Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like and comment on, based on what you've responded to before. You can't see how it decides, and every like you give tells it what to show you next."
 
 // Evaluated once at module load — safe because localStorage doesn't change mid-session
 const ALREADY_DONE = isLevelComplete(4)

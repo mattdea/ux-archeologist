@@ -54,9 +54,7 @@ const BEZEL_H = 735
 // Matches --bottom-zone-height in Level3.module.css
 
 const DISCOVERY_DESCRIPTION =
-  'For thirty years, a layer of hardware stood between people and their software: a mouse, a keyboard, a stylus. ' +
-  'The iPhone removed all of it. You touched the object itself, moved it with your finger, and the screen responded. ' +
-  'The gap between intention and action had never been smaller.'
+  "The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched things instead of moving a pointer. Lists kept moving after you let go and bounced when they hit the end, as if they had weight; Apple patented that bounce. Within a few years almost every phone worked this way."
 
 export default function Level3() {
   const notifyArtifactReady = useArtifactReady()

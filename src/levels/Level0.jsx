@@ -34,9 +34,7 @@ const BEZEL_H = 460   // must match TerminalBezel.module.css
 // Matches --bottom-zone-height in Level0.module.css
 
 const DISCOVERY_DESCRIPTION =
-  'Every interaction you just had followed the same pattern: you typed a command, the machine responded, ' +
-  'and you decided what to do next. No guidance, no suggestions, no undo. Every interface that came after ' +
-  'this one tried to make that exchange easier, but the conversation underneath never changed.'
+  "At a terminal you type a command, the computer runs it and prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. They're short, like ls, cat and rm, because terminals were slow, and the same commands still work on every Mac and on most of the world's servers."
 
 export default function Level0() {
   // 'intro' → 'booting' → 'playing' → 'discovery'

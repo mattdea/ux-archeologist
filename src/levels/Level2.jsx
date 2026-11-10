@@ -20,7 +20,7 @@ import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const DISCOVERY_DESCRIPTION =
-  "The early web was a network of pages connected by links that people had deliberately placed. Finding something meant following a trail, clicking from one page to the next, trusting that someone had mapped the path before you. No algorithm decided what you saw. Every connection was a human choice."
+  "On the early web, every link was put there by the person who wrote the page, and you found things by following them from page to page. Directories such as Yahoo! were lists of sites sorted by hand. Finding something specific could take a long time, and search engines such as AltaVista, launched in December 1995, took over that job."
 
 // ── Page metadata ───────────────────────────────────────────────────
 // kb: fake document size for the status bar's "47% of 23K" line.

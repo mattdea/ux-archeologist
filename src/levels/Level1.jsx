@@ -17,7 +17,7 @@ import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 
 const DISCOVERY_DESCRIPTION =
-  "Before this, using a computer meant memorizing commands and typing them precisely. The Macintosh replaced all of that with objects you could see and manipulate: folders, files, a trash can. Point at something, drag it somewhere, open it with a click. The computer finally spoke in a language people already understood."
+  "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people. The researcher Ben Shneiderman called this style direct manipulation in 1983. Some tasks took longer with a mouse than with a typed command."
 
 const OBJECTIVES = [
   'Find the document on this computer',
