@@ -108,47 +108,17 @@ Today only Notes opens.
 
 ## Approved
 
-### Museum: collection page · approved 10 Nov 2026
-Matthew asked Claude to make the decisions; all of them are marked *decided*. The page shows the six artifacts a visitor collects by finishing each room.
-- **Today:**
-  - `src/pages/Collection.jsx` renders "Collection — placeholder", and nothing links to it.
-  - Every level calls `addArtifact()` on discovery, and `getArtifacts()` reads them back.
-  - The view key `collection` already exists in `views.js` and `SharedLayout.jsx` (navigation is state-based; the URL stays at `/`).
-- **One source for the text** (*decided*):
-  - Add `src/data/artifacts.js`, listing the six artifacts in timeline order: level, year, room title, artifact name, discovery description.
-  - Each level imports its `DISCOVERY_DESCRIPTION` and name from it instead of defining them inline. The timeline's `ENTRIES` read from it too.
-  - The collection decides found or not with `isLevelComplete(n)`, and takes its text from this file, not from the copies saved in localStorage, so copy changes show up.
-  - Change no wording; move the current text as it is.
-- **What it shows** (*decided*):
-  - A page title, "Collection", and a count, "N of 6 found".
-  - Six cards in timeline order: 3 × 2 at 1024px and wider, 2 columns from 600px, 1 column below that.
-  - A **found** card is a white museum card, reusing DiscoveryCard's styles and adding no new card style. It shows the mono year, the artifact name, the room title in the label style, the discovery description, and a thumbnail of the artifact.
-  - A **not-found** card is an outline (1px border, no fill) showing the year and the room title, with the line "Finish this room to add it." No name, no description, no thumbnail.
-  - With nothing found, all six are outlines. No other empty-state copy.
-  - Every card is a button that opens its room, with a visible focus ring.
-  - Cards fade in staggered, the way the timeline's entries do (reuse its animation and delay), and not at all under reduced motion.
-  - Copy is plain and matter-of-fact, in the voice guide in `docs/copy-pass.md`.
-- **Thumbnails** (*decided*):
-  - One per room, in `assets/collection/level0.webp` … `level5.webp`. Take each in the browser with the room in its playing state, cropped to the device or screen with no museum UI. Make them about 480px wide and under 60 KB each.
-  - Level 5 has no device, so crop to the chat column.
-  - If a file is missing, the card still renders without it.
-- **How visitors get there** (*decided*):
-  - A link on the timeline, "Collection · N of 6", next to About and Reset progress, in their style.
-  - The collection page has its own "← Back to timeline", like the HUD's. Add `collection` to `HUD_HIDDEN_VIEWS`.
-  - Level 5's discovery card **still goes to the timeline** (Matthew's 8 Nov decision); the new timeline link is the way in. No HUD link.
-  - Reset progress empties the collection.
-- **Not in this item** (*decided*): sharing, as an image or link. Add it to Ideas if wanted later.
-- **Spec:** describe the page under the museum layer, the data file under architecture, and the timeline link. Remove the placeholder mentions.
-- **Check:**
-  - `npm test`, adding a test that renders the page with 0, 3 and 6 rooms done.
-  - `npm run build`.
-  - In the browser at 1440, 1024, 700 and 375 wide: the page fresh, with some rooms done and with all done; every card opens its room; the back link and keyboard focus work; Reset empties it.
-
 _Nothing approved right now._
 
 ---
 
 ## Done
+
+### Museum: collection page · 10 Nov 2026
+- **Built:** `src/data/artifacts.js` is the one source for the six artifacts (levels' discovery cards and addArtifact, the timeline's entries, the collection), no wording changed. `src/pages/Collection.jsx`: title and "N of 6 found", six cards in a 3/2/1-column grid, found cards in DiscoveryCard's styles with a room thumbnail, unfinished rooms as outlines with "Finish this room to add it.", every card a button into its room, the timeline's staggered fade (none under reduced motion). Timeline link "Collection · N of 6" beside About; the page's own "Back to timeline"; no HUD there.
+- **Thumbnails:** `assets/collection/level0–5.webp`, 480px, 4–25 KB, taken by `scripts/capture-collection-thumbs.mjs` (headless Chrome over the DevTools protocol, then `cwebp`; rerun it when a room changes). Level 0 is after login, Level 2 after the first page loads, Level 5 after one question.
+- **Checked:** 101 tests (5 new: 0, 3 and 6 rooms done, cards and back link, the timeline link and Reset); build. In the browser at 1440, 1024, 700 and 375: 3, 3, 2 and 1 columns with no sideways scroll; 3 rooms done and 6 done; Tab reaches a card with its focus ring and Enter opens the room; the back link; Reset empties it (0 of 6). The pane's own progress was saved and put back afterwards.
+- **Noticed:** on the 375 check the small-screen notice was dismissed for that visit in the pane.
 
 ### Level 1: drag files between folders and the desktop · 10 Nov 2026
 - **Research** (1984 *Macintosh* manual, vintageapple.org PDF): dragging "onto the desktop, onto a folder, disk, or Trash icon, or into an open folder, disk, or Trash window", moving on the same disk (p. 105, high); the folder icon "is highlighted" under a dragged icon and not after the drop (p. 38, high); the desktop as "a handy temporary resting place … the Finder will remember where the documents belong" (p. 104, high); Put Back "puts the selected documents, applications, or folders back into the folder or disk they came from most recently" (p. 107, high). So Put Back for desktop items is built, not left out. No Finder 1.x screenshot of a highlighted folder was found; infinitemac.org wasn't run.

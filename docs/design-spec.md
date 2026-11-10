@@ -33,7 +33,7 @@ Open items, roughly in priority order:
 
 ## Navigation
 
-There is no URL routing: the address stays at `/` and `SharedLayout` swaps views in state (`useFadeNavigate`), fading out and in. Call sites pass path-like keys (`/timeline`, `/level/N`, `/`) that `SharedLayout`'s `PATH_TO_VIEW` maps to views; a reload starts at the title screen. All levels are freely accessible. `Collection.jsx` is a placeholder with no way in; the collection page is an idea on the backlog.
+There is no URL routing: the address stays at `/` and `SharedLayout` swaps views in state (`useFadeNavigate`), fading out and in. Call sites pass path-like keys (`/timeline`, `/level/N`, `/collection`, `/`) that `SharedLayout`'s `PATH_TO_VIEW` maps to views; a reload starts at the title screen. All levels are freely accessible. The collection page (`/collection`) is reached from the timeline's "Collection · N of 6" link.
 
 ---
 
@@ -118,6 +118,11 @@ src/shared/museum-ui/AboutModal.module.css
 
 src/state/state.js
   completeLevel(n), isLevelComplete(n), addArtifact({ name, era, description })
+
+src/data/artifacts.js
+  ARTIFACTS: the six artifacts in timeline order (level, year, title, name, path, description).
+  The one source for each level's discovery card and addArtifact call, the timeline's
+  entries and the collection page. Copy changes go here.
   Backed by localStorage.
 ```
 
@@ -144,6 +149,9 @@ White card, no accent line, mono era label, sans title (22px, weight 500), sans 
 
 ### Small-screen notice
 `SmallScreenNotice` (mounted once in `SharedLayout.jsx`, after the content, so it sits above everything, a level's IntroModal included). Shown while the viewport is **under 600px** wide (`matchMedia('(max-width: 599.98px)')`; width only, no touch test), on whatever page the visitor lands on. It reuses IntroModal's card styles (`IntroModal.module.css`), with no mono label: title "This experience was designed for larger screens." and no body, full-width black "Continue anyway" button (focused on open). Its only own styles: the opaque museum background (`#111`) instead of the see-through scrim, `z-index: 10000`, and a card at most 380px wide with a 16px side gutter. "Continue anyway" closes it and remembers that for the visit in `sessionStorage` (`ux-archaeologist:small-screen-dismissed`, in try/catch: with storage blocked it still closes, it just isn't remembered). Widening the window to 600px or more hides it without counting as a dismissal (narrow again and it returns). Phones held sideways (wider than 600px but short) don't get it.
+
+### Collection page
+`src/pages/Collection.jsx`: the six artifacts a visitor collects by finishing each room, in timeline order. Reached from the timeline's "Collection · N of 6" link (bottom right, beside About, in its style); its own "← Back to timeline" sits bottom right as in the HUD, and the HUD is hidden (`HUD_HIDDEN_VIEWS`). Level 5's discovery card still goes to the timeline. Top left: "Collection" and "N of 6 found" in the HUD's type. Cards: 3 × 2 from 1024px, 2 columns from 600px, 1 below; they fade up with the timeline's `entryIn` and 150ms stagger, and not at all under reduced motion. A **found** room (`isLevelComplete(n)`) is DiscoveryCard's white card, reusing its styles: a thumbnail of the room on the museum's dark ground, the mono year, the room title in the label style, the artifact name and the description, all from `src/data/artifacts.js` (not the copies `addArtifact` saved). A room **not found** is an outline (1px #444, no fill): the year, the room title and "Finish this room to add it." Every card is a button that opens its room, with a white focus ring. Reset progress empties it. Thumbnails: `assets/collection/level0–5.webp`, 480px wide, each room in its playing state cropped to the device (Level 5: the chat column after one question), taken by `scripts/capture-collection-thumbs.mjs` (headless Chrome, `cwebp`); a missing file just leaves the card without one.
 
 ### HintPill + useHint
 Nudge in a dark pill, fixed 14px under the artifact, centred and no wider than it (wrapping if longer); `useArtifactFit` publishes the place as `--hint-top` / `--hint-max`. Level 5 has no device, so its pill sits at the bottom centre. `useHint(HINTS, { active, completedIndices })` returns the hint for the first unfinished objective after 10s without progress; any completion hides it and restarts the clock. Every level defines `HINTS` alongside `OBJECTIVES`. The pill is not `data-hud`, so it never moves the artifact.
