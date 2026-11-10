@@ -16,6 +16,7 @@ const LOADERS = {
   level5:     () => import('./levels/Level5'),
   collection: () => import('./pages/Collection'),
   test:       () => import('./pages/TestMuseumUI'),
+  ...(import.meta.env.DEV ? { cardLab: () => import('./pages/CardLab') } : {}),
 }
 
 const loading = {}

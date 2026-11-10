@@ -10,9 +10,8 @@ import styles from '../Collection.module.css'
 import DeviceArt from './DeviceArt'
 import { ARTIFACTS } from '../../data/artifacts'
 
-// Each era's plate behind its device, as one palette: the same muted
-// strength and near-equal lightness, the hue moving through the eras —
-// phosphor sage, Platinum blue, Netscape teal, pewter, 2016 clay, umber
+// Each room's plate behind its drawn device, from Matthew's palette in room
+// order: navy, yellow, sky blue, green, coral, brown
 const PLATES = ['#0d4b88', '#edb30a', '#84b6fd', '#539267', '#e46868', '#9a6b59']
 const pad = (n) => String(n).padStart(2, '0')
 
@@ -47,7 +46,7 @@ function useTilt() {
   return { ref, onPointerMove, onPointerLeave }
 }
 
-export function FoundCard({ a, onOpen, tabIndex, art = 'drawn' }) {
+export function FoundCard({ a, onOpen, tabIndex, art = 'drawn', plates = PLATES }) {
   const tilt = useTilt()
   return (
     <button type="button" className={`${styles.card} ${styles.front}`} onClick={onOpen} tabIndex={tabIndex} {...tilt}>
@@ -60,7 +59,7 @@ export function FoundCard({ a, onOpen, tabIndex, art = 'drawn' }) {
           <img src={ILLUSTRATIONS[a.level]} alt="" />
         </span>
       ) : (
-        <span className={styles.plate} style={{ background: PLATES[a.level] }}>
+        <span className={styles.plate} style={{ background: plates[a.level] }}>
           <DeviceArt level={a.level} />
         </span>
       )}

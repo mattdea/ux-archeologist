@@ -101,6 +101,11 @@ export default function Timeline() {
           Timeline (dev): {cards ? 'cards' : 'line'}
         </button>
       )}
+      {import.meta.env.DEV && !confirmReset && (
+        <button className={styles.resetBtn} onClick={() => navigate('/card-lab')} style={{ animationDelay: '850ms' }}>
+          Card lab (dev)
+        </button>
+      )}
       </div>
 
       <div className={styles.links}>
