@@ -65,12 +65,12 @@ The curator's voice. Dark room background (#111), HUD, intro/discovery modals, o
 **Rules:**
 - Sharp corners (2px border-radius max) on all museum cards
 - System sans-serif for body text
-- Serif for level titles only
+- System sans-serif for titles too (IntroModal 22px weight 500, DiscoveryCard 24px weight 500, About 22px weight 600); no serif anywhere in the museum layer
 - Monospace for era labels and dates
 - No era-specific fonts, ever
 - Dark translucent backgrounds: `rgba(0,0,0,0.85)` for tracker
 - White backgrounds for modals and discovery cards
-- Thin 2px black accent line at top of each modal card
+- No accent line on IntroModal, DiscoveryCard, the small-screen notice or the tracker; About alone keeps a 2px #111 line at the top of its card
 - Fade transitions only (300ms, ease-in-out). No bounces, slides, or era-specific animations.
 - The museum is still. The artifact is alive.
 
@@ -140,7 +140,7 @@ Level 5's chat panel has no device and still fills the artifact zone. Never add 
 ## Dialog System
 
 ### IntroModal
-White card, 2px black accent line, mono era label, serif title, sans body, objectives list, "Begin excavation" button (full-width black).
+White card, no accent line, mono era label, sans title (22px, weight 500), sans body, objectives list, "Begin excavation" button (full-width black).
 
 ### Small-screen notice
 `SmallScreenNotice` (mounted once in `SharedLayout.jsx`, after the content, so it sits above everything, a level's IntroModal included). Shown while the viewport is **under 600px** wide (`matchMedia('(max-width: 599.98px)')`; width only, no touch test), on whatever page the visitor lands on. It reuses IntroModal's card styles (`IntroModal.module.css`), with no mono label: title "This experience was designed for larger screens." and no body, full-width black "Continue anyway" button (focused on open). Its only own styles: the opaque museum background (`#111`) instead of the see-through scrim, `z-index: 10000`, and a card at most 380px wide with a 16px side gutter. "Continue anyway" closes it and remembers that for the visit in `sessionStorage` (`ux-archaeologist:small-screen-dismissed`, in try/catch: with storage blocked it still closes, it just isn't remembered). Widening the window to 600px or more hides it without counting as a dismissal (narrow again and it returns). Phones held sideways (wider than 600px but short) don't get it.
@@ -155,7 +155,7 @@ Each dot is a 17×24 button; hover or focus shows a tooltip under the row with t
 Dark translucent card, "OBJECTIVES" label, checklist (unchecked = light, checked = strikethrough + muted). Slides up via `trackerSlideUp` keyframe when playing state begins. Completing an item draws the tick (stroke-dashoffset, ~220ms), then a strike grows across the text from the left as it fades to grey. The HUD Continue button waits ~550ms for the last strike, then rises in with a slight overshoot and a soft halo that blooms off its border. All disabled under `prefers-reduced-motion`.
 
 ### DiscoveryCard
-White card, 2px black accent line, "ARTIFACT DISCOVERED", large mono year, artifact name, description, "Next excavation" button → `/timeline`.
+White card, no accent line, "ARTIFACT DISCOVERED", large mono year, artifact name (sans, 24px, weight 500), description, "Continue" button → the next level (Level 5 → the timeline).
 
 ---
 
@@ -248,7 +248,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - **Get Info:** window titled "Information about <name>", laid out in Mac pixels from `macsystem100022.png` (content 384 × 216; it opens at (45,55), where the Finder put the System Disk's): the name right-aligned ending at 318 beside the 32-pixel icon at (332,10); Kind / Size / Where / Created / Modified in Chicago on 18-pixel rows from 39, labels at 22 and values at 92 ("1432 bytes, accounts for 2K on disk", "System Disk, internal drive", "Wednesday, January 25, 1984 at 9:14 AM"; a date too long for the window runs off its edge, as in the screenshot); the 12-pixel `Locked` check box at (22,136), live (an X corner to corner), dotted when it can't apply (the disk); a comment box 370 × 56 at (7,153). The disk's Size uses the screenshot's form, "221184 bytes used for 10 files" (the count is ours). Not offered for the Trash. Notes starts locked. The screenshot is Finder 4.1's; 1.1's layout is assumed the same.
 - **Put Back:** select an item in the Trash window; it flies back (zoom outline) to where its icon was. **Close All** zooms every Finder window shut. **Select All** selects every desktop icon. **Clean Up** snaps icons to the nearest free grid slot (the manual says "neat rows and columns"; snap vs re-pack is undocumented).
 - **Eject** (disk selected, or the disk dragged onto the Trash): the drive light pulses and a dimmed ghost of the disk stays on the desktop, as in 1.0; opening it asks "Please insert the disk: System Disk". With no second disk in the exhibit, the disk is "pushed back in" after 3 s.
-- **Utilities folder and applications** (`src/components/apps/`). The Infinite Mac System Disk the screenshots come from has a Utilities folder — Disk Copy, Fonts, Font Mover, TeachText, SysVersion (`macsystem100031.png`; icons traced, 64 Mac pixels apart from 18 in, "5 items   96K in folder"). These are later than this Finder (Font Mover 1985, TeachText 1988); they're here because that disk has them and Matthew asked for TeachText (9 Nov 2026). Launching one reads the disk, closes the desk accessories, plays zoom rectangles from the icon to the whole screen, then the Finder's icons and windows go away until the application quits (they come back as they were).
+- **Utilities folder and applications** (`src/components/apps/`). The Infinite Mac System Disk the screenshots come from has a Utilities folder — Disk Copy, Fonts, Font Mover, TeachText, SysVersion (`macsystem100031.png`; icons traced, 64 Mac pixels apart from 18 in, "5 items   96K in folder"). These are later than this Finder (Font Mover 1985; TeachText (earliest dated version 1.2, 1988; it replaced Apple's Edit between System 2, 1987, and System 7, 1991; a 1984 document would have opened in MacWrite; sources: [Wikipedia](https://en.wikipedia.org/wiki/TeachText), [Eclectic Light](https://eclecticlight.co/2024/05/25/a-short-history-of-styled-text-on-the-mac-teachtext-to-textedit-rtf/), [Macintosh Repository](https://www.macintoshrepository.org/2274-teachtext))); they're here because that disk has them and Matthew asked for TeachText (9 Nov 2026). Launching one reads the disk, closes the desk accessories, plays zoom rectangles from the icon to the whole screen, then the Finder's icons and windows go away until the application quits (they come back as they were).
   - *TeachText:* its document window fills the screen inside a 3-pixel margin, frame (3,23)–(508,338), measured from `macsystem100033.png`: text in Apple's bitmap **Geneva 12** (`fonts/geneva-12.ttf`, the same jcs source as Geneva 9) on 16-pixel lines, 4 pixels in; a vertical bar; a blank strip along the bottom ending in the grow box; no mouse wheel. Menus Apple · File · Edit (`MenuBar`'s `menus`/`appleAbout`). File: New, Open... (dimmed), Close, Save, Save As..., Page Setup... and Print... (dimmed), Quit; Edit: Undo (dimmed), Cut, Copy, Paste, Clear, Select All on TeachText's own clipboard. **Save** on an untitled document, or **Save As...**, puts up the dialog traced from `macsystem100034.png` (320 × 120 at (82,92)): "Save this document as:" with the name typed live in Chicago over the traced field (all selected at first), Save (or Return), Cancel (or Escape), Eject (beeps), Drive dimmed; the window behind draws inactive, as in the screenshot. The saved document appears in the disk window and opens in TeachText. Closing the document (close box or File ▸ Close) quits TeachText and returns to the Finder: the real one stayed open on an empty screen with its menus, which read as a frozen Mac or a wiped desktop (Matthew's call, 9 Nov 2026), so New is never needed. Close or Quit with unsaved changes asks "Save changes to “name” before closing/quitting?" Yes / No / Cancel. Reconstructed: the menu items, the About text ("TeachText © 1988 Apple Computer, Inc."), the save-changes wording, saving over a document of the same name without asking.
   - *Notes* is a TeachText document (Get Info: Kind "TeachText document"; in 1984 it would have needed MacWrite): double-clicking it launches TeachText with it, which still completes the first objective. Notes starts locked, so TeachText shows it read-only (Save, Cut, Paste, Clear dimmed); unlock it in Get Info to edit and save it.
   - *Projects* holds **Budget**, **Letter** and **Sketch** (`src/components/projectFiles.js`), TeachText documents by R.H., who wrote Notes: the costed proposal to buy two Macs, the letter to the partners (25 Jan 1984), and the running order for Friday's ten-minute demo. Each ends, after a run of blank lines, with something only a reader who scrolls to the bottom finds (the Sketch's is the team's signatures molded inside the case). They are editable and saved for the session. Facts, with sources and confidence: Mac $2,495 with MacWrite and MacPaint (Apple press release, 24 Jan 1984; high); external 400K drive $495, announced with the Mac, shipped May 1984 (Datapro 11/1984; high); ImageWriter $495 with a Mac, $595 alone (Datapro 11/1984; medium); Multiplan $195 (Creative Computing, May 1984; medium — a museum box shows $325); Lisa 2 $3,495 announced Jan 1984, first Lisa $9,995 (high); the "1984" ad in Super Bowl XVIII on Sunday 22 Jan 1984, Raiders 38, Washington 9 (high); "Never trust a computer you can't lift" at the 24 Jan shareholders' meeting (high); signatures molded inside the case, opened with a long Torx driver (high); MacWrite 1.0 limited to about ten pages on 128K (medium). The take-home "Test Drive a Macintosh" (Nov 1984) is left out: too late for January. The firm, people and totals are invented.
@@ -567,7 +567,7 @@ src/components/chat/
 
 ### Museum Layer
 - **Era labels:** Monospace, 13px, #737373 on white (#999 on dark), letter-spacing 0.1em
-- **Level titles:** Serif, 22px, weight 400
+- **Level titles:** System sans-serif, 22px (IntroModal) / 24px (DiscoveryCard), weight 500
 - **Body text:** System sans-serif, 13px, #555, line-height 1.7
 - **Objective label:** Sans-serif, 10px, uppercase, letter-spacing 0.08em, #737373
 - **Objective items:** Sans-serif, 13px, #333
@@ -593,7 +593,6 @@ src/components/chat/
 | Background | `#111` |
 | Modal background | `#fff` |
 | Tracker background | `rgba(0,0,0,0.85)` |
-| Accent line | `#333` (2px) |
 | Primary text on white | `#111` |
 | Secondary text on white | `#555` |
 | Muted text on white | `#737373` (4.7:1, the lightest grey that passes WCAG AA on white) |
