@@ -13,7 +13,7 @@ export default function TitleScreen() {
       <div className={styles.center}>
         <h1 className={styles.title}>Interface Artifacts</h1>
         <p className={styles.subtitle}>
-          Explore how interfaces evolved through the decades.
+          Six computer interfaces from 1979 to 2023, working as they did.
         </p>
         <button className={styles.btn} onClick={() => navigate('/timeline')}>
           Enter the exhibit

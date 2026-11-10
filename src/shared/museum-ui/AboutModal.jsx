@@ -29,13 +29,13 @@ export default function AboutModal({ onClose }) {
           <h1 id={titleId} className={styles.title}>Interface Artifacts</h1>
 
           <p className={styles.paragraph}>
-            Every interface you've ever used was someone's radical idea. The command line, the desktop, the hyperlink, the touchscreen — each felt inevitable in hindsight but was a leap of imagination when it was new.
+            Every interface you've ever used was someone's radical idea. The command line, the desktop, the hyperlink and the touchscreen each feel inevitable now, but each was a leap of imagination when it was new.
           </p>
           <p className={styles.paragraph}>
-            This exhibit recreates six of those moments as working replicas you can explore the way their original users did.
+            This exhibit recreates six of those moments as working replicas you can explore the way their first users did. Type a command. Drag an icon. Follow a link. Swipe a screen. Scroll a feed. Ask a question.
           </p>
           <p className={styles.paragraph}>
-            Type a command. Drag an icon. Follow a link. Swipe a screen. The history of computing is a history of how we learned to talk to machines — and how they learned to talk back.
+            The replicas follow photographs, manuals and recordings from their time. Where no record survives of how something looked or behaved, the details are reconstructed.
           </p>
 
           <hr className={styles.divider} />
