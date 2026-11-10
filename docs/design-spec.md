@@ -1,8 +1,8 @@
-# UX Archaeologist — Design Specification
+# Interface Artifacts — Design Specification
 
 ## Overview
 
-UX Archaeologist is an interactive museum experience where the player excavates digital artifacts from different eras of computing. Each level recreates a historically authentic interface that the player explores and interacts with, uncovering key UX innovations along the way.
+Interface Artifacts (the repository is still `ux-archeologist`) is an interactive museum experience where the player excavates digital artifacts from different eras of computing. Each level recreates a historically authentic interface that the player explores and interacts with, uncovering key UX innovations along the way.
 
 **Stack:** React + Vite SPA, CSS Modules
 **Levels:** 6 playable levels (0–5)
@@ -11,7 +11,7 @@ UX Archaeologist is an interactive museum experience where the player excavates 
 
 ### Progress (8 Nov 2026)
 
-All six levels are complete and playable; nothing is gated; all 77 tests pass. Each level is its own code chunk (`src/views.js`), fetched while the previous view fades out. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
+All six levels are complete and playable; nothing is gated; all 87 tests pass. Copy: every card, objective, hint, the About text and Level 5's guide follow the voice guide in `docs/copy-pass.md` (10 Nov 2026; Matthew may revisit, see the backlog). Each level is its own code chunk (`src/views.js`), fetched while the previous view fades out. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
 
 Recent work:
 - **Layout (7 Nov):** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, gap above = gap below) instead of fixed 180px bands.
@@ -198,7 +198,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **IntroModal:**
 - Era: `1979`
 - Title: `The Command Line`
-- Description: "Before icons, windows, or the web, there was a conversation. A researcher sat down at a terminal, typed a command, and waited. The machine replied. This was computing at its most direct — and its most demanding."
+- Description: "It's 1979, and this is a VT100 terminal, your line to a computer down the hall that the whole lab shares. There are no icons, no menus, no mouse. Just a blinking cursor, and it won't suggest a thing: the machine waits for you to know what to ask."
 
 **Visual Palette:**
 - Black screen, green phosphor text
@@ -209,12 +209,12 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Objectives (any order):**
 1. Read the notes file
-2. Check your messages
+2. Read your mail
 3. Look up a command in the manual
 
 **Discovery Card:**
 - Artifact: `Command & Response`
-- Text: "Before icons and touchscreens, computing required negotiation. You typed a precise request. The machine responded. Every modern interface — every tap, swipe, and voice command — is still a variation on this conversation. You just had it yourself."
+- Text: "At a terminal you type a command, the computer runs it and prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. They're short, like ls, cat and rm, because terminals were slow, and the same commands still work on every Mac and on most of the world's servers."
 
 ---
 
@@ -228,7 +228,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **IntroModal:**
 - Era: `1984`
 - Title: `The Desktop`
-- Description: "You're looking at the original Macintosh desktop from 1984. Explore the interface and complete the objectives to discover what made it revolutionary."
+- Description: "It's 1984, and this is the Apple Macintosh. Until now, using a computer has meant memorizing commands. Here everything is where you can see it: files, folders, even a trash can, there to point at and pick up. Hardly anyone has held a mouse, so Apple packed a cassette tape in the box to teach you."
 
 **Visual Palette:**
 - Pure 1-bit: black and white only inside screen
@@ -284,13 +284,13 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Empty Trash (Special menu):** enabled when the Trash holds anything. The Finder writes to the disk (drive light, watch cursor) and permanently deletes the contents, silently, as in 1984 (Finder sounds arrived with System 6.0.4+). Notes is a locked document: it stays in the Trash and a 1984-style alert (`MacAlert`: thick double frame, Caution icon, OK with default ring, Return dismisses) explains, sounding the system beep. The alert wording is written in the Mac's voice, not quoted from System 1.
 
 **Objectives (any order):**
-1. Find the document on this computer
+1. Open the Notes document
 2. Delete the Projects folder
-3. Discover what commands are available
+3. Look through the menus
 
 **Discovery Card:**
 - Artifact: `Direct Manipulation`
-- Text: "Before 1984, using a computer meant typing commands into a blank screen. The Macintosh let you point at things, drag them around, and open them with a click. You didn't need to learn the computer's language. It learned yours."
+- Text: "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people. The researcher Ben Shneiderman called this style direct manipulation in 1983. Some tasks took longer with a mouse than with a typed command."
 
 ---
 
@@ -304,7 +304,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **IntroModal:**
 - Era: `1995`
 - Title: `The Hyperlink`
-- Description: "Information wasn't something you searched for. It was something you followed, one link at a time."
+- Description: "It's 1995, and this is Netscape Navigator, the browser most people use to get on the web. The web has no map, and no good way to search it yet. Every link was put there by a person, and following them is the only way around, so where you end up depends on whose pages you happen to find."
 
 **Visual Palette:**
 - Gray beveled browser chrome (outset borders, 3D button effect)
@@ -326,12 +326,12 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Objectives (any order):**
 1. Navigate to a new page
-2. Return to a previous page
+2. Go back a page
 3. Find "A Brief History of the Web"
 
 **Discovery Card:**
 - Artifact: `Hyperlink Navigation`
-- Text: "The early web wasn't searched. It was browsed. Every page linked to other pages, and finding what you needed meant following a trail of connections that other people had made."
+- Text: "On the early web, every link was put there by the person who wrote the page, and you found things by following them from page to page. Directories such as Yahoo! were lists of sites sorted by hand. Finding something specific could take a long time, and search engines such as AltaVista, launched in December 1995, took over that job."
 
 ---
 
@@ -345,7 +345,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **IntroModal:**
 - Era: `2007`
 - Title: `The Touchscreen`
-- Description: "For thirty years, a layer of abstraction stood between people and their computers — a mouse, a cursor, a keyboard. Then the glass became the interface."
+- Description: "It's 2007, and this is the original iPhone. Other phones have plastic keyboards, small screens and sometimes a stylus. This one has no stylus, no keys, nothing to learn first. Just a sheet of glass and your finger."
 
 **Visual Palette:**
 - Skeuomorphic icon gradients, glossy reflections
@@ -382,12 +382,12 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 **Objectives (3, independent — no sequential gating):**
 1. Slide to unlock
-2. Explore the Notes app (open any note)
-3. Swipe between screens
+2. Open a note
+3. Swipe to the second home screen
 
 **Discovery Card:**
 - Artifact: `Multi-Touch`
-- Text: "For the first time, the interface disappeared. No mouse, no cursor, no abstraction layer. You touched the thing itself. Your finger became the input device, and the screen became the object."
+- Text: "The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched things instead of moving a pointer. Lists kept moving after you let go and bounced when they hit the end, as if they had weight; Apple patented that bounce. Within a few years almost every phone worked this way."
 
 ---
 
@@ -401,7 +401,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 **IntroModal:**
 - Era: `2016`
 - Title: `The Feed`
-- Description: "The interface stopped waiting for you. It started optimizing for your attention."
+- Description: "It's spring 2016, and this is Instagram on an iPhone 6. There's nothing to open and nothing to look for: the photos are already there when you arrive, and there are always more below. This year Instagram begins deciding which ones you see first, guessing at what will keep you looking."
 
 **Visual Palette:**
 - Header blue `#12558a`; status bar 20pt + nav bar 44pt; white script wordmark
@@ -455,7 +455,7 @@ The home feed is 24 posts in a hand-ranked order (`FEED` in `feedData.js`): 18 r
 
 **Discovery Card:**
 - Artifact: `Algorithmic Feed`
-- Text: "Earlier feeds showed you everything your friends posted, newest first. By 2016, an algorithm ranked the feed instead, ordering each post by how likely it was to keep you scrolling. Your closest friend's biggest news could sit beneath three strangers and an ad. The order was chosen for you, tuned to hold your attention, by a system whose goals were not your own."
+- Text: "Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like and comment on, based on what you've responded to before. You can't see how it decides, and every like you give tells it what to show you next."
 
 **File Structure:**
 ```
@@ -485,18 +485,18 @@ src/components/feed/
 ### Level 5: 2023 — The Conversation
 **Status: Complete**
 
-**Artifact:** AI chat interface (Claude-inspired, curator persona)
+**Artifact:** AI chat interface (Claude-inspired, the exhibit's guide)
 **Discovery:** Natural Language
 **Container:** Full-width chat panel — no device, no chrome, no window frame
 
-**Persona:** The AI is the museum curator — the same voice that has written every IntroModal and DiscoveryCard. Slightly formal, warm, knowledgeable about interface history. It knows it is inside UX Archaeologist. When asked about itself, it is honest and matter-of-fact.
+**Persona:** The AI is the exhibit's guide in its last room, not its curator or author (Matthew Dea made the exhibit and is the curator; Matthew's call, 9 Nov 2026). Plain, warm and specific; knows it is inside Interface Artifacts; says plainly that it is a language model and when it isn't sure. It never claims to have written the cards.
 
 **Response Model:** Groq API (Llama 3.3 70B) via Netlify serverless proxy, with scripted keyword-matching fallback. System prompt constrains responses to 2-3 sentences, interface history topics only. Player never sees an error; fallback fires silently on API failure.
 
 **IntroModal:**
 - Era: `2023`
 - Title: `The Conversation`
-- Description: "In late 2022, OpenAI released ChatGPT and 100 million people started talking to a machine within two months. Every previous interface required learning something new: commands, clicks, gestures, swipes. This one worked because you already knew how to type a sentence."
+- Description: "It's 2023, and this is a large language model, the kind of AI behind ChatGPT. Every interface so far has asked you to learn something first: commands, menus, links, gestures. This one has no buttons to learn and nothing to memorize. You write to it the way you'd write to a person, and it writes back."
 
 **Visual Palette:**
 - Dark background continuous with museum layer (#1a1a1a)
@@ -522,9 +522,10 @@ src/components/feed/
 - Thinking indicator (3 pulsing dots) shows before first token arrives
 
 **Suggestion Chips by Turn:**
-- Initial: "What is this place?" · "Who are you?" · "Tell me about the levels I just played"
-- After turn 1: "What changed between 1984 and now?" · "How does this conversation compare to the terminal?" · "What comes after this?"
-- After turn 2+: "What was the biggest leap in interface design?" · "Why did touchscreens change everything?" · "Is this the last interface?"
+- Initial: "What is this place?" · "Who are you?" · "What did the other rooms show?"
+- After turn 1: "What changed between 1984 and now?" · "How is this like the 1979 terminal?" · "What might come next?"
+- After turn 2+: "Which change mattered most?" · "What did touchscreens change?" · "Is this the last interface?"
+- Every chip lands on its own scripted reply when the model is unreachable (`src/test/curatorFallbacks.test.js`).
 
 **Boot Sequence:**
 1. ~200ms pause after "Begin Excavation"
@@ -534,15 +535,15 @@ src/components/feed/
 5. Museum HUD slides in per standard pattern
 
 **Objectives (3, independent — no sequential gating):**
-1. Start a conversation (send any message)
+1. Send a message (any message)
 2. Ask a follow-up question (send a second message after your first)
-3. Regenerate a response (click regenerate on any AI response)
+3. Regenerate a reply (click regenerate on any AI response)
 
-**Key Mechanic:** The player is having a conversation with the thing that has been curating their entire experience. The discovery card, written in the same third-person museum voice, arrives after the player just spoke with its author. The dissonance is intentional and unspoken.
+**Key Mechanic:** After five rooms of learning each interface's language, the visitor simply writes. The discovery card that follows notes what that costs: it can be wrong while sounding sure, and it can't show its reasons.
 
 **Discovery Card:**
 - Artifact: `Natural Language`
-- Text: "Every previous interface required you to learn its language: commands, clicks, menus, gestures. This one already speaks yours. But behind the fluency is a system you can't see, trained on text you didn't choose, shaped by decisions you can't inspect. The most natural interface ever built is also the least transparent."
+- Text: "Here you didn't learn commands, menus or gestures; you just asked. You can hand it a question, a messy draft, a table of numbers or a photo, and it works out what you want. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did."
 
 **File Structure:**
 ```

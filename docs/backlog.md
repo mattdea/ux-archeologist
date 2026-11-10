@@ -139,6 +139,13 @@ _Nothing approved right now._
 
 ## Done
 
+### Copy pass applied · 10 Nov 2026
+- Live in the app, one commit per surface: intro cards, discovery cards, objectives and hints, title subtitle and About, Level 5's chips, fallbacks and system prompt. Text and sources: `docs/copy-pass.md`; spec synced.
+- Level 5's chat is now the exhibit's guide, not its curator (Matthew is the curator); the spec's persona and key mechanic changed to match.
+- Found while applying: three chips got the wrong offline reply (e.g. "show" matched "how"). The fallback keywords are reordered and `src/test/curatorFallbacks.test.js` checks every chip (87 tests pass).
+- Not changed: the chat's "Curator v1" model label in the input bar (artifact dressing), and the repository name `ux-archeologist`.
+- Matthew may revisit the copy; see "Copy pass: revisit later" under Ideas.
+
 ### Level 0: moved from 1971 to 1979 · 9 Nov 2026
 - Year label 1979 in the HUD, intro, discovery card and timeline (entries are evenly spaced, so nothing moved); `sfx.js` comment.
 - `useTerminal.js`: V7 boot on a PDP-11/70 (`Boot`, `: hp(0,0)unix`, `mem = …`, `#`, `^D`) from V7 "Setting up Unix"; V7 login (motd, then "You have mail.", no Last login) and V7 `mail` (postmark, `?` prompt, no Berkeley banner) from `login.c` / `mail.c` on TUHS. The mem value, the motd, the mail shortcut back to the shell and both messages' wording are reconstructed and marked.

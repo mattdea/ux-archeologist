@@ -1,6 +1,6 @@
-# Copy pass · draft for review · 9 Nov 2026
+# Copy pass · applied 10 Nov 2026
 
-Nothing here is in the code yet. Each item shows the **current** text (what's live), the **proposed** text, and a note where it changed. Edit the proposed lines in place, or reply in chat with the number (e.g. "1.3 keep current"). Once agreed, each surface goes in as its own commit and `design-spec.md` is updated to match.
+**Applied 10 Nov 2026**, one commit per surface, with the latest proposal for each item (1995 discovery card: "search engines such as AltaVista"; 1984 discovery card keeps its trade-off sentence; "Command & Response" kept; hints stay plain text). Matthew may revisit the copy (backlog). Kept as the record of what changed and why. Each item shows the **current** text (what's live), the **proposed** text, and a note where it changed. Edit the proposed lines in place, or reply in chat with the number (e.g. "1.3 keep current"). Once agreed, each surface goes in as its own commit and `design-spec.md` is updated to match.
 
 Decisions this follows (9 Nov 2026): start from the live text; the site is **Interface Artifacts**; intro cards put you in the year, keep the live text's mood and add a period detail and a line of reflection, with no instructions (revised 10 Nov); discovery cards explain the idea and note trade-offs plainly; archaeology words stay in labels only; the discovery button stays **Continue**; "tap" on the phone levels (3, 4), "click" elsewhere; address the visitor as "you"; Level 0 is now 1979 (approved 9 Nov 2026), and its note is about the Seventh Edition.
 
