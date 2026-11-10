@@ -107,8 +107,52 @@
   margin: 0 -4px;
 }
 
+/* ── Arrangements (variants.js `arrange`) ─────────────────────────────
+   Each card sits in a .slot; CardLab.jsx gives it --rot and --dy. */
+.slot {
+  display: flex;
+  min-width: 0;
+  transform: translateY(var(--dy, 0)) rotate(var(--rot, 0deg));
+  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), margin 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fan, .deck, .scatter {
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+.fan .slot, .deck .slot, .scatter .slot { flex: none; width: var(--lab-w, 260px); }
+.fan .slot:hover, .fan .slot:focus-within,
+.deck .slot:hover, .deck .slot:focus-within { z-index: 10; }
+
+/* a hand of cards, held in an arc */
+.fan { padding: 40px 0 70px; }
+.fan .slot { transform-origin: 50% 130%; }
+.fan .slot + .slot { margin-left: calc(var(--lab-w, 260px) * -0.55); }
+.fan .slot:hover, .fan .slot:focus-within { transform: translateY(calc(var(--dy) - 36px)) rotate(var(--rot)); }
+
+/* a deck squared up; it spreads out under the pointer */
+.deck { padding: 20px 0 40px; }
+.deck .slot + .slot { margin-left: calc(var(--lab-w, 260px) * -0.94); }
+.deck:hover .slot + .slot, .deck:focus-within .slot + .slot { margin-left: calc(var(--lab-w, 260px) * -0.35); }
+
+/* dropped on a table */
+.scatter {
+  flex-wrap: wrap;
+  gap: 18px 10px;
+  padding: 34px 20px 64px;
+  margin: 0;
+  border-radius: 6px;
+  background: radial-gradient(ellipse at 50% 30%, #1d1d1d, #141414 70%);
+}
+.scatter .slot:hover { z-index: 10; transform: translateY(calc(var(--dy) - 6px)) rotate(0deg); }
+
+/* every other card dropped half a step */
+.stagger { padding-bottom: 76px; }
+
 /* ── Turning a card over ─────────────────────────────────────────────── */
 .flip {
+  flex: 1;
   display: flex;
   perspective: 1400px;
   cursor: pointer;
@@ -139,7 +183,7 @@
 .backFace { transform: rotateY(180deg); }
 
 @media (prefers-reduced-motion: reduce) {
-  .inner { transition: none; }
+  .inner, .slot { transition: none; }
 }
 
 /* ── Variant classes (variants.js `className`) ───────────────────────── */

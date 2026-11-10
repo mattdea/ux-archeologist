@@ -9,19 +9,7 @@ import { useRef } from 'react'
 import styles from '../Collection.module.css'
 import DeviceArt from './DeviceArt'
 import { ARTIFACTS } from '../../data/artifacts'
-
-// Each room's plate behind its drawn device, from Matthew's palette in room
-// order: navy, yellow, sky blue, green, coral, brown
-const PLATES = ['#0d4b88', '#edb30a', '#84b6fd', '#539267', '#e46868', '#9a6b59']
-const pad = (n) => String(n).padStart(2, '0')
-
-// Matthew's illustrations, one per room, each on its own ground; the plate
-// takes that ground's colour so the whole picture shows with no crop
-const ILLUSTRATIONS = Object.fromEntries(
-  Object.entries(import.meta.glob('../../../assets/collection/illustration-*.webp', { eager: true, import: 'default' }))
-    .map(([file, url]) => [Number(file.match(/illustration-(\d)\.webp$/)[1]), url])
-)
-const ILLUSTRATION_GROUND = ['#567b65', '#8a9fb1', '#4b8181', '#798a9b', '#c1806f', '#83685c']
+import { PLATES, ILLUSTRATIONS, ILLUSTRATION_GROUND, pad } from './cardArt'
 
 // A card tilts a few degrees towards the pointer and catches a soft light
 // where it is (none under reduced motion: the CSS turns it off)

@@ -1,0 +1,238 @@
+/* src/pages/cardLab/LabCards.module.css
+ * The card lab's own designs (dev only). Every card gets --bg (the room's
+ * colour) and --ink (text that reads on it) from LabFace. Sizes follow the
+ * lab's --lab-w so S · M · L scales the whole card. */
+
+.card {
+  --w: var(--lab-w, 260px);
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(var(--w) * 1.4);
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-align: left;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 24px 40px -24px rgba(0, 0, 0, 0.9);
+  transition: translate 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.card:hover { translate: 0 -4px; }
+.card > span, .card span { display: block; }
+.grow { flex: 1; }
+.card svg { display: block; }
+.card img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* the six-colour strip at the foot of a card */
+.setStrip { display: flex !important; gap: 4px; align-items: flex-end; height: 14px; }
+.setStrip > span { flex: 1; height: 8px; border-radius: 1px; }
+.setStrip > .setOn { height: 14px; }
+
+.typeTop {
+  display: flex !important;
+  justify-content: space-between;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ── Poster: the whole card is the colour ───────────────────────────── */
+.poster { background: var(--bg); color: var(--ink); padding: 14px 16px 16px; }
+.posterYear {
+  font-size: calc(var(--w) * 0.34);
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  margin-left: -0.04em;
+}
+.outline { color: transparent; -webkit-text-stroke: 1.5px var(--ink); opacity: 0.6; }
+.posterPic { flex: 1; display: flex !important; align-items: center; justify-content: center; padding: 10px 0; min-height: calc(var(--w) * 0.6); }
+.posterPic svg, .posterPic img { width: 100%; height: auto; max-height: 100%; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3)); }
+.posterName { font-size: calc(var(--w) * 0.085); font-weight: 650; line-height: 1.05; letter-spacing: -0.01em; }
+.posterRoom { margin-top: 6px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; opacity: 0.75; }
+
+/* ── Wall label on the colour ────────────────────────────────────────── */
+.label { background: var(--bg); color: var(--ink); padding: 18px; }
+.labelPic { width: 58%; }
+.labelPic svg, .labelPic img { width: 100%; height: auto; }
+.labelName { font-size: 17px; font-weight: 700; line-height: 1.15; }
+.labelMeta { margin-top: 3px; font-size: 13px; font-style: italic; opacity: 0.85; }
+.labelDesc { margin-top: 12px; font-size: 11px; line-height: 1.5; opacity: 0.9; }
+.labelFoot { margin-top: 14px; font-family: 'Courier New', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; }
+.back.label .labelFoot { margin-top: 0; }
+
+/* ── Big type: the name is the picture ───────────────────────────────── */
+.type { background: var(--bg); color: var(--ink); padding: 14px 16px 16px; }
+.typeName {
+  margin-top: 14px;
+  font-size: calc(var(--w) * 0.125);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+.ghost { opacity: 0.22; }
+.typePic { align-self: flex-end; width: 48%; margin-right: -6px; margin-bottom: -6px; }
+.typePic svg, .typePic img { width: 100%; height: auto; }
+.typeNote { font-size: 11px; opacity: 0.8; }
+
+/* ── Two-sided: the picture on the front, the text on the back ───────── */
+.twoSided { background: var(--bg); color: var(--ink); padding: 14px 16px 18px; }
+.twoPic { flex: 1; display: flex !important; align-items: center; margin: 0 -10px; }
+.twoPic svg, .twoPic img { width: 100%; height: auto; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3)); }
+.twoName { font-size: 15px; font-weight: 600; text-align: center; }
+.back.twoSided { background: #fff; color: #1a1a1a; padding: 0 16px 16px; }
+.infoBar {
+  display: flex !important;
+  justify-content: space-between;
+  margin: 0 -16px 16px;
+  padding: 10px 16px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.infoName { font-size: 20px; font-weight: 650; line-height: 1.1; }
+.infoRoom { margin-top: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #777; }
+.infoDesc { margin-top: 12px; font-size: 11.5px; line-height: 1.5; color: #333; }
+.back.twoSided .setStrip { margin-top: 14px; }
+
+/* ── Paint chip ──────────────────────────────────────────────────────── */
+.chip { background: #fff; color: #1a1a1a; padding: 10px 10px 12px; }
+.chipBlock {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 0.9;
+  padding: 10px;
+  background: var(--bg);
+}
+.chipBlock svg, .chipBlock img { width: 100%; height: auto; }
+.ill .chipBlock { padding: 0; }
+.chipEmpty { background: repeating-linear-gradient(135deg, #f1f1f1 0 6px, #e6e6e6 6px 7px); }
+.chipCode { margin-top: 10px; font-size: 13px; font-weight: 800; letter-spacing: 0.02em; }
+.chipName { margin-top: 2px; font-size: 13px; }
+.chipRoom { margin-top: 2px; font-size: 11px; color: #777; }
+.chip .setStrip { margin-top: 12px; }
+
+/* ── Split: a strip of colour with the year on its side ─────────────── */
+.split { flex-direction: row; background: #fff; color: #1a1a1a; }
+.splitStrip {
+  flex: none;
+  width: calc(var(--w) * 0.17);
+  background: var(--bg);
+  color: var(--ink);
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 14px;
+}
+.splitStrip > span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: calc(var(--w) * 0.14);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.splitBody { flex: 1; display: flex !important; flex-direction: column; padding: 14px 14px 16px 0; min-width: 0; }
+.splitPic {
+  margin-left: calc(var(--w) * -0.1);
+  margin-bottom: 12px;
+  padding: 8px;
+  background: var(--bg);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.08);
+}
+.ill .splitPic { padding: 0; }
+.splitPic svg, .splitPic img { width: 100%; height: auto; }
+.splitName, .splitRoom, .splitDesc { padding-left: 14px; }
+.splitName { font-size: 18px; font-weight: 650; line-height: 1.1; }
+.splitRoom { margin-top: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #777; }
+.splitDesc { margin-top: 10px; font-size: 11px; line-height: 1.5; color: #333; }
+.splitBodyBack { background: #1b1b1b; color: #ddd; padding-left: 0; }
+.splitBodyBack .splitRoom { color: #999; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11px; }
+
+/* ── Ticket ──────────────────────────────────────────────────────────── */
+.ticket { background: transparent; box-shadow: none; filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.6)); }
+.ticketTop { display: flex !important; flex-direction: column; background: var(--bg); color: var(--ink); padding: 12px 14px 8px; border-radius: 10px 10px 0 0; min-height: calc(var(--w) * 0.75); }
+.ticketTopBack { background: #2a2a2a; color: #aaa; }
+.ticketHead {
+  display: flex !important;
+  justify-content: space-between;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.ticketPic { flex: 1; display: flex !important; align-items: center; padding-top: 8px; }
+.ticketPic svg, .ticketPic img { width: 100%; height: auto; }
+/* the perforation: a dashed line between two notches */
+.perf {
+  height: 18px;
+  background:
+    radial-gradient(circle at 0 50%, transparent 9px, #fff 9.5px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 9px, #fff 9.5px) right / 51% 100% no-repeat;
+  position: relative;
+}
+.perf::after { content: ''; position: absolute; left: 14px; right: 14px; top: 50%; border-top: 2px dashed #d5d5d5; }
+.ticketTopBack + .perf::after { border-color: #ddd; }
+.ticketBody { flex: 1; display: flex !important; flex-direction: column; background: #fff; color: #1a1a1a; padding: 4px 14px 14px; border-radius: 0 0 10px 10px; }
+.ticketName { font-size: 18px; font-weight: 700; line-height: 1.1; }
+.ticketRoom { margin-top: 4px; font-size: 11px; color: #777; }
+.ticketDesc { margin-top: 10px; font-size: 10.5px; line-height: 1.5; color: #333; }
+.barcode {
+  margin-top: 12px;
+  height: 26px;
+  background: repeating-linear-gradient(90deg, #1a1a1a 0 2px, transparent 2px 4px, #1a1a1a 4px 5px, transparent 5px 8px, #1a1a1a 8px 11px, transparent 11px 12px);
+}
+
+/* ── Medallion ───────────────────────────────────────────────────────── */
+.medallion { background: #fff; color: #1a1a1a; padding: 22px 18px 18px; align-items: center; text-align: center; }
+.medDisc {
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 14%;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 5px #fff, 0 0 0 6px #d8d8d8, inset 0 -10px 20px rgba(0, 0, 0, 0.15);
+}
+.ill .medDisc { padding: 6%; overflow: hidden; }
+.medDisc svg, .medDisc img { width: 100%; height: auto; }
+.medYear { margin-top: 16px; font-family: 'Courier New', monospace; font-size: 12px; letter-spacing: 0.3em; color: #777; }
+.medName { margin-top: 6px; font-size: 18px; font-weight: 650; line-height: 1.1; }
+.medDesc { margin-top: 10px; font-size: 11px; line-height: 1.5; color: #444; }
+.back.medallion { background: #161616; color: #ddd; }
+.medEmpty { background: transparent; box-shadow: none; border: 2px dashed #444; font-family: 'Courier New', monospace; font-size: calc(var(--w) * 0.16); color: #555; }
+.back.medallion .medDesc { color: #999; }
+
+/* ── Glow: black, the colour as light ───────────────────────────────── */
+.glow {
+  background: radial-gradient(ellipse 80% 45% at 50% 34%, color-mix(in srgb, var(--bg) 55%, transparent), transparent 70%), #0c0c0c;
+  color: #eee;
+  padding: 14px 16px 16px;
+  border-top: 4px solid var(--bg);
+}
+.glow .typeTop { color: #888; }
+.glowPic { flex: 1; display: flex !important; align-items: center; padding: 10px 6px; min-height: calc(var(--w) * 0.6); }
+.glowPic svg, .glowPic img { width: 100%; height: auto; filter: drop-shadow(0 0 22px var(--bg)); }
+.glowName { font-size: 19px; font-weight: 650; line-height: 1.1; }
+.glowRoom { margin-top: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #999; }
+.glowDesc { margin-top: 10px; font-size: 11px; line-height: 1.5; color: #aaa; }
+.back.glow { background: #0c0c0c; }
+.glowYear { --ink: var(--bg); opacity: 1; margin-bottom: 10px; }
+.back.glow .glowRoom { text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+  .card:hover { translate: none; }
+}

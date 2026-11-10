@@ -2,7 +2,7 @@
 //
 // The card lab (dev server only, at /card-lab or "Card lab (dev)" on the
 // timeline): every card design in src/pages/cardLab/variants.js, one row
-// each, all six artifacts side by side. Click a card to turn it over;
+// each, all six artifacts side by side (or fanned, stacked, scattered). Click a card to turn it over;
 // "Fronts" and "Backs" turn them all. The cards are the collection's own
 // (collection/cards.jsx), so a change there shows here too.
 import { useState } from 'react'
@@ -12,12 +12,29 @@ import hud from '../shared/SharedLayout.module.css'
 import { FoundCard, FaceDownCard } from './collection/cards'
 import { lookClass } from './collection/cardLook'
 import { VARIANTS } from './cardLab/variants'
+import { LabFace } from './cardLab/LabCards'
 import { ARTIFACTS } from '../data/artifacts'
 import { useFadeNavigate } from '../shared/SharedLayout'
 
 const SIZES = { S: 220, M: 260, L: 300 }
 const SIZE_KEY = 'ux-archaeologist:card-lab-size'
 const readSize = () => { try { const v = localStorage.getItem(SIZE_KEY); return v in SIZES ? v : 'M' } catch { return 'M' } }
+
+// How a row lays its cards out (variants.js `arrange`): a style for the
+// card in place i of n. 'row' is a plain row; the rest overlap, turn or
+// drift (CardLab.module.css .fan, .deck, .scatter, .stagger).
+const TILT = [-6, 4, -2, 7, -4, 3]
+const DRIFT = [0, 26, -12, 18, -4, 30]
+const ARRANGE = {
+  row: () => ({}),
+  fan: (i, n) => {
+    const d = i - (n - 1) / 2
+    return { '--rot': `${d * 7}deg`, '--dy': `${d * d * 7}px` }
+  },
+  deck: (i) => ({ '--rot': `${TILT[i % 6] / 2}deg`, '--dy': `${-i * 2}px` }),
+  scatter: (i) => ({ '--rot': `${TILT[i % 6]}deg`, '--dy': `${DRIFT[i % 6]}px` }),
+  stagger: (i) => ({ '--dy': `${i % 2 ? 48 : 0}px` }),
+}
 
 // One card that turns over on click. Both faces are always stacked; the
 // whole place takes the click, so a tilted card can't lose it.
@@ -33,11 +50,11 @@ function FlipCard({ a, v, backUp, onFlip }) {
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onFlip() } }}
     >
       <div className={lab.inner}>
-        <div className={`${lab.face} ${lab.frontFace}`}>
-          <FoundCard a={a} art={v.art} plates={v.plates} tabIndex={-1} />
+        <div className={lab.face}>
+          {v.design ? <LabFace a={a} v={v} side="front" /> : <FoundCard a={a} art={v.art} plates={v.plates} tabIndex={-1} />}
         </div>
         <div className={`${lab.face} ${lab.backFace}`}>
-          <FaceDownCard a={a} tabIndex={-1} />
+          {v.design ? <LabFace a={a} v={v} side="back" /> : <FaceDownCard a={a} tabIndex={-1} />}
         </div>
       </div>
     </div>
@@ -96,17 +113,18 @@ export default function CardLab() {
             {v.name}
             {v.note && <span className={lab.variantNote}>{v.note}</span>}
           </h2>
-          <div className={lab.row}>
-            {artifacts.map(a => {
+          <div className={`${lab.row} ${lab[v.arrange] ?? ''}`}>
+            {artifacts.map((a, i) => {
               const id = `${vi}-${a.level}`
               return (
-                <FlipCard
-                  key={id}
-                  a={a}
-                  v={v}
-                  backUp={allBack !== !!turned[id]}
-                  onFlip={() => setTurned(t => ({ ...t, [id]: !t[id] }))}
-                />
+                <div key={id} className={lab.slot} style={(ARRANGE[v.arrange] ?? ARRANGE.row)(i, artifacts.length)}>
+                  <FlipCard
+                    a={a}
+                    v={v}
+                    backUp={allBack !== !!turned[id]}
+                    onFlip={() => setTurned(t => ({ ...t, [id]: !t[id] }))}
+                  />
+                </div>
               )
             })}
           </div>
