@@ -221,50 +221,68 @@ describe('Index museum', () => {
     expect(localStorage.getItem('ux-archaeologist:index-theme')).toBeNull()
   })
 
-  it('Stamp pictures: a dev toggle; every room has a dot and a stamp picture', () => {
-    for (const style of ['dots', 'stamps']) {
+  it('Pictures: every room has a dot, a stamp and a fossil picture', () => {
+    const want = {
+      dots: (pic, l) => expect(pic.style.getPropertyValue('--art')).toMatch(new RegExp(`dots-${l}`)),
+      stamps: (pic, l) => expect(pic.getAttribute('src')).toMatch(new RegExp(`stamps/stamp-${l}`)),
+      fossils: (pic, l) => expect(pic.style.getPropertyValue('--art')).toMatch(new RegExp(`fossils/fossil-${l}`)),
+    }
+    const kind = { dots: 'dots', stamps: 'stamp', fossils: 'fossil' }
+    for (const style of ['dots', 'stamps', 'fossils']) {
       act(() => setPictureStyle(style))
       for (const level of [0, 1, 2, 3, 4, 5]) {
         const { container } = render(<DotPicture level={level} />)
-        const pic = container.firstChild
-        expect(pic.getAttribute('data-picture')).toBe(style === 'stamps' ? 'stamp' : 'dots')
-        if (style === 'stamps') expect(pic.getAttribute('src')).toMatch(new RegExp(`stamp-${level}`))
-        else expect(pic.style.getPropertyValue('--art')).toMatch(new RegExp(`dots-${level}`))
+        expect(container.firstChild.getAttribute('data-picture')).toBe(kind[style])
+        want[style](container.firstChild, level)
         cleanup()
       }
     }
-    act(() => setPictureStyle('dots'))
-    renderIndex('timeline')
-    const line = () => screen.getByText('Stamp pictures').closest('button')
-    expect(line()).toHaveAttribute('aria-pressed', 'false')
-    fireEvent.click(line())
-    expect(line()).toHaveAttribute('aria-pressed', 'true')
-    expect(pictureStyle()).toBe('stamps')
-    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('stamps')
-    fireEvent.click(line())
-    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBeNull()
   })
 
-  it('Stamp pictures: the arrowhead rests beside the list until a room is pointed at', () => {
+  it('Pictures: one dev line names the set and moves through dots, stamps, fossils, remembered', () => {
+    act(() => setPictureStyle('dots'))
+    renderIndex('timeline')
+    const line = () => screen.getByText('Pictures').closest('button')
+    expect(line().textContent).toContain('dots')
+    fireEvent.click(line())
+    expect(line().textContent).toContain('stamps')
+    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('stamps')
+    fireEvent.click(line())
+    expect(line().textContent).toContain('fossils')
+    expect(pictureStyle()).toBe('fossils')
+    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('fossils')
+    fireEvent.click(line())
+    expect(pictureStyle()).toBe('dots')
+    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBeNull()
+    expect(screen.queryByText('Stamp pictures')).toBeNull()
+  })
+
+  it('Pictures: an arrowhead rests beside the list until a room is pointed at (stamps and fossils)', () => {
+    const picture = () => document.querySelector('[data-index-museum] [data-peek] [data-picture]')
     act(() => setPictureStyle('stamps'))
     renderIndex('title')
-    const picture = () => document.querySelector('[data-index-museum] [data-peek] [data-picture]')
     expect(picture().getAttribute('data-picture')).toBe('stamp-default')
     act(() => setPeek(2))
     expect(picture().getAttribute('src')).toMatch(/stamp-2/)
     act(() => clearPeek(2))
     expect(picture().getAttribute('data-picture')).toBe('stamp-default')
+    act(() => setPictureStyle('fossils'))
+    expect(picture().getAttribute('data-picture')).toBe('fossil-default')
+    expect(picture().style.getPropertyValue('--art')).toMatch(/fossil-1/)
+    act(() => setPeek(4))
+    expect(picture().style.getPropertyValue('--art')).toMatch(/fossil-4/)
+    act(() => clearPeek(4))
     // with the dots, nothing rests there
     act(() => setPictureStyle('dots'))
     expect(document.querySelector('[data-index-museum] [data-peek]')).toBeNull()
   })
 
-  it('Stamp pictures: no line and no switching outside the dev server', () => {
+  it('Pictures: no line and no switching outside the dev server', () => {
     vi.stubEnv('DEV', false)
     try {
       renderIndex('timeline')
-      expect(screen.queryByText('Stamp pictures')).toBeNull()
-      act(() => setPictureStyle('stamps'))
+      expect(screen.queryByText('Pictures')).toBeNull()
+      act(() => setPictureStyle('fossils'))
       expect(pictureStyle()).toBe('dots')
     } finally { vi.unstubAllEnvs() }
   })

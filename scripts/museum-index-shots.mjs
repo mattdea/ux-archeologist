@@ -9,7 +9,7 @@
 //
 //   node scripts/museum-index-shots.mjs              all shots
 //   node scripts/museum-index-shots.mjs level-1      only names containing "level-1"
-//   node scripts/museum-index-shots.mjs pictures-    dots beside stamps (then see docs/museum-index/pictures/)
+//   node scripts/museum-index-shots.mjs pictures-    the picture sets (then see docs/museum-index/pictures/)
 //   BASE=http://localhost:5173 node scripts/…        another dev server
 //
 // Needs the dev server (default http://localhost:5199, the "vite" entry in
@@ -50,9 +50,9 @@ const SHOTS = [
   ['dark-level-1-discovery', [1], [['click', 'The Desktop'], ['wait', 7000], ['click', 'Continue'], ['wait', 600]]],
   ['dark-level-4-playing', [], [['click', 'The Feed'], ['wait', 2000], ['click', 'Begin excavation'], ['wait', 3000]]],
   ['dark-level-5-playing', [], [['click', 'The Conversation'], ['wait', 2000], ['click', 'Begin excavation'], ['wait', 3000]]],
-  // dot pictures beside stamp pictures (backlog, "stamp pictures"), light
-  // and dark: "pictures-<dots|stamps>-<light|dark>-<surface>"
-  ...['dots', 'stamps'].flatMap(pictures => ['light', 'dark'].flatMap(theme => [
+  // the picture sets side by side (backlog, "stamp pictures", "fossil
+  // pictures"), light and dark: "pictures-<dots|stamps|fossils>-<light|dark>-<surface>"
+  ...['dots', 'stamps', 'fossils'].flatMap(pictures => ['light', 'dark'].flatMap(theme => [
     [`pictures-${pictures}-${theme}-timeline-hover`, SOME, [['click', 'Enter the exhibit'], ['wait', 900], ['hover', 'The Hyperlink']], 'wide', { pictures, theme }],
     [`pictures-${pictures}-${theme}-level-4-discovery`, [4], [['click', 'The Feed'], ['wait', 7000], ['click', 'Continue'], ['wait', 600]], false, { pictures, theme }],
     [`pictures-${pictures}-${theme}-collection`, SOME, [['click', 'Collection'], ['wait', 900]], false, { pictures, theme }],
@@ -128,7 +128,7 @@ async function main() {
           localStorage.setItem('ux-archaeologist:museum', 'index')
           localStorage.setItem('ux-archaeologist-progress', ${JSON.stringify(JSON.stringify({ completedLevels: found }))})
           ${(opts.theme ?? (name.startsWith('dark-') ? 'dark' : 'light')) === 'light' ? "localStorage.setItem('ux-archaeologist:index-theme', 'light')" : ''}
-          ${opts.pictures === 'stamps' ? "localStorage.setItem('ux-archaeologist:index-pictures', 'stamps')" : ''}
+          ${opts.pictures && opts.pictures !== 'dots' ? `localStorage.setItem('ux-archaeologist:index-pictures', '${opts.pictures}')` : ''}
           sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1')
         } catch {}`
         const { identifier } = await page('Page.addScriptToEvaluateOnNewDocument', { source: setup })

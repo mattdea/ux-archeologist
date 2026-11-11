@@ -37,7 +37,7 @@ import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS, pad } from './words'
 import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
-import { usePictureStyle, setPictureStyle } from './pictureStyle'
+import { usePictureStyle, setPictureStyle, nextPictureStyle } from './pictureStyle'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -313,11 +313,12 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
   const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
     pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
-  // Dev server only: the stamp pictures in place of the dots, to compare
-  const stampLine = () => import.meta.env.DEV && push(<Line key="stamps" i={n} as="go" text="Stamp pictures"
-    arrow={pictures === 'stamps' ? '[x]' : '[ ]'} pressed={pictures === 'stamps'}
-    onClick={() => setPictureStyle(pictures === 'stamps' ? 'dots' : 'stamps')} />)
-  if (!inLevel && view !== 'collection') { darkLine(); stampLine() }
+  // Dev server only: which set of pictures, to compare them; the right side
+  // names the set, a click moves to the next (dots → stamps → fossils)
+  const picturesLine = () => import.meta.env.DEV && push(<Line key="pictures" i={n} as="go" text="Pictures"
+    meta={pictures} arrow="→" label={`Pictures: ${pictures}. Show ${nextPictureStyle(pictures)}`}
+    onClick={() => setPictureStyle(nextPictureStyle(pictures))} />)
+  if (!inLevel && view !== 'collection') { darkLine(); picturesLine() }
 
   if (view === 'title') {
     push(<Gap key="by-gap" i={n} />)
@@ -328,7 +329,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     push(<Gap key="back-gap" i={n} />)
     push(<Line key="back" i={n} as="go" text={WORDS.backPlain} mark="←" arrow="→" onClick={() => navigate('/timeline')} />)
     darkLine()
-    stampLine()
+    picturesLine()
   }
 
   // ── Dev switches, on the timeline (grey, after everything) ──
@@ -365,8 +366,8 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
                 <DotPicture level={slots.peek} className={s.peekPicture} />
                 <span className={s.peekYear}>{ARTIFACTS[slots.peek].year}</span>
               </div>
-            ) : pictures === 'stamps' && (
-              // stamps: the arrowhead rests here until a room is pointed at
+            ) : pictures !== 'dots' && (
+              // stamps and fossils: an arrowhead rests here until a room is pointed at
               <div className={s.peekBox} data-peek="rest">
                 <RestingPicture className={s.peekPicture} />
               </div>

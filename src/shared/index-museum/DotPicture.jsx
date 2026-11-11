@@ -7,7 +7,14 @@
 // style lab's G and B2), drawn in currentColor through the mask, so it is
 // black on white and white when its line or card is inverted.
 //
-// Stamps (dev server only, the "Stamp pictures" line; pictureStyle.js): the
+// Fossils (dev server only, the "Pictures" line; pictureStyle.js): each
+// room's idea as an archaeological find in stipple ink
+// (assets/fossils/fossil-N.webp, ink-density masks made by
+// scripts/fossil-pictures.mjs, 600 × 510, the same 400 / 340 shape). Drawn
+// in currentColor like the dots, so black on white, light on dark, and
+// inverted on the black row.
+//
+// Stamps (dev server only, the "Pictures" line): the
 // stamp print cut from docs/reference/style-lab/stamp-illustrations.webp
 // (assets/stamps/stamp-N.webp, 480 × 408, the same 400 / 340 shape), on its
 // own paper in its own colours. It never inverts and has no frame: the
@@ -22,14 +29,20 @@ const DOTS = byLevel(import.meta.glob('../../../assets/dots/dots-*.webp', { eage
 // Dev only: served by path by the dev server and never imported, so the
 // production build carries no stamp files
 const stamp = (level) => (import.meta.env.DEV ? `/assets/stamps/stamp-${level}.webp` : null)
+const fossil = (level) => (import.meta.env.DEV ? `/assets/fossils/fossil-${level}.webp` : null)
 
 // The stamp shown beside the list while no room is pointed at (Matthew,
 // 10 Nov 2026: an arrowhead, the pointer as a found object; source
 // docs/reference/style-lab/stamp-default-arrowhead.webp, cut to the stamps'
-// 480 × 408 tile and scale). Stamps only; null with the dots.
+// 480 × 408 tile and scale). With the fossils, the flint arrowhead (the
+// Desktop's find) rests there. Null with the dots.
 export function RestingPicture({ className = '' }) {
   const style = usePictureStyle()
-  if (style !== 'stamps' || !import.meta.env.DEV) return null
+  if (!import.meta.env.DEV) return null
+  if (style === 'fossils') {
+    return <span className={`${s.dots} ${className}`} style={{ '--art': `url(${fossil(1)})` }} aria-hidden="true" data-picture="fossil-default" />
+  }
+  if (style !== 'stamps') return null
   return <img src="/assets/stamps/stamp-default.webp" className={`${s.stamp} ${className}`} alt="" aria-hidden="true" draggable="false" data-picture="stamp-default" />
 }
 
@@ -37,6 +50,9 @@ export default function DotPicture({ level, className = '' }) {
   const style = usePictureStyle()
   if (style === 'stamps' && stamp(level)) {
     return <img src={stamp(level)} className={`${s.stamp} ${className}`} alt="" aria-hidden="true" draggable="false" data-picture="stamp" />
+  }
+  if (style === 'fossils' && fossil(level)) {
+    return <span className={`${s.dots} ${className}`} style={{ '--art': `url(${fossil(level)})` }} aria-hidden="true" data-picture="fossil" />
   }
   return <span className={`${s.dots} ${className}`} style={{ '--art': `url(${DOTS[level]})` }} aria-hidden="true" data-picture="dots" />
 }
