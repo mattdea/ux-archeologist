@@ -20,9 +20,11 @@
   display: inline-block;
   width: 780px;
   height: 755px;
+  /* --artifact-shadow: the shadow the device casts on the page (a clear
+     one in the index museum, IndexMuseum.module.css); today's is the fallback */
   filter:
-    drop-shadow(0 28px 60px rgba(0, 0, 0, 0.8))
-    drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
+    drop-shadow(var(--artifact-shadow, 0 28px 60px rgba(0, 0, 0, 0.8)))
+    drop-shadow(var(--artifact-shadow, 0 8px 20px rgba(0, 0, 0, 0.45)));
 }
 
 .bezelImg {

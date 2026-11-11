@@ -217,6 +217,11 @@
 /* The room behind the list and the artifact (SharedLayout's .room and the
    page), light or dark with the theme */
 :global(html[data-museum="index"]) { --ix-room: #fff; }
+/* No device casts a shadow or glow on the page here. Each device's outer
+   shadow reads --artifact-shadow, falling back to its own (Classic); a
+   clear shadow rather than none, so it stays valid in a shadow list and
+   in drop-shadow(). */
+:global(html[data-museum="index"]) { --artifact-shadow: 0 0 #0000; }
 :global(html[data-museum="index"][data-index-theme="dark"]) { --ix-room: #111; }
 :global(html[data-museum="index"]) body { background: var(--ix-room); }
 

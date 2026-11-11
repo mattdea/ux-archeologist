@@ -473,6 +473,13 @@ Matthew: the drop shadows behind the devices look bad in both light and dark. In
 - **What stays:** lights and shading on or inside the device: the floppy drive's LED, the screen's own glow, the phone's status-bar text shadows, the feed's in-app shadows. Only the shadow or glow the device casts onto the page goes.
 - **Fit:** if `useArtifactFit` or a level's wrap leaves room for the shadow, remove that room in the Index so devices don't sit off-centre.
 - **Checks:** every level in the Index, light and dark, at 1440 and 375, with no shadow around the device; Classic unchanged (compare screenshots); `npm run build`; retake the Index screenshots that show devices.
+- **Status (11 Nov 2026):** built.
+  - **What changed:** four devices cast a shadow on the page: the terminal, the Mac, Netscape and the Level 4 ghost glow. Each now reads `--artifact-shadow`, and the Index sets it to a clear shadow. Level 3 and Level 5 had none. The fit never left room for shadows, so nothing moves.
+  - **Checked:**
+    - every level playing in the Index, light and dark, at 1440 and 375 (`scripts/index-levels-shots.mjs`, `docs/museum-index/levels/side-*-playing.webp`)
+    - Classic before and after at 1440: only screen flicker differs
+    - 184 tests and `npm run build`
+    - the Index level screenshots in `docs/museum-index/` retaken
 
 ### Index museum: the device centred, the list in the corners · approved 11 Nov 2026
 Matthew: inside a level, the list on the left with the device on the right doesn't look good. The device should be centred, as in Classic, and the list should get out of its way. Inside a level, the list splits into four small corner blocks around a centred device. The title, timeline and collection keep the list as it is.

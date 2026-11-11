@@ -27,9 +27,9 @@
   width: 351px;
   height: 643px;
   background: transparent;
-  box-shadow:
-    0 0 36px 8px rgba(206, 220, 240, 0.055),
-    0 0 90px 16px rgba(186, 204, 234, 0.03);
+  /* --artifact-shadow: the glow the device casts on the page (a clear one
+     in the index museum, IndexMuseum.module.css); today's is the fallback */
+  box-shadow: var(--artifact-shadow, 0 0 36px 8px rgba(206, 220, 240, 0.055), 0 0 90px 16px rgba(186, 204, 234, 0.03));
 }
 
 /* ─── Ghost outline ─────────────────────────────────────────────────────── */

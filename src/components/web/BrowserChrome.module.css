@@ -30,10 +30,11 @@
   border-bottom-color: #808080;
 
   /* Outer black ring + drop-shadow */
+  /* --artifact-shadow: the shadow the device casts on the page (a clear
+     one in the index museum, IndexMuseum.module.css); today's is the fallback */
   box-shadow:
     0 0 0 1px #000,
-    0 24px 64px rgba(0, 0, 0, 0.65),
-    0 8px 24px  rgba(0, 0, 0, 0.4);
+    var(--artifact-shadow, 0 24px 64px rgba(0, 0, 0, 0.65), 0 8px 24px rgba(0, 0, 0, 0.4));
 
   overflow: hidden;
   font-family: 'W95FA', 'Arial', sans-serif;

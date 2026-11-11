@@ -19,10 +19,10 @@
   background-repeat: no-repeat;
   border-radius: 16px;
   overflow: hidden;
+  /* --artifact-shadow: the shadow the device casts on the page (a clear
+     one in the index museum, IndexMuseum.module.css); today's is the fallback */
   box-shadow:
-    0 4px 4px rgba(0, 0, 0, 0.25),
-    0 4px 12px rgba(0, 0, 0, 0.35),
-    0 1px 3px rgba(0, 0, 0, 0.2),
+    var(--artifact-shadow, 0 4px 4px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2)),
     inset -27px 0 9.3px -17px rgba(251, 246, 241, 0.45),
     inset 3px 0 4px 0 rgba(117, 100, 82, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
