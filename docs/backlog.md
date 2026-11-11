@@ -331,6 +331,41 @@ Matthew wants a card design in the card lab (`/card-lab`) based on a ChatGPT moc
   - Take a screenshot of the row into `docs/reference/style-lab/` or the lab's usual place, and show Matthew next to the mockup.
 - **Status (10 Nov 2026):** built and shown to Matthew next to the mockup (`docs/reference/style-lab/stamp-cards-row-vs-mockup.webp`; the row alone, fronts and backs at 1440 and 375, in `card-lab-stamp-cards-*`, taken by `scripts/card-lab-shots.mjs`). Masks by `scripts/stamp-masks.mjs` into `assets/stamps/mask-N.webp`, each stamp's solid ink fully opaque and its grain in proportion. Text is `#161616`. Contrast per card: blue failed at 3.6:1 (`#2f6fc4`), so it is lifted to `#4a85d6` (4.8:1); brown 5.1:1, green 6.0:1, coral 6.3:1, light blue 8.8:1, yellow 11:1. The pictures are all the same width (84% of the card) at the stamps' one scale, so the `$` reads small, as in the stamp reference. Checked: 166 tests (a contrast test per card colour), `npm run build` (the lab and the masks aren't in it), the browser at 1440 and 375, fronts and backs.
 - **Matthew's change (10 Nov 2026):** the full description was too long, so each card now has a two-line summary of the room's main interaction (`STAMP_SUMMARY` in `LabCards.jsx`, lab only; two lines at S, M and L). The collection keeps the full text.
+
+### Dev: one dev panel behind a corner tab · approved 10 Nov 2026
+The dev controls take up too much room and are spread across three places. In the Index they fill a third of the list and look like real lines. Today they are:
+- **Classic timeline** (`src/pages/Timeline.jsx`): Complete all, Serif titles, Timeline line/cards, Museum: Classic, Card lab, Style lab.
+- **Classic collection** (`src/pages/Collection.jsx`): Card style and Art.
+- **Index list** (`IndexMuseum.jsx`): Museum: Index, Complete all, Style lab, Pictures.
+
+Move them all into one panel, the same in both museums, on the dev server only.
+
+- **The tab:**
+  - A small `dev` in monospace, fixed in the bottom-right corner, faint until pointed at or focused.
+  - Not a round floating button: that is an app pattern and would look wrong next to the Index list.
+  - Always there, not hidden until you hover near it, so it isn't forgotten.
+- **The panel:** opens above the tab, in plain monospace, styled as dev chrome rather than as either museum. Its groups:
+  - **Museum:** Classic or Index
+  - **Pictures:** dots, stamps or fossils (Index only)
+  - **Classic looks:** serif titles, timeline as line or cards, card style, card art
+  - **Progress:** Complete all
+  - **Labs:** Card lab, Style lab, Dot editor
+  - Each control works the same as today and keeps its current storage key, so nobody's choices are lost.
+- **Opening and closing:**
+  - Click the tab, or press Ctrl+Shift+D. Check that the shortcut doesn't clash with the Level 0 terminal (it uses Ctrl+C and Ctrl+L), Level 5's chat box or the browser.
+  - Escape or a click outside closes it, and focus goes back to the tab.
+  - Remembered open or closed per browser.
+- **It floats over the page.** It isn't `data-hud`, so it never moves the artifact. It sits above everything, including modals, and doesn't block clicks while closed except on the tab itself.
+- **What stays where it is:** Dark mode and Reset progress, which visitors use. Remove only the dev lines from the Index list and the dev buttons from the Classic timeline and collection; nothing else in Classic changes.
+- **Screenshots:** the screenshot scripts (`scripts/*-shots.mjs`) hide the tab and panel so they never appear. Retake any that showed the old dev lines.
+- **Production:** the tab, the panel and their code are absent from the build.
+- **Checks:**
+  - Tests: every control in the panel does what its old line or button did; the panel is absent from the production build; Escape closes it.
+  - Run `npm run build`.
+  - Check in the browser in both museums, on the title, timeline, collection and inside a level, at 1440 and 375.
+  - Check keyboard only: Tab reaches it, Enter opens it, Escape closes it.
+- **Spec:** a short "Dev panel" note in `docs/design-spec.md`, and update the Index museum section where it mentions the dev lines.
+
 ---
 
 ## Done
