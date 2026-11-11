@@ -13,7 +13,8 @@
 // closed panel takes no clicks except on the tab.
 //
 // Each control does what its old line or button did and keeps its storage
-// key: museumStyle.js, pictureStyle.js, devLooks.js, cardLook.js, state.js.
+// key: museumStyle.js, pictureStyle.js, pointer.js, devLooks.js, cardLook.js, state.js.
+// Museum > pointer: the index museum's pointer, the flint arrowhead or the fossil stick.
 // Museum > level layout: the index museum's corners or side layout in a level.
 // Levels > catalogue: every level's catalogue record (experiment, on by default).
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
@@ -21,6 +22,7 @@ import { createPortal } from 'react-dom'
 import s from './DevPanel.module.css'
 import { useMuseumStyle, setMuseumStyle } from '../museumStyle'
 import { usePictureStyle, setPictureStyle, PICTURE_STYLES } from '../index-museum/pictureStyle'
+import { useMuseumPointer, setMuseumPointer, POINTERS } from '../index-museum/pointer'
 import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord, indexLevelLayout, setIndexLevelLayout } from '../devLooks'
 import { readCardLook, saveCardLook, readCardArt, saveCardArt } from '../../pages/collection/cardLook'
 import { completeLevel } from '../../state/state'
@@ -50,6 +52,7 @@ export default function DevPanel({ navigate }) {
   const [open, setOpenState] = useState(readOpen)
   const museum = useMuseumStyle()
   const pictures = usePictureStyle()
+  const pointer = useMuseumPointer()
   const [, redraw] = useState(0)
   const [done, setDone] = useState(false)
   const rootRef = useRef(null)
@@ -103,6 +106,9 @@ export default function DevPanel({ navigate }) {
             <Choice label="museum" value={museum} options={[['classic', 'Classic'], ['index', 'Index']]} onChoose={setMuseumStyle} />
             {museum === 'index' && (
               <Choice label="pictures" value={pictures} options={PICTURE_STYLES.map(p => [p, p])} onChoose={setPictureStyle} />
+            )}
+            {museum === 'index' && (
+              <Choice label="pointer" value={pointer} options={POINTERS.map(p => [p, p])} onChoose={setMuseumPointer} />
             )}
             {museum === 'index' && (
               <Choice label="level layout" value={indexLevelLayout()} options={[['corners', 'corners'], ['side', 'side']]}

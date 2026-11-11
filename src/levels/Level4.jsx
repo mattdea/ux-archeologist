@@ -148,6 +148,7 @@ export default function Level4() {
         >
           <div
             className={styles.frameWrap}
+            data-artifact
             style={{ width: UNIT_W * scale, height: UNIT_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.frameScaler} style={{ transform: `scale(${scale})` }}>

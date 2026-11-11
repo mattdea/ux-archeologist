@@ -1,0 +1,52 @@
+/* src/shared/index-museum/pointers.css
+ *
+ * The index museum's pointer (backlog, "Index museum: a flint arrowhead as
+ * the museum's pointer"; 11 Nov 2026): a tiny flint arrowhead, the fossil
+ * version of the pointer, everywhere in the museum layer, light or dark
+ * with the theme. The drawings are assets/pointers/, made by
+ * scripts/index-pointers.mjs; the hotspot is the tip, `1 1`.
+ *
+ * Each rule says it three times and the browser keeps the last it
+ * understands: the 1x file, then the 1x and 2x files as an image-set
+ * (prefixed for older Safari), and `auto` if no image loads.
+ *
+ * Where it applies: the page (the room round a device too) and the museum
+ * pieces in it. It doesn't change on links or buttons: the list's hover
+ * and inverted rows show what's clickable, so they inherit it rather than
+ * the hand. Text inputs keep the caret (they aren't reset).
+ *
+ * Where it doesn't: inside a device. Each level marks the box its device
+ * occupies with data-artifact; there the system default takes over again
+ * (Levels 0, 3, 4 and 5), and Levels 1 and 2 set their period pointers on
+ * the device, which win. The reset is :where(), weightless, so any cursor
+ * an artifact sets, even on that same box (Level 2's .wrap), beats it. The
+ * catalogue record inside the box is the museum's and gets the arrowhead.
+ *
+ * Classic: none of this; every rule needs html[data-museum="index"].
+ * The fossil stick to compare it with is pointers-stick.css (dev server).
+ */
+
+html[data-museum="index"][data-index-theme="light"] body,
+html[data-museum="index"][data-index-theme="light"] [data-catalogue-record] {
+  cursor: url("../../../assets/pointers/arrowhead-light.png") 1 1, auto;
+  cursor: -webkit-image-set(url("../../../assets/pointers/arrowhead-light.png") 1x, url("../../../assets/pointers/arrowhead-light@2x.png") 2x) 1 1, auto;
+  cursor: image-set(url("../../../assets/pointers/arrowhead-light.png") 1x, url("../../../assets/pointers/arrowhead-light@2x.png") 2x) 1 1, auto;
+}
+
+html[data-museum="index"]:not([data-index-theme="light"]) body,
+html[data-museum="index"]:not([data-index-theme="light"]) [data-catalogue-record] {
+  cursor: url("../../../assets/pointers/arrowhead-dark.png") 1 1, auto;
+  cursor: -webkit-image-set(url("../../../assets/pointers/arrowhead-dark.png") 1x, url("../../../assets/pointers/arrowhead-dark@2x.png") 2x) 1 1, auto;
+  cursor: image-set(url("../../../assets/pointers/arrowhead-dark.png") 1x, url("../../../assets/pointers/arrowhead-dark@2x.png") 2x) 1 1, auto;
+}
+
+/* Links and buttons in the museum layer show the museum's pointer, not the hand */
+html[data-museum="index"] :is(button, a, summary, label, [role="button"]):not([data-artifact] *),
+html[data-museum="index"] [data-catalogue-record] :is(button, a) {
+  cursor: inherit;
+}
+
+/* Inside a device: the system default, unless the artifact sets its own */
+:where(html[data-museum="index"] [data-artifact]) {
+  cursor: auto;
+}

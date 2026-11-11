@@ -1,0 +1,24 @@
+/* src/shared/index-museum/pointers-stick.css
+ *
+ * The fossil stick, the pointer to compare with the arrowhead (Matthew,
+ * 11 Nov 2026): before computers a pointer was a stick. Chosen in the dev
+ * panel (Museum > pointer), which sets data-ix-pointer="stick" on <html>;
+ * loaded on the dev server only (pointer.js), so production has neither
+ * this file nor the drawings. Same places, hotspot and fallbacks as the
+ * arrowhead (pointers.css); these selectors carry one more attribute, so
+ * they win over it.
+ */
+
+html[data-museum="index"][data-ix-pointer="stick"][data-index-theme="light"] body,
+html[data-museum="index"][data-ix-pointer="stick"][data-index-theme="light"] [data-catalogue-record] {
+  cursor: url("../../../assets/pointers/stick-light.png") 1 1, auto;
+  cursor: -webkit-image-set(url("../../../assets/pointers/stick-light.png") 1x, url("../../../assets/pointers/stick-light@2x.png") 2x) 1 1, auto;
+  cursor: image-set(url("../../../assets/pointers/stick-light.png") 1x, url("../../../assets/pointers/stick-light@2x.png") 2x) 1 1, auto;
+}
+
+html[data-museum="index"][data-ix-pointer="stick"]:not([data-index-theme="light"]) body,
+html[data-museum="index"][data-ix-pointer="stick"]:not([data-index-theme="light"]) [data-catalogue-record] {
+  cursor: url("../../../assets/pointers/stick-dark.png") 1 1, auto;
+  cursor: -webkit-image-set(url("../../../assets/pointers/stick-dark.png") 1x, url("../../../assets/pointers/stick-dark@2x.png") 2x) 1 1, auto;
+  cursor: image-set(url("../../../assets/pointers/stick-dark.png") 1x, url("../../../assets/pointers/stick-dark@2x.png") 2x) 1 1, auto;
+}

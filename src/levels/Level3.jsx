@@ -314,6 +314,7 @@ export default function Level3() {
         <div className={styles.artifactZone}>
           <div
             className={styles.wrap}
+            data-artifact
             style={{
               width: BEZEL_W * scale,
               height: BEZEL_H * scale,

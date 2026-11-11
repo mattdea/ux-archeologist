@@ -250,6 +250,7 @@ export default function Level2() {
         <div className={styles.artifactZone}>
           <div
             className={`${styles.wrap} ${netLoad.loading ? styles.wrapBusy : ''}`}
+            data-artifact
             style={{ width: BROWSER_W * scale, height: BROWSER_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>

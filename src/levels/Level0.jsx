@@ -131,6 +131,7 @@ export default function Level0() {
         <div className={styles.artifactZone}>
           <div
             className={styles.wrap}
+            data-artifact
             style={{ width: BEZEL_W * scale, height: BEZEL_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>

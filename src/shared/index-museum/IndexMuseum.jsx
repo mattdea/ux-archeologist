@@ -43,6 +43,7 @@ import { TITLE, ABOUT, WORDS, pad } from './words'
 import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle } from './pictureStyle'
+import './pointer'   // the museum's pointer (pointers.css), arrowhead or stick
 import { useDevChange } from '../dev/devEvents'
 import { placeFind, artifactBox } from './find'
 

@@ -184,6 +184,7 @@ export default function Level5() {
           className={styles.artifactZone}
           style={{ pointerEvents: screen === 'playing' ? 'auto' : 'none' }}
           data-catalogue-scope="5"
+          data-artifact
         >
           <ChatPanel
             playing={screen !== 'booting'}
