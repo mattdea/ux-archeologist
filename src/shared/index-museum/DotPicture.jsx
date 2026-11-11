@@ -34,13 +34,16 @@ const fossil = (level) => (import.meta.env.DEV ? `/assets/fossils/fossil-${level
 // The stamp shown beside the list while no room is pointed at (Matthew,
 // 10 Nov 2026: an arrowhead, the pointer as a found object; source
 // docs/reference/style-lab/stamp-default-arrowhead.webp, cut to the stamps'
-// 480 × 408 tile and scale). With the fossils, the flint arrowhead (the
-// Desktop's find) rests there. Null with the dots.
+// 480 × 408 tile and scale). With the fossils, the carved tablet rests
+// there: the museum's main picture, the six rooms' signs cut into one broken
+// stone (Matthew, 10 Nov 2026; assets/fossils/fossil-tablet.webp, a mask made
+// by scripts/fossil-tablet.mjs, at its own proportions; `contain` fits it,
+// so a larger file swaps in without code changes). Null with the dots.
 export function RestingPicture({ className = '' }) {
   const style = usePictureStyle()
   if (!import.meta.env.DEV) return null
   if (style === 'fossils') {
-    return <span className={`${s.dots} ${className}`} style={{ '--art': `url(${fossil(1)})` }} aria-hidden="true" data-picture="fossil-default" />
+    return <span className={`${s.dots} ${className}`} style={{ '--art': `url(${fossil('tablet')})` }} aria-hidden="true" data-picture="fossil-tablet" />
   }
   if (style !== 'stamps') return null
   return <img src="/assets/stamps/stamp-default.webp" className={`${s.stamp} ${className}`} alt="" aria-hidden="true" draggable="false" data-picture="stamp-default" />

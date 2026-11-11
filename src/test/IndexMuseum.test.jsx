@@ -239,7 +239,7 @@ describe('Index museum', () => {
     }
   })
 
-  it('Pictures: an arrowhead rests beside the list until a room is pointed at (stamps and fossils)', () => {
+  it('Pictures: a resting picture beside the list until a room is pointed at: the arrowhead with stamps, the tablet with fossils', () => {
     const picture = () => document.querySelector('[data-index-museum] [data-peek] [data-picture]')
     act(() => setPictureStyle('stamps'))
     renderIndex('title')
@@ -249,8 +249,8 @@ describe('Index museum', () => {
     act(() => clearPeek(2))
     expect(picture().getAttribute('data-picture')).toBe('stamp-default')
     act(() => setPictureStyle('fossils'))
-    expect(picture().getAttribute('data-picture')).toBe('fossil-default')
-    expect(picture().style.getPropertyValue('--art')).toMatch(/fossil-1/)
+    expect(picture().getAttribute('data-picture')).toBe('fossil-tablet')
+    expect(picture().style.getPropertyValue('--art')).toMatch(/fossil-tablet\.webp/)
     act(() => setPeek(4))
     expect(picture().style.getPropertyValue('--art')).toMatch(/fossil-4/)
     act(() => clearPeek(4))
@@ -264,6 +264,8 @@ describe('Index museum', () => {
     try {
       act(() => setPictureStyle('fossils'))
       expect(pictureStyle()).toBe('dots')
+      renderIndex('title')
+      expect(document.querySelector('[data-picture="fossil-tablet"]')).toBeNull()
     } finally { vi.unstubAllEnvs() }
   })
 

@@ -59,6 +59,10 @@ const SHOTS = [
     [`pictures-${pictures}-${theme}-timeline-hover`, SOME, [['click', 'Enter the exhibit'], ['wait', 900], ['hover', 'The Hyperlink']], 'wide', { pictures, theme }],
     [`pictures-${pictures}-${theme}-level-4-discovery`, [4], [['click', 'The Feed'], ['wait', 7000], ['click', 'Continue'], ['wait', 600]], false, { pictures, theme }],
     [`pictures-${pictures}-${theme}-collection`, SOME, [['click', 'Collection'], ['wait', 900]], false, { pictures, theme }],
+    // what rests beside the list with no room pointed at (the fossils' carved
+    // tablet, the stamps' arrowhead); the space is hidden under 900px wide
+    [`pictures-${pictures}-${theme}-title`, SOME, [], false, { pictures, theme }],
+    [`pictures-${pictures}-${theme}-timeline`, SOME, [['click', 'Enter the exhibit'], ['wait', 900]], false, { pictures, theme }],
   ])),
 ]
 const SIZES = [
