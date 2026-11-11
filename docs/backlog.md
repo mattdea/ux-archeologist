@@ -210,6 +210,38 @@ Rebuild them as data on one grid, the way the 5 × 7 capitals in `src/pages/styl
 - **Not in this pass:** ink spread (a fixed, slight size change per dot so it looks stamped). Leave it off: the point is regularity. Note it under Ideas if it's worth trying later.
 - **Spec:** add the grid, the dot sizes and the editor to the "Index museum" section.
 - **Status (10 Nov 2026):** drafts drawn and shown to Matthew, nothing replaced yet. The rows are in `src/shared/index-museum/pictures.js`, drawn by `DotGrid.jsx`; the editor is at `/dot-editor` (dev only); the draft script is `scripts/dot-pictures-draft.mjs`. Its straight samples aliased against the old masks' finer spacing, so each picture was redrawn by hand on the grid with the same subject. Comparison: `docs/museum-index/dot-pictures-drafts.png` (new above, old below).
+
+### Museum: stamp pictures, an option beside the dot pictures · approved 10 Nov 2026
+Matthew wants to try a second set of pictures in the index museum: six coloured stamp-print illustrations (ChatGPT, 10 Nov 2026), saved as `docs/reference/style-lab/stamp-illustrations.webp` (1536 × 1024, three across, two down, cream paper). They have the same subjects in the same order as the dot pictures, one ink colour each:
+
+| Level | Picture | Ink |
+|---|---|---|
+| 0 | `$` and a block cursor | blue |
+| 1 | a document with a pointer | yellow |
+| 2 | "Hyperlink" underlined, with the hand pointer | light blue |
+| 3 | a finger tapping a circle | green |
+| 4 | a stack of photos | red |
+| 5 | two speech bubbles | brown |
+
+This is an option to compare, not a replacement. The dot pictures entry above goes on as approved.
+
+- **The switch:** a "Stamp pictures" line in the list, built like the Dark mode line (`[ ]` / `[x]`, remembered per browser), shown on the dev server only. Off means the dot pictures. Every place that shows a room's picture follows it: the hover preview beside the list (`peekPicture`), the discovery (`discoveryPicture`) and the collection's cards.
+- **Cutting them out:**
+  - Crop each picture from the reference into its own file, `assets/stamps/stamp-N.webp`, at twice the largest size it's shown.
+  - Keep the paper and its grain. Don't cut the ink out onto a transparent background: the grain at the edges is the point, and it would break up.
+  - Crop all six at one scale, the same box around each picture's centre, so the ink and grain are the same size in every one. The `$` will look smaller than the photos, as it does in the reference. If the box's proportions don't match the current 400 / 340, change the picture box for this option.
+- **On the page:**
+  - Each picture sits on its own piece of paper, in its own colours, in light and dark. The paper tile is the picture's edge; no frame or border is added.
+  - The pictures don't invert. On an inverted (current or focus) line, the tile stays as it is.
+  - Rooms not found yet: the collection keeps its empty placeholder as it is now. Don't show a stamp before the room is found.
+- **Not in this pass:** recolouring the stamps to match the museum's ink, new pictures, or changes to the dot pictures.
+- **Show Matthew:** both options side by side, in light and dark, on the timeline (hover preview), a discovery and the collection.
+- **Checks:**
+  - Tests: the switch is absent from the production build, and each option renders all six pictures.
+  - Run `npm run build`.
+  - Check in the browser at 1440 and 375.
+  - Add screenshots of the stamp option to `docs/museum-index/`.
+- **Spec:** one paragraph in the "Index museum" section saying the option exists and how to switch it.
 - **Checks:**
   - A test that every picture has the right number of rows and columns.
   - Run `npm run build` and confirm the editor isn't in it.
