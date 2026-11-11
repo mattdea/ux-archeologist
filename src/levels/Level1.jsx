@@ -16,12 +16,14 @@ import DiscoveryCard from '../shared/museum/DiscoveryCard'
 import HintPill from '../shared/museum/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
-import { stippleRevealOn } from '../shared/devLooks'
+import { catalogueRecordOn } from '../shared/devLooks'
+import { useDevChange } from '../shared/dev/devEvents'
+
+// Experiment, dev only (Levels > catalogue): the catalogue record around the
+// device. Absent from the production build.
+const CatalogueRecord = import.meta.env.DEV ? lazy(() => import('../shared/catalogue/CatalogueRecord')) : null
 
 const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[1]
-
-// The stipple reveal (experiment, dev server only: not in the build)
-const StippleReveal = import.meta.env.DEV ? lazy(() => import('../shared/reveal/StippleReveal')) : null
 
 const OBJECTIVES = [
   'Open the Notes document',
@@ -70,22 +72,10 @@ export default function Level1() {
   }, [])
   useEffect(() => () => clearTimeout(driveTimer.current), [])
 
-  // Stipple reveal (experiment, dev panel Levels > stipple; off = nothing
-  // changes): the Mac is a drawing on arrival, dissolves before the boot,
-  // and settles back into a drawing at the discovery. `arriving` holds the
-  // boot until the drawing has gone, on a first visit and on a revisit.
-  const [stipple] = useState(stippleRevealOn)
-  const [arriving, setArriving] = useState(stipple)
-  const revealState = screen === 'intro' ? 'drawn'
-    : screen === 'booting' && arriving ? 'reveal'
-    : screen === 'discovery' ? 'settle'
-    : 'clear'
-  const arrived = useCallback(() => setArriving(false), [])
-
   // Startup beep as the boot begins (replays too)
   useEffect(() => {
-    if (screen === 'booting' && !arriving) sfx.startupBeep()
-  }, [screen, arriving])
+    if (screen === 'booting') sfx.startupBeep()
+  }, [screen])
   const finishBoot = useCallback(() => setScreen('playing'), [])
 
   // The first hint says "on the desktop" only while Notes is there
@@ -96,6 +86,9 @@ export default function Level1() {
   // Fits the artifact around the HUD corners, as large as the viewport allows
   const fit = useArtifactFit(BEZEL_W, BEZEL_H)
   const scale = fit.scale
+  // Re-read the dev setting when the dev panel changes it
+  const [catalogue, setCatalogue] = useState(catalogueRecordOn)
+  useDevChange(() => setCatalogue(catalogueRecordOn()))
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -172,7 +165,7 @@ export default function Level1() {
             className={styles.wrap}
             style={{ width: BEZEL_W * scale, height: BEZEL_H * scale, left: fit.left, top: fit.top }}
           >
-            <div className={styles.scaler} style={{ transform: `scale(${scale})` }} data-reveal-device>
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
               <MonitorBezel driveBusy={driveBusy}>
                 <div className={`${styles.inner} ${driveBusy ? styles.innerBusy : ''}`}>
                   <MacCursor busy={driveBusy} />
@@ -185,7 +178,7 @@ export default function Level1() {
                       onNotesPlace={setNotesPlace}
                     />
                   )}
-                  {screen === 'booting' && !arriving && (
+                  {screen === 'booting' && (
                     <BootSequence
                       onComplete={finishBoot}
                       onReveal={setReveal}
@@ -194,12 +187,18 @@ export default function Level1() {
                   )}
                 </div>
               </MonitorBezel>
-              {stipple && StippleReveal && (
-                <Suspense fallback={null}>
-                  <StippleReveal level={1} width={BEZEL_W} height={BEZEL_H} scale={scale} state={revealState} onDone={arrived} />
-                </Suspense>
-              )}
             </div>
+            {CatalogueRecord && catalogue && (
+              <Suspense fallback={null}>
+                <CatalogueRecord
+                  show={screen === 'intro' || screen === 'discovery' ? 'full' : 'number'}
+                  fit={fit}
+                  width={BEZEL_W}
+                  height={BEZEL_H}
+                  screen={screen}
+                />
+              </Suspense>
+            )}
           </div>
         </div>
 

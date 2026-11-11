@@ -14,14 +14,13 @@
 //
 // Each control does what its old line or button did and keeps its storage
 // key: museumStyle.js, pictureStyle.js, devLooks.js, cardLook.js, state.js.
-// Levels > stipple: Level 1's stipple reveal (experiment), read when the
-// level opens.
+// Levels > catalogue: Level 1's catalogue record (experiment).
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import s from './DevPanel.module.css'
 import { useMuseumStyle, setMuseumStyle } from '../museumStyle'
 import { usePictureStyle, setPictureStyle, PICTURE_STYLES } from '../index-museum/pictureStyle'
-import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, stippleRevealOn, setStippleReveal } from '../devLooks'
+import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord } from '../devLooks'
 import { readCardLook, saveCardLook, readCardArt, saveCardArt } from '../../pages/collection/cardLook'
 import { completeLevel } from '../../state/state'
 import { ARTIFACTS } from '../../data/artifacts'
@@ -118,8 +117,8 @@ export default function DevPanel({ navigate }) {
           </section>
           <section className={s.group}>
             <h2 className={s.head}>Levels</h2>
-            <Choice label="stipple" value={stippleRevealOn() ? 'on' : 'off'} options={[['off', 'off'], ['on', 'on']]}
-              onChoose={(v) => { setStippleReveal(v === 'on'); changed() }} />
+            <Choice label="catalogue" value={catalogueRecordOn() ? 'on' : 'off'} options={[['off', 'off'], ['on', 'on']]}
+              onChoose={(v) => { setCatalogueRecord(v === 'on'); changed() }} />
           </section>
           <section className={s.group}>
             <h2 className={s.head}>Progress</h2>

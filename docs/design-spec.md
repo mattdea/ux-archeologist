@@ -166,7 +166,7 @@ White card, no accent line, mono era label, sans title (22px, weight 500), sans 
 ### Dev panel (dev server only)
 Every dev control in one place, the same in both museums (backlog, "Dev: one dev panel behind a corner tab"; 10 Nov 2026). `src/shared/dev/DevPanel.jsx` + `.module.css`, loaded lazily by SharedLayout behind `import.meta.env.DEV`, so the production build has no tab, panel or code.
 - **Tab:** a small monospace `dev`, fixed in the bottom-right corner (2px in, clear of Classic's About), at 35% opacity until pointed at, focused or open. Always there, last in the tab order.
-- **Panel:** opens above the tab; dark monospace dev chrome, the same on every page and theme, never either museum's style. Groups: Museum (museum Classic / Index; pictures dots / stamps / fossils, shown with the Index only), Classic looks (titles sans / serif, timeline line / cards, card style, card art), Levels (stipple off / on: Level 1's stipple reveal, an experiment, read when the level opens; see Level 1), Progress (Complete all), Labs (Card lab, Style lab, Dot editor; each closes the panel and goes there).
+- **Panel:** opens above the tab; dark monospace dev chrome, the same on every page and theme, never either museum's style. Groups: Museum (museum Classic / Index; pictures dots / stamps / fossils, shown with the Index only), Classic looks (titles sans / serif, timeline line / cards, card style, card art), Levels (catalogue off / on: Level 1's catalogue record, an experiment; see Level 1), Progress (Complete all), Labs (Card lab, Style lab, Dot editor; each closes the panel and goes there).
 - **Opening and closing:** click the tab or press Ctrl+Shift+D (read in the capture phase and consumed, so Level 0's terminal and Level 5's chat box never see it; it overrides Chrome's "bookmark all tabs" on Windows and Linux while the dev server is open). Escape or a pointer down outside closes it and puts focus back on the tab. Open or closed is remembered per browser (`ux-archaeologist:dev-panel`).
 - **Floating:** a portal into `<body>`, z-index above every modal and the small-screen notice; not `data-hud`, so it never moves an artifact; the closed panel takes no clicks except on the tab.
 - **Keys:** each control keeps its old storage key (`museum`, `index-pictures`, `serif-titles`, `card-timeline`, `collection-style`, `card-art`, progress). Changes that pages read while drawing (progress, line or cards, card style and art) go out as one window event (`src/shared/dev/devEvents.js`, `useDevChange`); Timeline, Collection, CardPath and the index museum re-read on it.
@@ -355,13 +355,37 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 - Artifact: `Direct Manipulation`
 - Text: "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people. The researcher Ben Shneiderman called this style direct manipulation in 1983. Some tasks took longer with a mouse than with a typed command."
 
-**Stipple reveal (experiment, dev server only; 11 Nov 2026).** Behind the dev panel's Levels > stipple (`ux-archaeologist:stipple-reveal`, off by default, absent from the build). With it off, nothing changes. With it on, the Mac is a stipple drawing when you arrive and leave, and real only while you use it (backlog, "Levels: the device as a drawing when you arrive and leave"). The pilot for all six levels; Matthew decides about the rest after seeing it.
-- **Museum layer, the Mac untouched:** `src/shared/reveal/StippleReveal.jsx`, a canvas inside Level 1's scaler (`data-reveal-device`), so the fit's scale moves both together and they line up to the pixel (checked at 1440, 1024 and 375). Level 1 loads it lazily on the dev server only. It takes no clicks.
-- **The drawing:** `assets/reveal/level-1.webp` (1560 × 1510, 2× the bezel), made by `scripts/reveal-drawing.mjs` from a capture of the Mac in its intro state on a transparent ground. It has about 50,000 round dots of two sizes on a 3px grid: dense in the darks, sparse in the lights, with edges drawn. The file's alpha is the silhouette and its red marks each dot's centre and radius. Dots fill in the text colour, and the silhouette in the page colour so the live Mac doesn't show between them. A soft page-colour margin (grown 70px, dropped 14px) also covers the Mac's own drop shadow while it is a drawing. Rerun the script whenever the Mac changes.
-- **Arriving:** the intro shows the drawing. Begin excavation dissolves it (700ms) and then the boot plays; the beep and BootSequence wait for it (`arriving`). This takes the place of a pause before the boot (Level 1 had none). A revisit, which starts at `booting`, shows the drawing on load and dissolves it straight away. If the drawing hasn't gone 1.5s after it should have, the level carries on anyway.
-- **Leaving:** Continue settles the drawing back over the Mac (900ms) as the discovery appears, and it stays.
-- **The dissolve:** 5px patches of the drawing (dots and page colour together) go in a random order, biased from top left to bottom right. It is drawn once and patches are cleared or copied back each frame (about 60fps in Chrome). Easing is in-out. Under reduced motion it is a 200ms crossfade. No sound.
-- **Frames for review:** `docs/reveal/`, taken by `node scripts/reveal-shots.mjs` (1440 and 375; Index light, Index dark, Classic; on and off; arrive, revisit and leave), with a strip per set in `docs/reveal/strips/`.
+**Catalogue record (experiment, dev server only; 11 Nov 2026).** Behind the dev panel's Levels > catalogue (`ux-archaeologist:catalogue-record`, off by default, absent from the build). With it off, nothing changes. With it on, the museum's catalogue record sits around the Mac (backlog, "Levels: the catalogue record around the device"). The pilot for all six levels. It replaces the stipple reveal, which was dropped; that reveal's frames stay in `docs/reveal/`.
+- **Museum layer, the Mac untouched:** `src/shared/catalogue/CatalogueRecord.jsx`, inside Level 1's `.wrap` and placed from the same fit, so it moves and scales with the device. Level 1 loads it lazily on the dev server only. It takes no clicks and is `aria-hidden`.
+- **What it shows:** the index's monospace, 13px on 20px rows, in two inks: main ink for the main text and the grey ink for lines and secondary text. The inks follow the museum: Index light #000 / #666, Index dark and Classic #e6e6e6 / #8a8a8a. It shows:
+  - the catalogue number `IA.1984.02`, above the device's top left
+  - the object line `Apple Macintosh (128K), 1984`
+  - the data block: `Motorola 68000, 7.8 MHz` / `128 KB memory` / `35 × 24 × 28 cm, 7.5 kg` / `$2,495` / `24 January 1984`
+  - two labels with leader lines: `9-inch screen` / `512 × 342, black and white`, and `3.5-inch floppy drive` / `400 KB`
+  - The leader lines are straight, 1px, in the grey ink, and end in a 5px dot on the part: the screen at (630, 330) and the floppy slot at (600, 680) in bezel px, or (150, 330) and (418, 680) when the column is on the left.
+  - No scale bar and no dimension lines.
+- **When:**
+  - intro and discovery: the full record
+  - booting and playing: the labels, object line and data fade out (400ms) as the boot starts, and only the number stays, at 11px in the grey ink
+  - under reduced motion: no fades
+- **Placement:** a 28-character column 16px beside the device, right side first. It is used only if every block fits inside the viewport, 16px clear of every `[data-hud]` block (so never over the HUD or the index list) and clear of each other. The labels never cover the screen.
+  - With no room beside the device, the leader lines and labels go, and the object line and data go 20px under the device, if they fit there. Otherwise only the number shows.
+  - Measured on 11 Nov 2026 (`scripts/catalogue-shots.mjs`):
+    - Classic: labels beside the device at 1920, 1440, 1280 and 1024, with both dots on their parts.
+    - Index: only the number at every size, 1920 included (about 206px beside the device there; the column needs about 250).
+    - Every museum at 375: only the number, because the device already fills the height below the list.
+  - The intro and discovery cards are drawn over the record, as over the device.
+- **Facts** (Wikipedia "Macintosh 128K", read 11 Nov 2026, all **high**), checked against two other sources:
+  - **Apple**, Macintosh 128K technical specifications (support.apple.com/kb/SP186): 68000, 128 KB, 512 × 342, 400 KB floppy, 13.6 × 9.6 × 10.9 in, 16.5 lb, introduced 24 January 1984.
+  - **Byte**, February 1984, "At a Glance" (Gregg Williams' review): 68000 at 7.8336 MHz, 9-inch screen, 512 × 342, single-sided 3½-inch 400K Sony drive, $2,495.
+  - Byte gives 13.5 × 9.7 × 10.9 in and 19.5 lb. The record keeps Apple's figures; Byte's weight probably includes the keyboard and mouse (**medium**).
+  - Metric conversions are rounded: 34.5 × 24.4 × 27.7 cm → 35 × 24 × 28; 7.48 kg → 7.5.
+  - The catalogue number is the museum's own (Level 1 is the second object after Level 0).
+- **Shots for review:** `docs/catalogue/`, taken by `node scripts/catalogue-shots.mjs`:
+  - intro, playing and discovery
+  - Index light, Index dark and Classic
+  - 1440 and 375, setting on and off
+  - The script also prints where each dot lands at 1920, 1440, 1280, 1024 and 375.
 
 ---
 

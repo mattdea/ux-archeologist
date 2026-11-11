@@ -1,0 +1,74 @@
+/* src/shared/catalogue/CatalogueRecord.module.css
+ *
+ * Museum layer. The index's monospace at the index's sizes (13px, 20px
+ * rows); one ink for main text, the grey ink for lines and secondary
+ * text. Inks follow the museum: classic and index dark are light on #111,
+ * index light is black on white.
+ */
+
+.record {
+  --cr-ink: #e6e6e6;
+  --cr-ink-2: #8a8a8a;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  font: 13px / 20px ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  color: var(--cr-ink);
+  text-align: left;
+  white-space: nowrap;
+}
+
+:global(html[data-museum="index"]) .record {
+  --cr-ink: #000;
+  --cr-ink-2: #666;
+}
+
+:global(html[data-museum="index"][data-index-theme="dark"]) .record {
+  --cr-ink: #e6e6e6;
+  --cr-ink-2: #8a8a8a;
+}
+
+.number,
+.block {
+  position: absolute;
+}
+
+.number {
+  transition: font-size 400ms ease, color 400ms ease;
+}
+
+.numberSmall {
+  font-size: 11px;
+  color: var(--cr-ink-2);
+}
+
+.secondary { color: var(--cr-ink-2); }
+.alignRight { text-align: right; }
+
+/* Labels, data and object line: fade out as the boot starts */
+.full {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.on { opacity: 1; }
+
+.leader {
+  position: absolute;
+  height: 1px;
+  margin-top: -0.5px;
+  background: var(--cr-ink-2);
+}
+
+.dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--cr-ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .number, .full { transition: none; }
+}

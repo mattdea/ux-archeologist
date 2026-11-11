@@ -455,6 +455,14 @@ Another way to link the devices to the museum's ink, after the stipple reveal wa
   - Run `npm run build`.
   - Check in the browser: the labels' dots land on the screen and the floppy slot at several window sizes, with no console errors.
 - **Spec:** a short note under Level 1, marked as an experiment, with the facts and their sources.
+- **Status (11 Nov 2026):** built and shown to Matthew. The stipple reveal is removed (its frames stay in `docs/reveal/`). The record is `src/shared/catalogue/CatalogueRecord.jsx`, behind Levels > catalogue. Details and sources are in the spec under Level 1.
+  - **Facts:** checked against Apple's spec page (SP186) and Byte's February 1984 "At a Glance". They agree, except that Byte gives 19.5 lb and 13.5 × 9.7 × 10.9 in. The record keeps Apple's figures.
+  - **Placement:**
+    - In Classic, the labels sit beside the device at 1920, 1440, 1280 and 1024, with the dots on the screen and the slot.
+    - In the Index at every size, and in both museums at 375, there is no room beside or under the device, so only the number shows. The Index at 1920 is about 40px short.
+    - To show more in the Index, the column could be narrower (break the object line and the screen label onto two lines), or the record could be allowed over the bezel below the screen. Matthew's call.
+  - **Shots:** `docs/catalogue/` (plus `sheets/`), taken by `scripts/catalogue-shots.mjs`.
+  - **Checked:** 184 tests, `npm run build` (no record in the bundle), no console errors.
 
 
 ### Index museum: no shadows behind the devices · approved 11 Nov 2026
