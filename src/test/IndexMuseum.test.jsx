@@ -8,7 +8,7 @@ import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
 import { useState } from 'react'
 import App from '../App'
 import IndexMuseum from '../shared/index-museum/IndexMuseum'
-import { _resetIndexSlots } from '../shared/index-museum/store'
+import { _resetIndexSlots, setPeek, clearPeek } from '../shared/index-museum/store'
 import { setMuseumStyle, museumStyle } from '../shared/museumStyle'
 import IntroModal from '../shared/museum/IntroModal'
 import ObjectiveTracker from '../shared/museum/ObjectiveTracker'
@@ -243,6 +243,20 @@ describe('Index museum', () => {
     expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('stamps')
     fireEvent.click(line())
     expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBeNull()
+  })
+
+  it('Stamp pictures: the arrowhead rests beside the list until a room is pointed at', () => {
+    act(() => setPictureStyle('stamps'))
+    renderIndex('title')
+    const picture = () => document.querySelector('[data-index-museum] [data-peek] [data-picture]')
+    expect(picture().getAttribute('data-picture')).toBe('stamp-default')
+    act(() => setPeek(2))
+    expect(picture().getAttribute('src')).toMatch(/stamp-2/)
+    act(() => clearPeek(2))
+    expect(picture().getAttribute('data-picture')).toBe('stamp-default')
+    // with the dots, nothing rests there
+    act(() => setPictureStyle('dots'))
+    expect(document.querySelector('[data-index-museum] [data-peek]')).toBeNull()
   })
 
   it('Stamp pictures: no line and no switching outside the dev server', () => {

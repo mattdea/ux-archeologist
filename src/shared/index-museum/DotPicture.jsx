@@ -23,6 +23,16 @@ const DOTS = byLevel(import.meta.glob('../../../assets/dots/dots-*.webp', { eage
 // production build carries no stamp files
 const stamp = (level) => (import.meta.env.DEV ? `/assets/stamps/stamp-${level}.webp` : null)
 
+// The stamp shown beside the list while no room is pointed at (Matthew,
+// 10 Nov 2026: an arrowhead, the pointer as a found object; source
+// docs/reference/style-lab/stamp-default-arrowhead.webp, cut to the stamps'
+// 480 × 408 tile and scale). Stamps only; null with the dots.
+export function RestingPicture({ className = '' }) {
+  const style = usePictureStyle()
+  if (style !== 'stamps' || !import.meta.env.DEV) return null
+  return <img src="/assets/stamps/stamp-default.webp" className={`${s.stamp} ${className}`} alt="" aria-hidden="true" draggable="false" data-picture="stamp-default" />
+}
+
 export default function DotPicture({ level, className = '' }) {
   const style = usePictureStyle()
   if (style === 'stamps' && stamp(level)) {

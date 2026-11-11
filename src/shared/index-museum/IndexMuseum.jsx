@@ -35,7 +35,7 @@ import { cardTimelineOn, forgetCardsSeen } from '../devLooks'
 import { setMuseumStyle } from '../museumStyle'
 import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS, pad } from './words'
-import DotPicture from './DotPicture'
+import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle, setPictureStyle } from './pictureStyle'
 
@@ -356,13 +356,19 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
           {L}
         </nav>
 
-        {/* Beside the list: the peeked room's picture, or the collection's cards */}
+        {/* Beside the list: the peeked room's picture (with the stamps, the
+            arrowhead while no room is pointed at), or the collection's cards */}
         {!inLevel && view !== 'collection' && (
           <div className={s.aside} aria-hidden="true">
-            {slots.peek !== null && slots.peek !== undefined && (
+            {slots.peek !== null && slots.peek !== undefined ? (
               <div className={s.peekBox} data-peek={slots.peek}>
                 <DotPicture level={slots.peek} className={s.peekPicture} />
                 <span className={s.peekYear}>{ARTIFACTS[slots.peek].year}</span>
+              </div>
+            ) : pictures === 'stamps' && (
+              // stamps: the arrowhead rests here until a room is pointed at
+              <div className={s.peekBox} data-peek="rest">
+                <RestingPicture className={s.peekPicture} />
               </div>
             )}
           </div>
