@@ -249,6 +249,41 @@ This is an option to compare, not a replacement. The dot pictures entry above go
 - **Spec:** one paragraph in the "Index museum" section saying the option exists and how to switch it.
 - **Status (10 Nov 2026):** built and shown to Matthew. His call: keep both for now, the switch stays and dots stay the default. Stamps in `assets/stamps/` (480 × 408, the reference's own resolution: twice the largest showing, about 600px, would only upscale it); the reference's paper is near-white (254), not cream. Side by side, dots left and stamps right, in light and dark: `docs/museum-index/pictures/compare-<light|dark>-<timeline-hover|level-4-discovery|collection>.webp`; stamp shots at 1440 and 375 in `docs/museum-index/*-pictures-stamps-*`. The dot side still shows the old masks, because the grid redraw (entry above) isn't wired in yet. Checked: 165 tests (each option draws all six; no line or switching outside the dev server), `npm run build` (no line, no stamp files).
 
+
+### Card lab: stamp cards in a grid · approved 10 Nov 2026
+Matthew wants a card design in the card lab (`/card-lab`) based on a ChatGPT mockup, saved as `docs/reference/style-lab/stamp-cards.webp`. Each card is a sheet of the room's colour, with its picture printed in black at the top and the text set below. Use the stamp pictures already in `assets/stamps/` (from the entry above), not the mockup's drawings, and lay the cards out in a straight grid with no rotation.
+
+- **A new design in `LabCards.jsx`, `'stamp'`,** added to `variants.js` as "Stamp cards", with a note.
+- **Card colour:** the stamp's own ink colour, one per room. Sample them from the reference cards:
+
+  | Level | Colour |
+  |---|---|
+  | 0 | blue (about `#2f6fc4`) |
+  | 1 | yellow (about `#f7c22b`) |
+  | 2 | light blue (about `#86b8f5`) |
+  | 3 | green (about `#5fa36c`) |
+  | 4 | coral (about `#f2706a`) |
+  | 5 | brown (about `#b07c62`) |
+
+  Flat colour, with no gradient, shadow or border.
+- **The picture:** each stamp printed in near-black ink on the card, as in the mockup.
+  - The near-white paper drops away and the grain stays: make the stamp a mask from its ink density, so faint grain prints faint, and fill it with the ink colour.
+  - A script generates the masks from `assets/stamps/stamp-N.webp`; don't redraw them by hand.
+  - Every picture is the same width on every card, centred in the top part of the card.
+- **The text,** from `src/data/artifacts.js`, as in the mockup, all in near-black:
+  - `name` in a bold sans
+  - `title, year` in italic
+  - `description` in a regular sans at a readable size
+  - `NO. 01 OF 6` at the foot in a monospace, numbered from 01
+  - Left-aligned, with even margins on all sides.
+  - Text must pass AA on every colour, checked per card. The yellow and light blue should be fine; check the blue and the brown.
+- **The back** (the lab turns cards over): the colour alone, with `NO. 01 OF 6` in the same place.
+- **The grid:** a new `arrange: 'grid'`. Three across and two down, every card the same size, upright, with even gaps, on the lab's dark ground. Two across when there isn't room for three, and one across at phone width. No tilt, drift or overlap.
+- **Not in this pass:** the collection page or the index museum (this is the card lab only), and new pictures or copy.
+- **Checks:**
+  - Run `npm run build`; the lab isn't in it.
+  - Check in the browser at 1440 and 375, front and back.
+  - Take a screenshot of the row into `docs/reference/style-lab/` or the lab's usual place, and show Matthew next to the mockup.
 ---
 
 ## Done
