@@ -1,5 +1,5 @@
 // src/levels/Level1.jsx
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react'
 import styles from './Level1.module.css'
 import MacCursor from '../components/MacCursor'
 import '../components/era-cursors.css'
@@ -16,8 +16,12 @@ import DiscoveryCard from '../shared/museum/DiscoveryCard'
 import HintPill from '../shared/museum/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
+import { stippleRevealOn } from '../shared/devLooks'
 
 const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[1]
+
+// The stipple reveal (experiment, dev server only: not in the build)
+const StippleReveal = import.meta.env.DEV ? lazy(() => import('../shared/reveal/StippleReveal')) : null
 
 const OBJECTIVES = [
   'Open the Notes document',
@@ -66,10 +70,22 @@ export default function Level1() {
   }, [])
   useEffect(() => () => clearTimeout(driveTimer.current), [])
 
+  // Stipple reveal (experiment, dev panel Levels > stipple; off = nothing
+  // changes): the Mac is a drawing on arrival, dissolves before the boot,
+  // and settles back into a drawing at the discovery. `arriving` holds the
+  // boot until the drawing has gone, on a first visit and on a revisit.
+  const [stipple] = useState(stippleRevealOn)
+  const [arriving, setArriving] = useState(stipple)
+  const revealState = screen === 'intro' ? 'drawn'
+    : screen === 'booting' && arriving ? 'reveal'
+    : screen === 'discovery' ? 'settle'
+    : 'clear'
+  const arrived = useCallback(() => setArriving(false), [])
+
   // Startup beep as the boot begins (replays too)
   useEffect(() => {
-    if (screen === 'booting') sfx.startupBeep()
-  }, [screen])
+    if (screen === 'booting' && !arriving) sfx.startupBeep()
+  }, [screen, arriving])
   const finishBoot = useCallback(() => setScreen('playing'), [])
 
   // The first hint says "on the desktop" only while Notes is there
@@ -156,7 +172,7 @@ export default function Level1() {
             className={styles.wrap}
             style={{ width: BEZEL_W * scale, height: BEZEL_H * scale, left: fit.left, top: fit.top }}
           >
-            <div className={styles.scaler} style={{ transform: `scale(${scale})` }}>
+            <div className={styles.scaler} style={{ transform: `scale(${scale})` }} data-reveal-device>
               <MonitorBezel driveBusy={driveBusy}>
                 <div className={`${styles.inner} ${driveBusy ? styles.innerBusy : ''}`}>
                   <MacCursor busy={driveBusy} />
@@ -169,7 +185,7 @@ export default function Level1() {
                       onNotesPlace={setNotesPlace}
                     />
                   )}
-                  {screen === 'booting' && (
+                  {screen === 'booting' && !arriving && (
                     <BootSequence
                       onComplete={finishBoot}
                       onReveal={setReveal}
@@ -178,6 +194,11 @@ export default function Level1() {
                   )}
                 </div>
               </MonitorBezel>
+              {stipple && StippleReveal && (
+                <Suspense fallback={null}>
+                  <StippleReveal level={1} width={BEZEL_W} height={BEZEL_H} scale={scale} state={revealState} onDone={arrived} />
+                </Suspense>
+              )}
             </div>
           </div>
         </div>

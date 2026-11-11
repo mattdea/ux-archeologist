@@ -46,3 +46,17 @@ export function markCardsSeen(levels) {
 export function forgetCardsSeen() {
   try { localStorage.removeItem(SEEN_KEY) } catch { /* storage blocked */ }
 }
+
+// 'stipple-reveal' (experiment, backlog "the device as a drawing when you
+// arrive and leave"; 11 Nov 2026): Level 1's Mac is a stipple drawing while
+// you arrive and leave, real only while you use it (StippleReveal.jsx).
+// Remembered per browser, off by default, dev server only.
+const STIPPLE_REVEAL_KEY = 'ux-archaeologist:stipple-reveal'
+export function stippleRevealOn() {
+  if (!import.meta.env.DEV) return false
+  try { return localStorage.getItem(STIPPLE_REVEAL_KEY) === '1' } catch { return false }
+}
+export function setStippleReveal(on) {
+  if (!import.meta.env.DEV) return
+  try { on ? localStorage.setItem(STIPPLE_REVEAL_KEY, '1') : localStorage.removeItem(STIPPLE_REVEAL_KEY) } catch { /* storage blocked */ }
+}

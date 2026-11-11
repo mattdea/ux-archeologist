@@ -49,6 +49,7 @@
 
 /* Inner scaler — holds native-size MonitorBezel, scaled via transform. */
 .scaler {
+  position: relative;   /* holds the stipple reveal's canvas (experiment) */
   flex-shrink: 0;
   display: flex;        /* no inline-block baseline gap: box = bezel exactly */
   transform-origin: center center;
