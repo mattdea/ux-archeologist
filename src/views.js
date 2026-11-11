@@ -18,6 +18,7 @@ const LOADERS = {
   test:       () => import('./pages/TestMuseumUI'),
   ...(import.meta.env.DEV ? { cardLab: () => import('./pages/CardLab') } : {}),
   ...(import.meta.env.DEV ? { styleLab: () => import('./pages/StyleLab') } : {}),
+  ...(import.meta.env.DEV ? { dotEditor: () => import('./pages/DotEditor') } : {}),
 }
 
 const loading = {}

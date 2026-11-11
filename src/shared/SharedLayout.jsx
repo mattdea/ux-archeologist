@@ -47,7 +47,7 @@ const PATH_TO_VIEW = {
   '/level/5':         'level5',
   '/collection':      'collection',
   '/test/museum-ui':  'test',
-  ...(import.meta.env.DEV ? { '/card-lab': 'cardLab', '/style-lab': 'styleLab' } : {}),
+  ...(import.meta.env.DEV ? { '/card-lab': 'cardLab', '/style-lab': 'styleLab', '/dot-editor': 'dotEditor' } : {}),
 }
 
 // ── Level metadata (keyed by view) ─────────────────────────────────
@@ -61,10 +61,10 @@ const LEVEL_META = {
 }
 
 // Views where the HUD is hidden entirely
-const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection', 'cardLab', 'styleLab']
+const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection', 'cardLab', 'styleLab', 'dotEditor']
 
 // Views the index museum leaves alone (dev workbenches, the test page)
-const INDEX_SKIPS = ['cardLab', 'styleLab', 'test']
+const INDEX_SKIPS = ['cardLab', 'styleLab', 'dotEditor', 'test']
 
 // Level numbers for dot rendering
 const LEVEL_NUMBERS = [0, 1, 2, 3, 4, 5]
@@ -97,9 +97,9 @@ function whenFramesSettle(cb, maxMs = 600) {
 
 export default function SharedLayout({ children }) {
   // initial view = title screen; on the dev server, /card-lab opens the card
-  // lab and /style-lab the style lab
+  // lab, /style-lab the style lab and /dot-editor the dot picture editor
   const [view, setView]     = useState(() => (
-    import.meta.env.DEV && typeof window !== 'undefined' && ['/card-lab', '/style-lab'].includes(window.location.pathname)
+    import.meta.env.DEV && typeof window !== 'undefined' && ['/card-lab', '/style-lab', '/dot-editor'].includes(window.location.pathname)
       ? PATH_TO_VIEW[window.location.pathname]
       : 'title'
   ))

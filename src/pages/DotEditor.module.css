@@ -1,0 +1,47 @@
+/* src/pages/DotEditor.module.css — the dev-only dot picture editor */
+.page {
+  position: fixed; inset: 0; overflow: auto;
+  padding: 24px; background: #fff; color: #000;
+  font: 13px/20px ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  color-scheme: light;
+}
+.h1 { font: inherit; font-weight: 700; margin: 0; }
+.note { margin: 0 0 20px; color: #666; max-width: 80ch; }
+.note code { color: #000; }
+
+.row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.thumb {
+  display: grid; gap: 6px; padding: 8px; border: 1px solid #ddd; background: #fff; color: #000;
+  font: inherit; text-align: left; cursor: pointer;
+}
+.thumb:hover { border-color: #000; }
+.thumb.on { background: #000; color: #fff; border-color: #000; }
+.thumbPic { width: 100%; aspect-ratio: 36 / 30; display: block; }
+.old {
+  display: block; width: 100%; aspect-ratio: 400 / 340; background: currentColor; opacity: 0.45;
+  -webkit-mask: var(--art) center / contain no-repeat; mask: var(--art) center / contain no-repeat;
+}
+.label { color: inherit; opacity: 0.8; }
+.check { display: inline-flex; gap: 6px; margin: 10px 0 24px; color: #666; }
+
+.editor { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+.board {
+  display: grid; grid-template-columns: repeat(var(--cols), 18px); grid-auto-rows: 18px;
+  border: 1px solid #ddd; touch-action: none; user-select: none;
+}
+.cell { position: relative; padding: 0; border: 0; background: none; cursor: crosshair; }
+.cell::after {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 2px; height: 2px;
+  margin: -1px 0 0 -1px; border-radius: 50%; background: #e4e4e4;
+}
+.cell:hover { background: #f2f2f2; }
+.bg::after { width: 4px; height: 4px; margin: -2px 0 0 -2px; background: #000; }
+.ink::after { width: 14px; height: 14px; margin: -7px 0 0 -7px; background: #000; }
+
+.side { display: grid; gap: 12px; width: 300px; }
+.preview { width: 100%; display: block; }
+.inverse { background: #111; color: #e6e6e6; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.actions button { font: inherit; padding: 2px 8px; border: 1px solid #000; background: #fff; color: #000; cursor: pointer; }
+.actions button:disabled { opacity: 0.4; cursor: default; }
+.out { font: 11px/14px ui-monospace, Menlo, monospace; width: 100%; resize: vertical; }

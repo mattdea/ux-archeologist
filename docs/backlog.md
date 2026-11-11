@@ -209,6 +209,7 @@ Rebuild them as data on one grid, the way the 5 × 7 capitals in `src/pages/styl
 - **Where it changes:** `DotPicture` in the index museum draws from the new rows; the props it takes stay the same. The style lab keeps its old masks as a record, and Classic isn't touched. Remove `assets/dots/` only once nothing imports it.
 - **Not in this pass:** ink spread (a fixed, slight size change per dot so it looks stamped). Leave it off: the point is regularity. Note it under Ideas if it's worth trying later.
 - **Spec:** add the grid, the dot sizes and the editor to the "Index museum" section.
+- **Status (10 Nov 2026):** drafts drawn and shown to Matthew, nothing replaced yet. The rows are in `src/shared/index-museum/pictures.js`, drawn by `DotGrid.jsx`; the editor is at `/dot-editor` (dev only); the draft script is `scripts/dot-pictures-draft.mjs`. Its straight samples aliased against the old masks' finer spacing, so each picture was redrawn by hand on the grid with the same subject. Comparison: `docs/museum-index/dot-pictures-drafts.png` (new above, old below).
 - **Checks:**
   - A test that every picture has the right number of rows and columns.
   - Run `npm run build` and confirm the editor isn't in it.
