@@ -145,7 +145,6 @@
 .aside { position: sticky; top: var(--ix-row); min-width: 0; }
 .peekBox { width: 34ch; }
 .peekPicture { width: 100%; aspect-ratio: 400 / 340; }
-.peekYear { display: block; text-align: center; }
 
 /* ── Collection: the list, then the cards on the same grid ──────────── */
 .collectionView { --ix-list: 56ch; }

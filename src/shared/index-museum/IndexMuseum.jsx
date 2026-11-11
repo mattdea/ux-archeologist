@@ -364,7 +364,6 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
             {slots.peek !== null && slots.peek !== undefined ? (
               <div className={s.peekBox} data-peek={slots.peek}>
                 <DotPicture level={slots.peek} className={s.peekPicture} />
-                <span className={s.peekYear}>{ARTIFACTS[slots.peek].year}</span>
               </div>
             ) : pictures !== 'dots' && (
               // stamps and fossils: an arrowhead rests here until a room is pointed at
