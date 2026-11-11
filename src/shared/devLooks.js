@@ -48,17 +48,18 @@ export function forgetCardsSeen() {
 }
 
 // 'catalogue-record' (experiment, backlog "Levels: the catalogue record
-// around the device"; 11 Nov 2026): Level 1's Mac annotated the way a
-// catalogue records an object (CatalogueRecord.jsx). Remembered per
-// browser, off by default, dev server only.
+// around the device" and "level screen fixes"; 11 Nov 2026): each level's
+// device annotated the way a catalogue records an object
+// (src/shared/catalogue/). On by default; turning it off is remembered per
+// browser ('0'). Dev server only: production has no record.
 const CATALOGUE_KEY = 'ux-archaeologist:catalogue-record'
 export function catalogueRecordOn() {
   if (!import.meta.env.DEV) return false
-  try { return localStorage.getItem(CATALOGUE_KEY) === '1' } catch { return false }
+  try { return localStorage.getItem(CATALOGUE_KEY) !== '0' } catch { return true }
 }
 export function setCatalogueRecord(on) {
   if (!import.meta.env.DEV) return
-  try { on ? localStorage.setItem(CATALOGUE_KEY, '1') : localStorage.removeItem(CATALOGUE_KEY) } catch { /* storage blocked */ }
+  try { on ? localStorage.removeItem(CATALOGUE_KEY) : localStorage.setItem(CATALOGUE_KEY, '0') } catch { /* storage blocked */ }
 }
 
 // 'index-level-layout' (backlog, "Index museum: the device centred, the list

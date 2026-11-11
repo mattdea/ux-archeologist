@@ -6,6 +6,7 @@ import TerminalScreen from '../components/terminal/TerminalScreen'
 import useTerminal from '../components/terminal/useTerminal'
 import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
+import Catalogue from '../shared/catalogue/Catalogue'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import IntroModal from '../shared/museum/IntroModal'
@@ -144,6 +145,7 @@ export default function Level0() {
                 />
               </TerminalBezel>
             </div>
+            <Catalogue level={0} screen={screen} fit={fit} width={BEZEL_W} height={BEZEL_H} />
           </div>
         </div>
 

@@ -15,7 +15,7 @@
 // Each control does what its old line or button did and keeps its storage
 // key: museumStyle.js, pictureStyle.js, devLooks.js, cardLook.js, state.js.
 // Museum > level layout: the index museum's corners or side layout in a level.
-// Levels > catalogue: Level 1's catalogue record (experiment).
+// Levels > catalogue: every level's catalogue record (experiment, on by default).
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import s from './DevPanel.module.css'

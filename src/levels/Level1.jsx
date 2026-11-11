@@ -1,5 +1,5 @@
 // src/levels/Level1.jsx
-import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './Level1.module.css'
 import MacCursor from '../components/MacCursor'
 import '../components/era-cursors.css'
@@ -16,12 +16,7 @@ import DiscoveryCard from '../shared/museum/DiscoveryCard'
 import HintPill from '../shared/museum/HintPill'
 import useHint from '../shared/museum-ui/useHint'
 import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
-import { catalogueRecordOn } from '../shared/devLooks'
-import { useDevChange } from '../shared/dev/devEvents'
-
-// Experiment, dev only (Levels > catalogue): the catalogue record around the
-// device. Absent from the production build.
-const CatalogueRecord = import.meta.env.DEV ? lazy(() => import('../shared/catalogue/CatalogueRecord')) : null
+import Catalogue from '../shared/catalogue/Catalogue'
 
 const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[1]
 
@@ -86,9 +81,6 @@ export default function Level1() {
   // Fits the artifact around the HUD corners, as large as the viewport allows
   const fit = useArtifactFit(BEZEL_W, BEZEL_H)
   const scale = fit.scale
-  // Re-read the dev setting when the dev panel changes it
-  const [catalogue, setCatalogue] = useState(catalogueRecordOn)
-  useDevChange(() => setCatalogue(catalogueRecordOn()))
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
 
@@ -188,17 +180,7 @@ export default function Level1() {
                 </div>
               </MonitorBezel>
             </div>
-            {CatalogueRecord && catalogue && (
-              <Suspense fallback={null}>
-                <CatalogueRecord
-                  show={screen === 'intro' || screen === 'discovery' ? 'full' : 'number'}
-                  fit={fit}
-                  width={BEZEL_W}
-                  height={BEZEL_H}
-                  screen={screen}
-                />
-              </Suspense>
-            )}
+            <Catalogue level={1} screen={screen} fit={fit} width={BEZEL_W} height={BEZEL_H} />
           </div>
         </div>
 

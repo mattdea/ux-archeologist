@@ -16,6 +16,7 @@ import LockScreen from '../components/phone/LockScreen'
 import HomeScreen from '../components/phone/HomeScreen'
 import NotesApp from '../components/notes/NotesApp'
 import useArtifactFit from '../hooks/useArtifactFit'
+import Catalogue from '../shared/catalogue/Catalogue'
 import '../components/phone/phone-theme.css'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
@@ -365,6 +366,7 @@ export default function Level3() {
 
               </PhoneFrame>
             </div>
+            <Catalogue level={3} screen={museumScreen === 'artifact' ? 'discovery' : museumScreen} fit={fit} width={BEZEL_W} height={BEZEL_H} />
           </div>
         </div>
 

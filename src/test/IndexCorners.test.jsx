@@ -20,6 +20,9 @@ import { FadeNavCtx } from '../shared/SharedLayout'
 import { resetAll } from '../state/state'
 import { computeFit } from '../hooks/useArtifactFit'
 import { indexLevelLayout, setIndexLevelLayout } from '../shared/devLooks'
+import { placeFind } from '../shared/index-museum/find'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 function memoryStorage() {
   const m = new Map()
@@ -81,12 +84,13 @@ describe('Index museum: the corners in a level', () => {
     const order = [...document.querySelectorAll('[data-corner]')].map(e => e.dataset.corner)
     expect(order).toEqual(['tl', 'tr', 'bl', 'br'])
     order.forEach(c => expect(corner(c).getAttribute('data-hud')).toBe('corner'))
-    // top left: the museum and the room, inverted; top right: the years, the current one inverted, and Dark mode
+    // top left: the museum and the room, inverted; top right: the years, the current one inverted
     expect(corner('tl').textContent).toContain('Interface Artifacts')
     expect(corner('tl').querySelector('[aria-current="page"]').textContent).toContain('The Desktop')
     expect([...corner('tr').querySelectorAll('[data-ix-years] button')].map(b => b.textContent)).toEqual(['1979', '1984', '1995', '2007', '2016', '2023'])
     expect(corner('tr').querySelector('[aria-current="page"]').textContent).toBe('1984')
-    expect(corner('tr').textContent).toContain('Dark mode')
+    // Dark mode is in the full list only, not the top right
+    expect(corner('tr').textContent).not.toContain('Dark mode')
     // Tab follows the DOM: every control in top left comes before top right's, and so on
     const tabbable = [...document.querySelectorAll('[data-corner] button')]
     const cornerOf = (el) => el.closest('[data-corner]').dataset.corner
@@ -115,8 +119,14 @@ describe('Index museum: the corners in a level', () => {
     rerender({ continueAction: cont, hudReady: true })
     fireEvent.click(screen.getByText('Continue').closest('button'))
     expect(cont).toHaveBeenCalled()
-    // discovery: the discovery text, Continue to the next room
+    // the room's picture comes only with the discovery
+    expect(document.querySelector('[data-ix-find]')).toBeNull()
+    // discovery: the discovery text and the room's picture, Continue to the next room
+    // (jsdom lays nothing out: give every box the discovery text's place)
+    const rect = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ left: 24, top: 500, right: 324, bottom: 700, width: 300, height: 200, x: 24, y: 500 })
     fireEvent.click(screen.getByText('finish'))
+    expect(document.querySelector('[data-ix-find] [data-picture]')).not.toBeNull()
+    rect.mockRestore()
     expect(corner('bl').textContent).toContain('Artifact Discovered')
     expect(corner('bl').textContent).toContain('Pictures you point at.')
     expect(corner('br').textContent).toContain('1995 The Hyperlink')
@@ -134,6 +144,7 @@ describe('Index museum: the corners in a level', () => {
     expect(panel.getAttribute('data-hud')).toBeNull()            // over the page, never moves the device
     expect(panel.textContent).toContain('1979The Command Line')
     expect(panel.textContent).toContain('Back to timeline')
+    expect(panel.textContent).toContain('Dark mode')
     expect(panel.contains(document.activeElement)).toBe(true)
     fireEvent.keyDown(document.activeElement, { key: 'Escape' })
     expect(document.querySelector('[data-ix-panel]')).toBeNull()
@@ -185,6 +196,31 @@ describe('Index museum: the corners in a level', () => {
       expect(f.top + (755 * f.scale) / 2).toBeCloseTo(H / 2, 5)
       expect(f.scale).toBeGreaterThan(0.3)
       corners.forEach(c => expect(hit(f, 780, 755, c)).toBe(false))
+    })
+  })
+
+  it('the full list over the page is only as tall as its contents, with no border, rule or shadow', () => {
+    const css = readFileSync(resolve(__dirname, '../shared/index-museum/IndexMuseum.module.css'), 'utf8')
+    const panel = css.match(/\n\.panel \{([^}]*)\}/)[1]
+    expect(panel).not.toMatch(/bottom:/)
+    expect(panel).not.toMatch(/border(?!-box)|box-shadow|outline/)
+    expect(panel).toMatch(/background: var\(--ix-paper\)/)
+  })
+
+  describe("the room's picture beside its discovery", () => {
+    const text = { x: 24, y: 610, w: 300, h: 240 }
+    it('beside the text, as tall as it and bottom-aligned, when that clears the device', () => {
+      const r = placeFind({ text, viewport: { w: 1920, h: 1080 }, avoid: [{ x: 700, y: 100, w: 520, h: 880 }] })
+      expect(r.where).toBe('beside')
+      expect(r.h).toBe(240)
+      expect(r.y + r.h).toBe(text.y + text.h)
+      expect(r.x).toBeGreaterThan(text.x + text.w)
+    })
+    it('smaller, or above the text, rather than over the device; nowhere if nothing fits', () => {
+      const above = placeFind({ text, viewport: { w: 1440, h: 900 }, avoid: [{ x: 393, y: 133, w: 654, h: 633 }] })
+      expect(above.where).toBe('above')
+      expect(above.y + above.h).toBeLessThanOrEqual(text.y)
+      expect(placeFind({ text, viewport: { w: 400, h: 700 }, avoid: [{ x: 0, y: 0, w: 400, h: 600 }] })).toBeNull()
     })
   })
 })

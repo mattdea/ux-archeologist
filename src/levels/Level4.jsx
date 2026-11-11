@@ -20,6 +20,7 @@ import { ARTIFACTS } from '../data/artifacts'
 import FeedApp from '../components/feed/FeedApp'
 import GhostDevice, { UNIT_W, UNIT_H } from '../components/feed/GhostDevice'
 import useArtifactFit from '../hooks/useArtifactFit'
+import Catalogue from '../shared/catalogue/Catalogue'
 
 
 const OBJECTIVES = [
@@ -158,6 +159,7 @@ export default function Level4() {
                 />
               </GhostDevice>
             </div>
+            <Catalogue level={4} screen={screen} fit={fit} width={UNIT_W} height={UNIT_H} />
           </div>
         </div>
 

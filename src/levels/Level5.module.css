@@ -37,6 +37,13 @@
   pointer-events: auto;
 }
 
+/* The chat's column, where the catalogue record is placed (it has no
+   device): over the chat, taking no clicks itself */
+.recordBox {
+  position: fixed;
+  pointer-events: none;
+}
+
 /*
  * Zone 3 — ObjectiveTracker with outer spacing.
  * Always rendered (visibility: hidden) so Zone 1/2 are never reflowed.

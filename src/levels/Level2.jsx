@@ -11,6 +11,7 @@ import ProgressiveReveal from '../components/web/ProgressiveReveal'
 import useNetscapeLoad from '../components/web/useNetscapeLoad'
 import * as sfx from '../audio/sfx'
 import useArtifactFit from '../hooks/useArtifactFit'
+import Catalogue from '../shared/catalogue/Catalogue'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import IntroModal from '../shared/museum/IntroModal'
@@ -265,6 +266,7 @@ export default function Level2() {
                 {renderPage()}
               </BrowserChrome>
             </div>
+            <Catalogue level={2} screen={screen} fit={fit} width={BROWSER_W} height={BROWSER_H} />
           </div>
         </div>
 

@@ -44,6 +44,7 @@ import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle } from './pictureStyle'
 import { useDevChange } from '../dev/devEvents'
+import { placeFind, artifactBox } from './find'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -389,7 +390,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     <div className={`${s.ix} ${s.levelView} ${s.cornersView}`} data-index-museum data-level-layout="corners">
       <Corners
         listRef={listRef} menuRef={menuRef} narrow={narrow} level={level} roomState={roomState}
-        slots={slots} continueAction={continueAction} navigate={navigate} theme={theme}
+        slots={slots} continueAction={continueAction} navigate={navigate}
         panelOpen={panelOpen} togglePanel={() => setPanelOpen(o => !o)}
       />
       {panelOpen && (
@@ -439,9 +440,10 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 // fixed size, so the device (centred by useArtifactFit) doesn't move when
 // what's in them changes. Under 900px: the room's line across the top, the
 // reading and the next step stacked across the bottom.
-function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAction, navigate, theme, panelOpen, togglePanel }) {
+function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAction, navigate, panelOpen, togglePanel }) {
   const a = ARTIFACTS[level]
   const next = ARTIFACTS[level + 1]
+  const discRef = useRef(null)
   const room = (
     <Line as="go" current mark={`${a.year}  `} text={a.title} arrow="≡" bare
       className={s.roomLine} expanded={panelOpen} label={`${a.year} ${a.title}. ${WORDS.allRooms}`}
@@ -471,9 +473,14 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
     const d = slots.discovery
     read = (
       <>
-        <div className={s.cornerSplit}><span className={s.quiet}>{WORDS.discovered}</span><span className={s.quiet}>{d.era}</span></div>
-        <div>{d.artifactName}</div>
-        <p className={s.cornerText}>{d.description}</p>
+        {/* at phone width the room's picture sits above the text */}
+        {narrow && <DotPicture level={level} className={`${s.findNarrow} ${s.findIn}`} />}
+        <div ref={discRef}>
+          <div className={s.cornerSplit}><span className={s.quiet}>{WORDS.discovered}</span><span className={s.quiet}>{d.era}</span></div>
+          <div>{d.artifactName}</div>
+          <p className={s.cornerText}>{d.description}</p>
+        </div>
+        {!narrow && <Find level={level} textRef={discRef} />}
       </>
     )
   }
@@ -521,11 +528,54 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
               onClick={() => { if (r.level !== level) navigate(r.path) }}>{r.year}</button>
           ))}
         </div>
-        <Line as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'} pressed={theme === 'dark'}
-          onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />
       </div>
       <div className={`${s.corner} ${s.bl}`} data-hud="corner" data-corner="bl" data-state={roomState}>{read}</div>
       <div className={`${s.corner} ${s.br}`} data-hud="corner" data-corner="br" data-state={roomState}>{act}</div>
+    </div>
+  )
+}
+
+// ── The room's picture beside its discovery text ────────────────────────
+// The find beside its label: the room's picture (whichever Pictures set is
+// on) beside the discovery text in the bottom-left corner, about as tall as
+// the text, bottom-aligned with it. It's not data-hud, so it never moves the
+// device; it is placed only where it covers neither the device
+// (useArtifactFit's --artifact-* box), another corner nor the window's
+// edge: beside the text first, at the text's height or as near it as fits,
+// then above the text, else not at all.
+function Find({ level, textRef }) {
+  const [at, setAt] = useState(null)
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = textRef.current
+      if (!el) return
+      const t = el.getBoundingClientRect()
+      // the text's own width, not its box: the longest line it set
+      const range = document.createRange()
+      range.selectNodeContents(el)
+      const ink = range.getBoundingClientRect?.() ?? t
+      const text = { x: t.left, y: t.top, w: Math.min(t.width, Math.max(0, ink.right - t.left)) || t.width, h: t.height }
+      const corner = el.closest('[data-corner]')
+      const avoid = [...document.querySelectorAll('[data-hud]')]
+        .filter((h) => h !== corner)
+        .map((h) => h.getBoundingClientRect())
+        .filter((r) => r.width > 0 && r.height > 0)
+        .map((r) => ({ x: r.left, y: r.top, w: r.width, h: r.height }))
+      const dev = artifactBox()
+      if (dev) avoid.push(dev)
+      setAt(placeFind({ text, viewport: { w: window.innerWidth, h: window.innerHeight }, avoid }))
+    }
+    measure()
+    const raf = requestAnimationFrame(measure)
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null
+    if (textRef.current) ro?.observe(textRef.current)
+    window.addEventListener('resize', measure)
+    return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', measure) }
+  }, [level, textRef])
+  if (!at) return null
+  return (
+    <div className={`${s.find} ${s.findIn}`} style={{ left: at.x, top: at.y, width: at.w, height: at.h }} data-ix-find={at.where}>
+      <DotPicture level={level} className={s.findPicture} />
     </div>
   )
 }

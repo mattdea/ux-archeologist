@@ -627,6 +627,21 @@ Five changes to the level screens in the Index museum's corner layout (entry abo
 - Run `npm run build`.
 - Retake the Index screenshots.
 
+**Status (11 Nov 2026, overnight run):** all five built, in one commit (Matthew's prompt asked for one commit per backlog item). Details in the spec ("Index museum" and each level's "Catalogue record").
+- **1. Dark mode** is gone from the top right; it's in the `≡` list only.
+- **2. The menu** is only as tall as its contents (260px at 1440 × 900), on the page colour, no border, rule or shadow.
+- **3. The room's picture with the discovery:** placed by `placeFind` (`src/shared/index-museum/find.js`), never over the device (`useArtifactFit` now publishes the device's box as `--artifact-*`). At 1440 × 900 the Mac leaves no room beside the text, so the picture sits above the text in the left column, as tall as the text; on wider windows it goes beside. **For Matthew:** if "beside" must hold everywhere, the corner would need to be wider (and every device smaller).
+- **4. A record for every level:** facts checked against two sources each; sources and confidence are in the spec under each level. Changes from the candidates:
+  - Level 0 has one label (the screen): the exhibit draws no keyboard. "Popularised ANSI codes" is medium and left off; the record says `ANSI X3.64 escape codes` (high). The launch price had one source and is dropped. DEC's spec gives the VT100 a white (P4) phosphor, not green (one source, noted in the spec only).
+  - Level 2: `$39, free for education and non-profit use`, `Most-used browser, 1995` (no share figure: sources disagree). 1.1's date and the meteor throbber are left off (medium, single source).
+  - Level 3: the processor and memory are medium (Apple never published them).
+  - Level 4: "Ranked feed **announced**" (it rolled out over months). Its screen isn't drawn in the intro and its feed is hidden at the Index discovery, so its labels only show once the feed is there.
+  - Level 5: the record treats the chat's 680px column as the object.
+  - New: labels stack when two parts are close (Netscape), and a moved label's line takes one bend; a part is found in the artifact by a selector and dropped when it isn't drawn.
+  - The setting is on by default (dev only; production still has no record).
+- **5. The toggle** works in every state and holds for the visit. Where the record has no room beside or under the device, the number is the whole record and the toggle is hidden, since there's nothing to show. **For Matthew:** in the Index corners at 1440 × 900 this is the case for the Mac (Level 1), so its toggle doesn't appear there; the open question from the catalogue entry (a narrower column, or allowing the record over the bezel) still decides that.
+- **Checked:** 21 test files, `npm run build` (no record or facts in the bundle), the browser at 1440 × 900 in both museums (every level's record mode and dots), the discovery picture at 1440 and 375, the menu's size. Screenshots not retaken (Matthew: only when asked).
+
 ### Level 5: a light version in light mode · approved 11 Nov 2026
 In the Index museum, Level 5's chat is dark in both light and dark mode. In light mode it should be light. Matthew's call (changed 11 Nov 2026): invert the current colours, not a recreation of a 2023 app's light theme.
 

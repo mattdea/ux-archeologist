@@ -215,6 +215,8 @@ describe('Index museum', () => {
     cleanup()
     for (const view of ['timeline', 'collection', 'level2']) {
       renderIndex(view)
+      // in a level it's in the full list (≡), not the corners
+      if (view === 'level2') fireEvent.click(document.querySelector('[data-corner="tl"] [aria-expanded]'))
       expect(dark()).toHaveAttribute('aria-pressed', 'false')
       cleanup()
     }

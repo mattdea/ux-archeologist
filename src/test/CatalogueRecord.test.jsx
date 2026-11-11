@@ -1,16 +1,21 @@
 // src/test/CatalogueRecord.test.jsx
 //
-// The catalogue record on Level 1 (backlog, "Levels: the catalogue record
-// around the device"; experiment, dev setting): off changes nothing; on,
-// the full record shows in the intro and the discovery and only the
-// catalogue number while playing; labels go beside the device only when
-// there is room; the setting is absent from production; the stipple
-// reveal it replaces is gone.
+// The catalogue record (backlog, "Levels: the catalogue record around the
+// device", then "level screen fixes": every level, a toggle; experiment,
+// dev setting, on by default): off changes nothing; on, the full record
+// shows in the intro and the discovery and only the catalogue number while
+// playing; the toggle shows and hides it in any state, holds for the visit
+// and resets on the next; labels go beside the device only when there is
+// room; every level has its record; the setting is absent from production;
+// the stipple reveal it replaced is gone.
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
 import Level1 from '../levels/Level1'
-import CatalogueRecord, { MAC_RECORD, placeRecord } from '../shared/catalogue/CatalogueRecord'
+import CatalogueRecord from '../shared/catalogue/CatalogueRecord'
+import { placeRecord, locateParts } from '../shared/catalogue/place'
+import { RECORDS } from '../shared/catalogue/records'
+import { ARTIFACTS } from '../data/artifacts'
 import { HudCtx, ContinueCtx } from '../shared/SharedLayout'
 import { catalogueRecordOn, setCatalogueRecord } from '../shared/devLooks'
 import { completeLevel, resetAll } from '../state/state'
@@ -39,10 +44,12 @@ async function renderLevel() {
   await act(async () => { await import('../shared/catalogue/CatalogueRecord'); await Promise.resolve() })
   return r
 }
+const MAC_RECORD = RECORDS[1]
 const record = () => document.querySelector('[data-catalogue-record]')
+const toggle = () => screen.getByRole('button', { name: /catalogue record/ })
 const part = (name) => document.querySelector(`[data-catalogue="${name}"]`)
 
-describe('Catalogue record (Level 1, experiment)', () => {
+describe('Catalogue record (experiment)', () => {
   beforeEach(() => {
     vi.stubGlobal('localStorage', memoryStorage())
     vi.stubGlobal('Audio', class { play() { return Promise.resolve() } })
@@ -52,16 +59,17 @@ describe('Catalogue record (Level 1, experiment)', () => {
   })
   afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals() })
 
-  it('the setting is off by default and remembered under its own key', () => {
-    expect(catalogueRecordOn()).toBe(false)
-    setCatalogueRecord(true)
-    expect(localStorage.getItem('ux-archaeologist:catalogue-record')).toBe('1')
+  it('the setting is on by default; off is remembered under its own key', () => {
     expect(catalogueRecordOn()).toBe(true)
     setCatalogueRecord(false)
+    expect(localStorage.getItem('ux-archaeologist:catalogue-record')).toBe('0')
+    expect(catalogueRecordOn()).toBe(false)
+    setCatalogueRecord(true)
     expect(localStorage.getItem('ux-archaeologist:catalogue-record')).toBeNull()
   })
 
   it('off: no record in the intro, while playing or in the discovery', async () => {
+    setCatalogueRecord(false)
     completeLevel(1)
     await renderLevel()
     expect(record()).toBeNull()
@@ -74,10 +82,9 @@ describe('Catalogue record (Level 1, experiment)', () => {
   it('on: the full record in the intro, only the number while playing, the full record in the discovery', async () => {
     // a window with room beside the device
     vi.stubGlobal('innerWidth', 1440); vi.stubGlobal('innerHeight', 900)
-    setCatalogueRecord(true)
     await renderLevel()
     expect(record().getAttribute('data-show')).toBe('full')
-    expect(part('number').textContent).toBe('IA.1984.02')
+    expect(part('number').textContent).toBe('IA.1984.02[−]')
     expect(screen.getByText('Apple Macintosh (128K), 1984')).toBeInTheDocument()
     expect(screen.getByText('$2,495')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /Begin excavation/i }))
@@ -97,10 +104,83 @@ describe('Catalogue record (Level 1, experiment)', () => {
     }
   })
 
-  it('never takes clicks and is hidden from screen readers', () => {
-    render(<CatalogueRecord show="full" fit={{ scale: 1, left: 300, top: 80 }} width={780} height={755} screen="intro" />)
-    expect(record().className).toMatch(/record/)
-    expect(record().getAttribute('aria-hidden')).toBe('true')
+  it('the toggle beside the number: [−] hides the record, [+] shows it, a real button', () => {
+    vi.stubGlobal('innerWidth', 1440); vi.stubGlobal('innerHeight', 900)
+    render(<CatalogueRecord level={1} show="full" fit={{ scale: 1, left: 300, top: 80 }} width={780} height={755} screen="intro" />)
+    expect(part('number').textContent).toBe('IA.1984.02[−]')
+    expect(toggle().getAttribute('aria-expanded')).toBe('true')
+    expect(toggle().getAttribute('aria-label')).toBe('Hide catalogue record')
+    fireEvent.click(toggle())
+    expect(record().getAttribute('data-show')).toBe('number')
+    expect(part('number').textContent).toBe('IA.1984.02[+]')
+    expect(toggle().getAttribute('aria-label')).toBe('Show catalogue record')
+    expect(toggle().getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(toggle())
+    expect(record().getAttribute('data-show')).toBe('full')
+  })
+
+  it('the toggle works in every state, holds for the visit through every state, and resets on the next visit', async () => {
+    vi.stubGlobal('innerWidth', 1440); vi.stubGlobal('innerHeight', 900)
+    completeLevel(1)
+    await renderLevel()                               // a revisit: booting, the number only
+    expect(record().getAttribute('data-show')).toBe('number')
+    fireEvent.click(toggle())                         // shown while booting
+    expect(record().getAttribute('data-show')).toBe('full')
+    act(() => { vi.advanceTimersByTime(20000) })      // playing: the choice holds
+    expect(record().getAttribute('data-show')).toBe('full')
+    fireEvent.click(toggle())                         // hidden while playing
+    expect(record().getAttribute('data-show')).toBe('number')
+    act(() => continueFn())                           // discovery: still hidden
+    expect(record().getAttribute('data-show')).toBe('number')
+    fireEvent.click(toggle())
+    expect(record().getAttribute('data-show')).toBe('full')
+    // the next visit starts from the state's default again
+    cleanup()
+    await renderLevel()
+    expect(record().getAttribute('data-show')).toBe('number')
+    act(() => { vi.advanceTimersByTime(20000) })
+    act(() => continueFn())
+    expect(record().getAttribute('data-show')).toBe('full')
+    fireEvent.click(toggle())
+    expect(record().getAttribute('data-show')).toBe('number')
+  })
+
+  it('no toggle when the number is all that fits', () => {
+    vi.stubGlobal('innerWidth', 375); vi.stubGlobal('innerHeight', 812)
+    render(<CatalogueRecord level={1} show="full" fit={{ scale: 0.42, left: 24, top: 452 }} width={780} height={755} screen="intro" />)
+    expect(record().getAttribute('data-catalogue-record')).toBe('number')
+    expect(screen.queryByRole('button', { name: /catalogue record/ })).toBeNull()
+    expect(part('number').textContent).toBe('IA.1984.02')
+  })
+
+  it('every level has its record, numbered by year and room as on the cards', () => {
+    ARTIFACTS.forEach((a) => {
+      const r = RECORDS[a.level]
+      expect(r, `level ${a.level}`).toBeTruthy()
+      expect(r.number).toBe(`IA.${a.year}.0${a.level + 1}`)
+      expect(r.object.length).toBeGreaterThan(0)
+      expect(r.data.length).toBeGreaterThan(0)
+      expect(r.parts.length).toBeGreaterThan(0)
+      r.parts.forEach((p) => expect(p.find || (Number.isFinite(p.y) && Number.isFinite(p.left) && Number.isFinite(p.right))).toBeTruthy())
+      // every line fits the 28-character column
+      ;[...r.object, ...r.data, ...r.parts.flatMap((p) => p.lines)].forEach((l) => expect(l.length, l).toBeLessThanOrEqual(28))
+    })
+  })
+
+  it('a part found by a selector lands on that element, in device coordinates; one off the device has no label', () => {
+    const scope = document.createElement('div')
+    const on = document.createElement('span'); on.className = 'here'
+    const off = document.createElement('span'); off.className = 'gone'
+    scope.append(on, off); document.body.append(scope)
+    const rect = (l, t, w, h) => () => ({ left: l, top: t, right: l + w, bottom: t + h, width: w, height: h })
+    on.getBoundingClientRect = rect(400, 300, 200, 40)
+    off.getBoundingClientRect = rect(3000, 300, 200, 40)
+    const fit = { scale: 2, left: 100, top: 100 }
+    const parts = locateParts([{ id: 'a', lines: ['A'], find: '.here' }, { id: 'b', lines: ['B'], find: '.gone' }, { id: 'c', lines: ['C'], y: 5, left: 1, right: 2 }], { scope, fit, width: 400, height: 300 })
+    expect(parts.map((p) => p.id)).toEqual(['a', 'c'])
+    expect(parts[0].y).toBe(110)                     // (320 - 100) / 2
+    expect(parts[0].left).toBeGreaterThan(150); expect(parts[0].right).toBeLessThan(250)
+    scope.remove()
   })
 
   describe('placement', () => {
@@ -119,6 +199,12 @@ describe('Catalogue record (Level 1, experiment)', () => {
       const l = placeRecord({ ...base, fit, viewport: { w: 1440, h: 900 }, huds: [{ x: 1110, y: 0, w: 330, h: 900 }] })
       expect(l.mode).toBe('side')
       expect(l.side).toBe('left')
+    })
+    it('the number sits above the device, or just inside it when a HUD is there', () => {
+      const fit = { scale: 1, left: 300, top: 80 }
+      expect(placeRecord({ ...base, fit, viewport: { w: 1440, h: 900 } }).number.y).toBeLessThan(80)
+      const l = placeRecord({ ...base, fit, viewport: { w: 1440, h: 900 }, huds: [{ x: 280, y: 40, w: 300, h: 36 }] })
+      expect(l.number.y).toBeGreaterThan(80)
     })
     it('no room beside it: no labels, the object line and data under the device if they fit', () => {
       const under = placeRecord({ ...base, fit: { scale: 0.42, left: 24, top: 60 }, viewport: { w: 375, h: 812 } })

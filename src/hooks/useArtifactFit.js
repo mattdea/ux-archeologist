@@ -26,7 +26,8 @@ import { useState, useLayoutEffect } from 'react'
  *    `hintSpace` between its bottom and the HUD (pill + gaps), not just
  *    `bandGap`. The hook publishes the pill's place as CSS variables on
  *    <html>: --hint-top (artifact bottom + hintGap) and --hint-max (the
- *    artifact's width), removed again on unmount.
+ *    artifact's width), removed again on unmount; and the artifact's own
+ *    box as --artifact-left / -top / -width / -height.
  *
  *  - Two kinds of HUD can say what they are, for the index museum's list
  *    (src/shared/index-museum/): `data-hud="side"` is a column down the
@@ -60,7 +61,14 @@ export default function useArtifactFit(width, height, { maxScale = 1.35, bandGap
     const s = document.documentElement.style
     s.setProperty('--hint-top', `${fit.top + height * fit.scale + HINT_GAP}px`)
     s.setProperty('--hint-max', `${width * fit.scale}px`)
-    return () => { s.removeProperty('--hint-top'); s.removeProperty('--hint-max') }
+    // The artifact's box, for museum pieces placed beside it that must not
+    // cover it (the index museum's discovery picture)
+    const box = { left: fit.left, top: fit.top, width: width * fit.scale, height: height * fit.scale }
+    Object.entries(box).forEach(([k, v]) => s.setProperty(`--artifact-${k}`, `${v}px`))
+    return () => {
+      s.removeProperty('--hint-top'); s.removeProperty('--hint-max')
+      Object.keys(box).forEach(k => s.removeProperty(`--artifact-${k}`))
+    }
   }, [fit, width, height])
 
   useLayoutEffect(() => {

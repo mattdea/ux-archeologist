@@ -9,6 +9,7 @@
 .record {
   --cr-ink: #e6e6e6;
   --cr-ink-2: #8a8a8a;
+  --cr-paper: #111;
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -22,11 +23,13 @@
 :global(html[data-museum="index"]) .record {
   --cr-ink: #000;
   --cr-ink-2: #666;
+  --cr-paper: #fff;
 }
 
 :global(html[data-museum="index"][data-index-theme="dark"]) .record {
   --cr-ink: #e6e6e6;
   --cr-ink-2: #8a8a8a;
+  --cr-paper: #111;
 }
 
 .number,
@@ -35,6 +38,7 @@
 }
 
 .number {
+  white-space: nowrap;
   transition: font-size 400ms ease, color 400ms ease;
 }
 
@@ -42,6 +46,22 @@
   font-size: 11px;
   color: var(--cr-ink-2);
 }
+
+/* The toggle beside the number: [−] hides the record, [+] shows it. The
+   index's grey ink and hover, like the list's + lines. */
+.toggle {
+  margin: 0 0 0 1ch;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--cr-ink-2);
+  font: 13px / 20px ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.toggle:hover { color: var(--cr-ink); text-decoration: underline; text-underline-offset: 3px; }
+.toggle:focus-visible { outline: none; background: var(--cr-ink); color: var(--cr-paper); text-decoration: none; }
 
 .secondary { color: var(--cr-ink-2); }
 .alignRight { text-align: right; }
@@ -53,11 +73,17 @@
 }
 .on { opacity: 1; }
 
-.leader {
+.leaders {
   position: absolute;
-  height: 1px;
-  margin-top: -0.5px;
-  background: var(--cr-ink-2);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--cr-ink-2);
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 
 .dot {

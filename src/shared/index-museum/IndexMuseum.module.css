@@ -244,6 +244,15 @@
 .count { text-align: right; padding-right: 1ch; }
 .cornersView .italic { font-style: italic; }
 
+/* The room's picture with its discovery: beside the text (placed by
+   placeFind, never over the device), or above it at phone width */
+.find { position: fixed; pointer-events: none; }
+.findPicture { width: 100%; height: 100%; }
+.findNarrow { width: min(30ch, 100%); aspect-ratio: 400 / 340; margin-bottom: var(--ix-row); flex-shrink: 0; }
+.find .stamp, .findNarrow.stamp { object-fit: contain; }
+.findIn { animation: ixFindIn 300ms ease-in-out both; }
+@keyframes ixFindIn { from { opacity: 0; } to { opacity: 1; } }
+
 /* The years: one row, the room you're in inverted */
 .years { display: flex; justify-content: flex-end; gap: 1ch; padding-left: var(--ix-cursor); margin-bottom: 0; }
 .year {
@@ -257,20 +266,20 @@
 /* The room's line: inverted, as in the list; ≡ opens the whole list */
 .roomLine .arrow { color: inherit; }
 
-/* The whole list, over the page */
+/* The whole list, over the page: only as tall as what's in it, on the
+   page colour, with no border, rule or shadow */
 .panel {
   position: fixed;
   top: 0;
   left: 0;
-  bottom: 0;
   z-index: 10;
   box-sizing: border-box;
   width: calc(var(--ix-hud) + 2 * var(--ix-gutter));
   max-width: 100%;
+  max-height: 100%;
   padding: var(--ix-row) var(--ix-gutter);
   overflow-y: auto;
   background: var(--ix-paper);
-  border-right: 1px solid var(--ix-ink);
   pointer-events: auto;
 }
 .cornersView .panel .line { grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, max-content) minmax(2ch, 1fr) auto; }
@@ -349,5 +358,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .line, .gap { animation: none; }
+  .line, .gap, .findIn { animation: none; }
 }

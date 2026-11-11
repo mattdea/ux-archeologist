@@ -5,7 +5,7 @@
 //
 // Container: full-width chat panel — no device, no bezel, no chrome.
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react'
 import styles from './Level5.module.css'
 import IntroModal from '../shared/museum/IntroModal'
 import DiscoveryCard from '../shared/museum/DiscoveryCard'
@@ -16,6 +16,11 @@ import { useArtifactReady, useSetContinue } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import ChatPanel from '../components/chat/ChatPanel'
+import Catalogue from '../shared/catalogue/Catalogue'
+
+// The chat's column (ChatPanel's 680px max width), the box the catalogue
+// record treats as this room's object, since there is no device
+const CHAT_COLUMN = 680
 
 const OBJECTIVES = [
   'Send a message',
@@ -109,6 +114,27 @@ export default function Level5() {
   ].reduce((acc, done, i) => (done ? [...acc, i] : acc), [])
   const hint = useHint(HINTS, { active: screen === 'playing', completedIndices })
 
+  // Where the chat's column is, for the catalogue record
+  const zoneRef = useRef(null)
+  const [column, setColumn] = useState(null)
+  useLayoutEffect(() => {
+    const el = zoneRef.current
+    if (!el) return undefined
+    const measure = () => {
+      const r = el.getBoundingClientRect()
+      const width = Math.min(CHAT_COLUMN, r.width)
+      setColumn(c => {
+        const next = { fit: { scale: 1, left: r.left + (r.width - width) / 2, top: r.top }, width, height: r.height }
+        return c && c.width === next.width && c.height === next.height && c.fit.left === next.fit.left && c.fit.top === next.fit.top ? c : next
+      })
+    }
+    measure()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null
+    ro?.observe(el)
+    window.addEventListener('resize', measure)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
+  }, [])
+
   return (
     <>
       {/* ── Museum overlays ── */}
@@ -143,8 +169,10 @@ export default function Level5() {
             During 'booting' the input is hidden; it slides in on 'playing'.
             pointer-events: none when not playing so overlays remain interactive. */}
         <div
+          ref={zoneRef}
           className={styles.artifactZone}
           style={{ pointerEvents: screen === 'playing' ? 'auto' : 'none' }}
+          data-catalogue-scope="5"
         >
           <ChatPanel
             playing={screen !== 'booting'}
@@ -153,6 +181,12 @@ export default function Level5() {
             onCompleteObjective={completeObjective}
           />
         </div>
+
+        {column && (
+          <div className={styles.recordBox} style={{ left: column.fit.left, top: column.fit.top, width: column.width, height: column.height }}>
+            <Catalogue level={5} screen={screen} fit={column.fit} width={column.width} height={column.height} root="[data-catalogue-scope='5']" />
+          </div>
+        )}
 
         {/* Zone 3 — ObjectiveTracker; always rendered for stable layout */}
         <HintPill docked text={hint} />
