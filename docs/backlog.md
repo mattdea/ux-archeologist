@@ -134,6 +134,12 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
 
 ---
 
+- **Linking the devices to the drawing style (Matthew, 11 Nov 2026).** Ideas not in the "device as a drawing" experiment, kept for later (design ideas, no historical claims):
+  - Brushing the drawing away by hand, with the pointer as a brush. Tactile, but a chore by the third level; it would need a skip.
+  - A drawn world around a real device: a stippled ground or dig pit under the device, with a stipple shadow. The device itself is untouched, so the layers stay apart.
+  - Boots drawn dot by dot, like a print, before colour floods in. This fights each level's own boot sequence.
+  - Dust on the bezel that clears a third at a time as objectives complete. It's clever, but it distracts from the device.
+
 ## Approved
 
 ### Museum: the index museum, built for real behind a switch · approved 10 Nov 2026
@@ -401,6 +407,47 @@ Move them all into one panel, the same in both museums, on the dev server only.
   - Check keyboard only: Tab reaches it, Enter opens it, Escape closes it.
 - **Spec:** a short "Dev panel" note in `docs/design-spec.md`, and update the Index museum section where it mentions the dev lines.
 - **Status (10 Nov 2026):** built. `src/shared/dev/DevPanel.jsx`, lazy-loaded by SharedLayout on the dev server only, portalled into `<body>`; what it does is in the spec, "Dev panel". The card switches were also on the card timeline (`CardPath.jsx`), so they went from there too; the card lab keeps its own controls (Show, Size), which are the lab's, not dev lines. Changes pages read while drawing go out as one window event (`src/shared/dev/devEvents.js`). Clashes: Level 0's terminal and Level 5's chat never see Ctrl+Shift+D (read in the capture phase and consumed); on Windows and Linux it overrides Chrome's "bookmark all tabs" while the dev server is open; Mac Chrome uses Cmd+Shift+D, untouched. The tab sits 2px in from the corner because 8px in it covered the bottom of Classic's About. Checked: 175 tests (each control against its old key and effect, Ctrl+Shift+D, Escape with focus back on the tab, click outside, remembered open, absent from the production App), `npm run build` (no panel strings in any chunk), the browser in both museums on the title, timeline, collection, Level 0 and Level 1 at 1440 and 375 (on top of the small-screen notice; no sideways scroll at 375), keyboard (Tab reaches it, Enter opens, Escape closes). Index museum shots retaken without the dev lines.
+
+
+### Levels: the device as a drawing when you arrive and leave · experiment, approved 11 Nov 2026
+Matthew feels the emulators need a link to the fossils' stipple drawing style. The idea: the device is a stipple drawing when you arrive and when you leave, and it's real and in colour only while you're using it. Begin excavation uncovers it, and Continue files it back into the archive as a drawing. Try it on one level behind a dev setting before deciding.
+
+- **Pilot on Level 1 (the Mac)** only. Matthew decides about the other five after seeing it.
+- **Dev setting:** "Stipple reveal", on or off, in the dev panel (`src/shared/dev/DevPanel.jsx`), remembered per browser, off by default and absent from production. With it off, nothing changes.
+- **The emulator isn't touched.** The drawing is a museum-layer image laid exactly over the device inside the level's `.wrap`, scaled by the same `useArtifactFit` numbers. The device's own components, styles, boot and sounds stay as they are.
+- **Arriving:**
+  - **intro:** the device is covered by its drawing.
+  - **Begin excavation:** the drawing dissolves to reveal the device in colour, then the device's own boot plays as now.
+  - The dissolve replaces the 300ms pause before the boot. It takes about 700ms, and the boot starts when it finishes.
+  - **Revisits** (which start at `booting`): the drawing shows on load and dissolves straight away, then the boot plays. Arriving always starts from the drawing.
+- **Leaving:** on Continue, colour drains away and the drawing settles back over the device while the discovery appears (about 900ms). It stays a drawing for the rest of the discovery.
+- **The dissolve:**
+  - Dot by dot, not a fade or a wipe. The dots disappear in a random order, biased to sweep from the top left to the bottom right like a brush stroke. Under them is the live device.
+  - Leaving runs the same in reverse.
+  - Under reduced motion: a plain crossfade of about 200ms.
+  - No sound.
+- **Making the drawing:**
+  - A script captures the device in its intro state at its natural size (Level 1's W × H) with a transparent background, and turns it into stipple. It uses round dots of one or two sizes, dense in the darks and sparse in the lights, coarse like the fossils, not a halftone grid. Regenerate it whenever the device changes. The output goes to `assets/reveal/level-1.webp`, dev only.
+  - It's drawn like the fossils:
+    - The dots are a mask filled with the text colour.
+    - Underneath, a solid silhouette of the device fills the page colour, so the live device doesn't show through the gaps.
+    - Outside the device's own shape stays transparent.
+    - It works in light and dark.
+  - Check it lines up with the device to the pixel at several window sizes, including phone width.
+- **Interaction:** the drawing doesn't take clicks. In intro the device is inert anyway, and in discovery the device stays inert as now.
+- **Not in this pass:**
+  - the other five levels
+  - brushing it away by hand
+  - a drawn ground or dig pit around the device
+  - dust that clears as objectives complete
+  - boots drawn dot by dot
+  The last four are recorded under Ideas, "Museum restyle".
+- **Show Matthew:** a recording or a short sequence of screenshots of arrive and leave, in light and dark, at 1440 and 375, with the setting on and off.
+- **Checks:**
+  - Tests: off changes nothing; on shows the drawing in intro and discovery and not in playing; revisits start from the drawing; the setting and files are absent from production.
+  - Run `npm run build`.
+  - Check in the browser: no console errors, and the boot and objectives work as before.
+- **Spec:** a short note under Level 1 and the dev panel section, marked as an experiment.
 
 ---
 
