@@ -30,14 +30,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import s from './IndexMuseum.module.css'
 import { ARTIFACTS } from '../../data/artifacts'
-import { isLevelComplete, completeLevel, resetAll } from '../../state/state'
+import { isLevelComplete, resetAll } from '../../state/state'
 import { cardTimelineOn, forgetCardsSeen } from '../devLooks'
-import { setMuseumStyle } from '../museumStyle'
 import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS, pad } from './words'
 import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
-import { usePictureStyle, setPictureStyle, nextPictureStyle } from './pictureStyle'
+import { usePictureStyle } from './pictureStyle'
+import { useDevChange } from '../dev/devEvents'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -108,7 +108,8 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   const [smallGone, setSmallGone] = useState(smallDismissed)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [asking, setAsking] = useState(false)          // the reset question
-  const [, refresh] = useState(0)
+  const [, refresh] = useState(0)                // the dev panel's Complete all
+  useDevChange(() => refresh(k => k + 1))
   const listRef = useRef(null)
 
   const levelMatch = /^level(\d)$/.exec(view)
@@ -313,12 +314,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
   const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
     pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
-  // Dev server only: which set of pictures, to compare them; the right side
-  // names the set, a click moves to the next (dots → stamps → fossils)
-  const picturesLine = () => import.meta.env.DEV && push(<Line key="pictures" i={n} as="go" text="Pictures"
-    meta={pictures} arrow="→" label={`Pictures: ${pictures}. Show ${nextPictureStyle(pictures)}`}
-    onClick={() => setPictureStyle(nextPictureStyle(pictures))} />)
-  if (!inLevel && view !== 'collection') { darkLine(); picturesLine() }
+  if (!inLevel && view !== 'collection') darkLine()
 
   if (view === 'title') {
     push(<Gap key="by-gap" i={n} />)
@@ -329,19 +325,6 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     push(<Gap key="back-gap" i={n} />)
     push(<Line key="back" i={n} as="go" text={WORDS.backPlain} mark="←" arrow="→" onClick={() => navigate('/timeline')} />)
     darkLine()
-    picturesLine()
-  }
-
-  // ── Dev switches, on the timeline (grey, after everything) ──
-  if (import.meta.env.DEV && view === 'timeline' && !asking) {
-    push(<Gap key="dev-gap" i={n} />)
-    push(<Line key="dev-museum" i={n} as="go" quiet text="Museum (dev): Index" meta="switch to Classic" arrow="→" onClick={() => setMuseumStyle('classic')} />)
-    push(<Line key="dev-complete" i={n} as="go" quiet text="Complete all (dev)" arrow="→" onClick={() => { ARTIFACTS.forEach(a => completeLevel(a.level)); refresh(k => k + 1) }} />)
-    push(<Line key="dev-lab" i={n} as="go" quiet text="Style lab (dev)" arrow="→" onClick={() => navigate('/style-lab')} />)
-  }
-  // …and in a level, so the museums can be flipped mid-game
-  if (import.meta.env.DEV && inLevel) {
-    push(<Line key="dev-museum" i={n} as="go" quiet text="Museum (dev): Index" meta="Classic" arrow="→" onClick={() => setMuseumStyle('classic')} />)
   }
 
   const pageKind = inLevel ? s.levelView : view === 'collection' ? s.collectionView : s.listView

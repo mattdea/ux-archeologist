@@ -2,8 +2,8 @@
 //
 // Which pictures the index museum shows for a room, of the sets being
 // compared (backlog, "stamp pictures" and "fossil pictures"; 10 Nov 2026):
-// 'dots', 'stamps' or 'fossils'. Chosen with the "Pictures" line in the
-// list, which moves to the next set, and remembered per browser, on the dev
+// 'dots', 'stamps' or 'fossils'. Chosen under Pictures in the dev panel
+// (src/shared/dev/DevPanel.jsx) and remembered per browser, on the dev
 // server only: the production build always shows the dots.
 import { useSyncExternalStore } from 'react'
 

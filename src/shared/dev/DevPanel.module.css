@@ -1,0 +1,70 @@
+/* src/shared/dev/DevPanel.module.css
+ * Dev chrome, not either museum: a plain dark monospace panel that looks
+ * the same on the Classic room, the Index list (light or dark) and inside
+ * every level. Above everything, modals included. */
+
+.dev {
+  position: fixed;
+  right: 2px;                        /* in the very corner, clear of Classic's About */
+  bottom: 2px;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  pointer-events: none;             /* only the tab and the open panel take clicks */
+  font: 12px/18px ui-monospace, Menlo, Monaco, 'Courier New', monospace;
+  color-scheme: dark;
+}
+
+.tab {
+  pointer-events: auto;
+  padding: 0 5px;
+  border: 1px solid #555;
+  line-height: 16px;
+  background: #1b1b1b;
+  color: #ddd;
+  font: inherit;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity 120ms;
+}
+.tab:hover, .tab:focus-visible, .dev[data-open='true'] .tab { opacity: 1; }
+.tab:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
+
+.panel {
+  pointer-events: auto;
+  width: min(340px, calc(100vw - 16px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #555;
+  background: #1b1b1b;
+  color: #ddd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.group + .group { margin-top: 10px; padding-top: 8px; border-top: 1px solid #333; }
+.head { margin: 0 0 4px; font: inherit; color: #8a8a8a; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.row { display: grid; grid-template-columns: 10ch 1fr; align-items: baseline; gap: 6px; }
+.row + .row { margin-top: 2px; }
+.label { color: #aaa; }
+.options { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.option, .action {
+  padding: 0 5px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #ddd;
+  font: inherit;
+  cursor: pointer;
+}
+.option:hover, .action:hover { border-color: #888; }
+.option[aria-pressed='true'] { background: #ddd; color: #111; border-color: #ddd; }
+.option:focus-visible, .action:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 1px; }
+.action + .action { margin-left: 4px; }
+
+@media (prefers-reduced-motion: reduce) { .tab { transition: none; } }

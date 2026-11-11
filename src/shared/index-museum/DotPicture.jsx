@@ -7,14 +7,14 @@
 // style lab's G and B2), drawn in currentColor through the mask, so it is
 // black on white and white when its line or card is inverted.
 //
-// Fossils (dev server only, the "Pictures" line; pictureStyle.js): each
+// Fossils (dev server only, the dev panel's Pictures; pictureStyle.js): each
 // room's idea as an archaeological find in stipple ink
 // (assets/fossils/fossil-N.webp, ink-density masks made by
 // scripts/fossil-pictures.mjs, 600 × 510, the same 400 / 340 shape). Drawn
 // in currentColor like the dots, so black on white, light on dark, and
 // inverted on the black row.
 //
-// Stamps (dev server only, the "Pictures" line): the
+// Stamps (dev server only, the dev panel's Pictures): the
 // stamp print cut from docs/reference/style-lab/stamp-illustrations.webp
 // (assets/stamps/stamp-N.webp, 480 × 408, the same 400 / 340 shape), on its
 // own paper in its own colours. It never inverts and has no frame: the

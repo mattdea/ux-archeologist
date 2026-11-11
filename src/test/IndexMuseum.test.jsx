@@ -239,24 +239,6 @@ describe('Index museum', () => {
     }
   })
 
-  it('Pictures: one dev line names the set and moves through dots, stamps, fossils, remembered', () => {
-    act(() => setPictureStyle('dots'))
-    renderIndex('timeline')
-    const line = () => screen.getByText('Pictures').closest('button')
-    expect(line().textContent).toContain('dots')
-    fireEvent.click(line())
-    expect(line().textContent).toContain('stamps')
-    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('stamps')
-    fireEvent.click(line())
-    expect(line().textContent).toContain('fossils')
-    expect(pictureStyle()).toBe('fossils')
-    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('fossils')
-    fireEvent.click(line())
-    expect(pictureStyle()).toBe('dots')
-    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBeNull()
-    expect(screen.queryByText('Stamp pictures')).toBeNull()
-  })
-
   it('Pictures: an arrowhead rests beside the list until a room is pointed at (stamps and fossils)', () => {
     const picture = () => document.querySelector('[data-index-museum] [data-peek] [data-picture]')
     act(() => setPictureStyle('stamps'))
@@ -277,11 +259,9 @@ describe('Index museum', () => {
     expect(document.querySelector('[data-index-museum] [data-peek]')).toBeNull()
   })
 
-  it('Pictures: no line and no switching outside the dev server', () => {
+  it('Pictures: no switching outside the dev server', () => {
     vi.stubEnv('DEV', false)
     try {
-      renderIndex('timeline')
-      expect(screen.queryByText('Pictures')).toBeNull()
       act(() => setPictureStyle('fossils'))
       expect(pictureStyle()).toBe('dots')
     } finally { vi.unstubAllEnvs() }

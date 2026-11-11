@@ -11,40 +11,23 @@ import { useState } from 'react'
 import styles from './Collection.module.css'
 import hud from '../shared/SharedLayout.module.css'
 import { FoundCard, FaceDownCard } from './collection/cards'
-import { readCardLook, saveCardLook, lookClass, readCardArt, saveCardArt } from './collection/cardLook'
+import { readCardLook, lookClass, readCardArt } from './collection/cardLook'
 import { ARTIFACTS } from '../data/artifacts'
 import { isLevelComplete } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
+import { useDevChange } from '../shared/dev/devEvents'
 
 export default function Collection() {
   const navigate = useFadeNavigate()
   const found = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
+  // Card style and art are chosen in the dev panel (dev server only)
   const [look, setLook] = useState(() => (import.meta.env.DEV ? readCardLook() : 'card'))
-  const chooseLook = (v) => { setLook(v); saveCardLook(v) }
   const [art, setArt] = useState(() => (import.meta.env.DEV ? readCardArt() : 'drawn'))
+  const [, refresh] = useState(0)
+  useDevChange(() => { setLook(readCardLook()); setArt(readCardArt()); refresh(n => n + 1) })
 
   return (
     <div className={`${styles.page} ${lookClass(look)}`}>
-      {import.meta.env.DEV && (
-        <div className={styles.switches}>
-        <div className={styles.lookSwitch} role="group" aria-label="Card style (dev)">
-          <span>Card style (dev):</span>
-          {[['card', 'Collectible'], ['museum', 'Museum'], ['hybrid', 'Hybrid']].map(([v, label]) => (
-            <button key={v} type="button" aria-pressed={look === v} className={look === v ? styles.lookOn : ''} onClick={() => chooseLook(v)}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className={styles.lookSwitch} role="group" aria-label="Card art (dev)">
-          <span>Art (dev):</span>
-          {[['drawn', 'Drawn'], ['illustrated', 'Illustrated']].map(([v, label]) => (
-            <button key={v} type="button" aria-pressed={art === v} className={art === v ? styles.lookOn : ''} onClick={() => { setArt(v); saveCardArt(v) }}>
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-      )}
       <div className={styles.header}>
         <h1 className={styles.title}>Collection</h1>
         <span className={styles.count}>{found} of {ARTIFACTS.length} found</span>

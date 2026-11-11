@@ -5,16 +5,17 @@
 // over the next time you come back here, and from then on it stays face
 // up. You navigate by the cards: each one opens its room. A thin line joins
 // them in order. With nothing done yet, the first card says "Start here".
-// The card style follows the collection's "Card style (dev)" switch.
+// The card style and art follow the dev panel's card style and card art.
 import { useEffect, useState } from 'react'
 import styles from './Collection.module.css'
 import path from './CardPath.module.css'
 import { FoundCard, FaceDownCard } from './collection/cards'
-import { readCardLook, saveCardLook, lookClass, readCardArt, saveCardArt } from './collection/cardLook'
+import { readCardLook, lookClass, readCardArt } from './collection/cardLook'
 import { ARTIFACTS } from '../data/artifacts'
 import { isLevelComplete } from '../state/state'
 import { cardsSeen, markCardsSeen } from '../shared/devLooks'
 import { useFadeNavigate } from '../shared/SharedLayout'
+import { useDevChange } from '../shared/dev/devEvents'
 
 const FLIP_AFTER = 700   // ms: let the page fade in first
 const FLIP_STAGGER = 260 // ms between cards when several turn at once
@@ -56,30 +57,13 @@ export default function CardPath() {
   const navigate = useFadeNavigate()
   const [look, setLook] = useState(readCardLook)
   const [art, setArt] = useState(readCardArt)
+  useDevChange(() => { setLook(readCardLook()); setArt(readCardArt()) })
   const [seen] = useState(cardsSeen)          // as it was when the page opened
   const found = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
   const toTurn = ARTIFACTS.filter(a => isLevelComplete(a.level) && !seen.includes(a.level)).map(a => a.level)
 
   return (
     <div className={`${styles.page} ${path.page} ${lookClass(look)}`}>
-      <div className={styles.switches}>
-      <div className={styles.lookSwitch} role="group" aria-label="Card style (dev)">
-        <span>Card style (dev):</span>
-        {[['card', 'Collectible'], ['museum', 'Museum'], ['hybrid', 'Hybrid']].map(([v, label]) => (
-          <button key={v} type="button" aria-pressed={look === v} className={look === v ? styles.lookOn : ''} onClick={() => { setLook(v); saveCardLook(v) }}>
-            {label}
-          </button>
-        ))}
-      </div>
-      <div className={styles.lookSwitch} role="group" aria-label="Card art (dev)">
-        <span>Art (dev):</span>
-        {[['drawn', 'Drawn'], ['illustrated', 'Illustrated']].map(([v, label]) => (
-          <button key={v} type="button" aria-pressed={art === v} className={art === v ? styles.lookOn : ''} onClick={() => { setArt(v); saveCardArt(v) }}>
-            {label}
-          </button>
-        ))}
-      </div>
-    </div>
       <div className={styles.header}>
         <h1 className={styles.title}>Interface Artifacts</h1>
         <span className={styles.count}>{found} of {ARTIFACTS.length} found</span>

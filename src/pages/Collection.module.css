@@ -331,18 +331,7 @@
 .museum .card:hover .plateIllustrated img { transform: none; }
 .museum.hybrid .card:hover .plateIllustrated img { transform: scale(1.03); }
 
-.switches {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-.switches .lookSwitch { position: static; }
-
-/* ── Dev only: switch between the two looks ─────────────────────────── */
+/* ── Card lab's controls (the dev switches moved to the dev panel) ──── */
 .lookSwitch {
   position: absolute;
   top: 20px;

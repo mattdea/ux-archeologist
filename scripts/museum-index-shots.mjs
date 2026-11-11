@@ -23,6 +23,9 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// The dev panel's corner tab (src/shared/dev/DevPanel.jsx) stays out of every shot
+const HIDE_DEV = "addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = '[data-dev-panel] { display: none !important }'; document.head.appendChild(st) })"
+
 const BASE = process.env.BASE || 'http://localhost:5199'
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'docs', 'museum-index')
@@ -130,7 +133,7 @@ async function main() {
           ${(opts.theme ?? (name.startsWith('dark-') ? 'dark' : 'light')) === 'light' ? "localStorage.setItem('ux-archaeologist:index-theme', 'light')" : ''}
           ${opts.pictures && opts.pictures !== 'dots' ? `localStorage.setItem('ux-archaeologist:index-pictures', '${opts.pictures}')` : ''}
           sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1')
-        } catch {}`
+        } catch {}; ${HIDE_DEV}`
         const { identifier } = await page('Page.addScriptToEvaluateOnNewDocument', { source: setup })
         await page('Page.navigate', { url: `${BASE}/` })
         for (let i = 0; i < 100; i++) {

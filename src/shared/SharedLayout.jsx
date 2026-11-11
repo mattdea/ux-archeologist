@@ -1,11 +1,15 @@
 // src/shared/SharedLayout.jsx
-import { createContext, useCallback, useContext, useRef, useState } from 'react'
+import { createContext, lazy, Suspense, useCallback, useContext, useRef, useState } from 'react'
 import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
 import SmallScreenNotice from './museum-ui/SmallScreenNotice'
 import { loadView, warmMacBezel } from '../views'
 import { useMuseumStyle } from './museumStyle'
 import IndexMuseum from './index-museum/IndexMuseum'
+
+// Every dev control behind the corner `dev` tab (src/shared/dev/DevPanel.jsx).
+// Dev server only: in the build this is null and Rollup drops the chunk.
+const DevPanel = import.meta.env.DEV ? lazy(() => import('./dev/DevPanel')) : null
 
 // ── Fade-navigate context ──────────────────────────────────────────
 // Provides a navigate() that fades content out before swapping the view.
@@ -283,6 +287,8 @@ export default function SharedLayout({ children }) {
 
             {/* Phone-width visitors: "best on a computer", above everything */}
             {!indexOn && <SmallScreenNotice />}
+
+            {DevPanel && <Suspense fallback={null}><DevPanel navigate={fadeNavigate} /></Suspense>}
 
           </div>
         </ContinueCtx.Provider>

@@ -19,6 +19,9 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// The dev panel's corner tab (src/shared/dev/DevPanel.jsx) stays out of every shot
+const HIDE_DEV = "addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = '[data-dev-panel] { display: none !important }'; document.head.appendChild(st) })"
+
 const BASE = process.env.BASE || 'http://localhost:5199'
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'docs', 'style-lab')
@@ -106,9 +109,10 @@ async function main() {
       return r.result.value
     }
     await page('Page.enable')
-    // The museum's own small-screen notice would cover the lab at 375
+    // The museum's own small-screen notice would cover the lab at 375; the
+    // dev tab stays out of every shot
     await page('Page.addScriptToEvaluateOnNewDocument', {
-      source: "try { sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1') } catch {}",
+      source: "try { sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1') } catch {}; " + HIDE_DEV,
     })
 
     const shoot = async (hash, size, file, hover) => {

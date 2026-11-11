@@ -1,13 +1,13 @@
 // src/pages/Timeline.jsx
 import { useState } from 'react'
 import styles from './Timeline.module.css'
-import { isLevelComplete, completeLevel, resetAll } from '../state/state'
+import { isLevelComplete, resetAll } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
 import { ARTIFACTS } from '../data/artifacts'
-import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, forgetCardsSeen } from '../shared/devLooks'
+import { cardTimelineOn, forgetCardsSeen } from '../shared/devLooks'
+import { useDevChange } from '../shared/dev/devEvents'
 import CardPath from './CardPath'
-import { setMuseumStyle } from '../shared/museumStyle'
 
 const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.title, artifact: a.name, path: a.path }))
 
@@ -15,10 +15,10 @@ export default function Timeline() {
   const navigate = useFadeNavigate()
   const [showAbout, setShowAbout] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
-  const [tick, refresh] = useState(0)   // re-read progress after Complete all
-  // Testing aid, dev server only: mark all six levels done, e.g. to see the
-  // collection's cards filled in. Never shown in the production build.
-  const completeAll = () => { ARTIFACTS.forEach(a => completeLevel(a.level)); refresh(n => n + 1) }
+  // Re-read progress and looks when the dev panel changes them (Complete
+  // all, line or cards); dev server only
+  const [tick, refresh] = useState(0)
+  useDevChange(() => refresh(n => n + 1))
 
   // Dev switch under consideration: the timeline as a path of the
   // collection's cards (CardPath)
@@ -85,36 +85,6 @@ export default function Timeline() {
           style={{ animationDelay: '850ms' }}
         >
           Reset progress
-        </button>
-      )}
-      {import.meta.env.DEV && !confirmReset && (
-        <button className={styles.resetBtn} onClick={completeAll} style={{ animationDelay: '850ms' }}>
-          Complete all (dev)
-        </button>
-      )}
-      {import.meta.env.DEV && !confirmReset && (
-        <button className={styles.resetBtn} onClick={() => { setSerifTitles(!serifTitlesOn()); refresh(n => n + 1) }} style={{ animationDelay: '850ms' }}>
-          Serif titles (dev): {serifTitlesOn() ? 'on' : 'off'}
-        </button>
-      )}
-      {import.meta.env.DEV && !confirmReset && (
-        <button className={styles.resetBtn} onClick={() => { setCardTimeline(!cards); refresh(n => n + 1) }} style={{ animationDelay: '850ms' }}>
-          Timeline (dev): {cards ? 'cards' : 'line'}
-        </button>
-      )}
-      {import.meta.env.DEV && !confirmReset && (
-        <button className={styles.resetBtn} onClick={() => setMuseumStyle('index')} style={{ animationDelay: '850ms' }}>
-          Museum (dev): Classic
-        </button>
-      )}
-      {import.meta.env.DEV && !confirmReset && (
-        <button className={styles.resetBtn} onClick={() => navigate('/card-lab')} style={{ animationDelay: '850ms' }}>
-          Card lab (dev)
-        </button>
-      )}
-      {import.meta.env.DEV && !confirmReset && (
-        <button className={styles.resetBtn} onClick={() => navigate('/style-lab')} style={{ animationDelay: '850ms' }}>
-          Style lab (dev)
         </button>
       )}
       </div>

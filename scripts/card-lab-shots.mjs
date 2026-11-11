@@ -17,6 +17,9 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// The dev panel's corner tab (src/shared/dev/DevPanel.jsx) stays out of every shot
+const HIDE_DEV = "addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = '[data-dev-panel] { display: none !important }'; document.head.appendChild(st) })"
+
 const BASE = process.env.BASE || 'http://localhost:5199'
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'docs', 'reference', 'style-lab')
@@ -77,8 +80,8 @@ async function main() {
     await page('Page.enable')
     const line = (text) => `[...document.querySelectorAll('[data-index-museum] [data-ix-nav]')].find(e => e.textContent.includes(${JSON.stringify(text)}))`
 
-    // no small-screen notice at phone width
-    await page('Page.addScriptToEvaluateOnNewDocument', { source: "try { sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1') } catch {}" })
+    // no small-screen notice at phone width, no dev tab
+    await page('Page.addScriptToEvaluateOnNewDocument', { source: "try { sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1') } catch {}; " + HIDE_DEV })
     for (const size of SIZES) {
       for (const side of ['front', 'back']) {
         await page('Emulation.setDeviceMetricsOverride', { width: size.width, height: size.height, deviceScaleFactor: size.scale, mobile: size.width < 600 })
