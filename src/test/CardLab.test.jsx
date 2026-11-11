@@ -47,4 +47,32 @@ describe('Card lab', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: '3' } })
     expect(cards()).toHaveLength(VARIANTS.length)
   })
+
+  it('stamp cards: a grid of six, each with its stamp, text and number, and text that passes AA on its colour', () => {
+    renderLab()
+    const stamp = VARIANTS.find(v => v.design === 'stamp')
+    expect(stamp.arrange).toBe('grid')
+    const h = screen.getByText('Stamp cards')
+    const row = h.closest('section').querySelector('[class*="grid"]')
+    expect(row).not.toBeNull()
+    ARTIFACTS.forEach((a, i) => {
+      const label = `No. ${String(i + 1).padStart(2, '0')} of 6`
+      // front and back both carry the number
+      expect([...row.querySelectorAll('span')].filter(e => e.textContent === label)).toHaveLength(2)
+      expect(row.textContent).toContain(`${a.title}, ${a.year}`)
+    })
+    const masks = [...row.querySelectorAll('[style*="--mask"]')]
+    expect(masks).toHaveLength(6)
+    masks.forEach((m, i) => expect(m.style.getPropertyValue('--mask')).toMatch(new RegExp(`mask-${i}`)))
+    // WCAG contrast of the ink on each card's colour
+    const lum = (hex) => {
+      const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+        .map(x => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4))
+      return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    }
+    stamp.plates.forEach(bg => {
+      const [a, b] = [lum(bg), lum(stamp.ink)].sort((x, y) => y - x)
+      expect((a + 0.05) / (b + 0.05)).toBeGreaterThanOrEqual(4.5)
+    })
+  })
 })

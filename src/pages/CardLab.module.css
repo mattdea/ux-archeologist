@@ -147,6 +147,18 @@
 }
 .scatter .slot:hover { z-index: 10; transform: translateY(calc(var(--dy) - 6px)) rotate(0deg); }
 
+/* three across, upright, every card the same size; two across when there
+   isn't room for three, one at phone width */
+.grid {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fill, var(--lab-w, 260px));
+  grid-auto-rows: 1fr;
+  justify-content: center;
+  max-width: calc(var(--lab-w, 260px) * 3 + 24px * 2 + 8px);
+  margin: 0 auto;
+  overflow: visible;
+}
+
 /* every other card dropped half a step */
 .stagger { padding-bottom: 76px; }
 

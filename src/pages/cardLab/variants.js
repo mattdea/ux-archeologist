@@ -14,7 +14,8 @@
 //            'chip', 'split', 'ticket', 'medallion', 'glow' (look is then
 //            ignored; art still applies)
 //   arrange  how the row lays out: 'row' (default), 'fan', 'deck',
-//            'scatter', 'stagger'
+//            'scatter', 'stagger', 'grid' (three across, upright)
+//   ink      the text and picture colour on the card (optional)
 
 export const VARIANTS = [
   { name: 'Collectible · Drawn', look: 'card', art: 'drawn' },
@@ -42,6 +43,14 @@ export const VARIANTS = [
   { name: 'Ticket', note: 'An admission ticket, with a perforation and a barcode', design: 'ticket', art: 'drawn' },
   { name: 'Medallion', note: 'The device in a disc of colour', design: 'medallion', art: 'drawn' },
   { name: 'Glow', note: 'Black, the colour as light behind the device', design: 'glow', art: 'drawn' },
+  {
+    name: 'Stamp cards',
+    note: 'A sheet of each stamp\'s ink colour, the stamp printed in black, in a straight grid (blue lifted from #2f6fc4 for AA)',
+    design: 'stamp',
+    arrange: 'grid',
+    plates: ['#4a85d6', '#f7c22b', '#86b8f5', '#5fa36c', '#f2706a', '#b07c62'],
+    ink: '#161616',
+  },
 
   // ── Other ways to lay them out ──
   { name: 'Poster · fanned', note: 'Held as a hand of cards; point at one to lift it', design: 'poster', art: 'drawn', arrange: 'fan' },

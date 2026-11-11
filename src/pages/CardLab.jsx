@@ -34,6 +34,7 @@ const ARRANGE = {
   deck: (i) => ({ '--rot': `${TILT[i % 6] / 2}deg`, '--dy': `${-i * 2}px` }),
   scatter: (i) => ({ '--rot': `${TILT[i % 6]}deg`, '--dy': `${DRIFT[i % 6]}px` }),
   stagger: (i) => ({ '--dy': `${i % 2 ? 48 : 0}px` }),
+  grid: () => ({}),
 }
 
 // One card that turns over on click. Both faces are always stacked; the

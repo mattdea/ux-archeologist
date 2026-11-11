@@ -11,6 +11,13 @@ import { PLATES, PLATE_INK, ILLUSTRATIONS, ILLUSTRATION_GROUND, pad } from '../c
 import { ARTIFACTS } from '../../data/artifacts'
 
 const cx = (...c) => c.filter(Boolean).join(' ')
+
+// The stamp pictures as masks (scripts/stamp-masks.mjs): the ink's density,
+// printed in the card's ink colour
+const STAMP_MASKS = Object.fromEntries(
+  Object.entries(import.meta.glob('../../../assets/stamps/mask-*.webp', { eager: true, import: 'default' }))
+    .map(([file, url]) => [Number(file.match(/mask-(\d)\.webp$/)[1]), url]),
+)
 const NOTE = 'Finish this room to add it.'
 
 // The six palette squares along a card's foot, this room's one raised
@@ -207,6 +214,28 @@ const DESIGNS = {
     ),
   },
 
+  // A sheet of the room's colour: its stamp printed in black at the top,
+  // the text set below, the number at the foot (Matthew's mockup,
+  // docs/reference/style-lab/stamp-cards.webp)
+  stamp: {
+    front: ({ a, no }) => (
+      <>
+        <span className={s.stampPic} style={{ '--mask': `url(${STAMP_MASKS[a.level]})` }} aria-hidden="true" />
+        <span className={s.stampName}>{a.name}</span>
+        <span className={s.stampMeta}>{a.title}, {a.year}</span>
+        <span className={s.stampDesc}>{a.description}</span>
+        <span className={s.grow} />
+        <span className={s.stampFoot}>No. {no} of {ARTIFACTS.length}</span>
+      </>
+    ),
+    back: ({ no }) => (
+      <>
+        <span className={s.grow} />
+        <span className={s.stampFoot}>No. {no} of {ARTIFACTS.length}</span>
+      </>
+    ),
+  },
+
   // Black, the room's colour as a glow behind the device and an edge
   glow: {
     front: ({ a, pic, no }) => (
@@ -234,7 +263,7 @@ export function LabFace({ a, v, side }) {
   const ill = v.art === 'illustrated' && ILLUSTRATIONS[a.level]
   const colours = v.plates || PLATES
   const bg = ill ? ILLUSTRATION_GROUND[a.level] : colours[a.level]
-  const ink = ill || v.plates ? '#fff' : PLATE_INK[a.level]
+  const ink = v.ink || (ill || v.plates ? '#fff' : PLATE_INK[a.level])
   const pic = ill ? <img src={ILLUSTRATIONS[a.level]} alt="" /> : <DeviceArt level={a.level} />
   const ctx = { a, pic, no: pad(a.level + 1), colours: ill ? ILLUSTRATION_GROUND : colours }
   return (
