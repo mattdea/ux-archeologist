@@ -648,24 +648,24 @@ src/components/feed/
 **Light version** (Index museum, light mode; backlog, "Level 5: a light version in light mode", 11 Nov 2026). In the Index's light mode the chat is light; in the Index's dark mode and in Classic it is dark, as above. It is the same design with its colours inverted, as a second set of tokens chosen by hand (not a CSS `invert()`); layout, copy, timing and sounds are unchanged.
 - **How:** `Level5` passes `theme` (`'light'` only when the museum is Index and the Index theme is light) to `ChatPanel`, which sets `data-chat-theme` on its root. Every chat colour is a `--chat-…` token on `.panel` in `ChatPanel.module.css`, with the light values under `.panel[data-chat-theme="light"]`; the other chat stylesheets only read the tokens. The museum doesn't restyle the chat. It follows the switches live.
 - **Page:** #fff, continuous with the Index's light room, as #111 is with the dark one. There is no accent colour in the chat, so there was none to keep.
-- **Pairs and ratios** (WCAG AA: 4.5:1 for text, 3:1 for icons and edges):
+- **Pairs and ratios** (WCAG AA: 4.5:1 for text, 3:1 for icons and edges). Hover and pressed values in brackets.
 
-  | Element | Dark | Light | Light ratio |
-  |---|---|---|---|
-  | Your message text on its bubble | #e8e8e8 on #2a2a2a | #171717 on #ececec | 15.2 |
-  | Input text on the input bar | #e8e8e8 on #2a2a2a | #171717 on #ececec | 15.2 |
-  | Reply text on the page | #e0e0e0 on #111 | #1f1f1f on #fff | 16.5 |
-  | Placeholder | #555 on #2a2a2a | #666 on #ececec | 4.9 |
-  | "Curator v1" label | #444 on #2a2a2a | #666 on #ececec | 4.9 |
-  | Send icon (hover) | #555 (#999) | #666 (#333) on #ececec | 4.9 (10.7) |
-  | Input bar edge on the page | #333 | #8f8f8f on #fff | 3.2 |
-  | Thinking dots | #555 on #111 | #8f8f8f on #fff | 3.2 |
-  | Action icons (hover, pressed) | #555 (#999, #ccc) | #767676 (#333, #1a1a1a) on #fff | 4.5 (12.6, 17.4) |
-  | Chip text (hover) | #aaa (#ddd) | #555 (#222) on #fff | 7.5 (15.9) |
-  | Chip edge (hover) | #444 (#666) | #8f8f8f (#666) on #fff | 3.2 (5.7) |
-  | Feedback toast | #888 on #111 | #707070 on #fff | 5.0 |
+  | Element | Dark | Dark ratio | Light | Light ratio |
+  |---|---|---|---|---|
+  | Your message text on its bubble | #e8e8e8 on #2a2a2a | 11.7 | #171717 on #ececec | 15.2 |
+  | Input text on the input bar | #e8e8e8 on #2a2a2a | 11.7 | #171717 on #ececec | 15.2 |
+  | Reply text on the page | #e0e0e0 on #111 | 14.3 | #1f1f1f on #fff | 16.5 |
+  | Placeholder | #949494 on #2a2a2a | 4.7 | #666 on #ececec | 4.9 |
+  | "Curator v1" label | #949494 on #2a2a2a | 4.7 | #666 on #ececec | 4.9 |
+  | Send icon | #808080 (#999) on #2a2a2a | 3.6 (5.0) | #666 (#333) on #ececec | 4.9 (10.7) |
+  | Input bar edge on the page | #666 on #111 | 3.3 | #8f8f8f on #fff | 3.2 |
+  | Thinking dots | #666 on #111 | 3.3 | #8f8f8f on #fff | 3.2 |
+  | Action icons | #737373 (#999, #ccc) on #111 | 4.0 (6.6, 11.8) | #767676 (#333, #1a1a1a) on #fff | 4.5 (12.6, 17.4) |
+  | Chip text | #aaa (#ddd) on #111 | 8.1 (13.9) | #555 (#222) on #fff | 7.5 (15.9) |
+  | Chip edge | #666 (#888) on #111 | 3.3 (5.3) | #8f8f8f (#666) on #fff | 3.2 (5.7) |
+  | Feedback toast | #888 on #111 | 5.3 | #707070 on #fff | 5.0 |
 
-- **The dark version is unchanged, and some of its greys are below AA:** placeholder 1.9, "Curator v1" 1.5, action icons and send icon 2.5, thinking dots 2.5, input bar edge 1.5. The light version doesn't copy those. Whether to lift the dark greys is Matthew's call (open in backlog).
+- **Dark greys lifted to AA** (Matthew, 11 Nov 2026), each by the least that passes; everything else in the dark chat is as designed. Before: placeholder #555 (1.9), "Curator v1" #444 (1.5), send icon #555 (1.9), input bar edge #333 (1.5), thinking dots #555 (2.5), action icons #555 (2.5), chip edge #444 (1.9). The chip's hover edge went from #666 to #888 so hover still reads against the new resting edge. The placeholder and the label are now the same grey, as they are in light.
 
 **Container:**
 - Full-width panel, no frame, no border, no shadow
