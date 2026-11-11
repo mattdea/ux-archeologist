@@ -132,13 +132,14 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
   - Delete the lab or keep it.
 - **Rules that held for every concept, and should hold for the restyle:** system fonts only (Times, Helvetica/Arial, ui-monospace); no shadows, rounded corners or gradients unless the direction calls for them; WCAG AA contrast, visible focus, everything by keyboard, no motion under reduced motion; copy stays as it is.
 
----
-
 - **Linking the devices to the drawing style (Matthew, 11 Nov 2026).** Ideas not in the "device as a drawing" experiment, kept for later (design ideas, no historical claims):
   - Brushing the drawing away by hand, with the pointer as a brush. Tactile, but a chore by the third level; it would need a skip.
   - A drawn world around a real device: a stippled ground or dig pit under the device, with a stipple shadow. The device itself is untouched, so the layers stay apart.
   - Boots drawn dot by dot, like a print, before colour floods in. This fights each level's own boot sequence.
   - Dust on the bezel that clears a third at a time as objectives complete. It's clever, but it distracts from the device.
+
+---
+
 
 ## Approved
 
