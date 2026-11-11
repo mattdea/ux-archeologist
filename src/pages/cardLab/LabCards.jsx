@@ -20,6 +20,17 @@ const STAMP_MASKS = Object.fromEntries(
 )
 const NOTE = 'Finish this room to add it.'
 
+// The stamp cards' short text: each room's main interaction in two lines
+// (Matthew, 10 Nov 2026: the full description was too long for the card)
+const STAMP_SUMMARY = [
+  'Type a command, read what the computer prints, then type the next one.',
+  'Point at pictures of files and drag them; the menus list every command.',
+  'Words on the page link to other pages; you find things by following them.',
+  'Touch the screen itself: drag, flick and pinch with more than one finger.',
+  "The feed puts first what it predicts you'll like, not what's newest.",
+  'Ask in your own words, and it works out what you want.',
+]
+
 // The six palette squares along a card's foot, this room's one raised
 function SetStrip({ level, colours }) {
   return (
@@ -215,7 +226,9 @@ const DESIGNS = {
   },
 
   // A sheet of the room's colour: its stamp printed in black at the top,
-  // the text set below, the number at the foot (Matthew's mockup,
+  // the name, the room and year, and a two-line summary of the room's main
+  // interaction (STAMP_SUMMARY, lab only; the collection keeps the full text),
+  // the number at the foot (Matthew's mockup,
   // docs/reference/style-lab/stamp-cards.webp)
   stamp: {
     front: ({ a, no }) => (
@@ -223,7 +236,7 @@ const DESIGNS = {
         <span className={s.stampPic} style={{ '--mask': `url(${STAMP_MASKS[a.level]})` }} aria-hidden="true" />
         <span className={s.stampName}>{a.name}</span>
         <span className={s.stampMeta}>{a.title}, {a.year}</span>
-        <span className={s.stampDesc}>{a.description}</span>
+        <span className={s.stampDesc}>{STAMP_SUMMARY[a.level]}</span>
         <span className={s.grow} />
         <span className={s.stampFoot}>No. {no} of {ARTIFACTS.length}</span>
       </>

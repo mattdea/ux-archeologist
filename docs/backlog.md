@@ -285,6 +285,7 @@ Matthew wants a card design in the card lab (`/card-lab`) based on a ChatGPT moc
   - Check in the browser at 1440 and 375, front and back.
   - Take a screenshot of the row into `docs/reference/style-lab/` or the lab's usual place, and show Matthew next to the mockup.
 - **Status (10 Nov 2026):** built and shown to Matthew next to the mockup (`docs/reference/style-lab/stamp-cards-row-vs-mockup.webp`; the row alone, fronts and backs at 1440 and 375, in `card-lab-stamp-cards-*`, taken by `scripts/card-lab-shots.mjs`). Masks by `scripts/stamp-masks.mjs` into `assets/stamps/mask-N.webp`, each stamp's solid ink fully opaque and its grain in proportion. Text is `#161616`. Contrast per card: blue failed at 3.6:1 (`#2f6fc4`), so it is lifted to `#4a85d6` (4.8:1); brown 5.1:1, green 6.0:1, coral 6.3:1, light blue 8.8:1, yellow 11:1. The pictures are all the same width (84% of the card) at the stamps' one scale, so the `$` reads small, as in the stamp reference. Checked: 166 tests (a contrast test per card colour), `npm run build` (the lab and the masks aren't in it), the browser at 1440 and 375, fronts and backs.
+- **Matthew's change (10 Nov 2026):** the full description was too long, so each card now has a two-line summary of the room's main interaction (`STAMP_SUMMARY` in `LabCards.jsx`, lab only; two lines at S, M and L). The collection keeps the full text.
 ---
 
 ## Done
