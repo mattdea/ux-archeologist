@@ -523,6 +523,32 @@ Interface Artifacts                    1979 1984 1995 2007 2016 2023
   - Check in the browser: keyboard only through one level, and no console errors.
 - **Spec:** update the Index museum section's level layout.
 
+
+### Index museum: a flint arrowhead as the museum's pointer · approved 11 Nov 2026
+Matthew wants a fun cursor for the museum. In the Index museum the pointer is a tiny flint arrowhead, the fossil version of the pointer (fossil pictures, level 1). Inside a device, the device's own period pointer takes over as now: fossil outside the glass, live inside. No per-era pointers on the list (considered and turned down).
+
+- **The drawing:**
+  - A small hand-made pixel drawing at cursor size, not the stipple fossil scaled down: stipple doesn't survive at 32px.
+  - It has the arrowhead's outline, which is the pointer's: tip at the top left, two straight edges, and the short tang where the pointer's tail is. It's about as tall as a system arrow (about 20px at 1×).
+  - Two inks: the text colour for the body, with a few page-colour pixels for flake scars and a 1px page-colour edge, so it shows on both themes. Make a light and a dark version and switch them with the theme.
+  - Provide a 2× version for sharp screens where browsers support it, falling back to the 1× file and then `auto`.
+  - Hotspot exactly at the tip.
+- **Where it applies:**
+  - Everywhere in the Index museum layer: title, timeline, collection, About, and the corners and list inside a level.
+  - It doesn't change on links. The list's own hover and inverted row show what's clickable, so no hand cursor.
+  - Text inputs, if any, keep the text caret.
+- **Where it doesn't:**
+  - Inside the artifact. Levels with a period pointer (`--cursor-mac-arrow`, `--cursor-win-arrow` on the artifact root) keep it.
+  - Levels without one (Level 0's terminal, the phones with their touch indicator, Level 5) get the system default inside the artifact, not the arrowhead, so the fossil never looks like part of the exhibit.
+  - Classic keeps its cursors.
+- **Files:** museum-layer CSS in `src/shared/index-museum/`, not `era-cursors.css` (that's the artifacts').
+- **Checks:**
+  - In the browser, light and dark: the tip clicks exactly where it points (try small targets like `[ ]`), and it switches to the period pointer on Level 1's and Level 2's screens.
+  - Levels 0, 3, 4 and 5 show the system default inside the device.
+  - Run `npm run build`.
+  - Screenshots can't show cursors, so show Matthew a short screen recording or a zoomed capture of the cursor files.
+- **Spec:** a line in the Index museum section.
+
 ---
 
 ## Done
