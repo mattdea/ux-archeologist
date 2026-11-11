@@ -556,6 +556,14 @@ Matthew wants a fun cursor for the museum. In the Index museum the pointer is a 
   - Levels 0, 3, 4 and 5 show the system default inside the device.
   - Run `npm run build`.
   - Screenshots can't show cursors, so show Matthew a short screen recording or a zoomed capture of the cursor files.
+- **A second cursor to compare (Matthew, 11 Nov 2026): a fossil stick.** Build both, switchable in the dev panel ("Museum pointer: arrowhead / stick", remembered per browser, arrowhead by default). Matthew picks one later.
+  - **The reference:** `docs/reference/style-lab/cursor-fossil-stick.png`, Matthew's photo of a fossilised branch, possibly a bone. The idea: before computers a pointer was a stick, so this is the oldest pointer there is.
+  - **The drawing:** the same rules as the arrowhead, a small two-ink pixel drawing that switches with the theme.
+    - Turn it to point up and to the left like every cursor: the thin end is the tip, and the knobbly, forked end sits at the bottom right.
+    - Taper the last few pixels to a point, because the real end is rounded and the click must be precise. The hotspot is exactly at the tip.
+    - Keep only the silhouette: the slightly crooked shaft, the bump in the middle and the fork at the end. Make the shaft 3–4px wide so it doesn't vanish, about 28px long at 1×, with a 2× version.
+  - **Where it applies:** everything above applies to it too.
+  - **Checks:** the switch flips between them on every Index view. Show Matthew both cursors zoomed side by side on light and dark, plus a short recording of each in use.
 - **Spec:** a line in the Index museum section.
 
 
