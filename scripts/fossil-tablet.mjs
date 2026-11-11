@@ -3,9 +3,10 @@
 //
 // The carved tablet, the index museum's main picture with the fossils
 // (backlog, "the carved tablet"): turns a drawing on a white ground
-// (default docs/reference/style-lab/fossil-tablet-script.webp, the clay
-// tablet written in the six rooms' signs; the carved tablet it replaced,
-// fossil-tablet.webp, stays there as a record) into
+// (default docs/reference/style-lab/fossil-tablet-script-2.webp, Matthew's
+// redraw of the clay tablet written in the six rooms' signs, 11 Nov 2026;
+// the tablets it replaced, fossil-tablet-script.webp and the carved
+// fossil-tablet.webp, stay there as a record) into
 // assets/fossils/fossil-tablet.webp, an ink-density mask like the fossils
 // (scripts/fossil-pictures.mjs): black with the ink as its alpha, so the
 // ground drops away, faint stipple stays faint, and the page fills it with
@@ -14,8 +15,11 @@
 //   node scripts/fossil-tablet.mjs              the reference drawing
 //   node scripts/fossil-tablet.mjs larger.png   a larger version, same subject
 //
-// Kept at the drawing's own resolution and proportions (nothing upscaled),
-// trimmed to the ink plus a small margin so the broken edges stay whole.
+// Kept at the drawing's own proportions, trimmed to the ink plus a small
+// margin so the broken edges stay whole, and never upscaled. A drawing
+// taller than MAX_H is scaled down to it: the picture box beside the list
+// draws it about 226px tall (34ch at 13px, the 400 / 340 shape), so 480 is
+// about twice that, sharp on a 2x screen and still a small file.
 // The page fits it with `contain`, so a larger file needs no code changes.
 // Needs ImageMagick 7 (`magick`).
 import { execFileSync } from 'node:child_process'
@@ -24,11 +28,12 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const SRC = process.argv[2] || join(ROOT, 'docs', 'reference', 'style-lab', 'fossil-tablet-script.webp')
+const SRC = process.argv[2] || join(ROOT, 'docs', 'reference', 'style-lab', 'fossil-tablet-script-2.webp')
 const OUT = join(ROOT, 'assets', 'fossils', 'fossil-tablet.webp')
 const FLOOR = 8        // paper noise, out of 255 (as the fossils)
 const SOLID = 0.995    // the share of ink below "solid"
 const MARGIN = 0.02    // of the longer side, round the ink
+const MAX_H = 480      // px; see above
 
 const magick = (args, opts = {}) => execFileSync('magick', args, { maxBuffer: 64 << 20, ...opts })
 const [W, H] = magick(['identify', '-format', '%w %h', SRC]).toString().split(' ').map(Number)
@@ -57,5 +62,7 @@ mkdirSync(dirname(OUT), { recursive: true })
 magick(['-size', `${BW}x${BH}`, 'xc:black',
   '(', '-size', `${BW}x${BH}`, '-depth', '8', 'gray:-', ')',
   '-alpha', 'off', '-compose', 'CopyOpacity', '-composite',
+  '-resize', `x${MAX_H}>`,
   '-define', 'webp:lossless=true', OUT], { input: alpha })
-console.log(`fossil-tablet.webp  ${BW} × ${BH} (from ${W} × ${H})`)
+const [OW, OH] = magick(['identify', '-format', '%w %h', OUT]).toString().split(' ')
+console.log(`fossil-tablet.webp  ${OW} × ${OH} (ink ${BW} × ${BH} of ${W} × ${H})`)
