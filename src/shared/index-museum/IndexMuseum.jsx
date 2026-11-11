@@ -37,6 +37,7 @@ import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS, pad } from './words'
 import DotPicture from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
+import { usePictureStyle, setPictureStyle } from './pictureStyle'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -101,6 +102,7 @@ const Gap = ({ i }) => <div className={s.gap} style={{ '--i': i }} aria-hidden="
 export default function IndexMuseum({ view, navigate, continueAction, hudReady }) {
   const slots = useIndexSlots()
   const theme = useIndexTheme()
+  const pictures = usePictureStyle()
   const narrow = useMedia(NARROW)
   const small = useMedia(SMALL)
   const [smallGone, setSmallGone] = useState(smallDismissed)
@@ -311,7 +313,11 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
   const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
     pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
-  if (!inLevel && view !== 'collection') darkLine()
+  // Dev server only: the stamp pictures in place of the dots, to compare
+  const stampLine = () => import.meta.env.DEV && push(<Line key="stamps" i={n} as="go" text="Stamp pictures"
+    arrow={pictures === 'stamps' ? '[x]' : '[ ]'} pressed={pictures === 'stamps'}
+    onClick={() => setPictureStyle(pictures === 'stamps' ? 'dots' : 'stamps')} />)
+  if (!inLevel && view !== 'collection') { darkLine(); stampLine() }
 
   if (view === 'title') {
     push(<Gap key="by-gap" i={n} />)
@@ -322,6 +328,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     push(<Gap key="back-gap" i={n} />)
     push(<Line key="back" i={n} as="go" text={WORDS.backPlain} mark="←" arrow="→" onClick={() => navigate('/timeline')} />)
     darkLine()
+    stampLine()
   }
 
   // ── Dev switches, on the timeline (grey, after everything) ──

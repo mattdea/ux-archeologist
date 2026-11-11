@@ -9,6 +9,7 @@
 //
 //   node scripts/museum-index-shots.mjs              all shots
 //   node scripts/museum-index-shots.mjs level-1      only names containing "level-1"
+//   node scripts/museum-index-shots.mjs pictures-    dots beside stamps (then see docs/museum-index/pictures/)
 //   BASE=http://localhost:5173 node scripts/…        another dev server
 //
 // Needs the dev server (default http://localhost:5199, the "vite" entry in
@@ -49,6 +50,13 @@ const SHOTS = [
   ['dark-level-1-discovery', [1], [['click', 'The Desktop'], ['wait', 7000], ['click', 'Continue'], ['wait', 600]]],
   ['dark-level-4-playing', [], [['click', 'The Feed'], ['wait', 2000], ['click', 'Begin excavation'], ['wait', 3000]]],
   ['dark-level-5-playing', [], [['click', 'The Conversation'], ['wait', 2000], ['click', 'Begin excavation'], ['wait', 3000]]],
+  // dot pictures beside stamp pictures (backlog, "stamp pictures"), light
+  // and dark: "pictures-<dots|stamps>-<light|dark>-<surface>"
+  ...['dots', 'stamps'].flatMap(pictures => ['light', 'dark'].flatMap(theme => [
+    [`pictures-${pictures}-${theme}-timeline-hover`, SOME, [['click', 'Enter the exhibit'], ['wait', 900], ['hover', 'The Hyperlink']], 'wide', { pictures, theme }],
+    [`pictures-${pictures}-${theme}-level-4-discovery`, [4], [['click', 'The Feed'], ['wait', 7000], ['click', 'Continue'], ['wait', 600]], false, { pictures, theme }],
+    [`pictures-${pictures}-${theme}-collection`, SOME, [['click', 'Collection'], ['wait', 900]], false, { pictures, theme }],
+  ])),
 ]
 const SIZES = [
   { width: 1440, height: 900, scale: 1 },
@@ -108,7 +116,7 @@ async function main() {
     const line = (text) => `[...document.querySelectorAll('[data-index-museum] [data-ix-nav]')].find(e => e.textContent.includes(${JSON.stringify(text)}))`
 
     for (const size of SIZES) {
-      for (const [name, found, steps, only1440] of SHOTS) {
+      for (const [name, found, steps, only1440, opts = {}] of SHOTS) {
         if (only.length && !only.some(o => name.includes(o))) continue
         if (only1440 && size.width < 600) continue
         await page('Emulation.setDeviceMetricsOverride', { width: size.width, height: size.height, deviceScaleFactor: size.scale, mobile: size.width < 600 })
@@ -119,7 +127,8 @@ async function main() {
           localStorage.clear()
           localStorage.setItem('ux-archaeologist:museum', 'index')
           localStorage.setItem('ux-archaeologist-progress', ${JSON.stringify(JSON.stringify({ completedLevels: found }))})
-          ${name.startsWith('dark-') ? '' : "localStorage.setItem('ux-archaeologist:index-theme', 'light')"}
+          ${(opts.theme ?? (name.startsWith('dark-') ? 'dark' : 'light')) === 'light' ? "localStorage.setItem('ux-archaeologist:index-theme', 'light')" : ''}
+          ${opts.pictures === 'stamps' ? "localStorage.setItem('ux-archaeologist:index-pictures', 'stamps')" : ''}
           sessionStorage.setItem('ux-archaeologist:small-screen-dismissed', '1')
         } catch {}`
         const { identifier } = await page('Page.addScriptToEvaluateOnNewDocument', { source: setup })

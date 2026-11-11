@@ -136,6 +136,8 @@
   -webkit-mask: var(--art) center / contain no-repeat;
   mask: var(--art) center / contain no-repeat;
 }
+.stamp { display: block; object-fit: contain; }   /* its own paper and colours: never inverted, no frame */
+.fill.stamp { width: calc(100% - 16px); height: calc(100% - 16px); }
 .pictureLine { grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, 1fr); margin: calc(var(--ix-row) / 2) 0; }
 .discoveryPicture { width: min(30ch, 100%); aspect-ratio: 400 / 340; margin-left: var(--ix-sub); }
 

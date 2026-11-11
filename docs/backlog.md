@@ -209,6 +209,11 @@ Rebuild them as data on one grid, the way the 5 × 7 capitals in `src/pages/styl
 - **Where it changes:** `DotPicture` in the index museum draws from the new rows; the props it takes stay the same. The style lab keeps its old masks as a record, and Classic isn't touched. Remove `assets/dots/` only once nothing imports it.
 - **Not in this pass:** ink spread (a fixed, slight size change per dot so it looks stamped). Leave it off: the point is regularity. Note it under Ideas if it's worth trying later.
 - **Spec:** add the grid, the dot sizes and the editor to the "Index museum" section.
+- **Checks:**
+  - A test that every picture has the right number of rows and columns.
+  - Run `npm run build` and confirm the editor isn't in it.
+  - Check in the browser in light and dark, on the list, the preview and the discovery, at 1440 and 375.
+  - Retake the screenshots in `docs/museum-index/` that show pictures.
 - **Status (10 Nov 2026):** drafts drawn and shown to Matthew, nothing replaced yet. The rows are in `src/shared/index-museum/pictures.js`, drawn by `DotGrid.jsx`; the editor is at `/dot-editor` (dev only); the draft script is `scripts/dot-pictures-draft.mjs`. Its straight samples aliased against the old masks' finer spacing, so each picture was redrawn by hand on the grid with the same subject. Comparison: `docs/museum-index/dot-pictures-drafts.png` (new above, old below).
 
 ### Museum: stamp pictures, an option beside the dot pictures · approved 10 Nov 2026
@@ -242,11 +247,7 @@ This is an option to compare, not a replacement. The dot pictures entry above go
   - Check in the browser at 1440 and 375.
   - Add screenshots of the stamp option to `docs/museum-index/`.
 - **Spec:** one paragraph in the "Index museum" section saying the option exists and how to switch it.
-- **Checks:**
-  - A test that every picture has the right number of rows and columns.
-  - Run `npm run build` and confirm the editor isn't in it.
-  - Check in the browser in light and dark, on the list, the preview and the discovery, at 1440 and 375.
-  - Retake the screenshots in `docs/museum-index/` that show pictures.
+- **Status (10 Nov 2026):** built and shown to Matthew; waiting on his pick. Stamps in `assets/stamps/` (480 × 408, the reference's own resolution: twice the largest showing, about 600px, would only upscale it); the reference's paper is near-white (254), not cream. Side by side, dots left and stamps right, in light and dark: `docs/museum-index/pictures/compare-<light|dark>-<timeline-hover|level-4-discovery|collection>.webp`; stamp shots at 1440 and 375 in `docs/museum-index/*-pictures-stamps-*`. The dot side still shows the old masks, because the grid redraw (entry above) isn't wired in yet. Checked: 165 tests (each option draws all six; no line or switching outside the dev server), `npm run build` (no line, no stamp files).
 
 ---
 

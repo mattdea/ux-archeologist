@@ -19,6 +19,8 @@ import { completeLevel, isLevelComplete, resetAll } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import { computeFit } from '../hooks/useArtifactFit'
 import { setIndexTheme } from '../shared/index-museum/theme'
+import { setPictureStyle, pictureStyle } from '../shared/index-museum/pictureStyle'
+import DotPicture from '../shared/index-museum/DotPicture'
 
 // Node's built-in localStorage shadows jsdom's and doesn't store anything
 // here, so progress and the switch get an in-memory stand-in.
@@ -60,7 +62,7 @@ function FakeLevel() {
 
 describe('Index museum', () => {
   beforeEach(() => { vi.stubGlobal('localStorage', memoryStorage()); resetAll(); _resetIndexSlots(); act(() => setMuseumStyle('classic')) })
-  afterEach(() => { cleanup(); act(() => { setMuseumStyle('classic'); setIndexTheme('dark') }); resetAll(); vi.unstubAllGlobals() })
+  afterEach(() => { cleanup(); act(() => { setMuseumStyle('classic'); setIndexTheme('dark'); setPictureStyle('dots') }); resetAll(); vi.unstubAllGlobals() })
 
   it('the switch is remembered and mirrored on <html>', () => {
     act(() => setMuseumStyle('index'))
@@ -217,6 +219,40 @@ describe('Index museum', () => {
     fireEvent.click(dark())
     expect(document.documentElement.getAttribute('data-index-theme')).toBe('dark')
     expect(localStorage.getItem('ux-archaeologist:index-theme')).toBeNull()
+  })
+
+  it('Stamp pictures: a dev toggle; every room has a dot and a stamp picture', () => {
+    for (const style of ['dots', 'stamps']) {
+      act(() => setPictureStyle(style))
+      for (const level of [0, 1, 2, 3, 4, 5]) {
+        const { container } = render(<DotPicture level={level} />)
+        const pic = container.firstChild
+        expect(pic.getAttribute('data-picture')).toBe(style === 'stamps' ? 'stamp' : 'dots')
+        if (style === 'stamps') expect(pic.getAttribute('src')).toMatch(new RegExp(`stamp-${level}`))
+        else expect(pic.style.getPropertyValue('--art')).toMatch(new RegExp(`dots-${level}`))
+        cleanup()
+      }
+    }
+    act(() => setPictureStyle('dots'))
+    renderIndex('timeline')
+    const line = () => screen.getByText('Stamp pictures').closest('button')
+    expect(line()).toHaveAttribute('aria-pressed', 'false')
+    fireEvent.click(line())
+    expect(line()).toHaveAttribute('aria-pressed', 'true')
+    expect(pictureStyle()).toBe('stamps')
+    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBe('stamps')
+    fireEvent.click(line())
+    expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBeNull()
+  })
+
+  it('Stamp pictures: no line and no switching outside the dev server', () => {
+    vi.stubEnv('DEV', false)
+    try {
+      renderIndex('timeline')
+      expect(screen.queryByText('Stamp pictures')).toBeNull()
+      act(() => setPictureStyle('stamps'))
+      expect(pictureStyle()).toBe('dots')
+    } finally { vi.unstubAllEnvs() }
   })
 
   it('progress is the same in both museums', () => {
