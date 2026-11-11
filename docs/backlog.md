@@ -558,6 +558,70 @@ Matthew wants a fun cursor for the museum. In the Index museum the pointer is a 
   - Screenshots can't show cursors, so show Matthew a short screen recording or a zoomed capture of the cursor files.
 - **Spec:** a line in the Index museum section.
 
+
+### Index museum: level screen fixes from Matthew's review · approved 11 Nov 2026
+Four changes to the level screens in the Index museum's corner layout (entry above), from Matthew's review on 11 Nov 2026. Build and commit them one at a time, in this order.
+
+**1. Dark mode only in the menu.** Remove the Dark mode line from the top-right corner. It's already in the full list (the `≡` menu). The top right keeps the years row.
+
+**2. A smaller menu, with no border.** The full list that `≡` opens is a panel the full height of the window, with a vertical rule down its right edge.
+- It should be only as tall as its contents: the title line, the six rooms, Back to timeline and Dark mode, with the usual margins.
+- Its background is the page colour (white in light mode, the dark page in dark mode), with no border, rule or shadow.
+- It still sits over the page, opens from `≡` and closes with Escape or a click outside.
+
+**3. The room's fossil appears with the discovery.** When a level is completed and the discovery text appears (bottom left), that room's fossil (level 1's arrowhead and so on) appears beside the text.
+- It's drawn as in the fossil pictures option: the mask in the text colour, the same file as the room's fossil.
+- Size: about as tall as the discovery text block, so it reads as the find beside its label.
+- It appears with the text, without moving the device. With reduced motion it appears without a fade.
+- At phone width it sits above the discovery text.
+- It shows whichever Pictures option is set: dots, stamps or fossils. If that option has no picture for the room, show nothing.
+
+**4. A catalogue record for every level.** Roll the Level 1 record (`src/shared/catalogue/CatalogueRecord.jsx`) out to all six levels, with the same layout, states and fallbacks. Keep the dev setting, now on by default; Matthew will say when to drop it. Each level records what's on its screen: the hardware where there's a device, the software where there isn't. Every fact needs two sources before it ships, and goes in the spec with its sources and confidence. Below are candidate facts, not final; check each one and drop any you can't source:
+- **Level 0:** DEC VT100.
+  - Introduced August 1978 (high).
+  - 80 or 132 columns × 24 lines (high).
+  - It popularised the ANSI escape codes terminals still use (medium).
+  - Labels: the screen, the keyboard. Catalogue number `IA.1979.01`.
+- **Level 2:** Netscape Navigator, the software.
+  - 1.0 released 15 December 1994 (high).
+  - Free for education and non-profit use, paid for others (medium; check the price before quoting one).
+  - The most-used browser in 1995 (medium).
+  - Labels: the N throbber, the Location field. `IA.1995.03`.
+- **Level 3:** the original iPhone.
+  - Released 29 June 2007 in the US (high).
+  - $499 (4 GB) and $599 (8 GB) (high).
+  - 3.5-inch screen, 320 × 480 (high).
+  - Labels: the screen, the home button. `IA.2007.04`.
+- **Level 4:** Instagram for iOS, the software.
+  - Launched 6 October 2010 (high).
+  - Ranked feed announced 15 March 2016 (high).
+  - The blue header lasted until the 11 May 2016 redesign (high).
+  - Labels: the header, a like button. `IA.2016.05`.
+- **Level 5:** the genre, not a product. The object line is "AI chat assistant, 2023". The exhibit is Claude-inspired but unnamed, so the record doesn't claim it is any one product.
+  - The data block gives real examples: ChatGPT released 30 November 2022 (high), Claude released 14 March 2023 (high).
+  - Labels: the message box, a reply. `IA.2023.06`.
+- **Number format:** the catalogue numbers follow Level 1's `IA.1984.02`: year, then the room's number as on the cards.
+
+**Checks for all four:**
+- Every level in intro, playing and discovery, light and dark, at 1440 and 375.
+- The labels' dots land on their parts at several sizes.
+- Tests: the dark line isn't in the top right; the menu fits its contents; the fossil shows only in discovery; every level has its record.
+- Run `npm run build`.
+- Retake the Index screenshots.
+
+### Level 5: a light version in light mode · approved 11 Nov 2026
+In the Index museum, Level 5's chat is dark in both light and dark mode. In light mode it should be light. Matthew asked for the recommendation, which is to match how AI chat apps actually looked in light mode in 2023, not a plain inversion.
+
+- **The look:** Claude.ai launched in 2023 with a light, warm off-white page by default, and ChatGPT's 2023 light theme was a white chat. The light version follows Claude's 2023 light look, since the exhibit is Claude-inspired: an off-white page, dark text, and its accent kept.
+  - Source it from archived captures of claude.ai from 2023 (Wayback Machine) and record the colours with sources in the spec. Confidence: medium until checked.
+  - Where a colour can't be sourced, say it's reconstructed.
+- **How:** the level passes the museum's theme into the artifact (a prop or a data attribute on the artifact root), and the artifact has its own light and dark tokens. The museum doesn't restyle the artifact's selectors.
+  - Index light mode shows the light version.
+  - Index dark mode and Classic show the dark version as now.
+- **Everything else stays:** layout, copy, timing and sounds. Check the contrast of every text colour in light (AA).
+- **Checks:** Level 5 in all its states, light and dark, at 1440 and 375, with Classic unchanged. Run `npm run build`. Retake its screenshots.
+- **Spec:** a note under Level 5.
+
 ---
 
 ## Done
