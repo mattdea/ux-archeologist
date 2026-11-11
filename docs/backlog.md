@@ -560,7 +560,7 @@ Matthew wants a fun cursor for the museum. In the Index museum the pointer is a 
 
 
 ### Index museum: level screen fixes from Matthew's review · approved 11 Nov 2026
-Four changes to the level screens in the Index museum's corner layout (entry above), from Matthew's review on 11 Nov 2026. Build and commit them one at a time, in this order.
+Five changes to the level screens in the Index museum's corner layout (entry above), from Matthew's review on 11 Nov 2026. Build and commit them one at a time, in this order.
 
 **1. Dark mode only in the menu.** Remove the Dark mode line from the top-right corner. It's already in the full list (the `≡` menu). The top right keeps the years row.
 
@@ -602,7 +602,17 @@ Four changes to the level screens in the Index museum's corner layout (entry abo
   - Labels: the message box, a reply. `IA.2023.06`.
 - **Number format:** the catalogue numbers follow Level 1's `IA.1984.02`: year, then the room's number as on the cards.
 
-**Checks for all four:**
+**5. A toggle to show and hide the record.** Next to the catalogue number at the device's top left, add a toggle: `IA.1984.02 [−]` when the labels and data are showing, `[+]` when they're hidden.
+- It works whenever the device is on screen: intro, booting, playing and discovery.
+- Each state still starts with its default: the full record in intro and discovery, the number only while playing.
+- Once you use the toggle, your choice holds for the rest of that visit to the level, through every state. It isn't remembered across levels or visits.
+- The number itself always stays.
+- It's a real button with `aria-expanded` and a label ("Show catalogue record" / "Hide catalogue record"), reachable by Tab and Enter. It uses the index's monospace, grey ink and hover, like the list's `+` lines.
+- Showing and hiding fade as the states do. With reduced motion there's no fade.
+- At phone width it shows and hides the record's block under the device.
+- Tests: the toggle shows and hides in every state, overrides the state default for the visit, and resets on the next visit.
+
+**Checks for all five:**
 - Every level in intro, playing and discovery, light and dark, at 1440 and 375.
 - The labels' dots land on their parts at several sizes.
 - Tests: the dark line isn't in the top right; the menu fits its contents; the fossil shows only in discovery; every level has its record.
