@@ -33,8 +33,9 @@ const list = (v, d) => (v ? v.split(',') : d)
 const LAYOUTS = list(process.env.LAYOUTS, ['side', 'corners'])
 const THEMES = list(process.env.THEMES, ['light', 'dark'])
 const STATES = list(process.env.STATES, ['intro', 'playing', 'discovery'])
-const SIZES = [{ width: 1440, height: 900, scale: 1 }, { width: 375, height: 812, scale: 2 }]
-  .filter(s => list(process.env.SIZES, ['1440', '375']).includes(String(s.width)))
+// SIZES=1440,375 (the defaults) or any WIDTHxHEIGHT, e.g. SIZES=1024x768
+const KNOWN = { 1440: { width: 1440, height: 900, scale: 1 }, 375: { width: 375, height: 812, scale: 2 } }
+const SIZES = list(process.env.SIZES, ['1440', '375']).map(v => KNOWN[v] ?? (([w, h]) => ({ width: +w, height: +h, scale: 1 }))(v.split('x')))
 const only = process.argv.slice(2)
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 

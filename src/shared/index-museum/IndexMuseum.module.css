@@ -211,9 +211,96 @@
   pointer-events: auto;
 }
 
+/* ── In a level, the corners (the default level layout) ────────────────
+   Four blocks round a device that useArtifactFit centres in the viewport.
+   Each keeps one size whatever it shows, so the device never moves: the
+   bottom ones are a fixed height, their text set from the bottom (taller
+   text runs up the side, beside the device). No boxes or backgrounds. */
+.cornersView .line { grid-template-columns: var(--ix-cursor) auto minmax(0, max-content) minmax(2ch, 1fr) auto; }
+.cornersView .mark { white-space: pre; }
+.corner {
+  --ix-corner-h: calc(var(--ix-row) * 13);
+  position: fixed;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+.tl { top: var(--ix-row); left: var(--ix-gutter); width: 34ch; }
+.tr { top: var(--ix-row); right: var(--ix-gutter); width: 34ch; }
+.bl, .br {
+  bottom: calc(var(--ix-row) * 1.5);   /* clear of the dev tab in the very corner */
+  height: var(--ix-corner-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.bl { left: var(--ix-gutter); width: 32ch; padding-left: var(--ix-cursor); }
+.br { right: var(--ix-gutter); width: 34ch; }
+@media (min-width: 1400px) { .bl { width: 42ch; } }
+
+.cornerText { margin: 0; }
+.cornerHint { margin-top: var(--ix-row); }
+.cornerSplit { display: flex; justify-content: space-between; }
+.cornerSplit + div { margin-bottom: var(--ix-row); }
+.count { text-align: right; padding-right: 1ch; }
+.cornersView .italic { font-style: italic; }
+
+/* The years: one row, the room you're in inverted */
+.years { display: flex; justify-content: flex-end; gap: 1ch; padding-left: var(--ix-cursor); margin-bottom: 0; }
+.year {
+  margin: 0; padding: 0 0.5ch; border: 0; border-radius: 0;
+  background: none; color: var(--ix-ink-2); font: inherit; cursor: pointer;
+}
+.year:hover { color: var(--ix-ink); text-decoration: underline; text-underline-offset: 3px; }
+.year.current { color: var(--ix-paper); background: var(--ix-ink); cursor: default; text-decoration: none; }
+.year:focus-visible { outline: none; background: var(--ix-ink); color: var(--ix-paper); }
+
+/* The room's line: inverted, as in the list; ≡ opens the whole list */
+.roomLine .arrow { color: inherit; }
+
+/* The whole list, over the page */
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+  box-sizing: border-box;
+  width: calc(var(--ix-hud) + 2 * var(--ix-gutter));
+  max-width: 100%;
+  padding: var(--ix-row) var(--ix-gutter);
+  overflow-y: auto;
+  background: var(--ix-paper);
+  border-right: 1px solid var(--ix-ink);
+  pointer-events: auto;
+}
+.cornersView .panel .line { grid-template-columns: var(--ix-cursor) var(--ix-mark) minmax(0, max-content) minmax(2ch, 1fr) auto; }
+
+/* Under 900px: the room's line across the top; the reading and the next
+   step stacked across the bottom, in a band of fixed height that scrolls */
+.topBand, .bottomBand {
+  position: fixed;
+  left: var(--ix-gutter);
+  right: var(--ix-gutter);
+  pointer-events: auto;
+}
+.topBand { top: var(--ix-row); }
+.bottomBand {
+  bottom: var(--ix-row);
+  height: 40vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.bottomBand .read { padding-left: var(--ix-cursor); }
+.bottomBand .act { margin-top: var(--ix-row); }
+.bottomBand > * { flex-shrink: 0; }
+/* a band too full to sit at its foot scrolls from its top */
+.bottomBand[data-state="discovery"], .bottomBand[data-state="intro"] { justify-content: safe flex-end; }
+
 /* The classic HUD's boxes (each level's tracker zone) draw nothing in the
    index museum; take them out so useArtifactFit doesn't measure them. */
-:global(html[data-museum="index"]) [data-hud]:not([data-hud="side"]):not([data-hud="top"]) { display: none !important; }
+:global(html[data-museum="index"]) [data-hud]:not([data-hud="side"]):not([data-hud="top"]):not([data-hud="corner"]):not([data-hud="bottom"]) { display: none !important; }
 /* The room behind the list and the artifact (SharedLayout's .room and the
    page), light or dark with the theme */
 :global(html[data-museum="index"]) { --ix-room: #fff; }

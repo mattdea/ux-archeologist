@@ -34,6 +34,8 @@ export const WORDS = {
   about: 'About',
   collection: 'Collection',
   found: (n, of) => `${n} of ${of} found`,
+  doneOf: (n, of) => `${n} of ${of}`,
+  allRooms: 'All rooms',
   back: '← Back to timeline',
   backPlain: 'Back to timeline',
   reset: 'Reset progress',

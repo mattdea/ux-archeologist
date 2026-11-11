@@ -18,6 +18,7 @@ import { FadeNavCtx } from '../shared/SharedLayout'
 import { completeLevel, isLevelComplete, resetAll } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import { computeFit } from '../hooks/useArtifactFit'
+import { setIndexLevelLayout } from '../shared/devLooks'
 import { setIndexTheme } from '../shared/index-museum/theme'
 import { setPictureStyle, pictureStyle } from '../shared/index-museum/pictureStyle'
 import DotPicture from '../shared/index-museum/DotPicture'
@@ -139,7 +140,8 @@ describe('Index museum', () => {
     expect(document.activeElement).toBe(items[0])
   })
 
-  it('a level: intro, then objectives and hint, then discovery, under the inverted room line', () => {
+  it('a level (side layout): intro, then objectives and hint, then discovery, under the inverted room line', () => {
+    setIndexLevelLayout('side')
     act(() => setMuseumStyle('index'))
     const navigate = vi.fn()
     const { rerender } = render(
@@ -176,6 +178,7 @@ describe('Index museum', () => {
   })
 
   it('flipping the museum mid-level keeps the level where it was', () => {
+    setIndexLevelLayout('side')
     act(() => setMuseumStyle('index'))
     const navigate = vi.fn()
     render(

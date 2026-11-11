@@ -98,6 +98,7 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
 
   let bandBottom = 0
   let side = null
+  const corners = []
   let declaredTop = false
   const bottom = { L: null, R: null }
   document.querySelectorAll('[data-hud]').forEach(el => {
@@ -105,10 +106,14 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
     const r = layoutRect(el)
     const kind = el.getAttribute('data-hud')
     if (kind === 'side') { side = union(side, r); return }
+    if (kind === 'corner') { corners.push(r); return }
     if (kind === 'top') declaredTop = true
     if (kind === 'top' || r.top + r.bottom < H) bandBottom = Math.max(bandBottom, r.bottom)
     else bottom[r.left + r.right < W ? 'L' : 'R'] = union(bottom[r.left + r.right < W ? 'L' : 'R'], r)
   })
+
+  // Corner blocks: centred in the viewport, as large as clears every corner
+  if (corners.length) return fitCorners(width, height, corners, { W, H, maxScale, bandGap, sideGap, edgeGap })
 
   // Top of the free region: below the band. The bottom edge mirrors it so
   // an artifact beside the bottom HUD never sits closer to the floor than
@@ -154,4 +159,24 @@ export function computeFit(width, height, { maxScale = 1.35, bandGap = 32, sideG
     return { scale, left: W / 2 - width * scale / 2, top: y0 + (rh - height * scale) / 2 }
   }
   return best
+}
+
+/**
+ * `data-hud="corner"` (the index museum's corner blocks in a level): the
+ * artifact is centred in the viewport, horizontally and vertically, and as
+ * large as it can be while clearing each corner, either beside it
+ * (`sideGap` away) or above or below it (`bandGap` away), and the edges
+ * (`edgeGap`). The corner boxes keep one size from state to state, so the
+ * artifact doesn't move when what's in them changes.
+ */
+function fitCorners(width, height, corners, { W, H, maxScale, bandGap, sideGap, edgeGap }) {
+  const cx = W / 2, cy = H / 2
+  let scale = Math.min((W - 2 * edgeGap) / width, (H - 2 * edgeGap) / height, maxScale)
+  corners.forEach(r => {
+    const halfW = r.left + r.right < W ? cx - r.right - sideGap : r.left - cx - sideGap
+    const halfH = r.top + r.bottom < H ? cy - r.bottom - bandGap : r.top - cy - bandGap
+    scale = Math.min(scale, Math.max((2 * halfW) / width, (2 * halfH) / height))
+  })
+  scale = Math.max(0.05, scale)
+  return { scale, left: cx - (width * scale) / 2, top: cy - (height * scale) / 2 }
 }

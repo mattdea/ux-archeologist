@@ -60,3 +60,18 @@ export function setCatalogueRecord(on) {
   if (!import.meta.env.DEV) return
   try { on ? localStorage.setItem(CATALOGUE_KEY, '1') : localStorage.removeItem(CATALOGUE_KEY) } catch { /* storage blocked */ }
 }
+
+// 'index-level-layout' (backlog, "Index museum: the device centred, the list
+// in the corners"; 11 Nov 2026): inside a level, the index museum's list as
+// four corner blocks round a centred device ('corners', the default) or the
+// earlier column down the left ('side'), kept so Matthew can compare.
+// Remembered per browser; the switch is the dev server's only.
+const LEVEL_LAYOUT_KEY = 'ux-archaeologist:index-level-layout'
+export function indexLevelLayout() {
+  if (!import.meta.env.DEV) return 'corners'
+  try { return localStorage.getItem(LEVEL_LAYOUT_KEY) === 'side' ? 'side' : 'corners' } catch { return 'corners' }
+}
+export function setIndexLevelLayout(layout) {
+  if (!import.meta.env.DEV) return
+  try { layout === 'side' ? localStorage.setItem(LEVEL_LAYOUT_KEY, 'side') : localStorage.removeItem(LEVEL_LAYOUT_KEY) } catch { /* storage blocked */ }
+}

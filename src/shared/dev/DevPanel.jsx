@@ -14,13 +14,14 @@
 //
 // Each control does what its old line or button did and keeps its storage
 // key: museumStyle.js, pictureStyle.js, devLooks.js, cardLook.js, state.js.
+// Museum > level layout: the index museum's corners or side layout in a level.
 // Levels > catalogue: Level 1's catalogue record (experiment).
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import s from './DevPanel.module.css'
 import { useMuseumStyle, setMuseumStyle } from '../museumStyle'
 import { usePictureStyle, setPictureStyle, PICTURE_STYLES } from '../index-museum/pictureStyle'
-import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord } from '../devLooks'
+import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord, indexLevelLayout, setIndexLevelLayout } from '../devLooks'
 import { readCardLook, saveCardLook, readCardArt, saveCardArt } from '../../pages/collection/cardLook'
 import { completeLevel } from '../../state/state'
 import { ARTIFACTS } from '../../data/artifacts'
@@ -102,6 +103,10 @@ export default function DevPanel({ navigate }) {
             <Choice label="museum" value={museum} options={[['classic', 'Classic'], ['index', 'Index']]} onChoose={setMuseumStyle} />
             {museum === 'index' && (
               <Choice label="pictures" value={pictures} options={PICTURE_STYLES.map(p => [p, p])} onChoose={setPictureStyle} />
+            )}
+            {museum === 'index' && (
+              <Choice label="level layout" value={indexLevelLayout()} options={[['corners', 'corners'], ['side', 'side']]}
+                onChoose={(v) => { setIndexLevelLayout(v); changed() }} />
             )}
           </section>
           <section className={s.group}>

@@ -522,6 +522,15 @@ Interface Artifacts                    1979 1984 1995 2007 2016 2023
   - Run `npm run build`.
   - Check in the browser: keyboard only through one level, and no console errors.
 - **Spec:** update the Index museum section's level layout.
+- **Status (11 Nov 2026):** built, corners by default, side behind the dev setting. Details in the spec, "Index museum".
+  - **Placement:**
+    - Each corner box keeps one size, so the device doesn't move between states. `useArtifactFit` centres the device and clears the corners.
+    - Because the reading column sits beside the device, devices are smaller than in the side layout. The Mac is about 690px wide at 1440 × 900 (side layout: 880), and about 310px at 1024 × 768.
+    - Level 0's wide terminal shrinks the most.
+  - **What's in each corner:**
+    - The discovery in the corner has no dot picture (the backlog asked for the text). Level 4 still hides the feed at discovery, as in the side layout.
+    - "Back to timeline" is in the full list, not the top right.
+  - **Checked:** 193 tests; `npm run build`; keyboard only through Level 1 in headless Chrome (Tab order, the list opening and closing, the years row, Begin by Enter), with no console errors.
 
 
 ### Index museum: a flint arrowhead as the museum's pointer · approved 11 Nov 2026

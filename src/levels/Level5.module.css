@@ -10,6 +10,8 @@
   inset: 0;
   /* the index museum's list, when it is beside or above the chat (0 otherwise) */
   left: var(--museum-inset-left, 0px);
+  /* the index museum's bottom corners, when they are under the chat (0 otherwise) */
+  bottom: var(--museum-inset-bottom, 0px);
   display: flex;
   flex-direction: column;
   align-items: center;
