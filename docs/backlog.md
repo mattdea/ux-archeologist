@@ -295,6 +295,28 @@ Matthew may still send a coarser redraw (bigger dots, less surface texture, a mo
 - **Spec:** extend the "Index museum" paragraph on picture options to the three sets.
 - **Status (10 Nov 2026):** built and shown to Matthew; waiting on his read of dark mode. Fossils in `assets/fossils/` (600 × 510 masks, the sheet's own resolution: the box is set by the tallest find, the hand at 478px, so the others sit smaller, as in the sheet). Each find is cut from its own cell, so no neighbour leaks into the wider box. Dark reads as scratchboard; the hand and the arrowhead come closest to a photo negative. Three-way comparisons (dots, stamps, fossils) in light and dark: `docs/museum-index/pictures/compare-<light|dark>-<surface>.webp`; fossils light beside dark: `pictures/fossils-light-dark-<collection|discovery>.webp`; fossil shots at 1440 and 375 in `docs/museum-index/*-pictures-fossils-*`. Checked: 168 tests (the line cycles and is absent outside dev; each set draws all six; the arrowhead rests with stamps and fossils), `npm run build` (no line, no fossil or stamp files).
 
+
+### Museum: the carved tablet, the museum's main picture · approved 10 Nov 2026
+Matthew's picture for the whole museum: a broken stone tablet in three bands, with the six rooms' signs carved into it in the fossil set's stipple, oldest first. The bands hold `>_` and the pointer, the hand and the phone-shaped slab, then the ammonite and the speech bubble. The signs are cut in, not drawn on, with no outlines. Saved as `docs/reference/style-lab/fossil-tablet.webp` (ChatGPT, 10 Nov 2026; 538 × 654, white ground).
+
+It is the picture that stands for the whole experience, shown when no room is in view. It belongs to the fossil pictures (entry above), so it shows when the Pictures setting is `fossils`, and becomes the default for everyone if the fossils become the default.
+
+- **Where it shows:** beside the list while no room is pointed at, on the title and the timeline. It replaces the arrowhead that rests there in the fossil option. The dots and stamps options keep what they have now.
+- **The file:**
+  - A mask from its ink density, filled with the text colour, like the fossils: the white ground drops away and faint stipple stays faint.
+  - Save it as `assets/fossils/fossil-tablet.webp`, served on the dev server only, like the other fossil files.
+  - Keep its own proportions (it is taller than wide). Fit it in the space the room pictures use, as large as fits and centred, without stretching. Don't crop the broken edges.
+  - At 538px wide it may be soft where it's shown largest. Don't upscale it; tell Matthew if it looks soft, and he'll get a larger version from ChatGPT. Build it so a larger file can be swapped in without code changes.
+- **Dark mode:** the tablet's dark side becomes a large light mass. Show Matthew light and dark side by side, as with the fossils.
+- **Moving between it and a room's picture:** when you point at a room, its fossil replaces the tablet, and when you leave the list, the tablet comes back, as the arrowhead does now. No new animation; nothing moves under reduced motion.
+- **Not in this pass:** using it as the share image (`og:image`) or a favicon, putting it in the card lab or the collection, and redrawing it.
+- **Checks:**
+  - Tests: the fossil option shows the tablet with no room pointed at; the other options don't; the production build carries no tablet file.
+  - Run `npm run build`.
+  - Check in the browser on the title and the timeline, light and dark, at 1440 and 375.
+  - Retake the fossil screenshots in `docs/museum-index/` that show the resting picture.
+- **Spec:** add it to the Index museum's paragraph on picture options.
+
 ### Card lab: stamp cards in a grid · approved 10 Nov 2026
 Matthew wants a card design in the card lab (`/card-lab`) based on a ChatGPT mockup, saved as `docs/reference/style-lab/stamp-cards.webp`. Each card is a sheet of the room's colour, with its picture printed in black at the top and the text set below. Use the stamp pictures already in `assets/stamps/` (from the entry above), not the mockup's drawings, and lay the cards out in a straight grid with no rotation.
 
