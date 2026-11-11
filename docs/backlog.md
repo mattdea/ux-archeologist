@@ -137,6 +137,9 @@ Phase 1, the style lab, is built in two rounds (see Done, 10 Nov 2026). Open `/s
   - A drawn world around a real device: a stippled ground or dig pit under the device, with a stipple shadow. The device itself is untouched, so the layers stay apart.
   - Boots drawn dot by dot, like a print, before colour floods in. This fights each level's own boot sequence.
   - Dust on the bezel that clears a third at a time as objectives complete. It's clever, but it distracts from the device.
+  - A drawn case around a live screen: the hardware as a stipple drawing in the fossil style (one hand-made drawing per device, traced from a screenshot), with the live emulator in colour in the screen opening. Only the screen opening has to line up exactly.
+  - The whole museum as a dig: each room at a different depth in a drawn cross-section of earth (1979 deepest), and moving between rooms scrolls through the strata.
+  - No hardware at all: the bare interface, large, with the list as its only frame.
 
 ---
 
@@ -410,7 +413,54 @@ Move them all into one panel, the same in both museums, on the dev server only.
 - **Status (10 Nov 2026):** built. `src/shared/dev/DevPanel.jsx`, lazy-loaded by SharedLayout on the dev server only, portalled into `<body>`; what it does is in the spec, "Dev panel". The card switches were also on the card timeline (`CardPath.jsx`), so they went from there too; the card lab keeps its own controls (Show, Size), which are the lab's, not dev lines. Changes pages read while drawing go out as one window event (`src/shared/dev/devEvents.js`). Clashes: Level 0's terminal and Level 5's chat never see Ctrl+Shift+D (read in the capture phase and consumed); on Windows and Linux it overrides Chrome's "bookmark all tabs" while the dev server is open; Mac Chrome uses Cmd+Shift+D, untouched. The tab sits 2px in from the corner because 8px in it covered the bottom of Classic's About. Checked: 175 tests (each control against its old key and effect, Ctrl+Shift+D, Escape with focus back on the tab, click outside, remembered open, absent from the production App), `npm run build` (no panel strings in any chunk), the browser in both museums on the title, timeline, collection, Level 0 and Level 1 at 1440 and 375 (on top of the small-screen notice; no sideways scroll at 375), keyboard (Tab reaches it, Enter opens, Escape closes). Index museum shots retaken without the dev lines.
 
 
-### Levels: the device as a drawing when you arrive and leave · experiment, approved 11 Nov 2026
+### Levels: the catalogue record around the device · experiment, approved 11 Nov 2026
+Another way to link the devices to the museum's ink, after the stipple reveal was dropped (entry in Done). The device stays exactly as it is, and the museum annotates it the way catalogues record objects: a catalogue number, labels with thin lines pointing at parts, and the object's data, in the index's own monospace and inks. Try it on Level 1 behind a dev setting first.
+
+- **First, remove the stipple reveal:**
+  - delete `src/shared/reveal/`, `scripts/reveal-drawing.mjs`, `scripts/reveal-shots.mjs` and `assets/reveal/`
+  - remove its setting from `devLooks.js` and the dev panel, and its note in the spec
+  - keep the frames in `docs/reveal/`
+- **Pilot on Level 1 (the Mac)** only. Matthew decides about the other five after seeing it.
+- **Dev setting:** "Catalogue record", on or off, in the dev panel under Levels. It's remembered per browser, off by default and absent from production. With it off, nothing changes.
+- **The emulator isn't touched.** The record is a museum-layer overlay positioned in the device's own coordinates (Level 1's W × H) inside `.wrap`, so it scales and moves with `useArtifactFit`.
+- **What the record shows,** in the index's monospace: black for the main text, the second grey ink for lines and secondary text, at the index's sizes:
+  - **Catalogue number,** at the device's top left: `IA.1984.02` (Interface Artifacts, year, the room's number as on the cards).
+  - **Object line:** `Apple Macintosh (128K), 1984`.
+  - **Labels with thin leader lines to parts the emulator actually shows:**
+    - the screen: `9-inch screen, 512 × 342, black and white`
+    - the floppy slot: `3.5-inch floppy drive, 400 KB`
+    - Two or three labels at most. Lines are straight or have one bend, 1px, in the grey ink, ending in a small dot on the part.
+  - **A short data block:**
+    - `Motorola 68000, 7.8 MHz`
+    - `128 KB memory`
+    - `35 × 24 × 28 cm, 7.5 kg`
+    - `$2,495`
+    - `24 January 1984`
+- **No scale bar and no dimension lines.** The emulator isn't drawn to the Mac's real proportions (the real front is taller than wide), so lines measuring it would be wrong. The size is given as text in the data block.
+- **When it shows:**
+  - **intro:** the full record.
+  - **booting:** the labels and data fade out as the boot starts.
+  - **playing:** only the catalogue number stays, small and grey.
+  - **discovery:** the full record comes back.
+  - Under reduced motion it appears and disappears without fading.
+- **Placement:**
+  - Labels sit in the space beside the device. They never cover the device's screen, the list or the HUD, and they don't move the device.
+  - Where there's no room (phone width, narrow windows), drop the leader lines and labels. Keep the catalogue number, and put the object line and data block under the device in intro and discovery.
+- **Facts:** each one goes in the spec with its source and confidence. From Wikipedia, "Macintosh 128K", read 11 Nov 2026, all high: released 24 January 1984, $2,495, Motorola 68000 at 7.8336 MHz, 128 KB, 9-inch monochrome 512 × 342, 3.5-inch single-sided 400 KB floppy, 13.6 × 9.6 × 10.9 in (35 × 24 × 28 cm), 16.5 lb (7.5 kg). Check them against a second source (Apple's own material or a period review) before they ship, and don't add facts without a source.
+- **Copy** stays plain and matter-of-fact, as labels, not sentences.
+- **Not in this pass:** the other five levels, and a drawn case around a live screen or a dig cross-section (both under Ideas).
+- **Show Matthew:** intro, playing and discovery, in light and dark, at 1440 and 375, with the setting on and off.
+- **Checks:**
+  - Tests: off changes nothing; on shows the full record in intro and discovery and only the number in playing; the setting is absent from production; the reveal files are gone.
+  - Run `npm run build`.
+  - Check in the browser: the labels' dots land on the screen and the floppy slot at several window sizes, with no console errors.
+- **Spec:** a short note under Level 1, marked as an experiment, with the facts and their sources.
+
+---
+
+## Done
+
+### Levels: the device as a drawing when you arrive and leave · experiment, dropped 11 Nov 2026
 Matthew feels the emulators need a link to the fossils' stipple drawing style. The idea: the device is a stipple drawing when you arrive and when you leave, and it's real and in colour only while you're using it. Begin excavation uncovers it, and Continue files it back into the archive as a drawing. Try it on one level behind a dev setting before deciding.
 
 - **Pilot on Level 1 (the Mac)** only. Matthew decides about the other five after seeing it.
@@ -450,10 +500,7 @@ Matthew feels the emulators need a link to the fossils' stipple drawing style. T
   - Check in the browser: no console errors, and the boot and objectives work as before.
 - **Spec:** a short note under Level 1 and the dev panel section, marked as an experiment.
 - **Status (11 Nov 2026):** built and shown to Matthew. What it does is in the spec, Level 1, "Stipple reveal". Files: `src/shared/reveal/StippleReveal.jsx` + `.module.css`, `scripts/reveal-drawing.mjs` (the drawing, `assets/reveal/level-1.webp`, about 50,000 dots), `scripts/reveal-shots.mjs` (frames), and the setting in `devLooks.js` and the dev panel under Levels. Decided while building: the Mac's photographic drop shadow showed as a grey halo round the drawing, so a soft page-colour margin covers it while it's a drawing and dissolves with the dots. Level 1 had no 300ms pause to replace; the dissolve simply comes before the boot. A fallback ends the dissolve 1.5s late if the drawing hasn't loaded, so the boot is never held up. In dark the drawing is a negative (light dots on #111, so the screen reads bright), as with the fossils. The canvas is drawn once and patches are cleared or copied back per frame: about 60fps in headless Chrome. The in-app browser pane ran at 2 to 5fps with or without it. Lined up with the Mac to the pixel at 1440, 1024 and 375. Review: `docs/reveal/level-1-arrive-leave-<light|dark|375>.webp` and a strip per set in `docs/reveal/strips/` (1440 and 375; Index light and dark and Classic; on and off; arrive, revisit, leave). Checked: 181 tests (off changes nothing; on: drawn in intro, dissolving before the boot, clear while playing, settling at the discovery; revisits start from the drawing; absent outside dev), `npm run build` (no reveal code, strings or files).
-
----
-
-## Done
+- **Dropped (Matthew, 11 Nov 2026):** it felt unrefined. The drawing is a screenshot turned into dots by a script, so the Mac reads as even static, not as a drawing like the fossils, and the dissolve reads as interference. Replaced by "Levels: the catalogue record" (Approved), which removes this code. The frames stay in `docs/reveal/` as a record.
 
 ### Museum: style lab, B2 iteration with Matthew · 10 Nov 2026
 From Approved. One change was made before the index museum entry superseded it.
