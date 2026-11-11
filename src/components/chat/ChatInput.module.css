@@ -5,8 +5,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #2a2a2a;
-  border: 1px solid #333;
+  background: var(--chat-surface);
+  border: 1px solid var(--chat-surface-edge);
   border-radius: 20px;
   padding: 10px 12px 10px 18px;
   animation: inputSlideUp 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -27,7 +27,7 @@
   background: none;
   border: none;
   outline: none;
-  color: #e8e8e8;
+  color: var(--chat-text);
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.5;
@@ -37,13 +37,13 @@
 }
 
 .inputField::placeholder {
-  color: #555;
+  color: var(--chat-placeholder);
 }
 
 .modelLabel {
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 11px;
-  color: #444;
+  color: var(--chat-model);
   white-space: nowrap;
   user-select: none;
   letter-spacing: 0.02em;
@@ -54,7 +54,7 @@
   border: none;
   padding: 4px;
   cursor: pointer;
-  color: #555;
+  color: var(--chat-send);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,5 +64,5 @@
 }
 
 .sendBtn:hover {
-  color: #999;
+  color: var(--chat-send-hover);
 }

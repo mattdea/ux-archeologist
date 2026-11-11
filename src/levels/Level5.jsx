@@ -17,6 +17,8 @@ import { completeLevel, isLevelComplete, addArtifact } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import ChatPanel from '../components/chat/ChatPanel'
 import Catalogue from '../shared/catalogue/Catalogue'
+import { useMuseumStyle } from '../shared/museumStyle'
+import { useIndexTheme } from '../shared/index-museum/theme'
 
 // The chat's column (ChatPanel's 680px max width, less the bottom bar's
 // 24px side padding, so its edges are the input bar's), the box the
@@ -46,6 +48,11 @@ const ALREADY_DONE = isLevelComplete(5)
 export default function Level5() {
   const notifyArtifactReady = useArtifactReady()
   const setContinue = useSetContinue()
+  // The chat is light only in the Index museum's light mode; Classic and
+  // the Index in dark mode show it as designed
+  const museum = useMuseumStyle()
+  const indexTheme = useIndexTheme()
+  const chatTheme = museum === 'index' && indexTheme === 'light' ? 'light' : 'dark'
 
   // Replay (level already complete): skip the intro card, replay the boot
   const [screen, setScreen] = useState(() => ALREADY_DONE ? 'booting' : 'intro')
@@ -183,6 +190,7 @@ export default function Level5() {
             animated={screen === 'playing'}
             autoFocus={screen === 'playing'}
             onCompleteObjective={completeObjective}
+            theme={chatTheme}
           />
         </div>
 

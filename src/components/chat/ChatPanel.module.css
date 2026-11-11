@@ -1,14 +1,71 @@
 /* src/components/chat/ChatPanel.module.css */
 
-/* Full-width dark panel — flex column, no overflow */
+/*
+ * The chat's colours, as tokens every chat component reads. Dark is the
+ * exhibit as designed (Classic, and the Index in dark mode). Light is the
+ * same design with its colours inverted, for the Index in light mode
+ * (backlog, "Level 5: a light version in light mode"; Matthew, 11 Nov 2026):
+ * chosen by hand from the inverted values, the page white to match the
+ * museum's light room as #111 matches its dark one, and every grey darkened
+ * where the inversion fell short of AA (text 4.5:1, icons and edges 3:1).
+ * Pairs and ratios: design-spec, Level 5. The level passes the museum's
+ * theme in as data-chat-theme on the panel.
+ */
 .panel {
+  --chat-bg: #111;
+  --chat-bg-clear: rgba(17, 17, 17, 0);
+  --chat-surface: #2a2a2a;        /* input bar, your messages */
+  --chat-surface-edge: #333;
+  --chat-text: #e8e8e8;           /* on the surface */
+  --chat-reply: #e0e0e0;          /* on the page */
+  --chat-placeholder: #555;
+  --chat-model: #444;
+  --chat-send: #555;
+  --chat-send-hover: #999;
+  --chat-thinking: #555;
+  --chat-icon: #555;
+  --chat-icon-hover: #999;
+  --chat-icon-hover-bg: rgba(255, 255, 255, 0.05);
+  --chat-icon-active: #ccc;
+  --chat-chip-edge: #444;
+  --chat-chip-text: #aaa;
+  --chat-chip-hover-edge: #666;
+  --chat-chip-hover-text: #ddd;
+  --chat-chip-hover-bg: rgba(255, 255, 255, 0.04);
+  --chat-toast: #888;
+
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background: #111;
+  background: var(--chat-bg);
   overflow: hidden;
   position: relative;
+}
+
+.panel[data-chat-theme="light"] {
+  --chat-bg: #fff;
+  --chat-bg-clear: rgba(255, 255, 255, 0);
+  --chat-surface: #ececec;
+  --chat-surface-edge: #8f8f8f;   /* 3.2:1 on the page */
+  --chat-text: #171717;           /* 15.2:1 on the surface */
+  --chat-reply: #1f1f1f;          /* 16.5:1 */
+  --chat-placeholder: #666;       /* 4.9:1 on the surface */
+  --chat-model: #666;             /* 4.9:1 on the surface */
+  --chat-send: #666;              /* 4.9:1 on the surface */
+  --chat-send-hover: #333;
+  --chat-thinking: #8f8f8f;       /* 3.2:1 */
+  --chat-icon: #767676;           /* 4.5:1 */
+  --chat-icon-hover: #333;
+  --chat-icon-hover-bg: rgba(0, 0, 0, 0.05);
+  --chat-icon-active: #1a1a1a;
+  --chat-chip-edge: #8f8f8f;      /* 3.2:1 */
+  --chat-chip-text: #555;         /* 7.5:1 */
+  --chat-chip-hover-edge: #666;
+  --chat-chip-hover-text: #222;
+  --chat-chip-hover-bg: rgba(0, 0, 0, 0.04);
+  --chat-toast: #707070;          /* 5.0:1 */
+  color-scheme: light;
 }
 
 /*
@@ -62,7 +119,7 @@
   left: 0;
   right: 0;
   height: 60px;
-  background: linear-gradient(to bottom, #111 0%, rgba(17, 17, 17, 0) 100%);
+  background: linear-gradient(to bottom, var(--chat-bg) 0%, var(--chat-bg-clear) 100%);
   pointer-events: none;
   z-index: 1;
 }

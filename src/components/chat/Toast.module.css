@@ -5,7 +5,7 @@
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
-  color: #888;
+  color: var(--chat-toast);
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 13px;
   pointer-events: none;

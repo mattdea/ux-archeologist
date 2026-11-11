@@ -6,7 +6,9 @@ import ChatInput from './ChatInput'
 import SuggestionChips, { getChipsForTurn } from './SuggestionChips'
 import useCuratorChat from './useCuratorChat'
 
-export default function ChatPanel({ playing = false, autoFocus, animated = true, onCompleteObjective }) {
+// theme: 'dark' (as designed) or 'light' (the Index museum in light mode),
+// passed in by the level; the colours are tokens in ChatPanel.module.css
+export default function ChatPanel({ playing = false, autoFocus, animated = true, onCompleteObjective, theme = 'dark' }) {
   const { messages, sendMessage, regenerateLastResponse, isStreaming, turnCount } = useCuratorChat()
   const bottomRef = useRef(null)
   const messageAreaRef = useRef(null)
@@ -63,7 +65,7 @@ export default function ChatPanel({ playing = false, autoFocus, animated = true,
   const lastAssistantIdx = messages.reduce((acc, m, i) => m.role === 'assistant' ? i : acc, -1)
 
   return (
-    <div className={styles.panel}>
+    <div className={styles.panel} data-chat-theme={theme === 'light' ? 'light' : 'dark'}>
 
       {/*
        * Top spacer: flex:1 when empty (centers bottomBar), collapses to flex:0

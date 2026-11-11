@@ -17,8 +17,8 @@
 }
 
 .userBubble {
-  background: #2a2a2a;
-  color: #e8e8e8;
+  background: var(--chat-surface);
+  color: var(--chat-text);
   padding: 10px 16px;
   border-radius: 18px;
   max-width: 70%;
@@ -36,7 +36,7 @@
 }
 
 .assistantContent {
-  color: #e0e0e0;
+  color: var(--chat-reply);
   padding-left: 4px;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 15px;
@@ -60,7 +60,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #555;
+  background: var(--chat-thinking);
   animation: dotPulse 1.2s ease-in-out infinite;
 }
 

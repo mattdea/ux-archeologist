@@ -17,8 +17,8 @@
 
 .chip {
   background: none;
-  border: 1px solid #444;
-  color: #aaa;
+  border: 1px solid var(--chat-chip-edge);
+  color: var(--chat-chip-text);
   padding: 7px 14px;
   border-radius: 20px;
   font-family: system-ui, -apple-system, sans-serif;
@@ -29,9 +29,9 @@
 }
 
 .chip:hover {
-  border-color: #666;
-  color: #ddd;
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--chat-chip-hover-edge);
+  color: var(--chat-chip-hover-text);
+  background: var(--chat-chip-hover-bg);
 }
 
 /* Staggered fade-in — boot sequence only (fires on initial mount).

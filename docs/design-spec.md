@@ -645,6 +645,28 @@ src/components/feed/
 - Suggestion chips as outlined pill buttons below responses
 - System sans-serif throughout (this IS the current era)
 
+**Light version** (Index museum, light mode; backlog, "Level 5: a light version in light mode", 11 Nov 2026). In the Index's light mode the chat is light; in the Index's dark mode and in Classic it is dark, as above. It is the same design with its colours inverted, as a second set of tokens chosen by hand (not a CSS `invert()`); layout, copy, timing and sounds are unchanged.
+- **How:** `Level5` passes `theme` (`'light'` only when the museum is Index and the Index theme is light) to `ChatPanel`, which sets `data-chat-theme` on its root. Every chat colour is a `--chat-…` token on `.panel` in `ChatPanel.module.css`, with the light values under `.panel[data-chat-theme="light"]`; the other chat stylesheets only read the tokens. The museum doesn't restyle the chat. It follows the switches live.
+- **Page:** #fff, continuous with the Index's light room, as #111 is with the dark one. There is no accent colour in the chat, so there was none to keep.
+- **Pairs and ratios** (WCAG AA: 4.5:1 for text, 3:1 for icons and edges):
+
+  | Element | Dark | Light | Light ratio |
+  |---|---|---|---|
+  | Your message text on its bubble | #e8e8e8 on #2a2a2a | #171717 on #ececec | 15.2 |
+  | Input text on the input bar | #e8e8e8 on #2a2a2a | #171717 on #ececec | 15.2 |
+  | Reply text on the page | #e0e0e0 on #111 | #1f1f1f on #fff | 16.5 |
+  | Placeholder | #555 on #2a2a2a | #666 on #ececec | 4.9 |
+  | "Curator v1" label | #444 on #2a2a2a | #666 on #ececec | 4.9 |
+  | Send icon (hover) | #555 (#999) | #666 (#333) on #ececec | 4.9 (10.7) |
+  | Input bar edge on the page | #333 | #8f8f8f on #fff | 3.2 |
+  | Thinking dots | #555 on #111 | #8f8f8f on #fff | 3.2 |
+  | Action icons (hover, pressed) | #555 (#999, #ccc) | #767676 (#333, #1a1a1a) on #fff | 4.5 (12.6, 17.4) |
+  | Chip text (hover) | #aaa (#ddd) | #555 (#222) on #fff | 7.5 (15.9) |
+  | Chip edge (hover) | #444 (#666) | #8f8f8f (#666) on #fff | 3.2 (5.7) |
+  | Feedback toast | #888 on #111 | #707070 on #fff | 5.0 |
+
+- **The dark version is unchanged, and some of its greys are below AA:** placeholder 1.9, "Curator v1" 1.5, action icons and send icon 2.5, thinking dots 2.5, input bar edge 1.5. The light version doesn't copy those. Whether to lift the dark greys is Matthew's call (open in backlog).
+
 **Container:**
 - Full-width panel, no frame, no border, no shadow
 - Chat area fills the artifact zone within the three-zone layout
@@ -683,7 +705,7 @@ src/components/feed/
 - Artifact: `Natural Language`
 - Text: "Here you didn't learn commands, menus or gestures; you just asked. You can hand it a question, a messy draft, a table of numbers or a photo, and it works out what you want. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did."
 
-**Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. The genre, not a product: the exhibit is Claude-inspired but unnamed, so the record doesn't claim to be any one product. `IA.2023.06`, object line `AI chat assistant, 2023`; data `ChatGPT: 30 November 2022` / `Claude: 14 March 2023`; labels on the message box (`Message box` / `ask in plain language`) and the first reply (`Reply` / `written by the model`, once there is one). With no device, the record treats the chat's 680px column as the object.
+**Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. The genre, not a product: the exhibit is Claude-inspired but unnamed, so the record doesn't claim to be any one product. `IA.2023.06`, object line `AI chat assistant, 2023`; data `ChatGPT: 30 November 2022` / `Claude: 14 March 2023`; labels on the message box (`Message box` / `ask in plain language`) and the first reply (`Reply` / `written by the model`, once there is one). With no device, the record treats the chat's column as the object: the 680px column less the bottom bar's 24px side padding, so its edges are the input bar's (at phone width this keeps the number 24px off the viewport edge).
 - ChatGPT released 30 November 2022 (**high**): OpenAI's blog (archived); Wikipedia "ChatGPT".
 - Claude released 14 March 2023 (**high**): Anthropic, "Introducing Claude"; TechCrunch, 14 March 2023. API and partner apps only at first; claude.ai opened in July 2023.
 - A conversational interface you write to in plain language (**high**): OpenAI ("interacts in a conversational way"); Anthropic ("chat interface").
