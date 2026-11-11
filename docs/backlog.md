@@ -456,6 +456,58 @@ Another way to link the devices to the museum's ink, after the stipple reveal wa
   - Check in the browser: the labels' dots land on the screen and the floppy slot at several window sizes, with no console errors.
 - **Spec:** a short note under Level 1, marked as an experiment, with the facts and their sources.
 
+
+### Index museum: no shadows behind the devices · approved 11 Nov 2026
+Matthew: the drop shadows behind the devices look bad in both light and dark. In the Index museum, no device has a shadow or glow around it. Classic keeps its shadows: it was designed on a dark room, and its files don't change.
+
+- **Where they come from:** each device's own CSS, for example the Mac bezel's two `drop-shadow`s (`src/components/MonitorBezel.module.css`). Find them all: Level 0's terminal bezel (`TerminalBezel.module.css`, `TerminalScreen.module.css`), `MonitorBezel`, `BrowserChrome`, `PhoneFrame`, Level 4's ghost iPhone glow and anything in Level 5. Check each level's `.module.css` too.
+- **How, without the museum reaching into the artifacts:** each device's outer shadow moves into one CSS variable on the device (for example `--artifact-shadow`), with today's value as its fallback, so Classic looks exactly as now. The Index sets it to `none` on its level screens. The museum doesn't override artifact selectors.
+- **What stays:** lights and shading on or inside the device: the floppy drive's LED, the screen's own glow, the phone's status-bar text shadows, the feed's in-app shadows. Only the shadow or glow the device casts onto the page goes.
+- **Fit:** if `useArtifactFit` or a level's wrap leaves room for the shadow, remove that room in the Index so devices don't sit off-centre.
+- **Checks:** every level in the Index, light and dark, at 1440 and 375, with no shadow around the device; Classic unchanged (compare screenshots); `npm run build`; retake the Index screenshots that show devices.
+
+### Index museum: the device centred, the list in the corners · approved 11 Nov 2026
+Matthew: inside a level, the list on the left with the device on the right doesn't look good. The device should be centred, as in Classic, and the list should get out of its way. Inside a level, the list splits into four small corner blocks around a centred device. The title, timeline and collection keep the list as it is.
+
+```
+Interface Artifacts                    1979 1984 1995 2007 2016 2023
+1984  The Desktop  ≡                                     Dark mode [ ]
+
+                       ┌──────────────┐
+                       │  the device, │
+                       │   centred    │
+                       └──────────────┘
+
+[x] Open the Finder                                   Continue  →
+[ ] Use a desk accessory                                      1 of 3
+```
+
+- **The four corners:**
+  - **Top left, where you are:** `Interface Artifacts` (to the title) and the room's line, inverted, as in the list. `≡` (or Enter on the line) opens the full list as a panel over the page; Escape closes it.
+  - **Top right, getting around:** the six years in one row, the current one inverted, each a link to its room. Below them, Dark mode. "Back to timeline" goes here too, or the full list carries it.
+  - **Bottom left, what to read:** it changes with the screen state, one thing at a time.
+    - intro: the room's intro text, about 40ch wide
+    - playing: the objectives, `[ ]` and `[x]`, with the hint line under them when it comes
+    - discovery: the discovery text
+  - **Bottom right, what to do next:** Begin excavation in intro, Continue in playing (once everything's done) and discovery, with the objectives count (`1 of 3`) while playing. Keep clear of the dev tab in the very corner (dev only).
+- **The device:**
+  - It's centred in the viewport, horizontally and vertically, in every state, so it doesn't move when the state changes.
+  - It's scaled so it clears all four corners. Mark each corner block `data-hud` so `useArtifactFit` avoids them while keeping the device centred.
+  - Nothing overlaps the device.
+- **Type:** the index's monospace and its two inks, at its sizes. Corners are aligned to the page's margins on the same grid. No boxes or backgrounds behind corner blocks.
+- **The catalogue record** (experiment, entry above): its labels sit between the device and the corners and must not collide with them. If there's no room, it falls back as that entry says.
+- **Phone width:** top left and top right merge into one line at the top (the room and `≡`), the device sits under it, and the bottom-left and bottom-right blocks stack under the device.
+- **Keyboard:** Tab goes through the corners in reading order: top left, top right, bottom left, bottom right. The arrow keys still move between rooms on the years row. Escape closes the full list.
+- **Moving between states:** text in the bottom corners swaps without moving the device. Nothing moves under reduced motion.
+- **Dev setting:** "Level layout: corners / side" in the dev panel under the Index, corners by default, so Matthew can compare with today's side layout. Remove the side layout once he's decided.
+- **Not in this pass:** changing the title, timeline or collection views; Classic; new copy.
+- **Show Matthew:** all six levels in intro, playing and discovery, light and dark, at 1440 and 375, beside the side layout.
+- **Checks:**
+  - Tests: each corner shows the right thing in each state; the full list opens and closes; the device is centred and clears the corners at several sizes.
+  - Run `npm run build`.
+  - Check in the browser: keyboard only through one level, and no console errors.
+- **Spec:** update the Index museum section's level layout.
+
 ---
 
 ## Done
