@@ -9,11 +9,21 @@ Interface Artifacts (the repository is still `ux-archeologist`) is an interactiv
 **Duration:** 5–8 minutes total, ~60–90 seconds per level
 **Audience:** Dual — works as a portfolio case study and a standalone shareable experience
 
-### Progress (8 Nov 2026)
+### Progress (11 Nov 2026)
 
-All six levels are complete and playable; nothing is gated; all 87 tests pass. Copy: every card, objective, hint, the About text and Level 5's guide follow the voice guide in `docs/copy-pass.md` (10 Nov 2026; Matthew may revisit, see the backlog). Each level is its own code chunk (`src/views.js`), fetched while the previous view fades out. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
+All six levels are complete and playable; nothing is gated. 208 tests; all pass, though the card lab's layout test (`CardLab.test.jsx`) can time out at 5s when the whole suite runs on a busy machine (it passes on its own). Copy: every card, objective, hint, the About text and Level 5's guide follow the voice guide in `docs/copy-pass.md` (10 Nov 2026; Matthew may revisit, see the backlog). Each level is its own code chunk (`src/views.js`), fetched while the previous view fades out. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
 
-Recent work:
+There are two museum layers. Classic is the one this spec describes and the one production shows. The Index, one monospace list that is the whole museum, runs on the dev server behind a switch while Matthew decides (see "Index museum"; restore point: the tag `museum-classic`).
+
+Recent work (9–11 Nov):
+- **Index museum (10–11 Nov):** built from the style lab's B2. Dark by default with a light mode. In a level the list splits into four corners round the centred device, with the full list behind `≡`; the older side layout is behind a dev setting. Three picture sets under comparison (dots, stamps, fossils, with the clay tablet at rest). No device casts a shadow. The pointer is a pixel flint arrowhead, with a fossil stick to compare in the dev panel.
+- **Catalogue record (11 Nov, experiment, dev server only, on by default):** a museum label round every level's device: catalogue number, labelled parts and a data block, each fact with two sources (under each level). A `[−]` / `[+]` toggle by the number shows and hides it for the visit.
+- **Level 5 (11 Nov):** a light version of the chat in the Index's light mode; the dark chat's greys lifted to pass AA.
+- **Museum (10 Nov):** the collection page, the dev panel (`Ctrl+Shift+D`), the style lab, the card lab and the dot editor.
+- **Levels (9–10 Nov):** Level 0 moved from 1971 to 1979; Level 1 drags files between folders and the desktop; the copy pass applied; the Level 4 feed audit fixes.
+- **Tried and dropped (11 Nov):** the stipple reveal on Level 1, replaced by the catalogue record.
+
+Earlier (to 8 Nov):
 - **Layout (7 Nov):** artifacts are sized by `useArtifactFit` below the top HUD band and around the bottom HUD (up to 1.35×, always horizontally centred, gap above = gap below) instead of fixed 180px bands.
 - **Museum layer:** "Enter the exhibit" on the title screen; hints in every level (docked pill, after 10s without progress); era tooltips on the HUD dots; drawn ticks and strike-through on the objectives; a Continue flourish; one continuous timeline line that fades at both ends.
 - **Sound in every level** (`src/audio/sfx.js`): VT100 click and bell, Mac 600 Hz startup beep and alert beep, a real dial-up recording under Netscape's first load, Instagram like pop, chat send/receive.
@@ -28,6 +38,9 @@ Open items, roughly in priority order:
 3. The snowy-cabin library photo is reserved for the Airbnb ad but no longer used by it.
 4. Level 1 details not settled by any source and so reconstructed: zoom-rectangle frame count and timing, menu-blink timing, the locked-item Empty Trash alert wording, Clean Up snap-vs-repack. Booting System 1.1 in an emulator (infinitemac.org) would settle them.
 5. Level 1's objective-1 hint ("Double-click the Notes icon") predates the System Disk; it still works, but could mention the disk.
+6. Waiting on Matthew's pick (each a dev panel switch): Classic or Index; in the Index, the level layout (corners or side), the pictures (dots, stamps or fossils) and the pointer (arrowhead or stick); whether the catalogue record stays; in Classic, the titles, timeline, card style and card art.
+7. The pointers haven't been checked with a real mouse (does the tip click exactly on `[ ]`?), in Safari or in Firefox, and there's no screen recording of them in use.
+8. In the Index corners at 1440 × 900, the Mac leaves no room for its catalogue record, so Level 1's toggle doesn't show there. A narrower column, or letting the record sit over the bezel, would decide it.
 
 ---
 
@@ -166,10 +179,10 @@ White card, no accent line, mono era label, sans title (22px, weight 500), sans 
 ### Dev panel (dev server only)
 Every dev control in one place, the same in both museums (backlog, "Dev: one dev panel behind a corner tab"; 10 Nov 2026). `src/shared/dev/DevPanel.jsx` + `.module.css`, loaded lazily by SharedLayout behind `import.meta.env.DEV`, so the production build has no tab, panel or code.
 - **Tab:** a small monospace `dev`, fixed in the bottom-right corner (2px in, clear of Classic's About), at 35% opacity until pointed at, focused or open. Always there, last in the tab order.
-- **Panel:** opens above the tab; dark monospace dev chrome, the same on every page and theme, never either museum's style. Groups: Museum (museum Classic / Index; pictures dots / stamps / fossils, shown with the Index only), Classic looks (titles sans / serif, timeline line / cards, card style, card art), Levels (catalogue off / on, on by default: every level's catalogue record, an experiment; see Level 1), Progress (Complete all), Labs (Card lab, Style lab, Dot editor; each closes the panel and goes there).
+- **Panel:** opens above the tab; dark monospace dev chrome, the same on every page and theme, never either museum's style. Groups: Museum (museum Classic / Index; then, shown with the Index only: pictures dots / stamps / fossils, pointer arrowhead / stick, level layout corners / side), Classic looks (titles sans / serif, timeline line / cards, card style, card art), Levels (catalogue off / on, on by default: every level's catalogue record, an experiment; see Level 1), Progress (Complete all), Labs (Card lab, Style lab, Dot editor; each closes the panel and goes there).
 - **Opening and closing:** click the tab or press Ctrl+Shift+D (read in the capture phase and consumed, so Level 0's terminal and Level 5's chat box never see it; it overrides Chrome's "bookmark all tabs" on Windows and Linux while the dev server is open). Escape or a pointer down outside closes it and puts focus back on the tab. Open or closed is remembered per browser (`ux-archaeologist:dev-panel`).
 - **Floating:** a portal into `<body>`, z-index above every modal and the small-screen notice; not `data-hud`, so it never moves an artifact; the closed panel takes no clicks except on the tab.
-- **Keys:** each control keeps its old storage key (`museum`, `index-pictures`, `serif-titles`, `card-timeline`, `collection-style`, `card-art`, progress). Changes that pages read while drawing (progress, line or cards, card style and art) go out as one window event (`src/shared/dev/devEvents.js`, `useDevChange`); Timeline, Collection, CardPath and the index museum re-read on it.
+- **Keys:** each control keeps its old storage key (`museum`, `index-pictures`, `index-pointer`, `index-level-layout`, `serif-titles`, `card-timeline`, `collection-style`, `card-art`, progress). Changes that pages read while drawing (progress, line or cards, card style and art) go out as one window event (`src/shared/dev/devEvents.js`, `useDevChange`); Timeline, Collection, CardPath and the index museum re-read on it.
 - **Screenshots:** `scripts/*-shots.mjs` hide `[data-dev-panel]`.
 - Dark mode and Reset progress stay where they were; they are for visitors, not dev.
 
@@ -220,7 +233,7 @@ A second museum layer: one monospace list that is the whole museum, built from c
 - **Keyboard, like a terminal menu:** ↑ / ↓ move through the list's lines, Home / End jump, Enter opens, Escape closes what's open (About, the reset question). Tab order is the DOM order. The list listens on `window` in the capture phase, so while it has focus its keys don't reach an artifact's document-level listeners (Level 0's terminal pulls focus back on every keydown); typing anything else still goes to the artifact. Shift-Tab from an artifact reaches the list.
 - **Moving between views:** the list stays mounted and its lines are keyed, so it redraws in place: lines that stay don't move, new lines type in from the left (a 160ms stepped clip, 14ms apart down the list), lines that go just go. Levels still fade in as in Classic. Under reduced motion nothing animates.
 - **Phone width (under 600px):** the small-screen notice is two lines at the top of the list ("This experience was designed for larger screens." / "Continue anyway →", focused), with the same `sessionStorage` key and rules as Classic's. Leaders drop out; a right side that doesn't fit drops under its line with its arrow.
-- **Under comparison / open:** in light mode the Level 4 ghost iPhone's outline (drawn for the dark room) vanishes on white and Level 5's chat panel is a dark block on the white page (both fine in dark, the default); the list is shipped in the production bundle (about 10 KB and the six dot pictures) although production doesn't show it.
+- **Under comparison / open:** in light mode the Level 4 ghost iPhone's outline (drawn for the dark room) vanishes on white (fine in dark, the default). Level 5's chat turns light with the light mode (see Level 5, "Light version"). The list is shipped in the production bundle (about 10 KB and the six dot pictures) although production doesn't show it.
 
 ### HintPill + useHint
 Nudge in a dark pill, fixed 14px under the artifact, centred and no wider than it (wrapping if longer); `useArtifactFit` publishes the place as `--hint-top` / `--hint-max`. Level 5 has no device, so its pill sits at the bottom centre. `useHint(HINTS, { active, completedIndices })` returns the hint for the first unfinished objective after 10s without progress; any completion hides it and restarts the clock. Every level defines `HINTS` alongside `OBJECTIVES`. The pill is not `data-hud`, so it never moves the artifact.

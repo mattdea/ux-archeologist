@@ -94,6 +94,7 @@ function playSound(src) {
 
 **Period pointers:**
 - Levels whose hardware had a pointer set it on the artifact root with `cursor: var(--cursor-…)` from `era-cursors.css`; the artifact's own CSS uses `cursor: inherit`, links `var(--cursor-link, pointer)`.
+- Mark the box the device occupies (the `.wrap`, or Level 5's artifact zone) with `data-artifact`, so the Index museum's arrowhead pointer stops at the glass (`src/shared/index-museum/pointers.css`; `IndexPointer.test.jsx` checks every level).
 
 **File structure for a new level:**
 - `src/levels/LevelN.jsx` — screen state machine, museum wiring, artifact composition
