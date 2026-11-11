@@ -610,11 +610,12 @@ Four changes to the level screens in the Index museum's corner layout (entry abo
 - Retake the Index screenshots.
 
 ### Level 5: a light version in light mode · approved 11 Nov 2026
-In the Index museum, Level 5's chat is dark in both light and dark mode. In light mode it should be light. Matthew asked for the recommendation, which is to match how AI chat apps actually looked in light mode in 2023, not a plain inversion.
+In the Index museum, Level 5's chat is dark in both light and dark mode. In light mode it should be light. Matthew's call (changed 11 Nov 2026): invert the current colours, not a recreation of a 2023 app's light theme.
 
-- **The look:** Claude.ai launched in 2023 with a light, warm off-white page by default, and ChatGPT's 2023 light theme was a white chat. The light version follows Claude's 2023 light look, since the exhibit is Claude-inspired: an off-white page, dark text, and its accent kept.
-  - Source it from archived captures of claude.ai from 2023 (Wayback Machine) and record the colours with sources in the spec. Confidence: medium until checked.
-  - Where a colour can't be sourced, say it's reconstructed.
+- **The look:** the same design with its colours inverted: light page and panels, dark text, the borders and greys flipped to match.
+  - Make it a set of light tokens chosen by hand from the inverted values, not a CSS `invert()` filter, which would also flip images and the accent.
+  - Keep the accent colour as it is, unless it fails contrast on the light page; if it does, darken it just enough.
+  - It must stay readable: every text colour passes AA (4.5:1 for body text, 3:1 for large text and UI edges) on its background. List the pairs and ratios in the spec.
 - **How:** the level passes the museum's theme into the artifact (a prop or a data attribute on the artifact root), and the artifact has its own light and dark tokens. The museum doesn't restyle the artifact's selectors.
   - Index light mode shows the light version.
   - Index dark mode and Classic show the dark version as now.
