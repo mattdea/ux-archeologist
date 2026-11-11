@@ -34,9 +34,9 @@ const fossil = (level) => (import.meta.env.DEV ? `/assets/fossils/fossil-${level
 // The stamp shown beside the list while no room is pointed at (Matthew,
 // 10 Nov 2026: an arrowhead, the pointer as a found object; source
 // docs/reference/style-lab/stamp-default-arrowhead.webp, cut to the stamps'
-// 480 × 408 tile and scale). With the fossils, the carved tablet rests
-// there: the museum's main picture, the six rooms' signs cut into one broken
-// stone (Matthew, 10 Nov 2026; assets/fossils/fossil-tablet.webp, a mask made
+// 480 × 408 tile and scale). With the fossils, the tablet rests there: the
+// museum's main picture, a clay tablet written in the six rooms' signs like
+// cuneiform (Matthew, 10 Nov 2026; assets/fossils/fossil-tablet.webp, a mask made
 // by scripts/fossil-tablet.mjs, at its own proportions; `contain` fits it,
 // so a larger file swaps in without code changes). Null with the dots.
 export function RestingPicture({ className = '' }) {

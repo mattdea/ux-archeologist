@@ -3,7 +3,9 @@
 //
 // The carved tablet, the index museum's main picture with the fossils
 // (backlog, "the carved tablet"): turns a drawing on a white ground
-// (default docs/reference/style-lab/fossil-tablet.webp) into
+// (default docs/reference/style-lab/fossil-tablet-script.webp, the clay
+// tablet written in the six rooms' signs; the carved tablet it replaced,
+// fossil-tablet.webp, stays there as a record) into
 // assets/fossils/fossil-tablet.webp, an ink-density mask like the fossils
 // (scripts/fossil-pictures.mjs): black with the ink as its alpha, so the
 // ground drops away, faint stipple stays faint, and the page fills it with
@@ -22,7 +24,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const SRC = process.argv[2] || join(ROOT, 'docs', 'reference', 'style-lab', 'fossil-tablet.webp')
+const SRC = process.argv[2] || join(ROOT, 'docs', 'reference', 'style-lab', 'fossil-tablet-script.webp')
 const OUT = join(ROOT, 'assets', 'fossils', 'fossil-tablet.webp')
 const FLOOR = 8        // paper noise, out of 255 (as the fossils)
 const SOLID = 0.995    // the share of ink below "solid"
