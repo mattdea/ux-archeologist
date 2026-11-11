@@ -18,9 +18,13 @@ import { ARTIFACTS } from '../data/artifacts'
 import ChatPanel from '../components/chat/ChatPanel'
 import Catalogue from '../shared/catalogue/Catalogue'
 
-// The chat's column (ChatPanel's 680px max width), the box the catalogue
-// record treats as this room's object, since there is no device
+// The chat's column (ChatPanel's 680px max width, less the bottom bar's
+// 24px side padding, so its edges are the input bar's), the box the
+// catalogue record treats as this room's object, since there is no device.
+// At phone width the column fills the viewport and the inset keeps the
+// catalogue number off the edge.
 const CHAT_COLUMN = 680
+const CHAT_INSET = 24
 
 const OBJECTIVES = [
   'Send a message',
@@ -122,7 +126,7 @@ export default function Level5() {
     if (!el) return undefined
     const measure = () => {
       const r = el.getBoundingClientRect()
-      const width = Math.min(CHAT_COLUMN, r.width)
+      const width = Math.min(CHAT_COLUMN, r.width) - 2 * CHAT_INSET
       setColumn(c => {
         const next = { fit: { scale: 1, left: r.left + (r.width - width) / 2, top: r.top }, width, height: r.height }
         return c && c.width === next.width && c.height === next.height && c.fit.left === next.fit.left && c.fit.top === next.fit.top ? c : next
