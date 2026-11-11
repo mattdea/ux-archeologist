@@ -187,6 +187,34 @@ Matthew is going with the B / B2 direction: one monospace list that is the whole
 - **Supersedes** the B2 iteration entry above. The lab stays as reference, and nothing further changes in B2.
 - **Status (10 Nov 2026):** first full version built and shown to Matthew; taking his changes next. `museum-classic` tagged at f2d13c0. What it does is in the spec, "Index museum"; screenshots in `docs/museum-index/`. Raised with Matthew: the Level 4 ghost iPhone's outline and glow vanish on white; Level 5's chat is a dark block on the white page. Matthew's first change: a Dark mode line, remembered per browser, in which both look as designed; then dark made the default. Not yet checked: keyboard only through a whole level (arrow keys, Tab and Escape were checked in Level 0 and on the title, timeline and collection), Safari, Firefox, a screen reader.
 
+### Museum: dot pictures drawn on one grid · approved 10 Nov 2026
+The six dot illustrations (`assets/dots/dots-N.webp`, 400 × 340 masks traced from ChatGPT images) don't look printed. Matthew: the background grid sits in a different place in each picture, and the dots look random. What's wrong with them:
+- The background grid's spacing and starting point change from picture to picture: about 40px from 20px in (dots-0), from 15px in (dots-1), about 46px (dots-4). Side by side they don't line up.
+- The ink dots sit on a finer spacing of their own, not on the background grid.
+- Dot sizes vary, dots overlap (the lower bubble in dots-5), and lines run at any angle (the tilted photos in dots-4). A dot-matrix print can do none of that.
+
+Rebuild them as data on one grid, the way the 5 × 7 capitals in `src/pages/styleLab/g/glyphs.js` work:
+- **One grid for every picture:** the same fine grid, about 36 × 30 points. A small background dot sits on every third point (12 × 10, about today's density). Ink dots sit only on grid points. Every picture starts from the same corner, so the background grids line up across the list, the hover preview, the discovery and the cards. If 36 × 30 doesn't suit the box, change the box's proportions to match the grid, not the other way round.
+- **Two dot sizes:** ink at about 80% of the spacing, so neighbours nearly touch like a stamp, and background at about 25%. A background dot under an ink dot isn't drawn.
+- **Grid rules:**
+  - Lines are horizontal or vertical.
+  - Diagonals are stair-steps, like the slash in the capitals.
+  - Nothing is rotated: the tilted photos become frames offset by whole cells.
+  - Keep each picture's subject as it is now: what Matthew chose stays, only the drawing changes.
+- **Pictures as text:** each picture is rows of `#` and `.` in one file (for example `src/shared/index-museum/pictures.js`). They're drawn as SVG circles in `currentColor`, so they stay sharp at any size and still invert on the black row and in dark mode. No image files.
+- **Making and fixing them:**
+  - A script samples the six current masks at the grid points to make a first draft of each picture's rows.
+  - A dev-only editor page, absent from the production build like `/card-lab`, shows the grid: click a cell to toggle it, pick a picture, and copy out its rows. Use it to tidy the drafts, and Matthew can draw new ones with it.
+  - Show Matthew the six side by side before replacing anything.
+- **Where it changes:** `DotPicture` in the index museum draws from the new rows; the props it takes stay the same. The style lab keeps its old masks as a record, and Classic isn't touched. Remove `assets/dots/` only once nothing imports it.
+- **Not in this pass:** ink spread (a fixed, slight size change per dot so it looks stamped). Leave it off: the point is regularity. Note it under Ideas if it's worth trying later.
+- **Spec:** add the grid, the dot sizes and the editor to the "Index museum" section.
+- **Checks:**
+  - A test that every picture has the right number of rows and columns.
+  - Run `npm run build` and confirm the editor isn't in it.
+  - Check in the browser in light and dark, on the list, the preview and the discovery, at 1440 and 375.
+  - Retake the screenshots in `docs/museum-index/` that show pictures.
+
 ---
 
 ## Done
