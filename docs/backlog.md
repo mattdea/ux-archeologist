@@ -250,6 +250,50 @@ This is an option to compare, not a replacement. The dot pictures entry above go
 - **Status (10 Nov 2026):** built and shown to Matthew. His call: keep both for now, the switch stays and dots stay the default. Then: an arrowhead stamp (his image) rests beside the list while no room is pointed at, stamps only. Then: the Command Line's blue `$` stamp replaced by his black `>_` key (`docs/reference/style-lab/stamp-command-line.webp`); its card lab mask regenerated, screenshots retaken. Stamps in `assets/stamps/` (480 × 408, the reference's own resolution: twice the largest showing, about 600px, would only upscale it); the reference's paper is near-white (254), not cream. Side by side, dots left and stamps right, in light and dark: `docs/museum-index/pictures/compare-<light|dark>-<timeline-hover|level-4-discovery|collection>.webp`; stamp shots at 1440 and 375 in `docs/museum-index/*-pictures-stamps-*`. The dot side still shows the old masks, because the grid redraw (entry above) isn't wired in yet. Checked: 165 tests (each option draws all six; no line or switching outside the dev server), `npm run build` (no line, no stamp files).
 
 
+
+### Museum: fossil pictures, a third picture option · approved 10 Nov 2026
+Matthew wants a third set of pictures for the index museum, beside the dots and the stamps. Each room's interface idea becomes an archaeological find, drawn as a stipple ink illustration. The set is `docs/reference/style-lab/fossil-pictures.webp` (ChatGPT, 10 Nov 2026; 1446 × 1088, three across and two down):
+
+| Level | Room | Find |
+|---|---|---|
+| 0 | Command line | a broken stone chevron `>` with a stick lying beside it as the cursor `_` |
+| 1 | Desktop | the mouse pointer as a knapped flint arrowhead |
+| 2 | Hyperlink | the pointing hand of a statue, broken off at the wrist |
+| 3 | Touchscreen | a phone-shaped slab of stone with a dip worn in it by a thumb |
+| 4 | Feed | an ammonite, the scroll that never ends |
+| 5 | Conversation | a lump of amber shaped like a speech bubble, its tail a resin drip |
+
+Why this set, from the chat with Matthew:
+- **The object's shape carries the idea.** Nothing is drawn on or inside it.
+- **Black ink on white,** so they belong to the museum's list, not to the devices. The device is the exhibit, in colour; the fossil is the curator's drawing of what's left. They aren't meant to match the devices.
+- **The theme fits the copy,** which already says "Begin excavation".
+
+Matthew may still send a coarser redraw (bigger dots, less surface texture, a more amber-like amber). Build so the six files can be swapped without code changes.
+
+- **The switch:**
+  - Replace the "Stamp pictures" line with one "Pictures" line, still dev-only and remembered per browser. Its right side names the current set: `dots`, `stamps` or `fossils`. Clicking (or Enter) moves to the next one.
+  - Extend `pictureStyle.js` to the three values. The default stays `dots`, and production always shows the dots.
+  - Every place that shows a room's picture follows it, as with the stamps: the preview beside the list, the discovery and the collection.
+- **Cutting them out:**
+  - Crop each find from the reference into `assets/fossils/fossil-N.webp`, served on the dev server only, like the stamps.
+  - Use one scale for all six, each centred in the same 400 / 340 box, so the dots are the same size in every picture. The finds differ in size as they do in the reference.
+  - Keep the reference's resolution; don't upscale it.
+- **Ink, not paper:**
+  - Make each fossil a mask from its ink density, filled with the text colour (`currentColor`), like the dots.
+  - The white paper drops away and the faint stipple stays faint.
+  - So they're black on the light page, light on the dark page (dark is the default), and they invert on the black row.
+  - In dark mode the shading reads reversed, like chalk or a scratchboard. Show Matthew dark mode and light mode side by side. If dark reads as a photo negative, the fallback is the stamps' approach: each picture on its own white tile.
+- **Beside the list while no room is pointed at:** the arrowhead (level 1) rests there, as the arrowhead stamp does for the stamps.
+- **Rooms not found yet:** the collection keeps its empty placeholder; no fossil before the room is found.
+- **Not in this pass:** redrawing the pictures, recolouring them, or using them in the card lab.
+- **Show Matthew** all three options side by side, in light and dark, on the timeline preview, a discovery and the collection.
+- **Checks:**
+  - Tests: the line cycles through all three and is absent from the production build; each option renders all six; the production build carries no fossil files.
+  - Run `npm run build`.
+  - Check in the browser at 1440 and 375.
+  - Take screenshots of the fossil option into `docs/museum-index/`.
+- **Spec:** extend the "Index museum" paragraph on picture options to the three sets.
+
 ### Card lab: stamp cards in a grid · approved 10 Nov 2026
 Matthew wants a card design in the card lab (`/card-lab`) based on a ChatGPT mockup, saved as `docs/reference/style-lab/stamp-cards.webp`. Each card is a sheet of the room's colour, with its picture printed in black at the top and the text set below. Use the stamp pictures already in `assets/stamps/` (from the entry above), not the mockup's drawings, and lay the cards out in a straight grid with no rotation.
 
