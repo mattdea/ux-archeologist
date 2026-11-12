@@ -20,6 +20,7 @@ import { FadeNavCtx } from '../shared/SharedLayout'
 import { resetAll } from '../state/state'
 import useArtifactFit, { computeFit } from '../hooks/useArtifactFit'
 import { indexLevelLayout, setIndexLevelLayout } from '../shared/devLooks'
+import { overlaps, BAND_GAP } from '../shared/index-museum/band'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
@@ -253,5 +254,44 @@ describe('Index museum: the corners in a level', () => {
       act(() => { window.dispatchEvent(new Event('resize')) })
       expect(deviceBox()).toEqual(playing)
     })
+
+    it('the band either clears the device or is a tray, and a window that grows drops the tray', () => {
+      // the band's content where it lays out at 1440 × 900
+      const CONTENT = [40, H - 170, 1063, 140]
+      ;['offsetLeft', 'offsetTop', 'offsetWidth', 'offsetHeight'].forEach((k, i) => vi.spyOn(HTMLElement.prototype, k, 'get').mockImplementation(function () {
+        if (this.parentElement?.hasAttribute('data-ix-band')) return CONTENT[i]
+        return at(this, i)
+      }))
+      const root = document.documentElement.style
+      const put = (x, y, w, h) => Object.entries({ left: x, top: y, width: w, height: h }).forEach(([k, v]) => root.setProperty(`--artifact-${k}`, `${v}px`))
+      put(375, 134, 690, 632)                     // the Mac, reaching below the band's top
+      renderLevel()
+      fireEvent.click(screen.getByText('Begin excavation').closest('button'))
+      fireEvent.click(screen.getByText('finish'))
+      const band = () => corner('bl').querySelector('[data-ix-band]')
+      expect(band().getAttribute('data-ix-band')).toBe('tray')
+      expect(band().hasAttribute('data-hud')).toBe(false)
+      // a taller window: the device now ends well above the band
+      put(375, 100, 690, 500)
+      act(() => { window.dispatchEvent(new Event('resize')) })
+      expect(band().getAttribute('data-ix-band')).toBe('band')
+      ;['left', 'top', 'width', 'height'].forEach(k => root.removeProperty(`--artifact-${k}`))
+    })
+
+    it('the tray is on the page colour with no border, rule or shadow, and doesn\'t slide under reduced motion', () => {
+      const css = readFileSync(resolve(__dirname, '../shared/index-museum/IndexMuseum.module.css'), 'utf8')
+      const tray = css.match(/\n\.band\.tray \{([^}]*)\}/)[1]
+      expect(tray).toMatch(/background: var\(--ix-paper\)/)
+      expect(tray).not.toMatch(/border(?!-box)|box-shadow|outline/)
+      expect(css).toMatch(/prefers-reduced-motion[^}]*\.band\.tray[^}]*animation: none/)
+    })
+  })
+
+  it('overlap: boxes within the gap count as covering', () => {
+    const dev = { x: 100, y: 100, w: 400, h: 400 }
+    expect(overlaps({ x: 0, y: 600, w: 800, h: 100 }, dev)).toBe(false)
+    expect(overlaps({ x: 0, y: 500 + BAND_GAP - 1, w: 800, h: 100 }, dev)).toBe(true)
+    expect(overlaps({ x: 0, y: 450, w: 800, h: 100 }, dev)).toBe(true)
+    expect(overlaps({ x: 0, y: 450, w: 800, h: 100 }, null)).toBe(false)
   })
 })

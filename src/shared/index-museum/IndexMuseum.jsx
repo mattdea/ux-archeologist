@@ -45,6 +45,7 @@ import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle } from './pictureStyle'
 import './pointer'   // the museum's pointer (pointers.css), arrowhead or stick
 import { useDevChange } from '../dev/devEvents'
+import { deviceBox, layoutBox, overlaps } from './band'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -443,6 +444,10 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAction, navigate, panelOpen, togglePanel }) {
   const a = ARTIFACTS[level]
   const next = ARTIFACTS[level + 1]
+  // under 900px the bottom band already holds the discovery; it becomes a
+  // tray only if it covers the device
+  const bottomRef = useRef(null)
+  const bottomTray = useTray(bottomRef, narrow && roomState === 'discovery')
   const room = (
     <Line as="go" current mark={`${a.year}  `} text={a.title} arrow="≡" bare
       className={s.roomLine} expanded={panelOpen} label={`${a.year} ${a.title}. ${WORDS.allRooms}`}
@@ -508,7 +513,7 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
   if (narrow) return (
     <div ref={listRef} className={s.cornersNarrow}>
       <div className={s.topBand} data-hud="top">{room}</div>
-      <div className={s.bottomBand} data-hud="bottom" data-state={roomState}>
+      <div ref={bottomRef} className={`${s.bottomBand} ${bottomTray ? s.tray : ''}`} data-hud="bottom" data-state={roomState} data-ix-tray={roomState === 'discovery' ? String(bottomTray) : undefined}>
         <div className={s.read}>{read}</div>
         {act && <div className={s.act}>{act}</div>}
       </div>
@@ -545,9 +550,36 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 // picture at the band's left as tall as the text. It's position: fixed
 // inside the corner, which keeps its size, and not data-hud, so the device
 // stays exactly where it was in playing.
+//
+// If the band would still cover the device (its box within BAND_GAP of the
+// device's), it becomes a tray: the same box and contents on the page
+// colour, slid up from the bottom edge over the device's lower part, with
+// no border, rule or shadow. The device stays put under it; the bottom-right
+// corner stays uncovered. Checked again on every resize and whenever the
+// text's size changes, so a window that grows enough drops it back to a band.
 const PICTURE_RATIO = 400 / 340
+
+// Is the box `ref` holds over the device? Measured without transforms, so
+// the tray's own slide doesn't change the answer.
+function useTray(ref, active) {
+  const [tray, setTray] = useState(false)
+  useLayoutEffect(() => {
+    if (!active) { setTray(false); return }
+    const check = () => { if (ref.current) setTray(overlaps(layoutBox(ref.current), deviceBox())) }
+    check()
+    const raf = requestAnimationFrame(check)
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(check) : null
+    if (ref.current) ro?.observe(ref.current)
+    window.addEventListener('resize', check)
+    return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', check) }
+  }, [ref, active])
+  return tray
+}
+
 function DiscoveryBand({ level, children }) {
   const textRef = useRef(null)
+  const innerRef = useRef(null)
+  const tray = useTray(innerRef, true)
   const [pictureH, setPictureH] = useState(0)
   useLayoutEffect(() => {
     const measure = () => { if (textRef.current) setPictureH(textRef.current.offsetHeight) }
@@ -559,8 +591,8 @@ function DiscoveryBand({ level, children }) {
     return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', measure) }
   }, [level])
   return (
-    <div className={`${s.band} ${s.findIn}`} data-ix-band="band">
-      <div className={s.bandInner}>
+    <div className={`${s.band} ${s.findIn} ${tray ? s.tray : ''}`} data-ix-band={tray ? 'tray' : 'band'}>
+      <div ref={innerRef} className={s.bandInner}>
         {pictureH > 0 && (
           <span className={s.bandPicture} style={{ height: pictureH, width: Math.round(pictureH * PICTURE_RATIO) }} data-ix-find>
             <DotPicture level={level} className={s.findPicture} />

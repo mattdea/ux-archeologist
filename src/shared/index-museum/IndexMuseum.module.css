@@ -260,6 +260,20 @@
 .bandInner { display: flex; align-items: flex-end; gap: 2ch; }
 .bandPicture { flex: 0 0 auto; display: block; }
 .bandText { flex: 0 1 80ch; min-width: 0; max-width: 80ch; }
+/* The tray: the band when it would cover the device. The same box and
+   contents (padding keeps the content where the band had it), on the page
+   colour from a row above the content down to the bottom edge, slid up
+   from that edge, over the device's lower part. No border, rule or
+   shadow, like the ≡ list. */
+.band.tray {
+  left: 0;
+  bottom: 0;
+  padding: var(--ix-row) 0 calc(var(--ix-row) * 1.5) calc(var(--ix-gutter) + var(--ix-cursor));
+  background: var(--ix-paper);
+  animation: ixTrayUp 300ms ease-out both;
+}
+.bottomBand.tray { background: var(--ix-paper); animation: ixTrayUp 300ms ease-out both; }
+@keyframes ixTrayUp { from { transform: translateY(100%); } to { transform: none; } }
 .findPicture { width: 100%; height: 100%; }
 .findNarrow { width: min(30ch, 100%); aspect-ratio: 400 / 340; margin-bottom: var(--ix-row); flex-shrink: 0; }
 .bandPicture .stamp, .findNarrow.stamp { object-fit: contain; }
@@ -371,5 +385,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .line, .gap, .findIn { animation: none; }
+  .line, .gap, .findIn, .band.tray, .bottomBand.tray { animation: none; }
 }
