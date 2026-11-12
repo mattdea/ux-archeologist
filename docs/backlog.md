@@ -884,6 +884,8 @@ Six fixes from Matthew's review of the Index on 12 Nov 2026, with screenshots. B
 - Run `npm run build`.
 - Update the spec: Index museum, Level 1 and the dev panel.
 
+**Status (12 Nov 2026):** all six built, one commit each: 1 `f7296cb`, 2 `34c2b5d`, 3 `ec8d3b1`, 4 `79247c6`, 5 `6dd881f`, 6 `3d52140`. The fade is the page colour at 92% with a 6px blur. The discovery text over the device measured at worst 13.3:1 for the main ink (Level 1, dark, 1920 × 1080) and 4.72:1 for the grey (Level 2's year, dark, 1920 × 1080; light's worst 4.82:1, Level 3); every line passes AA at 1440 × 900 and 1920 × 1080, light and dark; at 85% the grey failed (3.99–4.23:1). In intro, and at 375 × 812, no text runs over a device. The cards timeline's drop was CSS: the turning card's faces stacked because `.card > span` outranked `.turn`. On a desktop the cards are about 23ch wide, so their footer reads `1 / 6`. Checked by reading the page in headless Chrome and the browser pane, not by eye. Not done: the side layout (a dev setting) still shows Begin under the intro text without the fade. `src/components/IntroModal.jsx` and `src/pages/TestMuseumUI.jsx` still say "Use the File menu" (old components the item didn't name). Details in the spec.
+
 ### Fixes: leaving during a boot, a sound switch, the record over the discovery text · approved 12 Nov 2026
 Three more from Matthew's review on 12 Nov 2026. Build and commit them one at a time, in this order, after "fixes from Matthew's review" above.
 
