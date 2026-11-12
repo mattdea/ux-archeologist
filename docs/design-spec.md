@@ -269,6 +269,8 @@ White card, no accent line, "ARTIFACT DISCOVERED", large mono year, artifact nam
 ## Sound
 
 `src/audio/sfx.js` synthesises every effect with Web Audio except the recordings named below. Master gain 0.28: sounds of a room, not a game. The context unlocks on the first pointer/key, so timer-driven sounds after "Begin excavation" play. Per era: 1979 VT100 keyclick and bell (one keyboard speaker driven once per status byte, 1.271 ms, so near 787 Hz — derived from the manual's timing, not measured: one pulse = click, ~200 = bell, ~0.25 s) and the power-on bell from the self-test (VT100 Technical Manual §4.2.8), 600 ms into the boot (placement reconstructed: the manual gives the order of the tests, not their timing); 1984 startup beep, a 600 Hz square wave as on the 128K, 512K and Plus (the chord came with the Macintosh II in 1987; source: Wikipedia, "Macintosh startup"), played as the boot begins for about 1 s (Matthew's correction, 8 Nov 2026: 4 ms attack, held, 200 ms fade) — its level is reconstructed (the alert beep's peak, 0.08), no drive sound; 1995 a real dial-up recording (`assets/web/dialup.mp3`, 6.2s, volume 0.25) under the first page load; 2007 unlock/lock recordings (Level 3); 2016 like pop; 2023 send tick, reply-finished tone.
+**Leaving a room silences it.** As a navigation starts, SharedLayout calls `sfx.stopAll()`: the dial-up and any recording (`sfx.file`, which Level 3's unlock and lock clicks use) are paused, and the master gain is swapped for a fresh one, so synthesised notes already scheduled go quiet. During the 300ms fade-out the level being left is still mounted; SharedLayout ignores its `notifyArtifactReady()` and any non-null Continue until the next view is in, so a boot that ends inside the fade can't show the next room's HUD early or give it a Continue (backlog, "Fixes: leaving during a boot…", item 1, 12 Nov 2026).
+
 
 ## Period pointers
 
@@ -834,7 +836,7 @@ Era-authentic only. Never use museum-layer easing inside the artifact.
 - App close: `scale(1) → scale(0.02)`, 250ms ease-in
 - Notes slide transition: translateX, 200ms ease-out
 - Rubber-band scroll: linear drag, 0.3× damping past bounds; `cubic-bezier(0.25, 0.46, 0.45, 0.94)` 300ms snap on release
-- Sound effects: `audio.volume = 0.5` for all sounds
+- Sound effects: `sfx.file(src)`, volume 0.5, for the unlock and lock recordings
 
 **Level 4 — 2016:**
 - Boot: nothing drawn during the intro; 300ms pause → screen fades up in place (450ms) with content already there → ghost outline and glow fade in (800ms) → HUD. It stays lit at the discovery.

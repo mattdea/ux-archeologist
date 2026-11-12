@@ -6,6 +6,7 @@ import SmallScreenNotice from './museum-ui/SmallScreenNotice'
 import { loadView, warmMacBezel } from '../views'
 import { useMuseumStyle, museumStyle } from './museumStyle'
 import IndexMuseum from './index-museum/IndexMuseum'
+import { stopAll as stopAllSound } from '../audio/sfx'
 
 // Every dev control behind the corner `dev` tab (src/shared/dev/DevPanel.jsx).
 // Dev server only: in the build this is null and Rollup drops the chunk.
@@ -157,8 +158,16 @@ export default function SharedLayout({ children }) {
   const activeLevel = meta.level ?? null
 
   // ── Called by level components when their artifact is ready ─────
+  // A level being left keeps running through the fade-out; what it reports
+  // then (its boot ending, its objectives done) is about the room being
+  // left, so it is ignored until the next view is in.
   const notifyArtifactReady = useCallback(() => {
+    if (pendingRef.current) return
     setHudReady(true)
+  }, [])
+  const setContinue = useCallback((action) => {
+    if (pendingRef.current && action) return
+    setContinueAction(action)
   }, [])
 
   // ── Intercept navigation: fade HUD + content out, then swap view ─
@@ -187,6 +196,7 @@ export default function SharedLayout({ children }) {
     } else if (indexOn && nextView === 'title' && !options?.fromHistory && window.location.pathname !== '/') {
       window.history.pushState(null, '', '/')
     }
+    stopAllSound()           // the room being left goes quiet at once
     setContinueAction(null)  // clear Continue button on navigate
     setHudFading(true)       // start HUD fade-out (200ms)
     setHudReady(false)       // mark not ready (visual driven by hudFading until nav completes)
@@ -272,7 +282,7 @@ export default function SharedLayout({ children }) {
     <ViewCtx.Provider value={view}>
     <FadeNavCtx.Provider value={fadeNavigate}>
       <HudCtx.Provider value={notifyArtifactReady}>
-        <ContinueCtx.Provider value={setContinueAction}>
+        <ContinueCtx.Provider value={setContinue}>
           <div className={styles.room} style={indexOn ? { background: 'var(--ix-room)' } : undefined}>
 
             {indexOn && (

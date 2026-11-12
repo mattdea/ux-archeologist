@@ -23,12 +23,8 @@ import { ARTIFACTS } from '../data/artifacts'
 import unlockSoundSrc from '../../assets/phone/unlock.mp3'
 import lockSoundSrc from '../../assets/phone/lock.mp3'
 import IntroModal from '../shared/museum/IntroModal'
+import * as sfx from '../audio/sfx'
 
-function playSound(src) {
-  const audio = new Audio(src)
-  audio.volume = 0.5
-  audio.play().catch(() => {})
-}
 import ObjectiveTracker from '../shared/museum/ObjectiveTracker'
 import DiscoveryCard from '../shared/museum/DiscoveryCard'
 import HintPill from '../shared/museum/HintPill'
@@ -155,7 +151,7 @@ export default function Level3() {
 
   // ── Unlock handler — triggers the 5-phase choreography ─────────────────
   const handleUnlock = useCallback(() => {
-    playSound(unlockSoundSrc)
+    sfx.file(unlockSoundSrc)
     completeObjective('slideToUnlock')
     setPhoneScreen('unlocking')
     setUnlockPhase(1) // Phase 1: lock screen exit animations begin (CSS-driven)
@@ -243,7 +239,7 @@ export default function Level3() {
     if (museumScreen !== 'playing') return
     if (phonePower === 'off') { handleWake(); return }
     if (phonePower !== 'on') return
-    playSound(lockSoundSrc)
+    sfx.file(lockSoundSrc)
     unlockTimers.current.forEach(clearTimeout)
     unlockTimers.current = []
     appTimers.current.forEach(clearTimeout)

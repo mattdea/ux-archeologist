@@ -16,9 +16,19 @@
 //   dialup()            real dial-up recording if assets/web/dialup.* exists; returns stop()
 //   pop()               Instagram like
 //   send() / receive()  chat: message sent / reply finished
+//   file(src, volume)   a recorded sound (the iPhone's unlock and lock clicks)
+//   stopAll()           silence everything now: called as a view fades out
 
 let ctx = null
 let master = null
+
+// Every synthesised sound runs through this gain. stopAll() drops it and
+// connects a fresh one, which silences notes already scheduled ahead.
+function newMaster() {
+  master = ctx.createGain()
+  master.gain.value = 0.28
+  master.connect(ctx.destination)
+}
 
 function ensure() {
   if (typeof window === 'undefined') return null
@@ -26,9 +36,7 @@ function ensure() {
   if (!AC) return null
   if (!ctx) {
     ctx = new AC()
-    master = ctx.createGain()
-    master.gain.value = 0.28
-    master.connect(ctx.destination)
+    newMaster()
   }
   if (ctx.state === 'suspended') ctx.resume().catch(() => {})
   return ctx
@@ -173,6 +181,32 @@ export function dialup(volume = 0.25) {
     dialupAudio.play().catch(() => {})
   } catch { /* no audio */ }
   return () => dialupAudio?.pause()
+}
+
+// ── recordings ─────────────────────────────────────────────────────
+
+const playing = new Set()   // file() sounds not yet finished
+
+/** Plays a recorded sound once. */
+export function file(src, volume = 0.5) {
+  try {
+    const audio = new Audio(src)
+    audio.volume = volume
+    playing.add(audio)
+    audio.onended = () => playing.delete(audio)
+    audio.play().catch(() => playing.delete(audio))
+  } catch { /* no audio */ }
+}
+
+/** Stops every sound at once: the dial-up, recordings, synthesised notes. */
+export function stopAll() {
+  dialupAudio?.pause()
+  playing.forEach(a => a.pause())
+  playing.clear()
+  if (ctx && master) {
+    master.disconnect()
+    newMaster()
+  }
 }
 
 // ── 2016: Instagram ────────────────────────────────────────────────
