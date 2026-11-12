@@ -125,10 +125,8 @@ describe('Index museum', () => {
     expect(enter.textContent).toContain('−')
     expect(enter).toHaveAttribute('aria-expanded', 'true')
     expect(document.activeElement.textContent).toContain('The Desktop')
-    // Reset sits at the foot of the open timeline, before About
-    const text = list().textContent
-    expect(text.indexOf('Reset progress')).toBeGreaterThan(text.indexOf('The Conversation'))
-    expect(text.indexOf('Reset progress')).toBeLessThan(text.indexOf('About'))
+    // no Reset progress: it's in the dev panel now (Matthew's review, 12 Nov 2026)
+    expect(list().textContent).not.toContain('Reset')
     fireEvent.click(enter)
     expect(navigate).toHaveBeenCalledWith('/')
   })
@@ -157,20 +155,12 @@ describe('Index museum', () => {
     window.history.replaceState(null, '', '/')
   })
 
-  it('timeline: found rooms carry the artifact, others "not found"; reset asks first', () => {
+  it('timeline: found rooms carry the artifact, others "not found"', () => {
     completeLevel(1)
-    const navigate = renderIndex('timeline')
+    renderIndex('timeline')
     const rows = lines()
     expect(rows.find(t => t.includes('The Desktop'))).toContain('Direct Manipulation')
     expect(rows.find(t => t.includes('The Feed'))).toContain('not found')
-    fireEvent.click(screen.getByText('Reset progress').closest('button'))
-    expect(list().textContent).toContain('Reset all six levels?')
-    fireEvent.click(screen.getByText('Cancel').closest('button'))
-    expect(isLevelComplete(1)).toBe(true)
-    fireEvent.click(screen.getByText('Reset progress').closest('button'))
-    fireEvent.click(screen.getByText('Reset').closest('button'))
-    expect(isLevelComplete(1)).toBe(false)
-    expect(navigate).toHaveBeenCalledWith('/')
   })
 
   it('no Collection line on the home page, open or closed', () => {

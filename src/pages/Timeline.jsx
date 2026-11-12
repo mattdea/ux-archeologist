@@ -1,11 +1,11 @@
 // src/pages/Timeline.jsx
 import { useState } from 'react'
 import styles from './Timeline.module.css'
-import { isLevelComplete, resetAll } from '../state/state'
+import { isLevelComplete } from '../state/state'
 import { useFadeNavigate } from '../shared/SharedLayout'
 import AboutModal from '../shared/museum-ui/AboutModal'
 import { ARTIFACTS } from '../data/artifacts'
-import { cardTimelineOn, forgetCardsSeen } from '../shared/devLooks'
+import { cardTimelineOn } from '../shared/devLooks'
 import { useDevChange } from '../shared/dev/devEvents'
 import CardPath from './CardPath'
 
@@ -14,9 +14,8 @@ const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.tit
 export default function Timeline() {
   const navigate = useFadeNavigate()
   const [showAbout, setShowAbout] = useState(false)
-  const [confirmReset, setConfirmReset] = useState(false)
-  // Re-read progress and looks when the dev panel changes them (Complete
-  // all, line or cards); dev server only
+  // Re-read progress and looks when the dev panel changes them (its
+  // progress switch, line or cards); dev server only
   const [tick, refresh] = useState(0)
   useDevChange(() => refresh(n => n + 1))
 
@@ -56,38 +55,6 @@ export default function Timeline() {
           </button>
         )
       })}
-
-      {/* ── Reset progress: asks once before wiping every level ───── */}
-      <div className={styles.leftLinks}>
-      {confirmReset ? (
-        <div className={styles.resetConfirm} role="group" aria-label="Reset all six levels?">
-          <span className={styles.resetQuestion}>Reset all six levels?</span>
-          <button
-            type="button"
-            className={styles.resetChoice}
-            onClick={() => { resetAll(); forgetCardsSeen(); navigate('/') }}
-          >
-            Reset
-          </button>
-          <button
-            type="button"
-            className={styles.resetChoice}
-            autoFocus
-            onClick={() => setConfirmReset(false)}
-          >
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <button
-          className={styles.resetBtn}
-          onClick={() => setConfirmReset(true)}
-          style={{ animationDelay: '850ms' }}
-        >
-          Reset progress
-        </button>
-      )}
-      </div>
 
       <div className={styles.links}>
         {!cards && (

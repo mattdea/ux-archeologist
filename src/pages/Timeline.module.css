@@ -159,62 +159,6 @@
   animation: fadeIn 400ms ease-out both;
 }
 
-/* ── Dev helper: Reset progress ───────────────────────────────────── */
-/* Reset progress (and, on the dev server, Complete all), bottom left */
-.leftLinks {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  display: flex;
-  align-items: baseline;
-  gap: 24px;
-}
-
-.resetBtn {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: system-ui, sans-serif;
-  font-size: 13px;
-  color: #999;
-  text-decoration: none;
-  cursor: pointer;
-  letter-spacing: 0.01em;
-  animation: fadeIn 400ms ease-out both;
-}
-
-.resetBtn:hover {
-  color: #ccc;
-  text-decoration: underline;
-}
-
-/* Reset confirmation: same place and type as the Reset link */
-.resetConfirm {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  font-family: system-ui, sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.01em;
-}
-
-.resetQuestion { color: #ccc; }
-
-.resetChoice {
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  color: #999;
-  cursor: pointer;
-}
-
-.resetChoice:hover,
-.resetChoice:focus-visible {
-  color: #fff;
-  text-decoration: underline;
-}
-
 /* ── Collection and About links, bottom right ───────────────────── */
 .links {
   position: fixed;

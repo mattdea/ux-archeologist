@@ -32,14 +32,14 @@
 // labels and rooms you're not in.
 //
 // Keyboard: arrow keys move through the list's lines, Home / End jump,
-// Enter opens, Escape closes what's open (About, the reset question). Tab
+// Enter opens, Escape closes what's open (About). Tab
 // order is the DOM order, as for any page.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import s from './IndexMuseum.module.css'
 import { ARTIFACTS } from '../../data/artifacts'
-import { isLevelComplete, resetAll } from '../../state/state'
-import { cardTimelineOn, forgetCardsSeen, indexLevelLayout, indexTimeline } from '../devLooks'
+import { isLevelComplete } from '../../state/state'
+import { cardTimelineOn, indexLevelLayout, indexTimeline } from '../devLooks'
 import TimelineVersion from './Timelines'
 import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS } from './words'
@@ -119,8 +119,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   const small = useMedia(SMALL)
   const [smallGone, setSmallGone] = useState(smallDismissed)
   const [aboutOpen, setAboutOpen] = useState(false)
-  const [asking, setAsking] = useState(false)          // the reset question
-  const [, refresh] = useState(0)                // the dev panel's Complete all
+  const [, refresh] = useState(0)                // the dev panel's progress switch
   useDevChange(() => refresh(k => k + 1))
   const listRef = useRef(null)
   const panelRef = useRef(null)
@@ -148,7 +147,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     const homeToHome = ['title', 'timeline'].includes(lastView.current) && home
     lastView.current = view
     if (!homeToHome) setAboutOpen(false)
-    setAsking(false); setPanelOpen(false)
+    setPanelOpen(false)
   }, [view, home])
 
   // What the open room shows, from what the level published
@@ -203,8 +202,8 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // an artifact's own document-level listeners (Level 0's terminal pulls
   // focus back on every keydown); while the list has focus, its keys stay
   // with the list. Any other key (typing) goes on to the artifact as usual.
-  const openRef = useRef({ asking, aboutOpen, panelOpen })
-  openRef.current = { asking, aboutOpen, panelOpen }
+  const openRef = useRef({ aboutOpen, panelOpen })
+  openRef.current = { aboutOpen, panelOpen }
   useEffect(() => {
     const MENU_KEYS = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Escape', 'Enter', ' ', 'Tab']
     const onKey = (e) => {
@@ -218,8 +217,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
       if (!list || !list.contains(e.target) || !MENU_KEYS.includes(e.key)) return
       e.stopPropagation()
       if (e.key === 'Escape') {
-        if (openRef.current.asking) { e.preventDefault(); setAsking(false) }
-        else if (openRef.current.aboutOpen) { e.preventDefault(); setAboutOpen(false) }
+        if (openRef.current.aboutOpen) { e.preventDefault(); setAboutOpen(false) }
         return
       }
       // the years row, and the line and cards timelines: left and right
@@ -352,17 +350,6 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
       push(<Note key={`disc-text-${a.level}`} i={n}>{d.description}</Note>)
       push(<Gap key={`disc-gap-${a.level}`} i={n} />)
       push(<Line key={`disc-next-${a.level}`} i={n} as="go" sub text={WORDS.cont} meta={nextLabel} arrow="→" focus onClick={() => navigate(to)} />)
-    }
-  }
-
-  // Reset, at the foot of the open timeline
-  if (timelineOpen) {
-    if (!asking) push(<Line key="reset" i={n} as="go" text={WORDS.reset} arrow="+" onClick={() => setAsking(true)} />)
-    else {
-      push(<Line key="reset" i={n} text={WORDS.resetAsk} />)
-      push(<Line key="reset-yes" i={n} as="go" sub text={WORDS.resetYes} arrow="→"
-        onClick={() => { resetAll(); forgetCardsSeen(); setAsking(false); navigate('/') }} />)
-      push(<Line key="reset-no" i={n} as="go" sub text={WORDS.resetNo} arrow="−" focus onClick={() => setAsking(false)} />)
     }
   }
 

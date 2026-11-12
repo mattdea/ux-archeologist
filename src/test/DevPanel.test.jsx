@@ -12,7 +12,7 @@ import { FadeNavCtx } from '../shared/SharedLayout'
 import { setMuseumStyle, museumStyle } from '../shared/museumStyle'
 import { setPictureStyle, pictureStyle } from '../shared/index-museum/pictureStyle'
 import { setSerifTitles } from '../shared/devLooks'
-import { isLevelComplete, resetAll } from '../state/state'
+import { completeLevel, isLevelComplete, resetAll } from '../state/state'
 
 function memoryStorage() {
   const m = new Map()
@@ -104,12 +104,36 @@ describe('Dev panel', () => {
     expect(museumStyle()).toBe('classic')
   })
 
-  it('Complete all marks every level done and the timeline shows it', () => {
+  it('the progress switch: all completes the six, none resets them; in between, neither is pressed and the heading counts', () => {
     renderWith(<Timeline />)
     fireEvent.click(tab())
-    fireEvent.click(within(panel()).getByRole('button', { name: 'Complete all' }))
+    const pressed = () => within(group('progress')).getAllByRole('button').filter(b => b.getAttribute('aria-pressed') === 'true').map(b => b.textContent)
+    const heading = () => within(panel()).getAllByRole('heading').map(h => h.textContent).find(t => t.startsWith('Progress'))
+    expect(pressed()).toEqual(['none'])
+    expect(heading()).toBe('Progress')
+    // all: every level done, the timeline shows it, nothing marked seen (the reveals still play)
+    choose('progress', 'all')
     expect([0, 1, 2, 3, 4, 5].every(isLevelComplete)).toBe(true)
     expect(screen.getByRole('button', { name: 'Collection · 6 of 6' })).toBeInTheDocument()
+    expect(localStorage.getItem('ux-archaeologist:cards-seen')).toBeNull()
+    expect(pressed()).toEqual(['all'])
+    // none: everything reset, the seen finds forgotten too
+    localStorage.setItem('ux-archaeologist:cards-seen', '[0,1]')
+    choose('progress', 'none')
+    expect([0, 1, 2, 3, 4, 5].some(isLevelComplete)).toBe(false)
+    expect(localStorage.getItem('ux-archaeologist:cards-seen')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Collection · 0 of 6' })).toBeInTheDocument()
+    // in between: 2 of 6
+    act(() => { completeLevel(0); completeLevel(3) })
+    fireEvent.click(tab()); fireEvent.click(tab())   // close and reopen: the panel reads progress as it draws
+    expect(pressed()).toEqual([])
+    expect(heading()).toBe('Progress · 2 of 6')
+  })
+
+  it('no Reset progress on the Classic timeline: it is in the dev panel', () => {
+    completeLevel(0)
+    renderWith(<Timeline />)
+    expect(screen.queryByText('Reset progress')).toBeNull()
   })
 
   it('serif titles and the timeline as line or cards, under their old keys', () => {

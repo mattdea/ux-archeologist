@@ -20,15 +20,20 @@
 // Museum > continue: after a discovery, the next room or back to the timeline
 // (the card path's old setting, card-timeline, shared with Classic).
 // Levels > catalogue: every level's catalogue record (experiment, on by default).
+// Progress > progress: none resets every level (and the timeline's seen
+// finds); all completes the six without marking them seen, so the
+// timeline's reveals still play. In between, neither is pressed and the
+// heading says how many are done. No confirm step: it's dev only, and it
+// replaces the visitors' Reset progress (Matthew's review, 12 Nov 2026).
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import s from './DevPanel.module.css'
 import { useMuseumStyle, setMuseumStyle } from '../museumStyle'
 import { usePictureStyle, setPictureStyle, PICTURE_STYLES } from '../index-museum/pictureStyle'
 import { useMuseumPointer, setMuseumPointer, POINTERS } from '../index-museum/pointer'
-import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord, indexLevelLayout, setIndexLevelLayout, indexTimeline, setIndexTimeline } from '../devLooks'
+import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord, indexLevelLayout, setIndexLevelLayout, indexTimeline, setIndexTimeline, forgetCardsSeen } from '../devLooks'
 import { readCardLook, saveCardLook, readCardArt, saveCardArt } from '../../pages/collection/cardLook'
-import { completeLevel } from '../../state/state'
+import { completeLevel, isLevelComplete, resetAll } from '../../state/state'
 import { ARTIFACTS } from '../../data/artifacts'
 import { devChanged } from './devEvents'
 
@@ -57,7 +62,6 @@ export default function DevPanel({ navigate }) {
   const pictures = usePictureStyle()
   const pointer = useMuseumPointer()
   const [, redraw] = useState(0)
-  const [done, setDone] = useState(false)
   const rootRef = useRef(null)
   const tabRef = useRef(null)
 
@@ -92,10 +96,12 @@ export default function DevPanel({ navigate }) {
   }, [open, close])
 
   const go = (path) => { setOpen(false); navigate(path) }
-  const completeAll = () => {
-    ARTIFACTS.forEach(a => completeLevel(a.level))
+  const doneCount = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
+  const progress = doneCount === 0 ? 'none' : doneCount === ARTIFACTS.length ? 'all' : null
+  const setProgress = (v) => {
+    if (v === 'none') { resetAll(); forgetCardsSeen() }
+    else ARTIFACTS.forEach(a => completeLevel(a.level))
     changed()
-    setDone(true); setTimeout(() => setDone(false), 1200)
   }
 
   // In <body>, outside the room, so no transform or stacking context of the
@@ -143,8 +149,8 @@ export default function DevPanel({ navigate }) {
               onChoose={(v) => { setCatalogueRecord(v === 'on'); changed() }} />
           </section>
           <section className={s.group}>
-            <h2 className={s.head}>Progress</h2>
-            <button type="button" className={s.action} onClick={completeAll}>{done ? 'Completed all six' : 'Complete all'}</button>
+            <h2 className={s.head}>{progress ? 'Progress' : `Progress · ${doneCount} of ${ARTIFACTS.length}`}</h2>
+            <Choice label="progress" value={progress} options={[['none', 'none'], ['all', 'all']]} onChoose={setProgress} />
           </section>
           <section className={s.group}>
             <h2 className={s.head}>Labs</h2>
