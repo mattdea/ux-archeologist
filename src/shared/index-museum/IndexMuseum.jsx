@@ -129,9 +129,21 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   const inLevel = level !== null
   const corners = inLevel && indexLevelLayout() === 'corners'
   const found = ARTIFACTS.filter(a => isLevelComplete(a.level)).length
+  // The home page (backlog, "Index museum: one home page", 12 Nov 2026):
+  // the title, with the timeline opening under Enter. 'title' is the page
+  // with it closed, 'timeline' the same page with it open (/timeline).
+  const home = view === 'title' || view === 'timeline'
+  const timelineOpen = view === 'timeline'
 
   // Whatever was open closes when the view changes
-  useEffect(() => { setAboutOpen(false); setAsking(false); setPanelOpen(false) }, [view])
+  // (opening or closing the timeline stays on the home page, so About stays)
+  const lastView = useRef(view)
+  useEffect(() => {
+    const homeToHome = ['title', 'timeline'].includes(lastView.current) && home
+    lastView.current = view
+    if (!homeToHome) setAboutOpen(false)
+    setAsking(false); setPanelOpen(false)
+  }, [view, home])
 
   // What the open room shows, from what the level published
   const roomState = !inLevel ? null
@@ -253,20 +265,23 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     push(<Gap key="small-gap" i={n} />)
   }
 
-  // The museum's name: a heading on the title, a way back to it elsewhere
-  if (view === 'title') push(<Line key="name" i={n} text={TITLE.name} />)
+  // The museum's name: a heading on the home page, a way back to it elsewhere
+  if (home) push(<Line key="name" i={n} text={TITLE.name} />)
   else push(<Line key="name" i={n} as="go" text={TITLE.name} arrow="→" onClick={() => navigate('/')} />)
 
-  if (view === 'title') {
+  // Enter the exhibit opens the timeline under itself, the way About opens
+  if (home) {
     push(<Note key="subtitle" i={n}>{TITLE.subtitle}</Note>)
     push(<Gap key="title-gap" i={n} />)
-    push(<Line key="enter" i={n} as="go" sub text={TITLE.enter} arrow="→" focus={!small || smallGone} onClick={() => navigate('/timeline')} />)
+    push(<Line key="enter" i={n} as="go" sub text={TITLE.enter} meta={WORDS.found(found, ARTIFACTS.length)}
+      arrow={timelineOpen ? '−' : '+'} expanded={timelineOpen} focus={!timelineOpen && (!small || smallGone)}
+      onClick={() => navigate(timelineOpen ? '/' : '/timeline')} />)
   }
-  push(<Gap key="rooms-gap" i={n} />)
+  if (!home || timelineOpen) push(<Gap key="rooms-gap" i={n} />)
 
   // ── The six rooms (on the collection, its entries are the rooms) ──
   const nextToPlay = ARTIFACTS.find(a => !isLevelComplete(a.level))?.level ?? 0
-  if (view !== 'collection') ARTIFACTS.forEach(a => {
+  if (view !== 'collection' && (!home || timelineOpen)) ARTIFACTS.forEach(a => {
     const done = isLevelComplete(a.level)
     const open = a.level === level
     if (inLevel && !open) {
@@ -283,7 +298,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
     push(<Line key={`room-${a.level}`} i={n} as="go" mark={a.year} text={a.title}
       meta={done ? a.name : <span className={s.quiet}>{WORDS.notFound}</span>} arrow="→"
-      peek={peekHandlers(a.level)} focus={view === 'timeline' && a.level === nextToPlay}
+      peek={peekHandlers(a.level)} focus={timelineOpen && a.level === nextToPlay}
       onClick={() => navigate(a.path)} />)
   })
 
@@ -325,6 +340,17 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
   }
 
+  // Reset, at the foot of the open timeline
+  if (timelineOpen) {
+    if (!asking) push(<Line key="reset" i={n} as="go" text={WORDS.reset} arrow="+" onClick={() => setAsking(true)} />)
+    else {
+      push(<Line key="reset" i={n} text={WORDS.resetAsk} />)
+      push(<Line key="reset-yes" i={n} as="go" sub text={WORDS.resetYes} arrow="→"
+        onClick={() => { resetAll(); forgetCardsSeen(); setAsking(false); navigate('/') }} />)
+      push(<Line key="reset-no" i={n} as="go" sub text={WORDS.resetNo} arrow="−" focus onClick={() => setAsking(false)} />)
+    }
+  }
+
   if (view !== 'collection' && !inLevel) push(<Gap key="after-rooms" i={n} />)
 
   // ── Collection ──
@@ -359,23 +385,12 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
   }
 
-  // ── Reset, on the timeline ──
-  if (view === 'timeline') {
-    if (!asking) push(<Line key="reset" i={n} as="go" text={WORDS.reset} arrow="+" onClick={() => setAsking(true)} />)
-    else {
-      push(<Line key="reset" i={n} text={WORDS.resetAsk} />)
-      push(<Line key="reset-yes" i={n} as="go" sub text={WORDS.resetYes} arrow="→"
-        onClick={() => { resetAll(); forgetCardsSeen(); setAsking(false); navigate('/') }} />)
-      push(<Line key="reset-no" i={n} as="go" sub text={WORDS.resetNo} arrow="−" focus onClick={() => setAsking(false)} />)
-    }
-  }
-
   // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
   const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
     pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
   if (!inLevel && view !== 'collection') darkLine()
 
-  if (view === 'title') {
+  if (home) {
     push(<Gap key="by-gap" i={n} />)
     push(<Note key="by" i={n} quiet>{TITLE.by}</Note>)
   }

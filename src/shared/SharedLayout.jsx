@@ -1,10 +1,10 @@
 // src/shared/SharedLayout.jsx
-import { createContext, lazy, Suspense, useCallback, useContext, useRef, useState } from 'react'
+import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
 import SmallScreenNotice from './museum-ui/SmallScreenNotice'
 import { loadView, warmMacBezel } from '../views'
-import { useMuseumStyle } from './museumStyle'
+import { useMuseumStyle, museumStyle } from './museumStyle'
 import IndexMuseum from './index-museum/IndexMuseum'
 
 // Every dev control behind the corner `dev` tab (src/shared/dev/DevPanel.jsx).
@@ -70,6 +70,22 @@ const HUD_HIDDEN_VIEWS = ['title', 'timeline', 'collection', 'cardLab', 'styleLa
 // Views the index museum leaves alone (dev workbenches, the test page)
 const INDEX_SKIPS = ['cardLab', 'styleLab', 'dotEditor', 'test']
 
+// The index museum's home page is one page: 'title' with the timeline
+// closed, 'timeline' with it open under Enter (backlog, "Index museum: one
+// home page", 12 Nov 2026). Between the two there is no fade, and the
+// address follows: opening pushes /timeline, so Back closes it, and a
+// load of /timeline opens it. Everywhere else the address is left alone.
+const INDEX_HOME = ['title', 'timeline']
+const HOME_PATH = { title: '/', timeline: '/timeline' }
+const IX_STATE = 'ix-timeline'   // history.state on the entry opening the timeline pushed
+
+/** The home view for an address, in the index museum (null: not a home address) */
+function indexHomeView(pathname) {
+  if (pathname === '/timeline') return 'timeline'
+  if (pathname === '/') return 'title'
+  return null
+}
+
 // Level numbers for dot rendering
 const LEVEL_NUMBERS = [0, 1, 2, 3, 4, 5]
 
@@ -101,12 +117,17 @@ function whenFramesSettle(cb, maxMs = 600) {
 
 export default function SharedLayout({ children }) {
   // initial view = title screen; on the dev server, /card-lab opens the card
-  // lab, /style-lab the style lab and /dot-editor the dot picture editor
-  const [view, setView]     = useState(() => (
-    import.meta.env.DEV && typeof window !== 'undefined' && ['/card-lab', '/style-lab', '/dot-editor'].includes(window.location.pathname)
-      ? PATH_TO_VIEW[window.location.pathname]
-      : 'title'
-  ))
+  // lab, /style-lab the style lab and /dot-editor the dot picture editor.
+  // In the index museum /timeline opens the home page with the timeline open.
+  const [view, setView]     = useState(() => {
+    if (typeof window === 'undefined') return 'title'
+    const path = window.location.pathname
+    if (import.meta.env.DEV && ['/card-lab', '/style-lab', '/dot-editor'].includes(path)) return PATH_TO_VIEW[path]
+    if (museumStyle() === 'index') return indexHomeView(path) ?? 'title'
+    return 'title'
+  })
+  const viewRef             = useRef(view)
+  viewRef.current           = view
   const [fading, setFading] = useState(false)
   const pendingRef          = useRef(null)   // { view, options } waiting to fire
 
@@ -144,6 +165,24 @@ export default function SharedLayout({ children }) {
     const nextView = PATH_TO_VIEW[to]
     if (!nextView) return                       // unknown path — ignore
     if (nextView === view && !options) return
+    // The index museum's home page opening or closing its timeline: the same
+    // page, so no fade, and the address follows
+    if (indexOn && INDEX_HOME.includes(view) && INDEX_HOME.includes(nextView)) {
+      pendingRef.current = null
+      setView(nextView)
+      if (!options?.fromHistory) {
+        if (nextView === 'title' && window.history.state === IX_STATE) window.history.back()
+        else window.history.pushState(nextView === 'timeline' ? IX_STATE : null, '', HOME_PATH[nextView])
+      }
+      return
+    }
+    // Arriving at the open timeline from elsewhere (a level's Back to
+    // timeline): the address says so
+    if (indexOn && nextView === 'timeline' && !options?.fromHistory && window.location.pathname !== '/timeline') {
+      window.history.pushState(IX_STATE, '', '/timeline')
+    } else if (indexOn && nextView === 'title' && !options?.fromHistory && window.location.pathname !== '/') {
+      window.history.pushState(null, '', '/')
+    }
     setContinueAction(null)  // clear Continue button on navigate
     setHudFading(true)       // start HUD fade-out (200ms)
     setHudReady(false)       // mark not ready (visual driven by hudFading until nav completes)
@@ -152,7 +191,21 @@ export default function SharedLayout({ children }) {
     const ready = loadView(nextView).catch(() => {})
     pendingRef.current = { view: nextView, options, ready }
     setFading(true)          // start content fade-out (300ms)
-  }, [view])
+  }, [view, indexOn])
+
+  // The browser's Back and Forward, in the index museum: the address says
+  // whether the home page's timeline is open
+  useEffect(() => {
+    if (!indexOn) return undefined
+    const onPop = () => {
+      const next = indexHomeView(window.location.pathname)
+      if (next && next !== viewRef.current) fadeNavigateRef.current(HOME_PATH[next], { fromHistory: true })
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [indexOn])
+  const fadeNavigateRef = useRef(fadeNavigate)
+  fadeNavigateRef.current = fadeNavigate
 
   // Fires when the content div finishes its CSS opacity transition
   const handleTransitionEnd = useCallback((e) => {

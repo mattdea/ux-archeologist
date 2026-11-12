@@ -95,12 +95,17 @@ describe('Index museum', () => {
     expect(document.querySelector('[data-index-museum]')).toBeNull()
   })
 
-  it('title: the subtitle, Enter, the six rooms, Collection and About', () => {
+  it('home: the title, Enter with the count, About and Dark mode; the rooms only once Enter opens them', () => {
+    completeLevel(2)
     const navigate = renderIndex('title')
     expect(list().textContent).toContain('Six computer interfaces from 1979 to 2023, working as they did.')
-    ARTIFACTS.forEach(a => expect(list().textContent).toContain(a.title))
-    expect(list().textContent).toContain('0 of 6 found')
-    fireEvent.click(screen.getByText('Enter the exhibit').closest('button'))
+    ARTIFACTS.forEach(a => expect(list().textContent).not.toContain(a.title))
+    const enter = screen.getByText('Enter the exhibit').closest('button')
+    expect(enter.textContent).toContain('1 of 6 found')
+    expect(enter.textContent).toContain('+')
+    expect(enter).toHaveAttribute('aria-expanded', 'false')
+    expect(document.activeElement).toBe(enter)
+    fireEvent.click(enter)
     expect(navigate).toHaveBeenCalledWith('/timeline')
     // About opens in place and Escape closes it
     fireEvent.click(screen.getByText('About').closest('button'))
@@ -109,6 +114,47 @@ describe('Index museum', () => {
     about.focus()
     fireEvent.keyDown(about, { key: 'Escape' })
     expect(list().textContent).not.toContain('Built with React + Vite.')
+  })
+
+  it('the open timeline: the rooms under Enter, which reads − and closes it; focus on the next room', () => {
+    completeLevel(0)
+    const navigate = renderIndex('timeline')
+    expect(list().textContent).toContain('Six computer interfaces')
+    ARTIFACTS.forEach(a => expect(list().textContent).toContain(a.title))
+    const enter = screen.getByText('Enter the exhibit').closest('button')
+    expect(enter.textContent).toContain('−')
+    expect(enter).toHaveAttribute('aria-expanded', 'true')
+    expect(document.activeElement.textContent).toContain('The Desktop')
+    // Reset sits at the foot of the open timeline, before About
+    const text = list().textContent
+    expect(text.indexOf('Reset progress')).toBeGreaterThan(text.indexOf('The Conversation'))
+    expect(text.indexOf('Reset progress')).toBeLessThan(text.indexOf('About'))
+    fireEvent.click(enter)
+    expect(navigate).toHaveBeenCalledWith('/')
+  })
+
+  it('App: Enter opens the timeline with a push to /timeline, Back closes it, and /timeline loads it open', async () => {
+    window.history.replaceState(null, '', '/')
+    act(() => setMuseumStyle('index'))
+    const { unmount } = render(<App />)
+    expect(list().textContent).not.toContain('The Desktop')
+    fireEvent.click(screen.getByText('Enter the exhibit').closest('button'))
+    expect(window.location.pathname).toBe('/timeline')
+    expect(list().textContent).toContain('The Desktop')
+    // Back: the address returns to / and the timeline closes
+    await act(async () => {
+      window.history.back()
+      await new Promise(r => window.addEventListener('popstate', r, { once: true }))
+    })
+    expect(window.location.pathname).toBe('/')
+    expect(list().textContent).not.toContain('The Desktop')
+    unmount()
+    // A load of /timeline: the home page, the timeline open
+    window.history.replaceState(null, '', '/timeline')
+    render(<App />)
+    expect(list().textContent).toContain('Enter the exhibit')
+    expect(list().textContent).toContain('The Desktop')
+    window.history.replaceState(null, '', '/')
   })
 
   it('timeline: found rooms carry the artifact, others "not found"; reset asks first', () => {
