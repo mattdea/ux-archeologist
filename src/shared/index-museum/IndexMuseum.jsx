@@ -72,11 +72,13 @@ function smallDismissed() {
 }
 
 // ── A line ──────────────────────────────────────────────────────────────
-function Line({ as = 'text', i = 0, onClick, href, mark = '', text, meta, arrow, sub, current, dim, quiet, bare, peek, focus, label, pressed, expanded, className, ref2 }) {
+// `whole`: the line reads as one link, so on hover its right side lights
+// and underlines with the text (the discovery's Continue → next room)
+function Line({ as = 'text', i = 0, onClick, href, mark = '', text, meta, arrow, sub, current, dim, quiet, bare, whole, peek, focus, label, pressed, expanded, className, ref2 }) {
   const ref = useRef(null)
   useEffect(() => { if (focus) ref.current?.focus({ preventScroll: false }) }, [focus])
   const chooses = as === 'go' || as === 'ext'
-  const cls = [s.line, sub && s.sub, current && s.current, dim && s.dim, quiet && s.quiet, chooses && s.choose, className].filter(Boolean).join(' ')
+  const cls = [s.line, sub && s.sub, current && s.current, dim && s.dim, quiet && s.quiet, chooses && s.choose, whole && s.whole, className].filter(Boolean).join(' ')
   const inner = (
     <>
       <span className={s.cursor} aria-hidden="true" />
@@ -349,7 +351,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
       )
       push(<Note key={`disc-text-${a.level}`} i={n}>{d.description}</Note>)
       push(<Gap key={`disc-gap-${a.level}`} i={n} />)
-      push(<Line key={`disc-next-${a.level}`} i={n} as="go" sub text={WORDS.cont} meta={nextLabel} arrow="→" focus onClick={() => navigate(to)} />)
+      push(<Line key={`disc-next-${a.level}`} i={n} as="go" sub whole text={WORDS.cont} meta={nextLabel} arrow="→" focus onClick={() => navigate(to)} />)
     }
   }
 
@@ -514,7 +516,7 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
     const d = slots.discovery
     const to = cardTimelineOn() ? '/timeline' : d.nextUrl
     const nextLabel = to === '/timeline' || !next ? WORDS.backPlain : `${next.year} ${next.title}`
-    act = <Line as="go" text={WORDS.cont} meta={nextLabel} arrow="→" focus onClick={() => navigate(to)} />
+    act = <Line as="go" whole text={WORDS.cont} meta={nextLabel} arrow="→" focus onClick={() => navigate(to)} />
   }
 
   if (narrow) return (

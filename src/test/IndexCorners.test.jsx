@@ -143,6 +143,11 @@ describe('Index museum: the corners in a level', () => {
     expect(band.textContent).toContain('Artifact Discovered')
     expect(band.textContent).toContain('Pictures you point at.')
     expect(corner('br').textContent).toContain('1995 The Hyperlink')
+    // one link: on hover the whole line lights, its right side underlined too
+    expect(screen.getByText('Continue').closest('button').className).toMatch(/whole/)
+    const css = readFileSync(resolve(__dirname, '../shared/index-museum/IndexMuseum.module.css'), 'utf8')
+    expect(css).toMatch(/\.whole:hover \.meta \{ color: inherit; text-decoration: underline;/)
+    expect(css).toMatch(/\.whole:hover \.leader \{ border-bottom-color: currentColor; \}/)
     fireEvent.click(screen.getByText('Continue').closest('button'))
     expect(navigate).toHaveBeenCalledWith('/level/2')
   })

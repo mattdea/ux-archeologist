@@ -211,7 +211,7 @@ A second museum layer: one monospace list that is the whole museum, built from c
 - **Line states:**
   - *Rest:* black text, grey right side.
   - *Can be chosen:* a dotted grey leader to the right side and an arrow: `→` goes somewhere, `↗` leaves the site, `+` / `−` opens / closes in place. Leaders mean only this. Exception: in a level, the rooms you're not in are bare grey lines (still clickable) so the list stays quiet.
-  - *Pointer hover:* the lighter state: `>` in the cursor column, the text underlined, full ink.
+  - *Pointer hover:* the lighter state: `>` in the cursor column, the text underlined, full ink. A line that is one link, the discovery's "Continue → 1995 The Hyperlink" (or "Back to timeline"), lights whole: its right side and leader go to full ink and the right side is underlined too (`whole` on `Line`; Matthew's review, 12 Nov 2026). Other lines keep a grey right side on hover.
   - *Current / keyboard focus:* the inverted line (white on black, `aria-current="page"` for current). Current is the room you're in, or Collection on the collection.
   - *Objectives:* `[ ]` grey box, black text; done: `[x]`, the line grey and struck through. A wrapped objective hangs under its text, not the box.
 - **Views:**

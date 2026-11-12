@@ -104,6 +104,11 @@
 .choose:hover .cursor::before { content: '>'; }
 .choose:hover .text { text-decoration: underline; text-underline-offset: 3px; }
 .choose:hover .arrow { color: inherit; }
+/* a line that is one link (Continue → the next room): the whole of it
+   lights, its right side and leader in full ink, the right side underlined
+   too (Matthew's review, 12 Nov 2026) */
+.whole:hover .meta { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.whole:hover .leader { border-bottom-color: currentColor; }
 
 /* Where you are, and keyboard focus: the inverted line */
 .current,
@@ -116,7 +121,7 @@
 .choose:focus-visible .meta, .choose:focus-visible .arrow, .choose:focus-visible .leader,
 .choose:focus-visible .quiet { color: var(--ix-paper); border-color: var(--ix-paper); }
 .choose:focus-visible .cursor::before { content: '>'; }
-.choose:focus-visible .text { text-decoration: none; }
+.choose:focus-visible .text, .choose:focus-visible .meta { text-decoration: none; }
 
 /* ── Typing in: a line that is new to the list draws in from the left ── */
 .line, .gap {
