@@ -91,7 +91,8 @@ export const RECORDS = {
       'Claude: 14 March 2023',
     ],
     parts: [
-      { id: 'input', lines: ['Message box', 'ask in plain language'], find: 'input[placeholder]' },
+      // the rounded bar round the input (ChatInput.jsx), not the <input>
+      { id: 'input', lines: ['Message box', 'ask in plain language'], find: '[class*="_inputBar_"]' },
       { id: 'reply', lines: ['Reply', 'written by the model'], find: '[class*="_assistantContent_"]' },
     ],
   },

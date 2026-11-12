@@ -714,6 +714,9 @@ From Matthew's review of Level 5 in the Index at 1440 (12 Nov 2026). There are t
 - The object and data block is nearer the labels than before, and clears the HUD.
 - Test: Level 5's message box dot sits at the input bar's right edge.
 - Run `npm run build`.
+- **Status (12 Nov 2026):** built. In `place.js`, `placeRecord` tries the spot ending one row above the first label before the old order, and `locateParts` puts a found part's dot on the edge facing the column (no inset). Level 5's message box is found by `[class*="_inputBar_"]`. The Mac's fixed parts are unchanged. Spec updated under Level 1, "Catalogue record", and Level 5.
+  - **Checked** in the Index (dark; the placement doesn't change with the theme) at 1440 × 900 and 1920 × 1080, every level with the record open, by measuring the page: every found dot is 0px off its part's edge and halfway down, no leader crosses its own part, and the object and data block clears every corner, the number and the viewport. The block now sits just above the first label everywhere it has room (Level 5: above Message box, beside the input bar). At 1440 × 900 Levels 1, 3 and 4 still have room for the number only, as before. 210 tests (two new: Level 5's dot on the bar's right edge with the block a row above its label; the fallback when nothing fits above), `npm run build`.
+  - **For Matthew:** on Level 2 the Location leader runs from the field's right edge through the Netscape logo, which sits just to its right, to reach its label. It did that before too (the dot was 24px inside the field). Crossing another part isn't covered by this entry; it could go with the label wording.
 
 ---
 

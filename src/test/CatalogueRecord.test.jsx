@@ -167,7 +167,7 @@ describe('Catalogue record (experiment)', () => {
     })
   })
 
-  it('a part found by a selector lands on that element, in device coordinates; one off the device has no label', () => {
+  it('a part found by a selector lands on that element\'s edges, in device coordinates; one off the device has no label', () => {
     const scope = document.createElement('div')
     const on = document.createElement('span'); on.className = 'here'
     const off = document.createElement('span'); off.className = 'gone'
@@ -179,8 +179,41 @@ describe('Catalogue record (experiment)', () => {
     const parts = locateParts([{ id: 'a', lines: ['A'], find: '.here' }, { id: 'b', lines: ['B'], find: '.gone' }, { id: 'c', lines: ['C'], y: 5, left: 1, right: 2 }], { scope, fit, width: 400, height: 300 })
     expect(parts.map((p) => p.id)).toEqual(['a', 'c'])
     expect(parts[0].y).toBe(110)                     // (320 - 100) / 2
-    expect(parts[0].left).toBeGreaterThan(150); expect(parts[0].right).toBeLessThan(250)
+    expect(parts[0].left).toBe(150); expect(parts[0].right).toBe(250)   // its edges: (400 - 100) / 2, (600 - 100) / 2
     scope.remove()
+  })
+
+  it('Level 5: the message box dot sits on the input bar\'s right edge, the leader runs outwards, and the object and data end a row above the first label', () => {
+    // the chat column as Level 5 fits it at 1440 × 900 (680 wide, full height)
+    const width = 680, height = 820, fit = { scale: 1, left: 380, top: 40 }
+    const scope = document.createElement('div')
+    const bar = document.createElement('div'); bar.className = '_inputBar_ks6ub_4'
+    const input = document.createElement('input'); input.placeholder = 'How can I help you today?'
+    bar.append(input); scope.append(bar); document.body.append(scope)
+    const rect = (l, t, w, h) => () => ({ left: l, top: t, right: l + w, bottom: t + h, width: w, height: h })
+    bar.getBoundingClientRect = rect(404, 720, 632, 96)
+    input.getBoundingClientRect = rect(420, 736, 560, 24)
+    const parts = locateParts(RECORDS[5].parts, { scope, fit, width, height })
+    expect(parts.map((p) => p.id)).toEqual(['input'])       // no reply yet
+    const l = placeRecord({ record: { ...RECORDS[5], parts }, width, height, fit, viewport: { w: 1440, h: 900 }, huds: [], cw: 7.8 })
+    expect(l.mode).toBe('side'); expect(l.side).toBe('right')
+    const [box] = l.labels
+    expect(box.dotX).toBe(1036)                              // the bar's right edge
+    expect(box.dotY).toBe(768)                               // halfway down the bar
+    expect(box.x).toBeGreaterThan(box.dotX)                  // the leader runs away from the bar
+    expect(l.data.y + l.data.h).toBe(box.y - 20)             // one row above the label
+    expect(l.object.y).toBeGreaterThan(fit.top + height / 2) // beside the input bar, not at the top
+    scope.remove()
+  })
+
+  it('the object and data fall back to the old order when there is no room above the first label', () => {
+    // a single part near the device's top: nothing fits above its label,
+    // and the device's top would overlap it, so the block goes under it
+    const record = { ...MAC_RECORD, parts: [{ id: 'top', lines: ['Top', 'part'], y: 20, left: 100, right: 680 }] }
+    const fit = { scale: 1, left: 300, top: 40 }
+    const l = placeRecord({ record, width: 780, height: 755, cw: 7.8, huds: [], fit, viewport: { w: 1440, h: 900 } })
+    const [label] = l.labels
+    expect(l.object.y).toBe(label.y + label.h + 20)
   })
 
   describe('placement', () => {

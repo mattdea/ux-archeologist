@@ -29,8 +29,9 @@ export function hudRects() {
 
 // A part found in the artifact by a selector ({ find }) becomes a part in
 // the device's own coordinates, like the fixed ones ({ y, left, right }):
-// the dot sits a little in from the element's left or right edge, halfway
-// down. The first matching element whose middle is on the device counts;
+// the dot sits on the element's left or right edge (whichever faces the
+// label column), halfway down, so the leader runs outwards from the part
+// and never crosses it. The first matching element whose middle is on the device counts;
 // a part not on screen (not drawn yet, scrolled away) has no label.
 export function locateParts(parts, { scope, fit, width, height }) {
   const s = fit.scale
@@ -46,8 +47,7 @@ export function locateParts(parts, { scope, fit, width, height }) {
       const y = ((r.top + r.bottom) / 2 - fit.top) / s
       const cx = (x0 + x1) / 2
       if (cx < 0 || cx > width || y < 0 || y > height) continue
-      const inset = Math.min(24, (x1 - x0) / 4)
-      return { id: p.id, lines: p.lines, y, left: x0 + inset, right: x1 - inset }
+      return { id: p.id, lines: p.lines, y, left: x0, right: x1 }
     }
     return null
   }).filter(Boolean)
@@ -81,9 +81,16 @@ export function placeRecord({ record, width, height, fit, viewport, huds, cw }) 
         const y = Math.max(p.dotY - ROW / 2, prev ? prev.y + prev.h + ROW / 2 : -Infinity)
         labels.push({ ...p, x, y, w: colW, h: p.lines.length * ROW })
       })
-    // The object line and data: at the device's top if the labels leave
-    // room there, else under the last label, else up from the device's foot
-    const tryAt = [dev.y, ...(labels.length ? [labels[labels.length - 1].y + labels[labels.length - 1].h + ROW] : []), dev.y + dev.h - blockH]
+    // The object line and data: next to the labels, ending one row above the
+    // first, if they fit there; else at the device's top, else under the
+    // last label, else up from the device's foot
+    const first = labels[0], last = labels[labels.length - 1]
+    const tryAt = [
+      ...(first ? [first.y - ROW - blockH] : []),
+      dev.y,
+      ...(last ? [last.y + last.h + ROW] : []),
+      dev.y + dev.h - blockH,
+    ]
     for (const y of tryAt) {
       const object = { x, y, w: colW, h: objectH }
       const data = { x, y: y + objectH + ROW, w: colW, h: dataH }
