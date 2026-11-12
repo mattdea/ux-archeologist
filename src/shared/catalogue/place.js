@@ -47,7 +47,8 @@ export function locateParts(parts, { scope, fit, width, height }) {
       const y = ((r.top + r.bottom) / 2 - fit.top) / s
       const cx = (x0 + x1) / 2
       if (cx < 0 || cx > width || y < 0 || y > height) continue
-      return { id: p.id, lines: p.lines, y, left: x0, right: x1 }
+      const top = (r.top - fit.top) / s, bottom = (r.bottom - fit.top) / s
+      return { id: p.id, lines: p.lines, y, left: x0, right: x1, box: { x0, x1, y0: top, y1: bottom } }
     }
     return null
   }).filter(Boolean)
@@ -70,17 +71,43 @@ export function placeRecord({ record, width, height, fit, viewport, huds, cw }) 
   const blockH = objectH + ROW + dataH
   for (const side of ['right', 'left']) {
     const x = side === 'right' ? dev.x + dev.w + GAP : dev.x - GAP - colW
-    // Labels level with their parts, top to bottom; one that would overlap
-    // the one above moves down, and its leader takes one bend.
+    // A leader runs straight from its dot to the column. Where another part
+    // stands in the way (Netscape's N, right of the Location field), the
+    // dot goes on the part's bottom edge, short of the other part, and the
+    // leader drops to just below both and runs out from there: an L, with
+    // the label fixed at that height.
+    const box = (b) => ({ x0: dev.x + b.x0 * s, x1: dev.x + b.x1 * s, y0: dev.y + b.y0 * s, y1: dev.y + b.y1 * s })
+    const placed = record.parts.map((p) => {
+      const dotX = dev.x + (side === 'right' ? p.right : p.left) * s, dotY = dev.y + p.y * s
+      const own = p.box && box(p.box)
+      const block = own && record.parts
+        .filter((q) => q !== p && q.box).map((q) => box(q.box))
+        .find((q) => q.y0 < dotY && q.y1 > dotY && (side === 'right' ? q.x0 >= own.x1 - 1 && q.x0 < x : q.x1 <= own.x0 + 1 && q.x1 > x + colW))
+      if (!block) return { id: p.id, lines: p.lines, dotX, dotY, target: dotY }
+      const near = side === 'right' ? Math.min(own.x1, block.x0) - 16 : Math.max(own.x0, block.x1) + 16
+      const run = Math.max(own.y1, block.y1) + ROW / 4
+      return { id: p.id, lines: p.lines, dotX: Math.max(own.x0 + 4, Math.min(own.x1 - 4, near)), dotY: own.y1, target: run, drop: true }
+    })
+    // Labels level with their parts (or their leader's run), top to bottom;
+    // one that would overlap the one above moves down, and its leader takes
+    // one bend. A dropped leader's label stays put: the ones above it move
+    // up instead.
     const labels = []
-    record.parts
-      .map((p) => ({ id: p.id, lines: p.lines, dotX: dev.x + (side === 'right' ? p.right : p.left) * s, dotY: dev.y + p.y * s }))
-      .sort((a, b) => a.dotY - b.dotY)
-      .forEach((p) => {
-        const prev = labels[labels.length - 1]
-        const y = Math.max(p.dotY - ROW / 2, prev ? prev.y + prev.h + ROW / 2 : -Infinity)
-        labels.push({ ...p, x, y, w: colW, h: p.lines.length * ROW })
-      })
+    placed.sort((a, b) => a.target - b.target).forEach((p) => {
+      const h = p.lines.length * ROW
+      const prev = labels[labels.length - 1]
+      if (p.drop) {
+        const y = p.target - ROW / 2
+        for (let i = labels.length - 1, limit = y - ROW / 2; i >= 0 && labels[i].y + labels[i].h > limit; i--) {
+          labels[i].y = limit - labels[i].h
+          limit = labels[i].y - ROW / 2
+        }
+        labels.push({ ...p, x, y, w: colW, h })
+        return
+      }
+      const y = Math.max(p.dotY - ROW / 2, prev ? prev.y + prev.h + ROW / 2 : -Infinity)
+      labels.push({ ...p, x, y, w: colW, h })
+    })
     // The object line and data: next to the labels, ending one row above the
     // first, if they fit there; else at the device's top, else under the
     // last label, else up from the device's foot

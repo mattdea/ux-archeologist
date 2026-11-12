@@ -108,13 +108,16 @@ export default function CatalogueRecord({ level, record: given, show, fit, width
                 </div>
               ))}
               {/* Leader lines: straight from the part's dot to its label, or
-                  with one bend where the label had to move down */}
+                  with one bend where the label had to move; an L down and
+                  out where another part stands in the way (place.js) */}
               <svg className={styles.leaders} aria-hidden="true">
                 {layout.labels.map((l) => {
                   const mid = l.y + 10
                   const edge = side === 'right' ? l.x - 6 : l.x + l.w + 6
                   const bend = side === 'right' ? edge - 12 : edge + 12
-                  const pts = Math.abs(mid - l.dotY) < 0.5
+                  const pts = l.drop
+                    ? [[l.dotX, l.dotY], [l.dotX, mid], [edge, mid]]
+                    : Math.abs(mid - l.dotY) < 0.5
                     ? [[l.dotX, l.dotY], [edge, l.dotY]]
                     : [[l.dotX, l.dotY], [bend, l.dotY], [edge, mid]]
                   return <polyline key={l.id} points={pts.map(([px, py]) => `${px - dev.x},${py - dev.y}`).join(' ')} data-catalogue-leader={l.id} />

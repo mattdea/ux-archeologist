@@ -206,6 +206,31 @@ describe('Catalogue record (experiment)', () => {
     scope.remove()
   })
 
+  it('Netscape: the Location leader goes round the N beside it: dot on the field\'s bottom edge, an L below the N, the N\'s label above', () => {
+    // Level 2 at 1440 × 900 in the Index, in viewport px (scale 1)
+    const fit = { scale: 1, left: 393, top: 179 }, width = 654, height = 542
+    const scope = document.createElement('div')
+    const field = document.createElement('span'); field.className = '_addressInput_x1y2z_9'
+    const logo = document.createElement('img'); logo.className = '_netscapeLogo_x1y2z_9'
+    scope.append(field, logo); document.body.append(scope)
+    const rect = (l, t, r, b) => () => ({ left: l, top: t, right: r, bottom: b, width: r - l, height: b - t })
+    field.getBoundingClientRect = rect(447, 266, 1000, 283)
+    logo.getBoundingClientRect = rect(1004, 263, 1043, 302)
+    const parts = locateParts(RECORDS[2].parts, { scope, fit, width, height })
+    const l = placeRecord({ record: { ...RECORDS[2], parts }, width, height, fit, viewport: { w: 1440, h: 900 }, huds: [], cw: 7.8 })
+    expect(l.side).toBe('right')
+    const loc = l.labels.find((x) => x.id === 'location'), n = l.labels.find((x) => x.id === 'throbber')
+    expect(loc.drop).toBe(true)
+    expect(loc.dotY).toBe(283)                             // the field's bottom edge
+    expect(loc.dotX).toBeLessThan(1004)                    // short of the N
+    expect(loc.dotX).toBeGreaterThan(447)
+    expect(loc.y + 10).toBeGreaterThan(302)                // runs out below the N
+    expect(n.drop).toBeUndefined()
+    expect(n.dotX).toBe(1043)                              // the N's own leader is straight out of its edge
+    expect(n.y + n.h).toBeLessThanOrEqual(loc.y - 10)      // its label moved up, clear of Location's
+    scope.remove()
+  })
+
   it('the object and data fall back to the old order when there is no room above the first label', () => {
     // a single part near the device's top: nothing fits above its label,
     // and the device's top would overlap it, so the block goes under it
