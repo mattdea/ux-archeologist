@@ -1,7 +1,7 @@
 // src/shared/index-museum/band.js
 //
 // The device's box, for museum pieces laid over it in a level's corners
-// layout: the fade over the device at discovery (IndexMuseum's DeviceFade;
+// layout: the fade over the device at intro and discovery (IndexMuseum's DeviceFade;
 // backlog, "Index museum: fixes from Matthew's review", 12 Nov 2026).
 
 // The device's box, as useArtifactFit publishes it on <html>

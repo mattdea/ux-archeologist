@@ -459,8 +459,9 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAction, navigate, panelOpen, togglePanel }) {
   const a = ARTIFACTS[level]
   const next = ARTIFACTS[level + 1]
-  // the device under a fade while there's text to read over it
-  const fade = <DeviceFade level={level} on={roomState === 'discovery'} />
+  // the device under a fade while there's text to read over or beside it:
+  // the intro (the device is inert then) and the discovery
+  const fade = <DeviceFade level={level} on={roomState === 'intro' || roomState === 'discovery'} />
   const room = (
     <Line as="go" current mark={`${a.year}  `} text={a.title} arrow="≡" bare
       className={s.roomLine} expanded={panelOpen} label={`${a.year} ${a.title}. ${WORDS.allRooms}`}
@@ -469,7 +470,14 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 
   // what to read
   let read = null
-  if (roomState === 'intro') read = <p className={s.cornerText}>{slots.intro.description}</p>
+  // intro: the text, then Begin one row under it, in the same corner, so
+  // what to read and what to click are in one place (Matthew's review)
+  if (roomState === 'intro') read = (
+    <>
+      <p className={s.cornerText}>{slots.intro.description}</p>
+      <Line as="go" className={s.cornerGo} text={WORDS.begin} arrow="→" focus onClick={() => slots.intro.onBegin()} />
+    </>
+  )
   if (roomState === 'playing' && slots.tracker) {
     const { objectives, completedIndices } = slots.tracker
     read = (
@@ -506,7 +514,6 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 
   // what to do next
   let act = null
-  if (roomState === 'intro') act = <Line as="go" text={WORDS.begin} arrow="→" focus onClick={() => slots.intro.onBegin()} />
   if (roomState === 'playing' && slots.tracker) {
     const { objectives, completedIndices } = slots.tracker
     act = (
@@ -597,7 +604,7 @@ function DiscoveryBand({ level, children }) {
 
 // ── The fade over the device ───────────────────────────────────────────
 // While the corners have text to read over or beside the device (the
-// discovery), the device sits under a fade: the page colour at partial
+// intro and the discovery), the device sits under a fade: the page colour at partial
 // opacity with a light backdrop blur (backlog, "Index museum: fixes from
 // Matthew's review", 12 Nov 2026), so the discovery band's text passes AA
 // where it runs over the device's foot. It covers the device's box
@@ -623,7 +630,16 @@ function DeviceFade({ level, on }) {
     const raf = requestAnimationFrame(measure)
     const onResize = () => requestAnimationFrame(measure)
     window.addEventListener('resize', onResize)
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize) }
+    // at the intro the level's chunk may still be loading: measure again
+    // once its data-artifact box is in the page
+    let mo = null
+    if (!document.querySelector('[data-artifact]') && typeof MutationObserver !== 'undefined') {
+      mo = new MutationObserver(() => {
+        if (document.querySelector('[data-artifact]')) { mo.disconnect(); requestAnimationFrame(measure) }
+      })
+      mo.observe(document.body, { childList: true, subtree: true })
+    }
+    return () => { cancelAnimationFrame(raf); mo?.disconnect(); window.removeEventListener('resize', onResize) }
   }, [level, on])
   if (!at || !at.host.isConnected) return null
   const { box } = at

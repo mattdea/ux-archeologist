@@ -100,9 +100,14 @@ describe('Index museum: the corners in a level', () => {
 
   it('each corner shows the right thing in intro, booting, playing and discovery', () => {
     const { navigate, rerender } = renderLevel()
-    // intro: the intro text bottom left, Begin bottom right
+    // intro: the intro text bottom left, Begin one row under it in the same
+    // corner (focused); the bottom right is empty
     expect(corner('bl').textContent).toContain("It's 1984.")
-    expect(corner('br').textContent).toContain('Begin excavation')
+    const begin = screen.getByText('Begin excavation').closest('button')
+    expect(corner('bl').contains(begin)).toBe(true)
+    expect(corner('bl').querySelector('p').compareDocumentPosition(begin) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(document.activeElement).toBe(begin)
+    expect(corner('br').textContent).toBe('')
     fireEvent.click(screen.getByText('Begin excavation').closest('button'))
     // booting: nothing to read or do yet
     expect(corner('bl').textContent).toBe('')
@@ -255,13 +260,16 @@ describe('Index museum: the corners in a level', () => {
       expect(deviceBox()).toEqual(playing)
     })
 
-    it('the device is under a fade at discovery, and not while playing', () => {
+    it('the device is under a fade in intro and discovery, and not while booting or playing', () => {
       const root = document.documentElement.style
       Object.entries({ left: 375, top: 134, width: 690, height: 632 }).forEach(([k, v]) => root.setProperty(`--artifact-${k}`, `${v}px`))
-      renderLevel()
+      const { rerender } = renderLevel()
       const fade = () => document.querySelector('[data-ix-fade]')
+      expect(fade().getAttribute('data-ix-fade')).toBe('on')          // intro
       fireEvent.click(screen.getByText('Begin excavation').closest('button'))
-      expect(fade()?.getAttribute('data-ix-fade') ?? 'off').toBe('off')
+      expect(fade()?.getAttribute('data-ix-fade') ?? 'off').toBe('off')  // booting: lifts as the boot starts
+      rerender({ continueAction: null, hudReady: true })
+      expect(fade()?.getAttribute('data-ix-fade') ?? 'off').toBe('off')  // playing
       fireEvent.click(screen.getByText('finish'))
       expect(fade().getAttribute('data-ix-fade')).toBe('on')
       expect(fade().parentElement.hasAttribute('data-artifact')).toBe(true)   // in the level's stacking context, under the catalogue record
