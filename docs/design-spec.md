@@ -9,7 +9,7 @@ Interface Artifacts (the repository is still `ux-archeologist`) is an interactiv
 **Duration:** 5–8 minutes total, ~60–90 seconds per level
 **Audience:** Dual — works as a portfolio case study and a standalone shareable experience
 
-### Progress (11 Nov 2026)
+### Progress (12 Nov 2026)
 
 All six levels are complete and playable; nothing is gated. 213 tests; all pass, though the card lab's layout test (`CardLab.test.jsx`) can time out at 5s when the whole suite runs on a busy machine (it passes on its own). Copy: every card, objective, hint, the About text and Level 5's guide follow the voice guide in `docs/copy-pass.md` (10 Nov 2026; Matthew may revisit, see the backlog). Each level is its own code chunk (`src/views.js`), fetched while the previous view fades out. Prompts now batch several features; each is built and committed separately (see CLAUDE.md "Working rules" and `docs/backlog.md`).
 
@@ -17,6 +17,7 @@ There are two museum layers. Classic is the one this spec describes and the one 
 
 Recent work (9–12 Nov):
 - **Index museum, the discovery (12 Nov):** in a level's corners the discovery goes in a wide band along the bottom, or a tray over the device's foot when the band would cover it (Levels 1–4 at desktop sizes); every discovery text cut to about 50 words.
+- **Catalogue record (12 Nov):** the object line and data sit just above the first label instead of at the device's top; a found part's dot sits on its edge facing the labels, so no leader crosses its part; Netscape's Location leader goes under the N rather than through it.
 - **Index museum (10–11 Nov):** built from the style lab's B2. Dark by default with a light mode. In a level the list splits into four corners round the centred device, with the full list behind `≡`; the older side layout is behind a dev setting. Three picture sets under comparison (dots, stamps, fossils, with the clay tablet at rest). No device casts a shadow. The pointer is a pixel flint arrowhead, with a fossil stick to compare in the dev panel.
 - **Catalogue record (11 Nov, experiment, dev server only, on by default):** a museum label round every level's device: catalogue number, labelled parts and a data block, each fact with two sources (under each level). A `[−]` / `[+]` toggle by the number shows and hides it for the visit.
 - **Level 5 (11 Nov):** a light version of the chat in the Index's light mode; the dark chat's greys lifted to pass AA.
@@ -42,6 +43,8 @@ Open items, roughly in priority order:
 6. Waiting on Matthew's pick (each a dev panel switch): Classic or Index; in the Index, the level layout (corners or side), the pictures (dots, stamps or fossils) and the pointer (arrowhead or stick); whether the catalogue record stays; in Classic, the titles, timeline, card style and card art.
 7. The pointers haven't been checked with a real mouse (does the tip click exactly on `[ ]`?), in Safari or in Firefox, and there's no screen recording of them in use.
 8. In the Index corners at 1440 × 900, the Mac leaves no room for its catalogue record, so Level 1's toggle doesn't show there. A narrower column, or letting the record sit over the bezel, would decide it.
+9. In the Index corners the discovery tray is the usual case, not the fallback: Levels 1–4 get it at 1440 × 900, 1280 × 800 and 1920 × 1080, because their devices reach close to the bottom edge. At 1920 × 1080 it covers Level 3's home-button label. At 375 the bottom band scrolls at discovery. (Backlog, "the discovery text in a wide band", Status.)
+10. Approved and not built yet: the Index's one home page, with the timeline under Enter and four timelines to compare (backlog). Still to come: an entry on the catalogue record's label wording.
 
 ---
 

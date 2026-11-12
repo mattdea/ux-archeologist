@@ -55,7 +55,7 @@ Format: `page · problem · severity · suggested fix`. Widths are viewport CSS 
 
 - `npm test`: **pass**, 10 files, 64 tests.
 - `npm run build`: **pass** (1.89 s), one warning: `index-*.js` is 1,875.61 kB (gzip 646.54 kB) — "Some chunks are larger than 500 kB after minification." `dist/` is 164 MB, 1,393 assets, almost all Level 4 photos (images 161 MB, audio 0.2 MB, fonts 0.35 MB).
-- Netlify Dev on 8888 · every request returns HTTP 500 "Could not proxy request" · low (dev only) · check `netlify.toml`'s `[dev]` target port against the Vite port; until then the chat function can't be tested locally.
+- Netlify Dev on 8888 · every request returns HTTP 500 "Could not proxy request" · low (dev only) · check `netlify.toml`'s `[dev]` target port against the Vite port; until then the chat function can't be tested locally. 12 Nov 2026: `netlify dev` (the `dev` entry in `.claude/launch.json`) served the app on 8888 with Vite under it on 5173 and loaded the `chat` function, so this no longer reproduces.
 
 ## Every level can be finished
 
