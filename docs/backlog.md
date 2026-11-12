@@ -694,6 +694,27 @@ In the Index corners, the discovery text sits in the bottom-left corner: a 32ch 
 - Run `npm run build`.
 - Spec: the Index museum section (band, tray) and the copy section.
 
+### Catalogue record: labels closer to their parts · approved 12 Nov 2026
+From Matthew's review of Level 5 in the Index at 1440 (12 Nov 2026). There are two placement fixes in `src/shared/catalogue/place.js`. They apply to every level, and Level 5 shows both problems. Label wording is a separate entry, still to come.
+
+**1. The object line and data sit next to the labels, not at the device's top.** On Level 5, the device box is the chat's full-height column, so "AI chat assistant, 2023" and the dates end up in the top-right corner, far from the chat box.
+- In `placeRecord`, try this spot first: directly above the first label, ending one row above it.
+- If that doesn't fit, use the current order: the device's top, then under the last label, then up from the device's foot.
+- On Level 5 this puts the object line and dates just above "Message box", beside the input bar.
+- Other levels may move too, because the block now follows the labels. Check that it still clears the HUD and the viewport edges on every level.
+
+**2. Leader lines stop at the part's edge.** At the moment the dot sits up to 24px inside the part (the `inset` in `locateParts`). On Level 5 the line runs into the input bar, across "Curator v1" and the send button.
+- For parts found by a selector (`find`), the dot sits on the part's edge nearest the label column, halfway down. The line runs from there outwards and never crosses the part.
+- Level 5's message box points at the input bar (`[class*="_inputBar_"]`, the rounded box in `ChatInput.jsx`), not the `<input>` inside it. The dot goes on the bar's right edge.
+- Parts at fixed coordinates (Level 1's screen and floppy) keep their positions for now. They'll be redone with the label wording.
+
+**Checks:**
+- Every level with the full record, light and dark, at 1440 × 900 and 1920 × 1080.
+- No leader crosses its part. Every dot is on its part's edge.
+- The object and data block is nearer the labels than before, and clears the HUD.
+- Test: Level 5's message box dot sits at the input bar's right edge.
+- Run `npm run build`.
+
 ---
 
 ## Done
