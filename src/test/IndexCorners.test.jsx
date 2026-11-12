@@ -112,15 +112,15 @@ describe('Index museum: the corners in a level', () => {
     // booting: nothing to read or do yet
     expect(corner('bl').textContent).toBe('')
     expect(corner('br').textContent).toBe('')
-    // playing: the objectives and the hint, the count; Continue once all are done
+    // playing: the objectives and the hint; Continue once all are done
     const cont = vi.fn()
     rerender({ continueAction: null, hudReady: true })
     expect(corner('bl').textContent).toContain('[ ]Open a thing')
     expect(corner('bl').textContent).toContain('[?]Try the menus')
-    expect(corner('br').textContent).toBe('0 of 3')
+    expect(corner('br').textContent).toBe('')   // no count: the boxes say it
     fireEvent.click(screen.getByText('do one'))
     expect(corner('bl').textContent).toContain('[x]Open a thing')
-    expect(corner('br').textContent).toBe('1 of 3')
+    expect(corner('br').textContent).toBe('')
     rerender({ continueAction: cont, hudReady: true })
     fireEvent.click(screen.getByText('Continue').closest('button'))
     expect(cont).toHaveBeenCalled()

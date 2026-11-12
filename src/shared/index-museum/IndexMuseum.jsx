@@ -503,14 +503,10 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 
   // what to do next
   let act = null
-  if (roomState === 'playing' && slots.tracker) {
-    const { objectives, completedIndices } = slots.tracker
-    act = (
-      <>
-        {continueAction && <Line as="go" text={WORDS.cont} arrow="→" onClick={() => continueAction()} />}
-        <div className={`${s.quiet} ${s.count}`}>{WORDS.doneOf(completedIndices.length, objectives.length)}</div>
-      </>
-    )
+  // playing: Continue once all are done (no count: the [x] boxes say it;
+  // Matthew's review, 12 Nov 2026)
+  if (roomState === 'playing' && slots.tracker && continueAction) {
+    act = <Line as="go" text={WORDS.cont} arrow="→" onClick={() => continueAction()} />
   }
   if (roomState === 'discovery') {
     const d = slots.discovery

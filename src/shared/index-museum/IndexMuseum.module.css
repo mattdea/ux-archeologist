@@ -412,7 +412,6 @@
 .cornerGo { margin-top: var(--ix-row); margin-left: calc(-1 * var(--ix-cursor)); }
 .cornerSplit { display: flex; justify-content: space-between; }
 .cornerSplit + div { margin-bottom: var(--ix-row); }
-.count { text-align: right; padding-right: 1ch; }
 .cornersView .italic { font-style: italic; }
 
 /* The discovery, in a band along the bottom (IndexMuseum's DiscoveryBand):
