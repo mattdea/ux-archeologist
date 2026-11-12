@@ -116,8 +116,8 @@ export default function MenuBar({
   const runAction = (item) => {
     if (item.onSelect) { item.onSelect(); onMenuItemClick?.(); return }
     switch (item.action) {
-      case 'open':       onOpen?.(); return
-      case 'close':      onClose?.(); return
+      case 'open':       onOpen?.(); break
+      case 'close':      onClose?.(); break
       case 'emptyTrash': onEmptyTrash?.(); break
       case 'getInfo':    onGetInfo?.(); break
       case 'cleanUp':    onCleanUp?.(); break

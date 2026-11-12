@@ -23,14 +23,14 @@ const { name: ARTIFACT_NAME, description: DISCOVERY_DESCRIPTION } = ARTIFACTS[1]
 const OBJECTIVES = [
   'Open the Notes document',
   'Delete the Projects folder',
-  'Look through the menus',
+  'Choose a command from a menu',
 ]
 
 // One nudge per objective, shown only after the player has stalled
 const HINTS = [
   'Double-click the Notes icon on the desktop',
   'Drag the Projects folder onto the Trash',
-  'Click File in the menu bar at the top of the screen',
+  'Click a menu name at the top of the screen, then click a command in black',
 ]
 
 // Maps DesktopScene's string keys → OBJECTIVES array indices

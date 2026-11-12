@@ -4,7 +4,7 @@ import styles from './ObjectiveTracker.module.css'
 const OBJECTIVE_LABELS = [
   { key: 'openFolder', label: 'Open the Notes file' },
   { key: 'trashFile', label: 'Drag Projects to Trash' },
-  { key: 'useMenu', label: 'Use the File menu' },
+  { key: 'useMenu', label: 'Choose a command from a menu' },
 ]
 
 export default function ObjectiveTracker({ objectives, onContinue }) {

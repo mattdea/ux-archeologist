@@ -37,6 +37,29 @@ describe('MenuBar', () => {
     expect(screen.queryByText('by Name')).not.toBeInTheDocument()
   })
 
+  // Level 1's menu objective: every enabled command counts, Open and Close
+  // included (they used to return before onMenuItemClick); a grey one doesn't
+  it.each([['File', 'Open'], ['File', 'Close'], ['Apple', 'Calculator']])('%s > %s counts as choosing a command', async (menu, item) => {
+    const user = userEvent.setup()
+    const onMenuItemClick = vi.fn()
+    const onOpen = vi.fn(), onClose = vi.fn(), onDeskAccessory = vi.fn()
+    render(<MenuBar onMenuItemClick={onMenuItemClick} canOpen canClose onOpen={onOpen} onClose={onClose} onDeskAccessory={onDeskAccessory} />)
+    await user.click(menu === 'Apple' ? screen.getByLabelText('Apple menu') : screen.getByText(menu))
+    await user.click(screen.getByText(item))
+    await waitFor(() => expect(onMenuItemClick).toHaveBeenCalledTimes(1))
+    expect(onOpen.mock.calls.length + onClose.mock.calls.length + onDeskAccessory.mock.calls.length).toBe(1)
+  })
+
+  it('a grey command does nothing and does not count', async () => {
+    const user = userEvent.setup()
+    const onMenuItemClick = vi.fn()
+    render(<MenuBar onMenuItemClick={onMenuItemClick} />)
+    await user.click(screen.getByText('File'))
+    await user.click(screen.getByText('Duplicate'))
+    await new Promise(r => setTimeout(r, 500))
+    expect(onMenuItemClick).not.toHaveBeenCalled()
+  })
+
   it('closes dropdown on Escape key', async () => {
     const user = userEvent.setup()
     render(<MenuBar onMenuItemClick={() => {}} />)

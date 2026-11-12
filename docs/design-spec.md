@@ -400,7 +400,9 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 **Objectives (any order):**
 1. Open the Notes document
 2. Delete the Projects folder
-3. Look through the menus
+3. Choose a command from a menu
+
+Hints, one each: "Double-click the Notes icon on the desktop" · "Drag the Projects folder onto the Trash" · "Click a menu name at the top of the screen, then click a command in black". Objective 3 was "Look through the menus" until Matthew's review (12 Nov 2026): it didn't say what to do. "Choose" is the Mac's own word for picking a menu command. Any enabled command completes it, File ▸ Open and Close included (they used to return before `onMenuItemClick` in `MenuBar`'s `runAction`, so they didn't count), as do the Apple menu's desk accessories and TeachText's own menus; a grey (dimmed) command does nothing and doesn't count. Classic and the Index use the same objective and hint.
 
 **Discovery Card:**
 - Artifact: `Direct Manipulation`
