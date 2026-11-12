@@ -660,6 +660,40 @@ In the Index museum, Level 5's chat is dark in both light and dark mode. In ligh
 - **Status (11 Nov 2026):** built overnight, not yet shown to Matthew. Every chat colour is now a `--chat-…` token on the chat panel, with a light set chosen by hand from the inverted values; `Level5` passes `theme` to `ChatPanel` (`data-chat-theme`), light only in the Index's light mode. The page is #fff, continuous with the light room. The chat has no accent colour, so there was none to keep. Pairs and ratios are in the spec under Level 5, "Light version"; every light text colour is 4.5:1 or more, and icons and edges 3:1 or more. Checked: 202 tests (a new one: dark in Classic, even with the Index theme set to light; light in Index light; dark in Index dark; live), `npm run build`, the browser in intro, playing (a sent message, a reply, action icons, chips) and discovery at 1440, and playing at 375, in Index light and dark and in Classic. Screenshots not retaken (not asked for in the prompt). Found on the way and committed separately: at 375 the catalogue number sat at the viewport edge, so Level 5 now measures the record from the input bar's edges (24px in).
   - **Dark greys (Matthew, 11 Nov 2026): lift the ones that fail AA.** Done: placeholder and "Curator v1" #949494 (4.7:1), send icon #808080 (3.6:1), input bar edge, thinking dots and chip edge #666 (3.3:1), action icons #737373 (4.0:1); chip hover edge #888. Before and after in the spec under Level 5, "Light version". Classic and the Index's dark mode both show it.
 
+### Index museum: the discovery text in a wide band at the bottom · approved 12 Nov 2026
+In the Index corners, the discovery text sits in the bottom-left corner: a 32ch column that's 13 rows tall. Level 0's text runs to about 16 rows, so it spills out of the top of the corner and over the device. `useArtifactFit` only knows about the 13-row box, so it doesn't notice. A narrower window makes it worse. Matthew's call (12 Nov 2026): first a wide band and shorter text; if it still overlaps, a tray. **The device never moves or shrinks for the discovery.**
+
+**1. A wide band.** At discovery, the bottom-left corner's content (the "Artifact Discovered" line with the year, the name, the text and the room's picture) goes in a band along the bottom.
+- The band runs from the left gutter to the bottom-right corner (Continue / Back to timeline), with the usual gap before it. The text is at most 80ch wide.
+- The band is bottom-aligned with the bottom-right corner. The room's picture sits at the band's left, as tall as the text, and the text is beside it.
+- Intro and playing keep the bottom-left corner as now. The corner keeps its fixed size, so `useArtifactFit` places the device exactly as before, and the device doesn't move when the band appears.
+- The band appears with the same fade as the corner text does now. With reduced motion, there's no fade.
+
+**2. Shorter text.** Cut each level's `description` in `src/data/artifacts.js` to about 50 words, so it fits about 4 lines at 80ch.
+- There's one text, so the Classic discovery card, the timeline and the collection page get the shorter version too.
+- Every fact below is already in the current text, with sources in the spec. Nothing new is added; the dropped facts are listed so they can go elsewhere later.
+  - **Level 0:** "At a terminal you type a command, the computer prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. The same short commands, like ls and rm, still work on every Mac." (Drops "because terminals were slow" and "most of the world's servers".)
+  - **Level 1:** "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people." (Drops Shneiderman's 1983 term and "some tasks took longer with a mouse".)
+  - **Level 2:** "On the early web, every link was put there by the person who wrote the page, and you found things by following them from page to page. Directories such as Yahoo! sorted sites by hand, until search engines such as AltaVista, launched in December 1995, took over." (Drops "finding something specific could take a long time".)
+  - **Level 3:** "The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched instead of moving a pointer. Lists kept moving after you let go and bounced at the end, as if they had weight. Within a few years almost every phone worked this way." (Drops Apple's patent on the bounce.)
+  - **Level 4:** "Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like, based on what you've responded to before. You can't see how it decides, and every like tells it what to show you next." (Drops "and comment on".)
+  - **Level 5:** "Here you didn't learn commands, menus or gestures; you just asked, and it worked out what you wanted. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did." (Drops the list of things you can hand it.)
+- Update `docs/copy-pass.md` if it quotes these texts.
+
+**3. A tray if it still overlaps.** After placing the band, compare its box with the device's box (`--artifact-*`, which `useArtifactFit` already publishes).
+- If they overlap, the band becomes a tray: the same box and contents, on the page colour, sliding up from the bottom edge over the lower part of the device. There's no border, rule or shadow, like the `≡` menu.
+- The device stays where it is, under the tray. The bottom-right corner stays uncovered.
+- With reduced motion it appears without the slide.
+- Re-check on resize. A window that grows enough drops the tray back to a plain band.
+
+**At phone width:** the narrow layout already has a bottom band, so only the shorter text applies there. The tray rule (3) applies if that band covers the device.
+
+**Checks:**
+- Every level at discovery, light and dark, at 1440 × 900, 1280 × 800, 1920 × 1080 and 375. Say which levels get the tray at each size.
+- Test: the device's box is the same in playing and discovery. Test: the band either clears the device or is a tray.
+- Run `npm run build`.
+- Spec: the Index museum section (band, tray) and the copy section.
+
 ---
 
 ## Done
