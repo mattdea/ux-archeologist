@@ -5,8 +5,10 @@
 // backlog, "the index museum"). This is the one place that decides. On the
 // dev server it is remembered per browser and can be flipped at any time,
 // mid-level included: only the presentation changes, so a level keeps its
-// place. The production build is always 'classic' until Matthew says
-// otherwise.
+// place. On the dev server the Index is the default (backlog, "Index
+// museum: one home page", 12 Nov 2026): it reads 'index' unless this
+// browser has chosen Classic. The production build is always 'classic'
+// until Matthew says otherwise.
 //
 // The choice is mirrored as data-museum="classic|index" on <html>, which
 // the index museum's global rules key on.
@@ -15,9 +17,16 @@ import { useSyncExternalStore } from 'react'
 const KEY = 'ux-archaeologist:museum'
 const listeners = new Set()
 
+/** The museum for a stored choice: Classic in production, else Index unless Classic was chosen */
+export function resolveMuseumStyle(stored, dev = import.meta.env.DEV) {
+  if (!dev) return 'classic'
+  return stored === 'classic' ? 'classic' : 'index'
+}
+
 function read() {
-  if (!import.meta.env.DEV) return 'classic'
-  try { return localStorage.getItem(KEY) === 'index' ? 'index' : 'classic' } catch { return 'classic' }
+  let stored = null
+  try { stored = localStorage.getItem(KEY) } catch { /* storage blocked: the default */ }
+  return resolveMuseumStyle(stored)
 }
 
 let current = read()
@@ -32,7 +41,7 @@ export function museumStyle() { return current }
 export function setMuseumStyle(style) {
   if (!import.meta.env.DEV) return
   const next = style === 'index' ? 'index' : 'classic'
-  try { next === 'index' ? localStorage.setItem(KEY, 'index') : localStorage.removeItem(KEY) } catch { /* storage blocked: for this visit only */ }
+  try { next === 'classic' ? localStorage.setItem(KEY, 'classic') : localStorage.removeItem(KEY) } catch { /* storage blocked: for this visit only */ }
   if (next === current) return
   current = next
   mirror()

@@ -9,7 +9,7 @@ import { useState } from 'react'
 import App from '../App'
 import IndexMuseum from '../shared/index-museum/IndexMuseum'
 import { _resetIndexSlots, setPeek, clearPeek } from '../shared/index-museum/store'
-import { setMuseumStyle, museumStyle } from '../shared/museumStyle'
+import { setMuseumStyle, museumStyle, resolveMuseumStyle } from '../shared/museumStyle'
 import IntroModal from '../shared/museum/IntroModal'
 import ObjectiveTracker from '../shared/museum/ObjectiveTracker'
 import HintPill from '../shared/museum/HintPill'
@@ -68,11 +68,19 @@ describe('Index museum', () => {
   it('the switch is remembered and mirrored on <html>', () => {
     act(() => setMuseumStyle('index'))
     expect(museumStyle()).toBe('index')
-    expect(localStorage.getItem('ux-archaeologist:museum')).toBe('index')
+    expect(localStorage.getItem('ux-archaeologist:museum')).toBeNull()
     expect(document.documentElement.getAttribute('data-museum')).toBe('index')
     act(() => setMuseumStyle('classic'))
-    expect(localStorage.getItem('ux-archaeologist:museum')).toBeNull()
+    expect(localStorage.getItem('ux-archaeologist:museum')).toBe('classic')
     expect(document.documentElement.getAttribute('data-museum')).toBe('classic')
+  })
+
+  it('the dev server defaults to the Index; production is always Classic', () => {
+    expect(resolveMuseumStyle(null, true)).toBe('index')
+    expect(resolveMuseumStyle('index', true)).toBe('index')
+    expect(resolveMuseumStyle('classic', true)).toBe('classic')
+    expect(resolveMuseumStyle(null, false)).toBe('classic')
+    expect(resolveMuseumStyle('index', false)).toBe('classic')
   })
 
   it('App draws the classic title in Classic and the list in Index, and flips live', () => {

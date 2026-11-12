@@ -5,3 +5,9 @@ import { configure } from '@testing-library/react'
 // about that long on their own (menu blink, zoom rectangles, drive light), so
 // they failed whenever the suite ran in parallel on a busy machine.
 configure({ asyncUtilTimeout: 3000 })
+
+// The dev server opens on the Index museum (museumStyle.js); the suite was
+// written against Classic, so every file starts there and opts in to the
+// Index where it tests it.
+import { setMuseumStyle } from '../shared/museumStyle'
+setMuseumStyle('classic')
