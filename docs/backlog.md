@@ -693,6 +693,16 @@ In the Index corners, the discovery text sits in the bottom-left corner: a 32ch 
 - Test: the device's box is the same in playing and discovery. Test: the band either clears the device or is a tray.
 - Run `npm run build`.
 - Spec: the Index museum section (band, tray) and the copy section.
+- **Status (12 Nov 2026):** built, in three commits (band, texts, tray). Details in the spec, "Index museum" (the discovery band, the tray).
+  - **1. The band:** fixed inside the bottom-left corner, which keeps its size, and not `data-hud`; from the left gutter to the bottom-right corner less the 6ch column gap, bottom-aligned with it; the picture at its left as tall as the text, the text at most 80ch. Replaces `placeFind` (picture beside or above the corner text), which is gone.
+  - **2. The texts:** the six above, word for word, in `src/data/artifacts.js`; `docs/copy-pass.md` §2 records each with what it drops; the spec's discovery cards match.
+  - **3. The tray:** when the band's content comes within 12px of the device. I picked 12px: under the 16px the layout leaves itself (Level 5's chat stops 16px above the corners, which at 16 would have counted as covering it at 375).
+  - **Which levels get the tray** (measured in headless Chrome, light and dark, the same in both): at 1440 × 900, 1280 × 800 and 1920 × 1080, Levels 1, 2, 3 and 4; Levels 0 and 5 keep the plain band. At 375 × 812, none. The shorter text doesn't save Levels 1–4: their devices sit beside the bottom corners and reach to within about 24–180px of the bottom edge at 1440 × 900, so any band under 13 rows still meets them. Level 2 at 1440 × 900 is the closest: 9px clear of Netscape's frame, so a tray.
+  - **Checked:** at every size, level and theme, the device's box is the same in playing and discovery; the band or tray never covers the bottom-right corner; the tray is on top of the device (hit-tested) and on the page colour (#fff / #111); growing a 1440 × 900 window to 1920 × 1300 on Level 2 drops the tray to a band and shrinking brings it back; no console errors. 213 tests (new: the device's box the same in playing and discovery; the band clears the device or is a tray, and a resize drops it; the tray's styles and reduced motion; the overlap gap), `npm run build`. No screenshots taken.
+  - **For Matthew:**
+    - Four of six levels get the tray at every desktop size, so the tray is the normal case, not the fallback. A band that never meets the device would need the devices smaller at discovery, which this entry rules out.
+    - At 1920 × 1080 the tray covers Level 3's catalogue label for the home button (the record avoids `data-hud` blocks, and the tray isn't one so that the device doesn't move).
+    - At 375 the bottom band holds the picture, the text and Continue in more than its 40% of the height, so it scrolls, as it did before.
 
 ### Catalogue record: labels closer to their parts · approved 12 Nov 2026
 From Matthew's review of Level 5 in the Index at 1440 (12 Nov 2026). There are two placement fixes in `src/shared/catalogue/place.js`. They apply to every level, and Level 5 shows both problems. Label wording is a separate entry, still to come.
