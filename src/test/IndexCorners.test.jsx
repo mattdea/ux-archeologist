@@ -20,7 +20,6 @@ import { FadeNavCtx } from '../shared/SharedLayout'
 import { resetAll } from '../state/state'
 import useArtifactFit, { computeFit } from '../hooks/useArtifactFit'
 import { indexLevelLayout, setIndexLevelLayout } from '../shared/devLooks'
-import { overlaps, BAND_GAP } from '../shared/index-museum/band'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
@@ -43,6 +42,7 @@ function FakeLevel() {
       {screen === 'intro' && <IntroModal era="1984" title="The Desktop" description="It's 1984." objectives={OBJ} onBegin={() => setScreen('playing')} />}
       {screen === 'discovery' && <DiscoveryCard era="1984" artifactName="Direct Manipulation" description="Pictures you point at." nextUrl="/level/2" />}
       <HintPill docked text={screen === 'playing' ? 'Try the menus' : null} />
+      <div data-artifact />
       <div data-hud><ObjectiveTracker objectives={OBJ} completedIndices={done} /></div>
       <button type="button" onClick={() => setDone(d => [...d, d.length])}>do one</button>
       <button type="button" onClick={() => setScreen('discovery')}>finish</button>
@@ -255,43 +255,33 @@ describe('Index museum: the corners in a level', () => {
       expect(deviceBox()).toEqual(playing)
     })
 
-    it('the band either clears the device or is a tray, and a window that grows drops the tray', () => {
-      // the band's content where it lays out at 1440 × 900
-      const CONTENT = [40, H - 170, 1063, 140]
-      ;['offsetLeft', 'offsetTop', 'offsetWidth', 'offsetHeight'].forEach((k, i) => vi.spyOn(HTMLElement.prototype, k, 'get').mockImplementation(function () {
-        if (this.parentElement?.hasAttribute('data-ix-band')) return CONTENT[i]
-        return at(this, i)
-      }))
+    it('the device is under a fade at discovery, and not while playing', () => {
       const root = document.documentElement.style
-      const put = (x, y, w, h) => Object.entries({ left: x, top: y, width: w, height: h }).forEach(([k, v]) => root.setProperty(`--artifact-${k}`, `${v}px`))
-      put(375, 134, 690, 632)                     // the Mac, reaching below the band's top
+      Object.entries({ left: 375, top: 134, width: 690, height: 632 }).forEach(([k, v]) => root.setProperty(`--artifact-${k}`, `${v}px`))
       renderLevel()
+      const fade = () => document.querySelector('[data-ix-fade]')
       fireEvent.click(screen.getByText('Begin excavation').closest('button'))
+      expect(fade()?.getAttribute('data-ix-fade') ?? 'off').toBe('off')
       fireEvent.click(screen.getByText('finish'))
-      const band = () => corner('bl').querySelector('[data-ix-band]')
-      expect(band().getAttribute('data-ix-band')).toBe('tray')
-      expect(band().hasAttribute('data-hud')).toBe(false)
-      // a taller window: the device now ends well above the band
-      put(375, 100, 690, 500)
-      act(() => { window.dispatchEvent(new Event('resize')) })
-      expect(band().getAttribute('data-ix-band')).toBe('band')
+      expect(fade().getAttribute('data-ix-fade')).toBe('on')
+      expect(fade().parentElement.hasAttribute('data-artifact')).toBe(true)   // in the level's stacking context, under the catalogue record
+      expect(fade().hasAttribute('data-hud')).toBe(false)          // never moves the device
+      expect(fade().style.left).toBe('calc(var(--artifact-left, 375px) - 1px)')  // the device's box, read live, 1px over
+      expect(corner('bl').querySelector('[data-ix-band]')).not.toBeNull()   // the band stays a band
       ;['left', 'top', 'width', 'height'].forEach(k => root.removeProperty(`--artifact-${k}`))
     })
 
-    it('the tray is on the page colour with no border, rule or shadow, and doesn\'t slide under reduced motion', () => {
+    it('the fade: the page colour, partly see-through, a light blur, between the device and the record; at once under reduced motion', () => {
       const css = readFileSync(resolve(__dirname, '../shared/index-museum/IndexMuseum.module.css'), 'utf8')
-      const tray = css.match(/\n\.band\.tray \{([^}]*)\}/)[1]
-      expect(tray).toMatch(/background: var\(--ix-paper\)/)
-      expect(tray).not.toMatch(/border(?!-box)|box-shadow|outline/)
-      expect(css).toMatch(/prefers-reduced-motion[^}]*\.band\.tray[^}]*animation: none/)
+      const fade = css.match(/\n\.fade \{([^}]*)\}/)[1]
+      expect(fade).toMatch(/color-mix\(in srgb, var\(--ix-room[^)]*\) var\(--ix-fade-strength\), transparent\)/)
+      expect(fade).toMatch(/backdrop-filter: blur\(var\(--ix-fade-blur\)\)/)
+      expect(fade).toMatch(/z-index: 2;/)
+      expect(fade).toMatch(/transition: opacity 400ms/)
+      const record = readFileSync(resolve(__dirname, '../shared/catalogue/CatalogueRecord.module.css'), 'utf8')
+      expect(Number(record.match(/\.record \{[^}]*z-index: (\d+)/)[1])).toBeGreaterThan(2)
+      expect(css).toMatch(/prefers-reduced-motion[^}]*\}\s*\.fade, \.fadeOn \{ transition: none; \}/)
+      expect(css).not.toMatch(/tray/i)
     })
-  })
-
-  it('overlap: boxes within the gap count as covering', () => {
-    const dev = { x: 100, y: 100, w: 400, h: 400 }
-    expect(overlaps({ x: 0, y: 600, w: 800, h: 100 }, dev)).toBe(false)
-    expect(overlaps({ x: 0, y: 500 + BAND_GAP - 1, w: 800, h: 100 }, dev)).toBe(true)
-    expect(overlaps({ x: 0, y: 450, w: 800, h: 100 }, dev)).toBe(true)
-    expect(overlaps({ x: 0, y: 450, w: 800, h: 100 }, null)).toBe(false)
   })
 })

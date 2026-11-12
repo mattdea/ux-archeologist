@@ -35,6 +35,7 @@
 // Enter opens, Escape closes what's open (About, the reset question). Tab
 // order is the DOM order, as for any page.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import s from './IndexMuseum.module.css'
 import { ARTIFACTS } from '../../data/artifacts'
 import { isLevelComplete, resetAll } from '../../state/state'
@@ -47,7 +48,7 @@ import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle } from './pictureStyle'
 import './pointer'   // the museum's pointer (pointers.css), arrowhead or stick
 import { useDevChange } from '../dev/devEvents'
-import { deviceBox, layoutBox, overlaps } from './band'
+import { deviceBox } from './band'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -458,10 +459,8 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAction, navigate, panelOpen, togglePanel }) {
   const a = ARTIFACTS[level]
   const next = ARTIFACTS[level + 1]
-  // under 900px the bottom band already holds the discovery; it becomes a
-  // tray only if it covers the device
-  const bottomRef = useRef(null)
-  const bottomTray = useTray(bottomRef, narrow && roomState === 'discovery')
+  // the device under a fade while there's text to read over it
+  const fade = <DeviceFade level={level} on={roomState === 'discovery'} />
   const room = (
     <Line as="go" current mark={`${a.year}  `} text={a.title} arrow="≡" bare
       className={s.roomLine} expanded={panelOpen} label={`${a.year} ${a.title}. ${WORDS.allRooms}`}
@@ -527,7 +526,8 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
   if (narrow) return (
     <div ref={listRef} className={s.cornersNarrow}>
       <div className={s.topBand} data-hud="top">{room}</div>
-      <div ref={bottomRef} className={`${s.bottomBand} ${bottomTray ? s.tray : ''}`} data-hud="bottom" data-state={roomState} data-ix-tray={roomState === 'discovery' ? String(bottomTray) : undefined}>
+      {fade}
+      <div className={s.bottomBand} data-hud="bottom" data-state={roomState}>
         <div className={s.read}>{read}</div>
         {act && <div className={s.act}>{act}</div>}
       </div>
@@ -536,6 +536,7 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 
   return (
     <div ref={listRef} className={s.corners}>
+      {fade}
       <div className={`${s.corner} ${s.tl}`} data-hud="corner" data-corner="tl">
         <Line as="go" text={TITLE.name} arrow="→" onClick={() => navigate('/')} />
         {room}
@@ -564,36 +565,12 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 // picture at the band's left as tall as the text. It's position: fixed
 // inside the corner, which keeps its size, and not data-hud, so the device
 // stays exactly where it was in playing.
-//
-// If the band would still cover the device (its box within BAND_GAP of the
-// device's), it becomes a tray: the same box and contents on the page
-// colour, slid up from the bottom edge over the device's lower part, with
-// no border, rule or shadow. The device stays put under it; the bottom-right
-// corner stays uncovered. Checked again on every resize and whenever the
-// text's size changes, so a window that grows enough drops it back to a band.
+// It sits over the device's lower part where the device reaches that far;
+// the device is faded then (DeviceFade), so the text stays readable.
 const PICTURE_RATIO = 400 / 340
-
-// Is the box `ref` holds over the device? Measured without transforms, so
-// the tray's own slide doesn't change the answer.
-function useTray(ref, active) {
-  const [tray, setTray] = useState(false)
-  useLayoutEffect(() => {
-    if (!active) { setTray(false); return }
-    const check = () => { if (ref.current) setTray(overlaps(layoutBox(ref.current), deviceBox())) }
-    check()
-    const raf = requestAnimationFrame(check)
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(check) : null
-    if (ref.current) ro?.observe(ref.current)
-    window.addEventListener('resize', check)
-    return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', check) }
-  }, [ref, active])
-  return tray
-}
 
 function DiscoveryBand({ level, children }) {
   const textRef = useRef(null)
-  const innerRef = useRef(null)
-  const tray = useTray(innerRef, true)
   const [pictureH, setPictureH] = useState(0)
   useLayoutEffect(() => {
     const measure = () => { if (textRef.current) setPictureH(textRef.current.offsetHeight) }
@@ -605,8 +582,8 @@ function DiscoveryBand({ level, children }) {
     return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', measure) }
   }, [level])
   return (
-    <div className={`${s.band} ${s.findIn} ${tray ? s.tray : ''}`} data-ix-band={tray ? 'tray' : 'band'}>
-      <div ref={innerRef} className={s.bandInner}>
+    <div className={`${s.band} ${s.findIn}`} data-ix-band>
+      <div className={s.bandInner}>
         {pictureH > 0 && (
           <span className={s.bandPicture} style={{ height: pictureH, width: Math.round(pictureH * PICTURE_RATIO) }} data-ix-find>
             <DotPicture level={level} className={s.findPicture} />
@@ -615,5 +592,49 @@ function DiscoveryBand({ level, children }) {
         <div ref={textRef} className={s.bandText} data-ix-band-text>{children}</div>
       </div>
     </div>
+  )
+}
+
+// ── The fade over the device ───────────────────────────────────────────
+// While the corners have text to read over or beside the device (the
+// discovery), the device sits under a fade: the page colour at partial
+// opacity with a light backdrop blur (backlog, "Index museum: fixes from
+// Matthew's review", 12 Nov 2026), so the discovery band's text passes AA
+// where it runs over the device's foot. It covers the device's box
+// (useArtifactFit's --artifact-*, read live; Level 5, with no fit, its
+// data-artifact zone, measured), 1px over on every side.
+//
+// It's portalled into the level's data-artifact box at z-index 2: the
+// level page is position: fixed, so it is its own stacking context, and
+// only inside it can the fade sit over the device and under the catalogue
+// record (z-index 3), which stays unfaded. The index's corners and band are
+// above the whole level page. It fades in and out over 400ms (at once under
+// reduced motion), and while on it takes the pointer, so the device can't
+// be used through it.
+function DeviceFade({ level, on }) {
+  const [at, setAt] = useState(null)
+  useLayoutEffect(() => {
+    const measure = () => {
+      const host = document.querySelector('[data-artifact]')
+      const box = host && deviceBox()
+      setAt(box ? { host, box } : null)
+    }
+    measure()
+    const raf = requestAnimationFrame(measure)
+    const onResize = () => requestAnimationFrame(measure)
+    window.addEventListener('resize', onResize)
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize) }
+  }, [level, on])
+  if (!at || !at.host.isConnected) return null
+  const { box } = at
+  // 1px past the device on every side: its edges fall on fractions of a
+  // pixel, and a half-covered edge pixel would show the device unfaded
+  const style = {
+    left: `calc(var(--artifact-left, ${box.x}px) - 1px)`, top: `calc(var(--artifact-top, ${box.y}px) - 1px)`,
+    width: `calc(var(--artifact-width, ${box.w}px) + 2px)`, height: `calc(var(--artifact-height, ${box.h}px) + 2px)`,
+  }
+  return createPortal(
+    <div className={`${s.fade} ${on ? s.fadeOn : ''}`} style={style} data-ix-fade={on ? 'on' : 'off'} aria-hidden="true" />,
+    at.host,
   )
 }

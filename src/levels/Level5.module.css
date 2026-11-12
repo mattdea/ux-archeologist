@@ -41,6 +41,7 @@
    device): over the chat, taking no clicks itself */
 .recordBox {
   position: fixed;
+  z-index: 3;            /* above the index museum's fade over the chat (z-index 2), as the record is on every level */
   pointer-events: none;
 }
 
