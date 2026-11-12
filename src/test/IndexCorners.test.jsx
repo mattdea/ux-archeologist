@@ -18,9 +18,8 @@ import HintPill from '../shared/museum/HintPill'
 import DiscoveryCard from '../shared/museum/DiscoveryCard'
 import { FadeNavCtx } from '../shared/SharedLayout'
 import { resetAll } from '../state/state'
-import { computeFit } from '../hooks/useArtifactFit'
+import useArtifactFit, { computeFit } from '../hooks/useArtifactFit'
 import { indexLevelLayout, setIndexLevelLayout } from '../shared/devLooks'
-import { placeFind } from '../shared/index-museum/find'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
@@ -121,14 +120,22 @@ describe('Index museum: the corners in a level', () => {
     expect(cont).toHaveBeenCalled()
     // the room's picture comes only with the discovery
     expect(document.querySelector('[data-ix-find]')).toBeNull()
-    // discovery: the discovery text and the room's picture, Continue to the next room
-    // (jsdom lays nothing out: give every box the discovery text's place)
-    const rect = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ left: 24, top: 500, right: 324, bottom: 700, width: 300, height: 200, x: 24, y: 500 })
+    // discovery: the discovery text and the room's picture in the band along
+    // the bottom, Continue to the next room (jsdom lays nothing out: give the
+    // text a height, which the picture takes)
+    const h = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function () { return this.hasAttribute('data-ix-band-text') ? 120 : 0 })
     fireEvent.click(screen.getByText('finish'))
-    expect(document.querySelector('[data-ix-find] [data-picture]')).not.toBeNull()
-    rect.mockRestore()
-    expect(corner('bl').textContent).toContain('Artifact Discovered')
-    expect(corner('bl').textContent).toContain('Pictures you point at.')
+    const band = corner('bl').querySelector('[data-ix-band]')
+    expect(band).not.toBeNull()
+    expect(band.hasAttribute('data-hud')).toBe(false)               // never moves the device
+    const pic = band.querySelector('[data-ix-find]')
+    expect(pic.querySelector('[data-picture]')).not.toBeNull()
+    expect(pic.style.height).toBe('120px')                          // as tall as the text
+    expect(pic.style.width).toBe(`${Math.round(120 * 400 / 340)}px`)
+    expect(pic.compareDocumentPosition(band.querySelector('[data-ix-band-text]')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()  // the picture at the band's left
+    h.mockRestore()
+    expect(band.textContent).toContain('Artifact Discovered')
+    expect(band.textContent).toContain('Pictures you point at.')
     expect(corner('br').textContent).toContain('1995 The Hyperlink')
     fireEvent.click(screen.getByText('Continue').closest('button'))
     expect(navigate).toHaveBeenCalledWith('/level/2')
@@ -207,20 +214,44 @@ describe('Index museum: the corners in a level', () => {
     expect(panel).toMatch(/background: var\(--ix-paper\)/)
   })
 
-  describe("the room's picture beside its discovery", () => {
-    const text = { x: 24, y: 610, w: 300, h: 240 }
-    it('beside the text, as tall as it and bottom-aligned, when that clears the device', () => {
-      const r = placeFind({ text, viewport: { w: 1920, h: 1080 }, avoid: [{ x: 700, y: 100, w: 520, h: 880 }] })
-      expect(r.where).toBe('beside')
-      expect(r.h).toBe(240)
-      expect(r.y + r.h).toBe(text.y + text.h)
-      expect(r.x).toBeGreaterThan(text.x + text.w)
+  describe('the discovery band', () => {
+    // jsdom lays nothing out: put each corner where it is at 1440 × 900
+    const W = 1440, H = 900
+    const CORNERS = { tl: [24, 20, 266, 40], tr: [W - 290, 20, 266, 20], bl: [24, H - 290, 266, 260], br: [W - 290, H - 290, 266, 260] }
+    // the band: wide, low, and taller than the corner's text
+    const BAND = [24, H - 300, 1000, 270]
+    const at = (el, i) => { const c = el.getAttribute?.('data-corner'); return c ? CORNERS[c][i] : el.hasAttribute?.('data-ix-band') ? BAND[i] : 0 }
+    beforeEach(() => {
+      Object.defineProperty(window, 'innerWidth', { value: W, configurable: true })
+      Object.defineProperty(window, 'innerHeight', { value: H, configurable: true })
+      ;['offsetLeft', 'offsetTop', 'offsetWidth', 'offsetHeight'].forEach((k, i) => vi.spyOn(HTMLElement.prototype, k, 'get').mockImplementation(function () { return at(this, i) }))
     })
-    it('smaller, or above the text, rather than over the device; nowhere if nothing fits', () => {
-      const above = placeFind({ text, viewport: { w: 1440, h: 900 }, avoid: [{ x: 393, y: 133, w: 654, h: 633 }] })
-      expect(above.where).toBe('above')
-      expect(above.y + above.h).toBeLessThanOrEqual(text.y)
-      expect(placeFind({ text, viewport: { w: 400, h: 700 }, avoid: [{ x: 0, y: 0, w: 400, h: 600 }] })).toBeNull()
+    afterEach(() => vi.restoreAllMocks())
+
+    function Device() {
+      useArtifactFit(780, 755)
+      return null
+    }
+    const deviceBox = () => ['left', 'top', 'width', 'height'].map(k => document.documentElement.style.getPropertyValue(`--artifact-${k}`))
+
+    it("the device's box is the same in playing and discovery", () => {
+      const navigate = vi.fn()
+      const view = (p) => (
+        <FadeNavCtx.Provider value={navigate}>
+          <IndexMuseum view="level1" navigate={navigate} continueAction={null} hudReady {...p} />
+          <FakeLevel />
+          <Device />
+        </FadeNavCtx.Provider>
+      )
+      render(view())
+      fireEvent.click(screen.getByText('Begin excavation').closest('button'))
+      act(() => { window.dispatchEvent(new Event('resize')) })
+      const playing = deviceBox()
+      expect(Number.parseFloat(playing[2])).toBeGreaterThan(300)
+      fireEvent.click(screen.getByText('finish'))
+      expect(corner('bl').querySelector('[data-ix-band]')).not.toBeNull()
+      act(() => { window.dispatchEvent(new Event('resize')) })
+      expect(deviceBox()).toEqual(playing)
     })
   })
 })

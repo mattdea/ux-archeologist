@@ -45,7 +45,6 @@ import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle } from './pictureStyle'
 import './pointer'   // the museum's pointer (pointers.css), arrowhead or stick
 import { useDevChange } from '../dev/devEvents'
-import { placeFind, artifactBox } from './find'
 
 const NARROW = '(max-width: 899.98px)'
 const SMALL = '(max-width: 599.98px)'
@@ -444,7 +443,6 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAction, navigate, panelOpen, togglePanel }) {
   const a = ARTIFACTS[level]
   const next = ARTIFACTS[level + 1]
-  const discRef = useRef(null)
   const room = (
     <Line as="go" current mark={`${a.year}  `} text={a.title} arrow="≡" bare
       className={s.roomLine} expanded={panelOpen} label={`${a.year} ${a.title}. ${WORDS.allRooms}`}
@@ -472,18 +470,20 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
   }
   if (roomState === 'discovery') {
     const d = slots.discovery
-    read = (
+    const text = (
       <>
-        {/* at phone width the room's picture sits above the text */}
-        {narrow && <DotPicture level={level} className={`${s.findNarrow} ${s.findIn}`} />}
-        <div ref={discRef}>
-          <div className={s.cornerSplit}><span className={s.quiet}>{WORDS.discovered}</span><span className={s.quiet}>{d.era}</span></div>
-          <div>{d.artifactName}</div>
-          <p className={s.cornerText}>{d.description}</p>
-        </div>
-        {!narrow && <Find level={level} textRef={discRef} />}
+        <div className={s.cornerSplit}><span className={s.quiet}>{WORDS.discovered}</span><span className={s.quiet}>{d.era}</span></div>
+        <div>{d.artifactName}</div>
+        <p className={s.cornerText}>{d.description}</p>
       </>
     )
+    read = narrow ? (
+      <>
+        {/* under 900px the bottom band is already wide: the room's picture above the text */}
+        <DotPicture level={level} className={`${s.findNarrow} ${s.findIn}`} />
+        <div>{text}</div>
+      </>
+    ) : <DiscoveryBand level={level}>{text}</DiscoveryBand>
   }
 
   // what to do next
@@ -536,47 +536,38 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
   )
 }
 
-// ── The room's picture beside its discovery text ────────────────────────
-// The find beside its label: the room's picture (whichever Pictures set is
-// on) beside the discovery text in the bottom-left corner, about as tall as
-// the text, bottom-aligned with it. It's not data-hud, so it never moves the
-// device; it is placed only where it covers neither the device
-// (useArtifactFit's --artifact-* box), another corner nor the window's
-// edge: beside the text first, at the text's height or as near it as fits,
-// then above the text, else not at all.
-function Find({ level, textRef }) {
-  const [at, setAt] = useState(null)
+// ── The discovery, in a band along the bottom ──────────────────────────
+// At discovery the bottom-left corner's content (the "Artifact Discovered"
+// line with the year, the name, the text, and the room's picture) goes in a
+// band along the bottom (backlog, "Index museum: the discovery text in a
+// wide band at the bottom", 12 Nov 2026): from the left gutter to the
+// bottom-right corner, bottom-aligned with it, the text at most 80ch, the
+// picture at the band's left as tall as the text. It's position: fixed
+// inside the corner, which keeps its size, and not data-hud, so the device
+// stays exactly where it was in playing.
+const PICTURE_RATIO = 400 / 340
+function DiscoveryBand({ level, children }) {
+  const textRef = useRef(null)
+  const [pictureH, setPictureH] = useState(0)
   useLayoutEffect(() => {
-    const measure = () => {
-      const el = textRef.current
-      if (!el) return
-      const t = el.getBoundingClientRect()
-      // the text's own width, not its box: the longest line it set
-      const range = document.createRange()
-      range.selectNodeContents(el)
-      const ink = range.getBoundingClientRect?.() ?? t
-      const text = { x: t.left, y: t.top, w: Math.min(t.width, Math.max(0, ink.right - t.left)) || t.width, h: t.height }
-      const corner = el.closest('[data-corner]')
-      const avoid = [...document.querySelectorAll('[data-hud]')]
-        .filter((h) => h !== corner)
-        .map((h) => h.getBoundingClientRect())
-        .filter((r) => r.width > 0 && r.height > 0)
-        .map((r) => ({ x: r.left, y: r.top, w: r.width, h: r.height }))
-      const dev = artifactBox()
-      if (dev) avoid.push(dev)
-      setAt(placeFind({ text, viewport: { w: window.innerWidth, h: window.innerHeight }, avoid }))
-    }
+    const measure = () => { if (textRef.current) setPictureH(textRef.current.offsetHeight) }
     measure()
     const raf = requestAnimationFrame(measure)
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null
     if (textRef.current) ro?.observe(textRef.current)
     window.addEventListener('resize', measure)
     return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', measure) }
-  }, [level, textRef])
-  if (!at) return null
+  }, [level])
   return (
-    <div className={`${s.find} ${s.findIn}`} style={{ left: at.x, top: at.y, width: at.w, height: at.h }} data-ix-find={at.where}>
-      <DotPicture level={level} className={s.findPicture} />
+    <div className={`${s.band} ${s.findIn}`} data-ix-band="band">
+      <div className={s.bandInner}>
+        {pictureH > 0 && (
+          <span className={s.bandPicture} style={{ height: pictureH, width: Math.round(pictureH * PICTURE_RATIO) }} data-ix-find>
+            <DotPicture level={level} className={s.findPicture} />
+          </span>
+        )}
+        <div ref={textRef} className={s.bandText} data-ix-band-text>{children}</div>
+      </div>
     </div>
   )
 }
