@@ -7,9 +7,10 @@
 // so moving between views redraws the list in place: lines that stay, stay;
 // new ones type in; gone ones go.
 //
-//  - Title, timeline and collection are the list itself (App renders no
-//    page for them), with the peeked room's dot picture or the collection's
-//    cards beside it.
+//  - The home page is the list itself (App renders no page for it): the
+//    title, with the timeline opening under Enter (view 'title' closed,
+//    'timeline' open), and the peeked room's picture beside it. There is
+//    no collection page: /collection lands on the open timeline.
 //  - In a level, by default (the dev panel's level layout, devLooks.js), the
 //    list splits into four corner blocks round a centred device
 //    (data-hud="corner"): where you are, getting around, what to read, what
@@ -279,9 +280,9 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   }
   if (!home || timelineOpen) push(<Gap key="rooms-gap" i={n} />)
 
-  // ── The six rooms (on the collection, its entries are the rooms) ──
+  // ── The six rooms ──
   const nextToPlay = ARTIFACTS.find(a => !isLevelComplete(a.level))?.level ?? 0
-  if (view !== 'collection' && (!home || timelineOpen)) ARTIFACTS.forEach(a => {
+  if (!home || timelineOpen) ARTIFACTS.forEach(a => {
     const done = isLevelComplete(a.level)
     const open = a.level === level
     if (inLevel && !open) {
@@ -351,27 +352,13 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     }
   }
 
-  if (view !== 'collection' && !inLevel) push(<Gap key="after-rooms" i={n} />)
+  if (!inLevel) push(<Gap key="after-rooms" i={n} />)
 
-  // ── Collection ──
-  if (!inLevel) {
-    const here = view === 'collection'
-    push(here
-      ? <Line key="collection" i={n} current text={WORDS.collection} meta={WORDS.found(found, ARTIFACTS.length)} />
-      : <Line key="collection" i={n} as="go" text={WORDS.collection} meta={WORDS.found(found, ARTIFACTS.length)} arrow="→" onClick={() => navigate('/collection')} />)
-    if (here) {
-      ARTIFACTS.forEach((a, k) => {
-        const got = isLevelComplete(a.level)
-        push(<Line key={`entry-${a.level}`} i={n} as="go" sub mark={a.year} quiet={!got}
-          text={`No. ${pad(a.level + 1)}  ${got ? a.name : WORDS.unfound}`} arrow="→"
-          peek={peekHandlers(a.level)} focus={k === 0} label={`No. ${pad(a.level + 1)}, ${a.year}, ${got ? a.name : WORDS.unfound} ${a.title}`}
-          onClick={() => navigate(a.path)} />)
-      })
-    }
-  }
+  // No Collection line: the finds show on the timeline itself, and
+  // /collection lands on it (backlog, "one home page", part 3)
 
   // ── About ──
-  if (!inLevel && view !== 'collection') {
+  if (!inLevel) {
     push(<Line key="about" i={n} as="go" text={WORDS.about} meta={ABOUT.label} arrow={aboutOpen ? '−' : '+'}
       onClick={() => setAboutOpen(o => !o)} />)
     if (aboutOpen) {
@@ -388,20 +375,20 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
   const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
     pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
-  if (!inLevel && view !== 'collection') darkLine()
+  if (!inLevel) darkLine()
 
   if (home) {
     push(<Gap key="by-gap" i={n} />)
     push(<Note key="by" i={n} quiet>{TITLE.by}</Note>)
   }
 
-  if (inLevel || view === 'collection') {
+  if (inLevel) {
     push(<Gap key="back-gap" i={n} />)
     push(<Line key="back" i={n} as="go" text={WORDS.backPlain} mark="←" arrow="→" onClick={() => navigate('/timeline')} />)
     darkLine()
   }
 
-  const pageKind = inLevel ? s.levelView : view === 'collection' ? s.collectionView : s.listView
+  const pageKind = inLevel ? s.levelView : s.listView
   if (corners) return (
     <div className={`${s.ix} ${s.levelView} ${s.cornersView}`} data-index-museum data-level-layout="corners">
       <Corners
@@ -429,8 +416,8 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
         </nav>
 
         {/* Beside the list: the peeked room's picture (with the stamps, the
-            arrowhead while no room is pointed at), or the collection's cards */}
-        {!inLevel && view !== 'collection' && (
+            arrowhead while no room is pointed at) */}
+        {!inLevel && (
           <div className={s.aside} aria-hidden="true">
             {slots.peek !== null && slots.peek !== undefined ? (
               <div className={s.peekBox} data-peek={slots.peek}>
@@ -444,7 +431,6 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
             )}
           </div>
         )}
-        {view === 'collection' && <Cards navigate={navigate} peek={slots.peek} />}
       </div>
     </div>
   )

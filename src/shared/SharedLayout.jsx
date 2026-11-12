@@ -123,7 +123,10 @@ export default function SharedLayout({ children }) {
     if (typeof window === 'undefined') return 'title'
     const path = window.location.pathname
     if (import.meta.env.DEV && ['/card-lab', '/style-lab', '/dot-editor'].includes(path)) return PATH_TO_VIEW[path]
-    if (museumStyle() === 'index') return indexHomeView(path) ?? 'title'
+    if (museumStyle() === 'index') {
+      if (path === '/collection') { window.history.replaceState(null, '', '/timeline'); return 'timeline' }
+      return indexHomeView(path) ?? 'title'
+    }
     return 'title'
   })
   const viewRef             = useRef(view)
@@ -162,7 +165,8 @@ export default function SharedLayout({ children }) {
   // `to` is still a path string (e.g. "/timeline", "/level/2") so existing
   // call sites work unchanged; we translate it to a view key here.
   const fadeNavigate = useCallback((to, options) => {
-    const nextView = PATH_TO_VIEW[to]
+    // In the index museum the collection is the timeline: /collection lands on it
+    const nextView = indexOn && PATH_TO_VIEW[to] === 'collection' ? 'timeline' : PATH_TO_VIEW[to]
     if (!nextView) return                       // unknown path — ignore
     if (nextView === view && !options) return
     // The index museum's home page opening or closing its timeline: the same
@@ -204,6 +208,11 @@ export default function SharedLayout({ children }) {
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [indexOn])
+  // Flipping to the index museum on the Classic collection page: the
+  // Index has none, so its timeline
+  useEffect(() => {
+    if (indexOn && view === 'collection') setView('timeline')
+  }, [indexOn, view])
   const fadeNavigateRef = useRef(fadeNavigate)
   fadeNavigateRef.current = fadeNavigate
 

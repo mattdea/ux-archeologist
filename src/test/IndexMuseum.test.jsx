@@ -173,13 +173,29 @@ describe('Index museum', () => {
     expect(navigate).toHaveBeenCalledWith('/')
   })
 
-  it('collection: an entry and a card for every room; found ones by name', () => {
-    completeLevel(0)
-    renderIndex('collection')
-    expect(lines().filter(t => t.startsWith('No.') || /No\. 0\d/.test(t))).toHaveLength(6)
-    expect(list().textContent).toContain('No. 01  Command & Response')
-    expect(list().textContent).toContain('No. 02  Finish this room to add it.')
-    expect(document.querySelectorAll('[data-index-museum] button[aria-hidden="true"]')).toHaveLength(6)
+  it('no Collection line on the home page, open or closed', () => {
+    renderIndex('title')
+    expect(lines().some(t => t.startsWith('Collection'))).toBe(false)
+    cleanup()
+    renderIndex('timeline')
+    expect(lines().some(t => t.startsWith('Collection'))).toBe(false)
+  })
+
+  it('/collection lands on the open timeline in the Index only; Classic keeps its collection page', () => {
+    // Index: a load of /collection
+    window.history.replaceState(null, '', '/collection')
+    act(() => setMuseumStyle('index'))
+    const { unmount } = render(<App />)
+    expect(window.location.pathname).toBe('/timeline')
+    expect(list().textContent).toContain('The Desktop')
+    unmount()
+    // Classic: the address is left alone and its pages are unchanged
+    window.history.replaceState(null, '', '/collection')
+    act(() => setMuseumStyle('classic'))
+    render(<App />)
+    expect(window.location.pathname).toBe('/collection')
+    expect(document.querySelector('[data-index-museum]')).toBeNull()
+    window.history.replaceState(null, '', '/')
   })
 
   it('arrow keys move through the lines, Home and End jump', () => {
@@ -267,7 +283,7 @@ describe('Index museum', () => {
     expect(document.documentElement.getAttribute('data-index-theme')).toBe('light')
     expect(localStorage.getItem('ux-archaeologist:index-theme')).toBe('light')
     cleanup()
-    for (const view of ['timeline', 'collection', 'level2']) {
+    for (const view of ['timeline', 'level2']) {
       renderIndex(view)
       // in a level it's in the full list (≡), not the corners
       if (view === 'level2') fireEvent.click(document.querySelector('[data-corner="tl"] [aria-expanded]'))
