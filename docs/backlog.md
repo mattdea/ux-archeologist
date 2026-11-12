@@ -719,6 +719,46 @@ From Matthew's review of Level 5 in the Index at 1440 (12 Nov 2026). There are t
   - **For Matthew:** on Level 2 the Location leader runs from the field's right edge through the Netscape logo, which sits just to its right, to reach its label. It did that before too (the dot was 24px inside the field). Crossing another part isn't covered by this entry; it could go with the label wording.
   - **Changed (Matthew, 12 Nov 2026): fix it now.** Done: where another labelled part is in the way, the dot goes on the part's bottom edge short of it, and the leader drops below both and runs straight out to its label (an L); labels above move up to make room. On Netscape the Location leader now leaves the field's bottom edge, passes 5px under the N and runs out; the N's label sits above it. Checked by measuring at 1440 × 900 and 1920 × 1080, every level: no leader crosses any labelled part, every dot is on its part's edge, no block overlaps another, a corner or the viewport edge. 211 tests (one new, Netscape's route), `npm run build`.
 
+### Index museum: one home page, the timeline opening under Enter · experiment, approved 12 Nov 2026
+Matthew (12 Nov 2026): the Index is now the design to work on, and the page flow is "the most annoying thing in the game right now". There are three pages outside the levels: the title page (`/`), which already lists all six rooms; the timeline (`/timeline`), which is nearly the same; and the collection (`/collection`). This entry merges them into one page, and adds four ways to show the timeline, switchable in the dev panel to compare. **Build and commit 1–4 one at a time.**
+
+**1. The Index is the default on the dev server.** `museumStyle.js` reads `'index'` unless the browser has chosen Classic. The production build stays Classic until Matthew says otherwise. Classic's pages and flow don't change.
+
+**2. One home page.** In the Index, `/` shows the name, the subtitle, Enter the exhibit, About, Dark mode and the byline. The six rooms are hidden at first.
+- **Enter the exhibit opens the timeline right below itself**, line by line with the stagger the list already uses, the way About opens. Its arrow turns to `−`, and clicking it again closes the timeline.
+- Opening the timeline changes the address to `/timeline` with a push, so the browser's back button closes it. Loading `/timeline` directly shows the home page with the timeline open.
+- Focus moves to the next room to play. With reduced motion, the timeline appears without the stagger.
+- The Enter line shows the count on its right: `4 of 6 found`.
+- Reset sits at the bottom of the open timeline, as it does on the timeline page now.
+- "Back to timeline" in a level goes to `/timeline`, which opens the home page with the timeline open.
+
+**3. The collection is the timeline.** The finds show on the timeline itself, so the Index drops the Collection line and the collection page. In the Index, `/collection` redirects to `/timeline`. Classic keeps its collection page.
+
+**4. Four timelines, behind a dev panel switch.** Add "Timeline: list / line / cards / dig" to the dev panel, remembered per browser, with list as the default. Every version links each room to its level, shows found and not-yet-found rooms, and uses whichever Pictures option is set (dots, stamps or fossils). See the sketch Matthew was shown on 12 Nov 2026.
+- **List (as now).** The rooms in lines, one above the other: year, title, and either the find's name or "Not yet found" on the right. The hover picture shows beside the list. This is today's list; it just lives under Enter now.
+- **Line.** A real timeline: a hairline from 1975 to 2025 with a tick every five years and the end years labelled. Each room is a point at its own year, so the gaps are to scale.
+  - Above each point is the room's picture, joined to it by a short vertical line, with the year below the point.
+  - A room not yet found has an open point and a dotted outline the size of the picture. The next room to play has "next" above it.
+  - Hovering or focusing a point shows the title and the find's name under it.
+  - At phone width the line runs top to bottom, with the pictures to the right of it.
+- **Cards.** The six rooms as cards in one row in time order, using the card lab's card and its blank style for rooms not yet found: the year, a `?`, and no name. On narrow windows the cards wrap into a grid.
+- **Dig.** The rooms as layers of soil, oldest at the bottom: one ruled band per room, labelled with its year on the left.
+  - A found room's band shows its title and its picture, small, at a fixed spot in the band (the same spot every time, a different one per room, so they look scattered).
+  - A room not yet found reads "unexcavated", and the next room to play reads "unexcavated · next".
+  - The page scrolls so that the next room to play is in view when the timeline opens.
+- **The reveal (line, cards and dig).** When you come back from a level you've just finished, that room's picture appears in its spot: it fades into the outline, the card turns over, or the layer's text gives way to the find. Reuse the card timeline's seen list (`cardsSeen` / `markCardsSeen` in `devLooks.js`), so each find is revealed once. With reduced motion it just appears.
+- **Keyboard and screen readers (every version).** The rooms are buttons in time order, reachable with Tab and the arrow keys like the list's lines. Each one's label gives the year, the title, and the find's name or "not yet found".
+
+**Continue after a discovery.** It still goes to the next level. The existing dev setting (`cardTimelineOn`, "Continue returns to the timeline") also works in the Index, so Matthew can try watching the reveal before deciding.
+
+**Checks:**
+- All four timelines in light and dark at 1440 × 900 and 375, with 0, 3 and 6 rooms found.
+- Enter opens and closes the timeline. Back closes it. `/timeline` and `/collection` both land on it open.
+- Each reveal plays once.
+- Tests: the dev default is Index and production is Classic; `/collection` redirects in the Index only; each timeline lists six rooms with their states.
+- Run `npm run build`.
+- Spec: the Index museum section (the home page, the timeline versions).
+
 ---
 
 ## Done
