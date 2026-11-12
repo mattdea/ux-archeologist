@@ -188,6 +188,166 @@
 .card:hover .blank .cardName, .cardLit.blank .cardName, .card.blank:hover .cardName { color: var(--ix-paper); }
 .card:hover .cardRule, .cardLit .cardRule { border-color: var(--ix-paper); }
 
+/* ── The home page's timeline: line, cards, dig (Timelines.jsx) ────────
+   Shown in place of the list's room lines when the dev panel's Museum >
+   timeline says so. The page drops the picture beside the list and the
+   timeline takes the page's width (up to 150ch); the list's own lines
+   keep their 76ch. */
+.wideView .page { grid-template-columns: minmax(0, 1fr); }
+.wideView .list > :not([data-ix-timeline]) { max-width: var(--ix-list); }
+.tlBlock { max-width: 150ch; margin: var(--ix-row) 0; }
+.tlRoom {
+  margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: inherit; font: inherit; text-align: left;
+  animation: ixType 160ms steps(8, end) both;
+  animation-delay: calc(var(--i, 0) * 14ms);
+}
+.tlRoom:focus-visible { outline: none; }
+
+/* Line: 1975 to 2025, a point per room at its year, the picture on a
+   stem above, the year below; title and find under it on hover or focus.
+   Pictures are 9% of the line's width at most (five years are 10%), so
+   neighbours never touch. */
+.tlLine { container-type: inline-size; padding: 0 6ch; }
+.tlTrack {
+  --tl-pic: min(14ch, 9cqi);
+  --tl-pich: calc(var(--tl-pic) * 340 / 400);
+  --tl-stem: 12px;
+  --tl-dot: 9px;
+  --tl-hair: calc(var(--ix-row) + var(--tl-pich) + var(--tl-stem) + var(--tl-dot) / 2);
+  position: relative;
+  height: calc(var(--tl-hair) + var(--tl-dot) / 2 + 4px + var(--ix-row) * 3);
+}
+.tlHair { position: absolute; left: 0; right: 0; top: var(--tl-hair); border-top: 1px solid var(--ix-ink-2); }
+.tlTick { position: absolute; left: calc(var(--at) * 100%); top: calc(var(--tl-hair) - 3px); width: 0; height: 7px; border-left: 1px solid var(--ix-ink-2); }
+.tlEnd { position: absolute; top: calc(var(--tl-hair) - var(--ix-row) / 2); color: var(--ix-ink-2); }
+.tlFirst { right: calc(100% + 1ch); }
+.tlLast { left: calc(100% + 1ch); }
+.tlPoint {
+  position: absolute;
+  top: 0;
+  left: calc(var(--at) * 100%);
+  width: var(--tl-pic);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tlNext { height: var(--ix-row); }
+.tlPic { position: relative; display: block; box-sizing: border-box; width: var(--tl-pic); height: var(--tl-pich); }
+.tlOutline { border: 1px dotted var(--ix-ink-2); }
+.tlFind { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tlStem { display: block; width: 0; height: var(--tl-stem); border-left: 1px solid var(--ix-ink-2); }
+.tlDot {
+  display: block; box-sizing: border-box;
+  width: var(--tl-dot); height: var(--tl-dot); border-radius: 50%;
+  border: 1px solid var(--ix-ink); background: var(--ix-paper);
+}
+.tlDotFull { background: var(--ix-ink); }
+.tlYear { margin-top: 4px; padding: 0 0.5ch; color: var(--ix-ink-2); }
+.tlAbout { display: flex; flex-direction: column; align-items: center; white-space: nowrap; visibility: hidden; }
+.tlPoint:hover .tlAbout, .tlPoint:focus-visible .tlAbout { visibility: visible; }
+.tlPoint:hover .tlYear { color: var(--ix-ink); text-decoration: underline; text-underline-offset: 3px; }
+.tlPoint:focus-visible .tlYear { background: var(--ix-ink); color: var(--ix-paper); }
+/* the reveal: the find fades into its outline, and the outline goes */
+.revealFade .tlFind { animation: ixFindIn 600ms ease-in-out both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
+.revealFade .tlOutline { animation: ixOutlineGo 600ms ease-in-out both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
+@keyframes ixOutlineGo { to { border-color: transparent; } }
+
+/* Cards: one row of six, in time order; a grid when narrow */
+.tlCards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--ix-row) 2ch; align-items: stretch; }
+.tlCard { min-width: 0; }
+.card:focus-visible { background: var(--ix-ink); color: var(--ix-paper); outline: none; }
+.card:focus-visible .cardRoom, .card:focus-visible .cardFoot, .card.blank:focus-visible .cardName { color: var(--ix-paper); }
+.cardAsk {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  padding: 0 1ch; background: var(--ix-paper); color: var(--ix-ink);
+}
+.card:hover .cardAsk, .card:focus-visible .cardAsk { background: var(--ix-ink); color: var(--ix-paper); }
+/* the reveal: the blank card turns over to the find */
+.revealTurn { perspective: 900px; }
+.turn { flex: 1 0 auto; display: grid; transform-style: preserve-3d; animation: ixTurn 900ms ease-in-out both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
+.face { grid-area: 1 / 1; display: flex !important; flex-direction: column; backface-visibility: hidden; }
+.face > span { display: block; }
+.faceBack { transform: rotateY(180deg); }
+@keyframes ixTurn { from { transform: rotateY(180deg); } to { transform: rotateY(0); } }
+@media (max-width: 1099.98px) { .tlCards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Dig: a ruled band per room, oldest at the bottom (the page keeps time
+   order; column-reverse draws it), the year on the left. A find sits at its
+   own fixed spot in its band (--x, --y). */
+.tlDig { display: flex; flex-direction: column-reverse; }
+.layer {
+  --find-w: 28ch;
+  --find-h: calc(var(--ix-row) * 3.2);
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(var(--ix-row) * 5);
+  border-top: 1px solid var(--ix-ink-2);
+  overflow: hidden;
+}
+.layer:first-child { border-bottom: 1px solid var(--ix-ink-2); }
+.layer > span { position: absolute; }
+/* the soil: a faint stipple, a different grain per layer */
+.layerSoil {
+  inset: 0;
+  opacity: 0.3;
+  background-image: radial-gradient(circle, var(--ix-ink-2) 0.7px, transparent 1.1px);
+  background-size: 7px 5px;
+}
+.layerSoil[data-soil="1"] { background-size: 9px 6px; background-position: 3px 2px; }
+.layerSoil[data-soil="2"] { background-size: 6px 7px; }
+.layerSoil[data-soil="3"] { background-size: 11px 5px; background-position: 5px 1px; }
+.layerSoil[data-soil="4"] { background-size: 8px 8px; }
+.layerSoil[data-soil="5"] { background-size: 5px 6px; background-position: 2px 3px; }
+.layerYear { left: var(--ix-cursor); top: calc(50% - var(--ix-row) / 2); padding: 0 0.5ch; background: var(--ix-paper); }
+.layerText { left: 10ch; top: calc(50% - var(--ix-row) / 2); padding: 0 0.5ch; background: var(--ix-paper); }
+.layerFind {
+  left: calc(10ch + var(--x) * (100% - 10ch - var(--find-w)));
+  top: calc(var(--y) * (100% - var(--find-h)));
+  display: flex; align-items: center; gap: 1ch;
+}
+.layerPic { width: calc(var(--find-h) * 400 / 340); height: var(--find-h); flex: 0 0 auto; }
+.layerTitle { padding: 0 0.5ch; background: var(--ix-paper); white-space: nowrap; }
+.layer:hover .layerTitle, .layer:hover .layerText { text-decoration: underline; text-underline-offset: 3px; }
+.layer:focus-visible .layerYear { background: var(--ix-ink); color: var(--ix-paper); }
+/* the reveal: "unexcavated" gives way to the find */
+.revealDig { isolation: isolate; }
+.digOut { animation: ixDigOut 400ms ease-in both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
+.digIn { animation: ixFindIn 600ms ease-in-out both; animation-delay: calc(1000ms + var(--reveal) * 260ms); }
+@keyframes ixDigOut { to { opacity: 0; visibility: hidden; } }
+
+/* Phone width: the line runs top to bottom, the pictures to its right, the
+   title and find always beside them (no hover on a phone); cards in two
+   columns; a find's title under its picture */
+@media (max-width: 599.98px) {
+  .tlLine { container-type: normal; padding: var(--ix-row) 0 var(--ix-row) 7ch; }
+  .tlTrack { --tl-pich: 60px; --tl-pic: calc(60px * 400 / 340); height: 800px; }
+  .tlHair { right: auto; top: 0; bottom: 0; border-top: 0; border-left: 1px solid var(--ix-ink-2); }
+  .tlTick { left: -3px; top: calc(var(--at) * 100%); width: 7px; height: 0; border-left: 0; border-top: 1px solid var(--ix-ink-2); }
+  .tlEnd { right: calc(100% + 1ch); left: auto; }
+  .tlFirst { top: calc(var(--ix-row) * -1.5); }
+  .tlLast { top: calc(100% + var(--ix-row) / 2); }
+  .tlPoint {
+    left: calc(var(--tl-dot) / -2);
+    top: calc(var(--at) * 100%);
+    width: auto;
+    transform: translateY(-50%);
+    flex-direction: row;
+  }
+  .tlDot { order: 1; }
+  .tlStem { order: 2; width: var(--tl-stem); height: 0; border-left: 0; border-top: 1px solid var(--ix-ink-2); }
+  .tlPic { order: 3; }
+  .tlAbout { order: 4; visibility: visible; align-items: flex-start; margin-left: 1ch; white-space: normal; }
+  .tlYear { position: absolute; right: calc(100% + 1ch); top: 50%; margin: 0; transform: translateY(-50%); }
+  .tlNext { position: absolute; left: calc(var(--tl-dot) + var(--tl-stem)); top: calc(var(--ix-row) * -1); height: auto; }
+  .tlCards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .layer { --find-w: 17ch; --find-h: calc(var(--ix-row) * 2.4); }
+  .layerText, .layerFind { left: 8ch; }
+  .layerFind { left: calc(8ch + var(--x) * (100% - 8ch - var(--find-w))); top: calc(var(--y) * (100% - var(--find-h) - var(--ix-row))); flex-direction: column; align-items: flex-start; gap: 0; }
+}
+
 /* ── In a level: the list is the HUD, the artifact takes the rest ───── */
 .levelView {
   overflow: visible;
@@ -385,4 +545,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .line, .gap, .findIn, .band.tray, .bottomBand.tray { animation: none; }
+  /* the timelines: no typing in, and a new find is just there */
+  .tlRoom, .revealFade .tlFind, .turn { animation: none; }
+  .revealFade .tlOutline { animation: none; border-color: transparent; }
+  .digIn { animation: none; }
+  .digOut { display: none; }
 }

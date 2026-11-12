@@ -76,3 +76,22 @@ export function setIndexLevelLayout(layout) {
   if (!import.meta.env.DEV) return
   try { layout === 'side' ? localStorage.setItem(LEVEL_LAYOUT_KEY, 'side') : localStorage.removeItem(LEVEL_LAYOUT_KEY) } catch { /* storage blocked */ }
 }
+
+// 'index-timeline' (backlog, "Index museum: one home page, the timeline
+// opening under Enter", part 4; 12 Nov 2026): the home page's timeline as
+// today's list ('list', the default), a to-scale line, cards in a row, or
+// a dig with the oldest room at the bottom (Timelines.jsx). Remembered per
+// browser; the switch is the dev server's only.
+const INDEX_TIMELINE_KEY = 'ux-archaeologist:index-timeline'
+const INDEX_TIMELINES = ['list', 'line', 'cards', 'dig']
+export function indexTimeline() {
+  if (!import.meta.env.DEV) return 'list'
+  try {
+    const v = localStorage.getItem(INDEX_TIMELINE_KEY)
+    return INDEX_TIMELINES.includes(v) ? v : 'list'
+  } catch { return 'list' }
+}
+export function setIndexTimeline(kind) {
+  if (!import.meta.env.DEV) return
+  try { kind === 'list' || !INDEX_TIMELINES.includes(kind) ? localStorage.removeItem(INDEX_TIMELINE_KEY) : localStorage.setItem(INDEX_TIMELINE_KEY, kind) } catch { /* storage blocked */ }
+}

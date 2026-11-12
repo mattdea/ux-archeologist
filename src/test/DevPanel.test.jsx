@@ -89,6 +89,17 @@ describe('Dev panel', () => {
     expect(pictureStyle()).toBe('fossils')
     choose('pictures', 'dots')
     expect(localStorage.getItem('ux-archaeologist:index-pictures')).toBeNull()
+    // the home page's timeline: list (the default), line, cards or dig
+    // (under Museum; Classic looks has its own "timeline", line or cards)
+    const museumTimeline = () => within(panel()).getAllByRole('group', { name: 'timeline' })[0]
+    fireEvent.click(within(museumTimeline()).getByRole('button', { name: 'dig' }))
+    expect(localStorage.getItem('ux-archaeologist:index-timeline')).toBe('dig')
+    fireEvent.click(within(museumTimeline()).getByRole('button', { name: 'list' }))
+    expect(localStorage.getItem('ux-archaeologist:index-timeline')).toBeNull()
+    // Continue after a discovery: the next room, or back to the timeline
+    choose('continue', 'timeline')
+    expect(localStorage.getItem('ux-archaeologist:card-timeline')).toBe('1')
+    choose('continue', 'next room')
     choose('museum', 'Classic')
     expect(museumStyle()).toBe('classic')
   })

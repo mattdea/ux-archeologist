@@ -38,9 +38,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import s from './IndexMuseum.module.css'
 import { ARTIFACTS } from '../../data/artifacts'
 import { isLevelComplete, resetAll } from '../../state/state'
-import { cardTimelineOn, forgetCardsSeen, indexLevelLayout } from '../devLooks'
+import { cardTimelineOn, forgetCardsSeen, indexLevelLayout, indexTimeline } from '../devLooks'
+import TimelineVersion from './Timelines'
 import { useIndexSlots, peekHandlers } from './store'
-import { TITLE, ABOUT, WORDS, pad } from './words'
+import { TITLE, ABOUT, WORDS } from './words'
 import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
 import { usePictureStyle } from './pictureStyle'
@@ -135,6 +136,9 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // with it closed, 'timeline' the same page with it open (/timeline).
   const home = view === 'title' || view === 'timeline'
   const timelineOpen = view === 'timeline'
+  // which timeline opens under Enter (the dev panel's Museum > timeline)
+  const version = home ? indexTimeline() : 'list'
+  const wide = timelineOpen && version !== 'list'
 
   // Whatever was open closes when the view changes
   // (opening or closing the timeline stays on the home page, so About stays)
@@ -217,8 +221,9 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
         else if (openRef.current.aboutOpen) { e.preventDefault(); setAboutOpen(false) }
         return
       }
-      // the years row: left and right move between rooms
-      const row = e.target.closest?.('[data-ix-years]')
+      // the years row, and the line and cards timelines: left and right
+      // move between rooms
+      const row = e.target.closest?.('[data-ix-years], [data-ix-row]')
       if (row && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
         const years = [...row.querySelectorAll('[data-ix-nav]')]
         const at = years.indexOf(e.target)
@@ -229,6 +234,13 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
       if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return   // Enter, Space, Tab: the browser's own
       const items = [...list.querySelectorAll('[data-ix-nav]')]
       if (!items.length) return
+      // the dig is drawn oldest at the bottom: up and down follow the drawing
+      const rev = e.target.closest?.('[data-ix-reverse]')
+      if (rev) {
+        const inside = items.filter(el => rev.contains(el))
+        const from = items.indexOf(inside[0])
+        items.splice(from, inside.length, ...inside.reverse())
+      }
       const at = items.indexOf(document.activeElement)
       const next = e.key === 'Home' ? 0
         : e.key === 'End' ? items.length - 1
@@ -282,7 +294,8 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 
   // ── The six rooms ──
   const nextToPlay = ARTIFACTS.find(a => !isLevelComplete(a.level))?.level ?? 0
-  if (!home || timelineOpen) ARTIFACTS.forEach(a => {
+  if (wide) push(<TimelineVersion key={`timeline-${version}`} kind={version} navigate={navigate} i0={n} />)
+  if (!wide && (!home || timelineOpen)) ARTIFACTS.forEach(a => {
     const done = isLevelComplete(a.level)
     const open = a.level === level
     if (inLevel && !open) {
@@ -404,7 +417,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     </div>
   )
   return (
-    <div className={`${s.ix} ${pageKind}`} data-index-museum>
+    <div className={`${s.ix} ${pageKind} ${wide ? s.wideView : ''}`} data-index-museum data-ix-version={home ? version : undefined}>
       <div className={s.page}>
         <nav
           ref={listRef}
@@ -417,7 +430,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 
         {/* Beside the list: the peeked room's picture (with the stamps, the
             arrowhead while no room is pointed at) */}
-        {!inLevel && (
+        {!inLevel && !wide && (
           <div className={s.aside} aria-hidden="true">
             {slots.peek !== null && slots.peek !== undefined ? (
               <div className={s.peekBox} data-peek={slots.peek}>
@@ -601,49 +614,6 @@ function DiscoveryBand({ level, children }) {
         )}
         <div ref={textRef} className={s.bandText} data-ix-band-text>{children}</div>
       </div>
-    </div>
-  )
-}
-
-// ── The collection's cards, in the list's own terms ─────────────────────
-function Cards({ navigate, peek }) {
-  return (
-    <div className={s.cards}>
-      {ARTIFACTS.map(a => {
-        const got = isLevelComplete(a.level)
-        return (
-          <button
-            type="button"
-            key={a.level}
-            className={`${s.card} ${got ? '' : s.blank} ${peek === a.level ? s.cardLit : ''}`}
-            onClick={() => navigate(a.path)}
-            tabIndex={-1}
-            aria-hidden="true"
-            {...peekHandlers(a.level)}
-          >
-            <span className={s.cardHead}><span>No. {pad(a.level + 1)}</span><span>{a.year}</span></span>
-            <span className={s.cardPicture}>
-              {got ? <DotPicture level={a.level} className={s.fill} /> : <span className={`${s.fill} ${s.dotGrid}`} />}
-            </span>
-            <span className={s.cardBody}>
-              {got ? (
-                <>
-                  <span className={s.cardName}>{a.name}</span>
-                  <span className={s.cardRoom}>{a.title}</span>
-                  <span className={s.cardRule} />
-                  <span>{a.description}</span>
-                </>
-              ) : (
-                <>
-                  <span className={s.cardName}>{a.title}</span>
-                  <span className={s.cardRoom}>{WORDS.unfound}</span>
-                </>
-              )}
-            </span>
-            <span className={s.cardFoot}><span>{TITLE.name}</span><span>{a.level + 1} / {ARTIFACTS.length}</span></span>
-          </button>
-        )
-      })}
     </div>
   )
 }

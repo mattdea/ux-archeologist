@@ -16,6 +16,9 @@
 // key: museumStyle.js, pictureStyle.js, pointer.js, devLooks.js, cardLook.js, state.js.
 // Museum > pointer: the index museum's pointer, the flint arrowhead or the fossil stick.
 // Museum > level layout: the index museum's corners or side layout in a level.
+// Museum > timeline: the index home page's timeline as a list, line, cards or dig.
+// Museum > continue: after a discovery, the next room or back to the timeline
+// (the card path's old setting, card-timeline, shared with Classic).
 // Levels > catalogue: every level's catalogue record (experiment, on by default).
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -23,7 +26,7 @@ import s from './DevPanel.module.css'
 import { useMuseumStyle, setMuseumStyle } from '../museumStyle'
 import { usePictureStyle, setPictureStyle, PICTURE_STYLES } from '../index-museum/pictureStyle'
 import { useMuseumPointer, setMuseumPointer, POINTERS } from '../index-museum/pointer'
-import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord, indexLevelLayout, setIndexLevelLayout } from '../devLooks'
+import { serifTitlesOn, setSerifTitles, cardTimelineOn, setCardTimeline, catalogueRecordOn, setCatalogueRecord, indexLevelLayout, setIndexLevelLayout, indexTimeline, setIndexTimeline } from '../devLooks'
 import { readCardLook, saveCardLook, readCardArt, saveCardArt } from '../../pages/collection/cardLook'
 import { completeLevel } from '../../state/state'
 import { ARTIFACTS } from '../../data/artifacts'
@@ -113,6 +116,14 @@ export default function DevPanel({ navigate }) {
             {museum === 'index' && (
               <Choice label="level layout" value={indexLevelLayout()} options={[['corners', 'corners'], ['side', 'side']]}
                 onChoose={(v) => { setIndexLevelLayout(v); changed() }} />
+            )}
+            {museum === 'index' && (
+              <Choice label="timeline" value={indexTimeline()} options={['list', 'line', 'cards', 'dig'].map(v => [v, v])}
+                onChoose={(v) => { setIndexTimeline(v); changed() }} />
+            )}
+            {museum === 'index' && (
+              <Choice label="continue" value={cardTimelineOn() ? 'timeline' : 'next'} options={[['next', 'next room'], ['timeline', 'timeline']]}
+                onChoose={(v) => { setCardTimeline(v === 'timeline'); changed() }} />
             )}
           </section>
           <section className={s.group}>
