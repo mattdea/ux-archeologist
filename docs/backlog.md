@@ -884,6 +884,28 @@ Six fixes from Matthew's review of the Index on 12 Nov 2026, with screenshots. B
 - Run `npm run build`.
 - Update the spec: Index museum, Level 1 and the dev panel.
 
+### Fixes: leaving during a boot, a sound switch, the record over the discovery text · approved 12 Nov 2026
+Three more from Matthew's review on 12 Nov 2026. Build and commit them one at a time, in this order, after "fixes from Matthew's review" above.
+
+**1. Leaving a level during its boot breaks the museum.**
+- **Repro:** on Level 2 (Netscape), click Begin. While the dial-up sound is playing, click Back to timeline (or the browser's Back). The timeline appears, but the dial-up sound keeps playing, and clicking a room no longer opens it.
+- **Fix:** leaving a level at any point stops its sounds and cancels its boot: timers, audio and anything waiting on the boot's end. Nothing from the old level may fire after you've left; in particular it must not call `setScreen('playing')`, `notifyArtifactReady` or `setContinue`. The timeline and every room work normally afterwards.
+- **Where to look:** a fade-navigation or "ready" lock in `SharedLayout.jsx` (`useArtifactReady`, `useSetContinue`) left set by the level you left, and boot sequences without cleanup: each level's `startBoot` / `setTimeout` chain, and `src/audio/sfx.js`. This is a guess, not checked. Find the actual cause first.
+- **Check every level:** leave during the boot by both Back to timeline and the browser's Back, then open another room. Test it for at least Level 2's dial-up and one other level.
+
+**2. A sound switch, remembered, for everyone.** Matthew finds the boot sounds tiresome when replaying, and visitors will too.
+- **One setting:** sound on or off, remembered per browser, default on. Every sound reads it: `src/audio/sfx.js`, Level 3's `new Audio` sounds, Level 2's dial-up, and anything else that plays. Turning it off silences anything already playing.
+- **Index:** a line under Dark mode, `Sound ......... [x]`, the same kind of toggle line. It goes on the home page and in a level's `≡` list, so it can be changed mid-level.
+- **Classic (production):** a small text toggle, "Sound on" / "Sound off", in the Classic HUD next to "Back to timeline", in that HUD's existing link style, and the same on Classic's timeline page. Reuse what's there; don't invent a new control.
+- **The Mac's own volume:** this switch is the museum's, not the Mac's. With sound off, the Mac behaves as if sound is on and is just silent; it doesn't fall back to flashing the menu bar the way it does at speaker volume 0.
+- **Accessibility:** a real button with `aria-pressed` and the label "Sound".
+- **Tests:** with sound off, no sound plays, including on a level's boot; the setting survives a reload; switching it off mid-boot stops the sound.
+
+**3. The catalogue record overlaps the discovery text.** On Level 3 at about 1730 × 2000 (Matthew's screenshot), the record has no room beside the phone, so it puts "Apple iPhone, 2007" and its data under the device. That's exactly where the discovery band sits, and the two texts print over each other.
+- The record must avoid the discovery band (and, during intro, the intro text), the same way it avoids `data-hud` blocks. Pass the band's box into `placeRecord` as one more obstacle. The band stays out of `data-hud`, so the device doesn't move.
+- If there's no room beside the device or under it clear of the band, the record falls back to the number alone, as it already does elsewhere.
+- **Check:** every level at discovery and intro, at 1440 × 900, 1920 × 1080, about 1730 × 2000, and 375: no record text overlaps the band or the intro text.
+
 ---
 
 ## Done
