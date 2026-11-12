@@ -111,7 +111,7 @@ describe('Index museum: the corners in a level', () => {
     const cont = vi.fn()
     rerender({ continueAction: null, hudReady: true })
     expect(corner('bl').textContent).toContain('[ ]Open a thing')
-    expect(corner('bl').textContent).toContain('Try the menus')
+    expect(corner('bl').textContent).toContain('[?]Try the menus')
     expect(corner('br').textContent).toBe('0 of 3')
     fireEvent.click(screen.getByText('do one'))
     expect(corner('bl').textContent).toContain('[x]Open a thing')

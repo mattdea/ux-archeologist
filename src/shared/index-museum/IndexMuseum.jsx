@@ -333,7 +333,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
         push(<Line key={`obj-${a.level}-${k}`} i={n} sub quiet={done}
           text={<span className={s.check}><span className={s.box}>{done ? '[x]' : '[ ]'}</span><span className={done ? s.struck : ''}>{o}</span></span>} />)
       })
-      if (slots.hint) push(<Note key={`hint-${a.level}`} i={n} mark="?" quiet italic>{slots.hint}</Note>)
+      if (slots.hint) push(<Note key={`hint-${a.level}`} i={n} mark="[?]" quiet italic>{slots.hint}</Note>)
       if (continueAction) push(<Line key={`continue-${a.level}`} i={n} as="go" sub text={WORDS.cont} arrow="→" onClick={() => continueAction()} />)
     }
     if (roomState === 'discovery') {
@@ -483,7 +483,7 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
             </div>
           )
         })}
-        {slots.hint && <p className={`${s.cornerText} ${s.quiet} ${s.italic} ${s.cornerHint}`}>? {slots.hint}</p>}
+        {slots.hint && <div className={`${s.check} ${s.quiet} ${s.cornerHint}`}><span className={s.box}>[?]</span><span className={s.italic}>{slots.hint}</span></div>}
       </>
     )
   }

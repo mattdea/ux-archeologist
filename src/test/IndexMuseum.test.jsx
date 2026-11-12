@@ -235,7 +235,7 @@ describe('Index museum', () => {
       </FadeNavCtx.Provider>,
     )
     expect(list().textContent).toContain('[ ]Open a thing')
-    expect(list().textContent).toContain('Try the menus')
+    expect(list().textContent).toContain('[?]Try the menus')
     fireEvent.click(screen.getByText('do one'))
     expect(list().textContent).toContain('[x]Open a thing')
     fireEvent.click(screen.getByText('Continue').closest('button'))
