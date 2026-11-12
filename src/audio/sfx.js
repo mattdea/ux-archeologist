@@ -18,6 +18,11 @@
 //   send() / receive()  chat: message sent / reply finished
 //   file(src, volume)   a recorded sound (the iPhone's unlock and lock clicks)
 //   stopAll()           silence everything now: called as a view fades out
+//
+// Nothing plays while the museum's sound switch is off (src/audio/sound.js),
+// and turning it off stops what is playing.
+
+import { soundOn, onSoundChange } from './sound'
 
 let ctx = null
 let master = null
@@ -41,6 +46,9 @@ function ensure() {
   if (ctx.state === 'suspended') ctx.resume().catch(() => {})
   return ctx
 }
+
+// The context, if the museum's sound switch is on (src/audio/sound.js)
+const live = () => soundOn() && ensure()
 
 if (typeof document !== 'undefined') {
   const unlock = () => ensure()
@@ -94,7 +102,7 @@ function filter(type, freq, q = 1) {
 const VT_SPEAKER_HZ = 787
 
 export function key() {
-  if (!ensure()) return
+  if (!live()) return
   const t = now()
   // One pulse through the ringing speaker: a dry electronic tick.
   const o = ctx.createOscillator()
@@ -106,7 +114,7 @@ export function key() {
 }
 
 export function bell() {
-  if (!ensure()) return
+  if (!live()) return
   // ~200 pulses at the speaker's frequency ≈ a quarter-second beep.
   const t = now()
   const o = ctx.createOscillator()
@@ -138,7 +146,7 @@ export function beep() {
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('mac-flash-menubar'))
     return
   }
-  if (!ensure()) return
+  if (!live()) return
   tone('square', 880, 0.08 * macVolume / 3, 0.004, 0.17)
 }
 
@@ -148,7 +156,7 @@ export function beep() {
  *  The level is reconstructed (beep()'s peak). */
 const STARTUP_BEEP_S = 1
 export function startupBeep() {
-  if (!ensure()) return
+  if (!live()) return
   const t = now()
   const o = ctx.createOscillator()
   o.type = 'square'
@@ -173,7 +181,7 @@ const DIALUP = Object.values(import.meta.glob('../../assets/web/dialup.{mp3,ogg,
 
 let dialupAudio = null
 export function dialup(volume = 0.25) {
-  if (!DIALUP) return () => {}
+  if (!DIALUP || !soundOn()) return () => {}
   try {
     dialupAudio?.pause()
     dialupAudio = new Audio(DIALUP)
@@ -189,6 +197,7 @@ const playing = new Set()   // file() sounds not yet finished
 
 /** Plays a recorded sound once. */
 export function file(src, volume = 0.5) {
+  if (!soundOn()) return
   try {
     const audio = new Audio(src)
     audio.volume = volume
@@ -209,10 +218,13 @@ export function stopAll() {
   }
 }
 
+// Switching sound off silences anything already playing
+onSoundChange(on => { if (!on) stopAll() })
+
 // ── 2016: Instagram ────────────────────────────────────────────────
 
 export function pop() {
-  if (!ensure()) return
+  if (!live()) return
   const t = now()
   const o = ctx.createOscillator()
   o.type = 'sine'
@@ -225,12 +237,12 @@ export function pop() {
 // ── 2023: chat ─────────────────────────────────────────────────────
 
 export function send() {
-  if (!ensure()) return
+  if (!live()) return
   tone('sine', 1760, 0.06, 0.003, 0.05)
 }
 
 export function receive() {
-  if (!ensure()) return
+  if (!live()) return
   const t = now()
   tone('sine', 660, 0.07, 0.01, 0.16, t)
   tone('sine', 880, 0.07, 0.01, 0.2, t + 0.09)

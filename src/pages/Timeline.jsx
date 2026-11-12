@@ -8,6 +8,7 @@ import { ARTIFACTS } from '../data/artifacts'
 import { cardTimelineOn } from '../shared/devLooks'
 import { useDevChange } from '../shared/dev/devEvents'
 import CardPath from './CardPath'
+import SoundToggle from '../shared/museum-ui/SoundToggle'
 
 const ENTRIES = ARTIFACTS.map(a => ({ level: a.level, year: a.year, title: a.title, artifact: a.name, path: a.path }))
 
@@ -57,6 +58,7 @@ export default function Timeline() {
       })}
 
       <div className={styles.links}>
+        <SoundToggle className={styles.aboutLink} />
         {!cards && (
           <button className={styles.aboutLink} onClick={() => navigate('/collection')}>
             Collection · {ENTRIES.filter(e => isLevelComplete(e.level)).length} of {ENTRIES.length}

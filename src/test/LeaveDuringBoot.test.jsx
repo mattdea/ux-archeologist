@@ -39,7 +39,7 @@ describe('leaving a level during its boot', () => {
     // Level 2's room starts without a Continue and with its HUD hidden
     const cont = screen.getByText('Continue', { selector: 'button' })
     expect(cont).toHaveAttribute('aria-hidden', 'true')
-    expect(screen.getByText('← Back to timeline').parentElement.style.opacity).toBe('0')
+    expect(screen.getByText('← Back to timeline').closest('[data-hud]').style.opacity).toBe('0')
   })
 
   it('stops the dial-up as the fade-out starts', () => {

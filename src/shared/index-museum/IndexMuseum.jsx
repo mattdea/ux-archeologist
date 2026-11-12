@@ -45,6 +45,7 @@ import { useIndexSlots, peekHandlers } from './store'
 import { TITLE, ABOUT, WORDS } from './words'
 import DotPicture, { RestingPicture } from './DotPicture'
 import { useIndexTheme, setIndexTheme } from './theme'
+import { useSoundOn, setSoundOn } from '../../audio/sound'
 import { usePictureStyle } from './pictureStyle'
 import './pointer'   // the museum's pointer (pointers.css), arrowhead or stick
 import { useDevChange } from '../dev/devEvents'
@@ -116,6 +117,7 @@ const Gap = ({ i }) => <div className={s.gap} style={{ '--i': i }} aria-hidden="
 export default function IndexMuseum({ view, navigate, continueAction, hudReady }) {
   const slots = useIndexSlots()
   const theme = useIndexTheme()
+  const sound = useSoundOn()
   const pictures = usePictureStyle()
   const narrow = useMedia(NARROW)
   const small = useMedia(SMALL)
@@ -378,7 +380,10 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
   // Light or dark, on every view: a toggle, so its right side is [ ] / [x]
   const darkLine = () => push(<Line key="dark" i={n} as="go" text={WORDS.dark} arrow={theme === 'dark' ? '[x]' : '[ ]'}
     pressed={theme === 'dark'} onClick={() => setIndexTheme(theme === 'dark' ? 'light' : 'dark')} />)
-  if (!inLevel) darkLine()
+  // The museum's sound, under it: also a toggle (src/audio/sound.js)
+  const soundLine = () => push(<Line key="sound" i={n} as="go" text={WORDS.sound} arrow={sound ? '[x]' : '[ ]'}
+    pressed={sound} onClick={() => setSoundOn(!sound)} />)
+  if (!inLevel) { darkLine(); soundLine() }
 
   if (home) {
     push(<Gap key="by-gap" i={n} />)
@@ -389,6 +394,7 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
     push(<Gap key="back-gap" i={n} />)
     push(<Line key="back" i={n} as="go" text={WORDS.backPlain} mark="←" arrow="→" onClick={() => navigate('/timeline')} />)
     darkLine()
+    soundLine()
   }
 
   const pageKind = inLevel ? s.levelView : s.listView

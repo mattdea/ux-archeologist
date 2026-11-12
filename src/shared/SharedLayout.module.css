@@ -218,6 +218,13 @@
 
 /* ─── Back to timeline link ──────────────────────────────────────── */
 
+/* Sound on/off and Back to timeline, side by side */
+.hudLinks {
+  display: flex;
+  gap: 24px;
+  align-items: baseline;
+}
+
 .backLink {
   background: none;
   border: none;

@@ -3,6 +3,7 @@ import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useR
 import styles from './SharedLayout.module.css'
 import { isLevelComplete } from '../state/state'
 import SmallScreenNotice from './museum-ui/SmallScreenNotice'
+import SoundToggle from './museum-ui/SoundToggle'
 import { loadView, warmMacBezel } from '../views'
 import { useMuseumStyle, museumStyle } from './museumStyle'
 import IndexMuseum from './index-museum/IndexMuseum'
@@ -336,13 +337,16 @@ export default function SharedLayout({ children }) {
                     </button>
                   </div>
                   {activeLevel !== null && (
-                    <button
-                      type="button"
-                      className={styles.backLink}
-                      onClick={() => fadeNavigate('/timeline')}
-                    >
-                      ← Back to timeline
-                    </button>
+                    <div className={styles.hudLinks}>
+                      <SoundToggle className={styles.backLink} />
+                      <button
+                        type="button"
+                        className={styles.backLink}
+                        onClick={() => fadeNavigate('/timeline')}
+                      >
+                        ← Back to timeline
+                      </button>
+                    </div>
                   )}
                 </div>
               </>
