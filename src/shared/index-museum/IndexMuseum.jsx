@@ -630,11 +630,13 @@ function DeviceFade({ level, on }) {
   }, [level, on])
   if (!at || !at.host.isConnected) return null
   const { box } = at
-  // 1px past the device on every side: its edges fall on fractions of a
-  // pixel, and a half-covered edge pixel would show the device unfaded
+  // --ix-fade-bleed past the device on every side: the blur only works
+  // inside the fade's own box, so a box that ended at the device's edge
+  // left that edge a hard line (Matthew's review, 12 Nov 2026). Out there
+  // the backdrop is the page, so the box's own edge doesn't show.
   const style = {
-    left: `calc(var(--artifact-left, ${box.x}px) - 1px)`, top: `calc(var(--artifact-top, ${box.y}px) - 1px)`,
-    width: `calc(var(--artifact-width, ${box.w}px) + 2px)`, height: `calc(var(--artifact-height, ${box.h}px) + 2px)`,
+    left: `calc(var(--artifact-left, ${box.x}px) - var(--ix-fade-bleed))`, top: `calc(var(--artifact-top, ${box.y}px) - var(--ix-fade-bleed))`,
+    width: `calc(var(--artifact-width, ${box.w}px) + 2 * var(--ix-fade-bleed))`, height: `calc(var(--artifact-height, ${box.h}px) + 2 * var(--ix-fade-bleed))`,
   }
   return createPortal(
     <div className={`${s.fade} ${on ? s.fadeOn : ''}`} style={style} data-ix-fade={on ? 'on' : 'off'} aria-hidden="true" />,

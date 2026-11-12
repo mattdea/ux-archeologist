@@ -274,7 +274,8 @@ describe('Index museum: the corners in a level', () => {
       expect(fade().getAttribute('data-ix-fade')).toBe('on')
       expect(fade().parentElement.hasAttribute('data-artifact')).toBe(true)   // in the level's stacking context, under the catalogue record
       expect(fade().hasAttribute('data-hud')).toBe(false)          // never moves the device
-      expect(fade().style.left).toBe('calc(var(--artifact-left, 375px) - 1px)')  // the device's box, read live, 1px over
+      expect(fade().style.left).toBe('calc(var(--artifact-left, 375px) - var(--ix-fade-bleed))')  // the device's box, read live, and past it
+      expect(fade().style.width).toBe('calc(var(--artifact-width, 690px) + 2 * var(--ix-fade-bleed))')
       expect(corner('bl').querySelector('[data-ix-band]')).not.toBeNull()   // the band stays a band
       ;['left', 'top', 'width', 'height'].forEach(k => root.removeProperty(`--artifact-${k}`))
     })
@@ -284,6 +285,8 @@ describe('Index museum: the corners in a level', () => {
       const fade = css.match(/\n\.fade \{([^}]*)\}/)[1]
       expect(fade).toMatch(/color-mix\(in srgb, var\(--ix-room[^)]*\) var\(--ix-fade-strength\), transparent\)/)
       expect(fade).toMatch(/backdrop-filter: blur\(var\(--ix-fade-blur\)\)/)
+      // far enough past the device that its edge blurs out instead of stopping at a line
+      expect(fade).toMatch(/--ix-fade-bleed: calc\(var\(--ix-fade-blur\) \* 4\)/)
       expect(fade).toMatch(/z-index: 2;/)
       expect(fade).toMatch(/transition: opacity 400ms/)
       const record = readFileSync(resolve(__dirname, '../shared/catalogue/CatalogueRecord.module.css'), 'utf8')

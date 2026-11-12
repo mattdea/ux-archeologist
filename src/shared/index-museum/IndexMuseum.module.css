@@ -437,6 +437,7 @@
 .fade {
   --ix-fade-strength: 92%;
   --ix-fade-blur: 6px;
+  --ix-fade-bleed: calc(var(--ix-fade-blur) * 4);   /* past the device: room for its edge to blur out */
   position: fixed;
   z-index: 2;
   box-sizing: border-box;
