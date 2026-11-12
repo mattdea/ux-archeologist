@@ -11,6 +11,8 @@ import { _resetIndexSlots } from '../shared/index-museum/store'
 import { completeLevel, resetAll } from '../state/state'
 import { ARTIFACTS } from '../data/artifacts'
 import { indexTimeline, setIndexTimeline, cardsSeen, markCardsSeen, forgetCardsSeen } from '../shared/devLooks'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 function memoryStorage() {
   const m = new Map()
@@ -108,5 +110,34 @@ describe('Index museum: the four timelines', () => {
     expect(document.activeElement).toBe(r[1])
     fireEvent.keyDown(r[1], { key: 'ArrowLeft' })
     expect(document.activeElement).toBe(r[0])
+  })
+
+  // Matthew's review, 12 Nov 2026: the card being revealed sat a whole card
+  // lower than its row. jsdom lays nothing out, so this checks the cause:
+  // the turn's two faces must share one grid cell, which `.card > span
+  // { display: block }` had overridden.
+  it('cards: a card being revealed is one card tall, its faces in one cell; the footer stays one line', () => {
+    completeLevel(0); completeLevel(1); completeLevel(2); markCardsSeen([0, 1])
+    setIndexTimeline('cards')
+    open()
+    const turning = rooms().find(b => b.dataset.reveal)
+    expect(turning.dataset.ixRoom).toBe('2')
+    const turn = turning.firstElementChild
+    expect(turn.children).toHaveLength(2)                        // back and front faces
+    const css = readFileSync(resolve(__dirname, '../shared/index-museum/IndexMuseum.module.css'), 'utf8')
+    const rule = (sel) => {
+      const esc = sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s*')
+      return [...css.matchAll(new RegExp(`(?:^|[},])\\s*${esc}\\s*\\{([^}]*)\\}`, 'gm'))].map(m => m[1]).join(';')
+    }
+    // the turn's own display beats .card > span's (same specificity, later)
+    expect(rule('.card > .turn')).toMatch(/display: grid/)
+    expect(css.indexOf('.card > .turn {')).toBeGreaterThan(css.indexOf('.card > span { display: block; }'))
+    expect(rule('.face')).toMatch(/grid-area: 1 \/ 1/)
+    // reduced motion still stops the turn
+    expect(css).toMatch(/prefers-reduced-motion[\s\S]*\.card > \.turn \{ animation: none; \}/)
+    // the footer: "Interface Artifacts" goes where the card is too narrow for it
+    rooms().forEach(b => b.querySelectorAll('[class*="cardFoot"]').forEach(f => expect(f.firstElementChild.className).toMatch(/footName/)))
+    expect(rule('.tlCard')).toMatch(/container-type: inline-size/)
+    expect(css).toMatch(/@container \(max-width: 26\.99ch\) \{ \.footName \{ display: none; \}/)
   })
 })

@@ -256,7 +256,10 @@
 
 /* Cards: one row of six, in time order; a grid when narrow */
 .tlCards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--ix-row) 2ch; align-items: stretch; }
-.tlCard { min-width: 0; }
+.tlCard { min-width: 0; container-type: inline-size; }
+/* the footer stays one line: where "Interface Artifacts  1 / 6" doesn't fit
+   the card (2ch padding, 19ch, a 1ch gap, 5ch), it's just "1 / 6" */
+@container (max-width: 26.99ch) { .footName { display: none; } .cardFoot { justify-content: flex-end; } }
 .card:focus-visible { background: var(--ix-ink); color: var(--ix-paper); outline: none; }
 .card:focus-visible .cardRoom, .card:focus-visible .cardFoot, .card.blank:focus-visible .cardName { color: var(--ix-paper); }
 .cardAsk {
@@ -266,7 +269,10 @@
 .card:hover .cardAsk, .card:focus-visible .cardAsk { background: var(--ix-ink); color: var(--ix-paper); }
 /* the reveal: the blank card turns over to the find */
 .revealTurn { perspective: 900px; }
-.turn { flex: 1 0 auto; display: grid; transform-style: preserve-3d; animation: ixTurn 900ms ease-in-out both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
+/* .card > .turn, not .turn: `.card > span { display: block }` outranked it,
+   so the two faces stacked and the turning card was two cards tall, a
+   whole card lower than its row (Matthew's review, 12 Nov 2026) */
+.card > .turn { flex: 1 0 auto; display: grid; transform-style: preserve-3d; animation: ixTurn 900ms ease-in-out both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
 .face { grid-area: 1 / 1; display: flex !important; flex-direction: column; backface-visibility: hidden; }
 .face > span { display: block; }
 .faceBack { transform: rotateY(180deg); }
@@ -562,7 +568,7 @@
   .line, .gap, .findIn { animation: none; }
   .fade, .fadeOn { transition: none; }
   /* the timelines: no typing in, and a new find is just there */
-  .tlRoom, .revealFade .tlFind, .turn { animation: none; }
+  .tlRoom, .revealFade .tlFind, .card > .turn { animation: none; }
   .revealFade .tlOutline { animation: none; border-color: transparent; }
   .digIn { animation: none; }
   .digOut { display: none; }
