@@ -152,7 +152,9 @@ export default function Level4() {
             style={{ width: UNIT_W * scale, height: UNIT_H * scale, left: fit.left, top: fit.top }}
           >
             <div className={styles.frameScaler} style={{ transform: `scale(${scale})` }}>
-              <GhostDevice lit={screen === 'playing'} touch={screen === 'playing'}>
+              {/* lit from playing on: at the discovery the phone stays on under
+                  the museum's fade, as every other device does (Matthew's review) */}
+              <GhostDevice lit={screen === 'playing' || screen === 'discovery'} touch={screen === 'playing'}>
                 <FeedApp
                   framed
                   animated={screen === 'playing'}
