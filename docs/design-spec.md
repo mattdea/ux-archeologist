@@ -304,7 +304,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Discovery Card:**
 - Artifact: `Command & Response`
-- Text: "At a terminal you type a command, the computer runs it and prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. They're short, like ls, cat and rm, because terminals were slow, and the same commands still work on every Mac and on most of the world's servers."
+- Text: "At a terminal you type a command, the computer prints the result, and you decide what to type next. Nothing on the screen shows what's possible: you learn the commands from the manual and from the people around you. The same short commands, like ls and rm, still work on every Mac." (shortened 12 Nov 2026 for the Index's discovery band; the dropped facts are listed in `docs/copy-pass.md` §2)
 
 **Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. `IA.1979.01`, object line `DEC VT100, 1978`; data `Intel 8080` / `ANSI X3.64 escape codes` / `37 × 46 × 36 cm, 13.6 kg` / `August 1978`; one label, on the screen: `12-inch screen` / `80 × 24, or 132 × 14`.
 - August 1978 (**high**): DEC's own timeline (Computer History Museum archive; vt100.net/timeline/1978.html); Wikipedia "VT100".
@@ -388,7 +388,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Discovery Card:**
 - Artifact: `Direct Manipulation`
-- Text: "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people. The researcher Ben Shneiderman called this style direct manipulation in 1983. Some tasks took longer with a mouse than with a typed command."
+- Text: "On the Macintosh, files, folders and the Trash are pictures you point at and move, and the menus list every command, so there's nothing to memorize. Xerox and Apple's own Lisa had done this first; the Mac, at $2,495, brought it to far more people." (shortened 12 Nov 2026 for the Index's discovery band; the dropped facts are listed in `docs/copy-pass.md` §2)
 
 **Catalogue record (experiment, dev server only; 11 Nov 2026).** Behind the dev panel's Levels > catalogue (`ux-archaeologist:catalogue-record`; on by default since Matthew's review of 11 Nov 2026, off is stored as `'0'`; absent from the build). With it off, nothing changes. With it on, the museum's catalogue record sits around the device (backlog, "Levels: the catalogue record around the device", piloted here on the Mac, then rolled out to every level in "Index museum: level screen fixes"). Each level's facts and sources are under that level. It replaces the stipple reveal, which was dropped; that reveal's frames stay in `docs/reveal/`.
 - **Museum layer, the artifact untouched:** `src/shared/catalogue/` — `Catalogue.jsx` (what a level renders: reads the setting, loads the rest lazily on the dev server only), `CatalogueRecord.jsx` (drawing and the toggle), `place.js` (placement), `records.js` (each room's record). It sits inside each level's `.wrap` and is placed from the same fit, so it moves and scales with the device. Level 5 has no device: the record treats the chat's 680px column (from the top of the chat to its foot) as the object, in a fixed box over the chat. It takes no clicks except on its toggle.
@@ -463,7 +463,7 @@ Hardware presence decreases across the arc: physical terminal → monitor bezel 
 
 **Discovery Card:**
 - Artifact: `Hyperlink Navigation`
-- Text: "On the early web, every link was put there by the person who wrote the page, and you found things by following them from page to page. Directories such as Yahoo! were lists of sites sorted by hand. Finding something specific could take a long time, and search engines such as AltaVista, launched in December 1995, took over that job."
+- Text: "On the early web, every link was put there by the person who wrote the page, and you found things by following them from page to page. Directories such as Yahoo! sorted sites by hand, until search engines such as AltaVista, launched in December 1995, took over." (shortened 12 Nov 2026 for the Index's discovery band; the dropped facts are listed in `docs/copy-pass.md` §2)
 
 **Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. The software, not hardware. `IA.1995.03`, object line `Netscape Navigator, 1995`; data `1.0: 15 December 1994` / `$39, free for education` / `and non-profit use` / `Most-used browser, 1995`; labels on the N box (`Netscape logo` / `animates while loading`) and the Location field (`Location` / `the page’s address`).
 - 1.0 released 15 December 1994 (**high**): Netscape's press release, posted to www-talk by Marc Andreessen (ksi.cpsc.ucalgary.ca/archives/WWW-TALK/www-talk-1994q4/1135.html); Wikipedia "Netscape Navigator".
@@ -526,7 +526,7 @@ phoneScreen: 'lock' | 'unlocking' | 'home' | 'opening' | 'app' | 'closing'
 
 **Discovery Card:**
 - Artifact: `Multi-Touch`
-- Text: "The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched things instead of moving a pointer. Lists kept moving after you let go and bounced when they hit the end, as if they had weight; Apple patented that bounce. Within a few years almost every phone worked this way."
+- Text: "The iPhone's screen sensed fingers directly, more than one at a time, so you dragged, flicked and pinched instead of moving a pointer. Lists kept moving after you let go and bounced at the end, as if they had weight. Within a few years almost every phone worked this way." (shortened 12 Nov 2026 for the Index's discovery band; the dropped facts are listed in `docs/copy-pass.md` §2)
 
 **Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. `IA.2007.04`, object line `Apple iPhone, 2007`; data `Samsung ARM, 412 MHz` / `128 MB memory` / `115 × 61 × 11.6 mm, 135 g` / `$499 (4 GB), $599 (8 GB)` / `29 June 2007`; labels on the screen (`3.5-inch Multi-Touch screen` / `320 × 480`) and the home button (`Home button` / `the only button on the front`).
 - 29 June 2007 (US), $499 (4 GB) and $599 (8 GB) on a two-year contract, 3.5-inch 320 × 480 screen, 115 × 61 × 11.6 mm, 135 g (all **high**): Apple's press releases of 9 January and 28 June 2007 and its July 2007 spec page (web.archive.org/web/20070704225044/http://www.apple.com:80/iphone/specs.html); Wikipedia "iPhone (1st generation)"; EveryMac and TidBITS agree.
@@ -600,7 +600,7 @@ The home feed is 24 posts in a hand-ranked order (`FEED` in `feedData.js`): 18 r
 
 **Discovery Card:**
 - Artifact: `Algorithmic Feed`
-- Text: "Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like and comment on, based on what you've responded to before. You can't see how it decides, and every like you give tells it what to show you next."
+- Text: "Until 2016, Instagram showed posts newest first, and it said people were missing about 70% of them. The ranked feed puts first what it predicts you'll like, based on what you've responded to before. You can't see how it decides, and every like tells it what to show you next." (shortened 12 Nov 2026 for the Index's discovery band; the dropped facts are listed in `docs/copy-pass.md` §2)
 
 **Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. The software, not hardware. `IA.2016.05`, object line `Instagram for iOS, 2016`; data `Launched 6 October 2010` / `400 million users, Sept 2015` / `Ranked feed announced` / `15 March 2016`; labels on the header (`Blue header` / `white from 11 May 2016`) and the first like button on screen (`Like` / `tap, or double-tap the photo`). The screen isn't drawn in the intro, and the feed is hidden at the discovery in the Index, so the labels show only once the feed is there (the toggle while playing); the object line and data still show.
 - Launched 6 October 2010 (**high**): Instagram's product timeline (about.instagram.com/about-us/instagram-product-evolution); Wikipedia "Instagram".
@@ -717,7 +717,7 @@ src/components/feed/
 
 **Discovery Card:**
 - Artifact: `Natural Language`
-- Text: "Here you didn't learn commands, menus or gestures; you just asked. You can hand it a question, a messy draft, a table of numbers or a photo, and it works out what you want. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did."
+- Text: "Here you didn't learn commands, menus or gestures; you just asked, and it worked out what you wanted. It writes by predicting likely next words, so it can be wrong while sounding sure, and it can't show you why it answered as it did." (shortened 12 Nov 2026 for the Index's discovery band; the dropped facts are listed in `docs/copy-pass.md` §2)
 
 **Catalogue record** (experiment, dev server only; see Level 1, "Catalogue record", for how it works). Facts checked 11 Nov 2026, each against two sources. The genre, not a product: the exhibit is Claude-inspired but unnamed, so the record doesn't claim to be any one product. `IA.2023.06`, object line `AI chat assistant, 2023`; data `ChatGPT: 30 November 2022` / `Claude: 14 March 2023`; labels on the message box (`Message box` / `ask in plain language`; the dot on the rounded input bar's right edge, `[class*="_inputBar_"]`, not the `<input>` inside it) and the first reply (`Reply` / `written by the model`, once there is one). With no device, the record treats the chat's column as the object: the 680px column less the bottom bar's 24px side padding, so its edges are the input bar's (at phone width this keeps the number 24px off the viewport edge).
 - ChatGPT released 30 November 2022 (**high**): OpenAI's blog (archived); Wikipedia "ChatGPT".
