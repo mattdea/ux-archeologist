@@ -833,6 +833,57 @@ Matthew (12 Nov 2026): the Index is now the design to work on, and the page flow
 - Spec: the Index museum section (the home page, the timeline versions).
 - **Status (12 Nov 2026):** built, in four commits (dev default, home page, no collection, four timelines). Details in the spec, "Index museum" (the home page, the timeline under Enter, four timelines). Enter reads `+` closed and `−` open (the list's open-in-place arrows). Checked by reading the page in the browser: all four timelines, light and dark, 1440 × 900 and 375, 0, 3 and 6 rooms found (six rooms, their states, no overlaps, no sideways scroll, focus on the next room), each reveal once. Entering a level from the browser pane wasn't checked by hand (the pane was hidden, so its frames didn't run); the tests cover the address and `/collection`. The Museum > continue switch is the card path's old setting, so it also turns Classic's timeline into cards.
 
+### Index museum: fixes from Matthew's review · approved 12 Nov 2026
+Six fixes from Matthew's review of the Index on 12 Nov 2026, with screenshots. Build and commit them one at a time, in this order.
+
+**1. The hint's mark in square brackets.** Under the objectives, the hint starts with `?`. Make it `[?]`, matching the objectives' `[ ]` / `[x]` above it, so the mark is set apart from the hint's words. Change it in both places the hint shows: the corner layout (`cornerHint`) and the list layout (the `Note` with `mark="?"`). Keep the hint in italics and grey; the brackets are grey too.
+
+**2. Discovery: fade the device, drop the tray.** The tray from "the discovery text in a wide band" (Levels 1–4 at desktop sizes) covers the bottom of the device. It's on the page colour, so the device just looks cut off. Replace it:
+- At discovery, on every level, a fade goes over the device. It's the page colour (white in light, #111 in dark) at partial opacity, with a light background blur (`backdrop-filter`), covering the device's box (`--artifact-*`, or Level 5's `data-artifact` column).
+- The discovery band stays at the bottom as built: the picture and the text. Where the text runs over the bottom of the device, it's readable because the device behind it is faded.
+- Strength: set the opacity and blur so that every line of the discovery text passes AA (4.5:1) wherever it overlaps the device, measured against the faded device's worst pixels. Use the same strength on every level. Record the values and ratios in the spec.
+- The fade comes in over about 400ms as the discovery appears. With reduced motion it appears at once.
+- The catalogue record stays above the fade, unfaded.
+- Remove the tray and its 12px rule (`band.js`). The band is now always a band.
+
+**3. Intro: fade the device, Begin under the text.** On a level's intro, it isn't obvious that you read the text in the bottom-left corner and then click Begin in the bottom-right.
+- During intro, the device sits under the same fade as item 2. It's inert then anyway, so the intro text is the only thing lit. The fade lifts over about 400ms when Begin is clicked, as the boot starts. With reduced motion it lifts at once.
+- "Begin excavation →" moves directly under the intro text, one row below it, in the same bottom-left corner, and keeps focus. The bottom-right corner is empty during intro.
+- At phone width the bottom band already stacks: text, then Begin. Keep that order.
+- Revisits start at booting, so they have no intro and no fade, as now.
+
+**4. Level 1: the menu objective.** "Look through the menus" doesn't say what to do. What actually completes it is clicking a command in a menu, and not every command does: Open and Close return early in `MenuBar.jsx` `runAction`, before `onMenuItemClick`, so File > Open doesn't count.
+- New objective: "Choose a command from a menu". "Choose" is the Mac's own word for picking a menu command.
+- New hint: "Click a menu name at the top of the screen, then click a command in black". Grey commands are unavailable, and still don't count.
+- Every enabled command completes it, Open and Close included.
+- Update the stale label in `ObjectiveTracker.jsx` ("Use the File menu") to match.
+- Classic uses the same objective and hint.
+- Test: File > Open, File > Close and an Apple-menu desk accessory each complete it; a grey item doesn't.
+
+**5. Reset progress belongs in the dev panel.** It's a tool for Matthew, not for visitors.
+- Remove Reset progress, and its confirm lines, from the timeline in the Index, and from Classic's timeline if it has one there.
+- In the dev panel's Progress group, replace the "Complete all" button with one switch using the panel's existing `Choice` control: `progress: none / all`.
+  - **none** resets all progress (`resetAll` and `forgetCardsSeen`).
+  - **all** completes all six (`completeLevel` for each). It doesn't mark them as seen, so the timeline's reveals still play.
+  - The switch shows the current state: none or all is selected when that's true. Between the two (for example 2 of 6), neither is selected and the group's heading reads `Progress · 2 of 6`.
+  - No confirm step; it's dev only.
+- Production has no dev panel, so there's no reset there.
+
+**6. Cards timeline: the newest card drops to a second row.** In the cards version, after a find, the newest card (No. 03 in Matthew's screenshot) sits in its column but a whole card-height lower than the others, leaving a gap in the first row.
+- All six cards sit in one row with their tops aligned, whatever their state: found, blank or being revealed. Find the cause, likely the revealed card's wrapper or the grid placement during the reveal, and fix it there.
+- Two more things in the same screenshot:
+  - The cards' footer, "Interface Artifacts 1 / 6", wraps onto two lines. Keep it on one line; if it doesn't fit the card's width, shorten it to `1 / 6`.
+  - There's a large empty gap between the cards and the footers below them. Each card's footer belongs directly under its card.
+- On narrow windows the cards wrap into a grid, as specified, with each row's tops aligned.
+
+**Checks:**
+- Every level's intro and discovery, light and dark, at 1440 × 900, 1920 × 1080 and 375. Measure and record the discovery text's contrast where it overlaps the device.
+- The cards timeline with 0, 2, 3 and 6 rooms found, including straight after a reveal.
+- The dev panel's progress switch in all three states.
+- Tests for items 4, 5 and 6, plus a test that the fade is present in intro and discovery and absent in booting and playing.
+- Run `npm run build`.
+- Update the spec: Index museum, Level 1 and the dev panel.
+
 ---
 
 ## Done
