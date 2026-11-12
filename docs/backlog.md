@@ -13,11 +13,11 @@
 | 1. Visitor's journey | "Start here" cue on the timeline | Copy per state |
 | | Year carries from timeline into level | Edge cases |
 | 2. Curator's voice | Copy pass: revisit later | Only if Matthew wants another round |
-| | Hints: feature + copy | Feature decisions, house style |
+| | Hints: feature + copy | **Worked up 12 Nov:** Matthew picks from the choices |
 | 3. Fidelity | Mac UI, round 5 (optional) | Whether to fake caret blink / double-click |
 | | Netscape chrome | Version + references |
 | 4. Depth | Netscape pages or search | Pages vs search |
-| | iPhone apps | Which apps |
+| | iPhone apps | **Worked up 12 Nov:** Matthew picks; fixes the 2008 second home screen too |
 | | Instagram screens | Which screens + references |
 | 5. Museum restyle | Phases 2 and 3 after round 2 | Matthew's pick from round 2 |
 
@@ -51,15 +51,60 @@ Writing work. The voice guide is in `docs/copy-pass.md`; the copy pass went live
 - **What he's said about the intro cards so far:** keep the live text's mood ("no icons, no menus, no mouse. Just a blinking cursor"), name the device ("a VT100 terminal"), put the visitor in the year, add one period detail and a line of reflection; no instructions, no user counts. Too literal and too dry were both rejected.
 
 #### Hints: feature and copy
-- **Current hints:**
-  - L0: "Try typing  ls  to see what files are here, then  cat  one of them" · "Try typing  mail" · "Try typing  man  followed by a command, like  man ls"
-  - L1: "Double-click the Notes icon" · "Drag the Projects folder onto the Trash" · "Click File in the menu bar at the top of the screen"
-  - L2: "Click any underlined link" · "Use the Back button in the toolbar" · "Look under Computers and Internet for an archive of old machines"
-  - L3: "Drag the arrow all the way to the right" · "Tap the Notes icon on the home screen" · "Drag the home screen to the left to see the next page"
-  - L4: "Scroll the feed until you find Imani Brooks, then double-tap her photo" · "Find a post marked Sponsored and tap its Learn More button" · "Tap a name to open a profile, then tap Follow"
-  - L5: "Tap one of the suggestions, or type a question and press Enter" · "Ask about something the curator just said" · "Tap the circular arrow under a reply"
-- **Noticed:** hints always point at the *first* unfinished objective, though every level allows any order · L1's first hint predates the System Disk (spec open item 7) · L3 and L5 say "Tap" on mouse-driven screens · L0 uses double spaces as emphasis · some name the control, some the goal.
-- **Decide:** escalating hints (nudge, then exact step)? · a way to ask for one? · which objective it picks · house style.
+**Worked up 12 Nov 2026, ready for Matthew to approve or change.** A design proposal: the only facts in it are about the build.
+
+- **Where it stands.** The copy was fixed in the copy pass (10 Nov 2026, `docs/copy-pass.md` §4): no "Try", commands as plain words, and verbs that match the hands (tap on the iPhone and Instagram, click everywhere else). So most of the old "Noticed" list is done: Level 0's double spaces are gone, Level 5 says Click, and Level 3's "Tap" is right under voice guide rule 7. What's left is the feature.
+- **Live hints today** (`HINTS` in each `src/levels/LevelN.jsx`):
+  - L0: "Type ls and press Return to list your files, then type cat notes.txt to read one" · "Type mail and press Return" · "Type man and a command's name, such as man ls"
+  - L1: "Double-click the Notes icon on the desktop" · "Drag the Projects folder onto the Trash" · "Click File in the menu bar at the top of the screen"
+  - L2: "Click any underlined link" · "Click Back in the toolbar" · "On Yahoo!, click Computers and Internet and look for an archive of old computers"
+  - L3: "Drag the arrow all the way to the right" · "Tap Notes on the home screen, then tap a note" · "Drag the home screen to the left"
+  - L4: "Scroll to Imani Brooks's post and double-tap her photo" · "Tap Learn More on a post marked Sponsored" · "Tap a name to open a profile, then tap Follow"
+  - L5: "Click a suggestion, or type a question and press Enter" · "Ask about something in the last reply" · "Click the circular arrow under a reply"
+- **What's wrong with the feature now** (`src/shared/museum-ui/useHint.js`): after 10 s without progress it shows the exact step for the first unfinished objective, and that's all it ever shows. So:
+  - The first hint gives the answer away. Someone who paused for 10 s to look around gets told exactly what to do, which cuts short the exploring the levels are built for.
+  - Someone stuck on one objective sees that one hint for as long as they stay stuck, even though every level lets them do the other two first.
+- **Proposal: two steps per objective, then move on.**
+  1. **Nudge** after 10 s without progress (as now): says where to look, not what to press.
+  2. **Step** 20 s after the nudge (30 s in all): today's exact hint, unchanged.
+  3. **Move on** 20 s after the step: if nothing has happened, show the nudge for the next unfinished objective in list order, wrapping round. Someone stuck on one thing gets pointed at something they can do.
+  - Any completion hides the hint and restarts at the nudge for the first unfinished objective, as now.
+  - Classic: the pill's text swaps in place with its usual fade. Index: the `? …` line under the objectives swaps in place, typing in like the list's other lines (none under reduced motion).
+  - Nothing to click. Matthew has preferred hints that only turn up when someone stalls, so there's no "Hint" button in this proposal (see the choices below).
+- **House style for the two kinds** (an addition to voice guide rule 9):
+  - *Nudge:* one sentence of plain fact that says which part of the screen to look at. It doesn't name the control or the gesture, and it isn't a question or a tease.
+  - *Step:* one sentence that says exactly what to do, no "Try" (today's rule).
+- **Draft nudges** (the steps stay as they are, listed above):
+
+| # | Nudge (new) |
+|---|---|
+| 0.1 | The notes file is in your home directory. |
+| 0.2 | The system has a command for reading mail. |
+| 0.3 | Every command has a page in the system's manual. |
+| 1.1 | The Notes document is one of the icons on the desktop. |
+| 1.2 | On the Mac, things are deleted by moving them to the Trash. |
+| 1.3 | Every command on the Mac is in the menu bar. |
+| 2.1 | The blue underlined words on this page are links. |
+| 2.2 | The toolbar keeps track of the pages you've visited. |
+| 2.3 | The paper is in Yahoo!'s directory, under computers. |
+| 3.1 | The iPhone unlocks from the slider at the bottom of the screen. |
+| 3.2 | Notes is one of the apps on the home screen. |
+| 3.3 | The home screen has a second page. (Depends on "iPhone: more apps" below, which questions this objective.) |
+| 4.1 | Imani Brooks's post is further down the feed. |
+| 4.2 | Some posts in the feed are ads, marked Sponsored. |
+| 4.3 | Every name in the feed opens a profile. |
+| 5.1 | The box at the bottom takes any question. |
+| 5.2 | The assistant keeps track of the whole conversation. |
+| 5.3 | Each reply has buttons under it. |
+
+  - 1.1: Notes starts on the desktop but can be dragged into a folder (Level 1's file dragging, 10 Nov 2026), and then both "on the desktop" lines are wrong. Either drop "on the desktop" from the nudge and the step once Notes has moved, or accept the edge case. This also settles spec open item 5, the hint written before the System Disk.
+- **Choices for Matthew (my recommendation first):**
+  - Two steps: **yes** · or keep one step.
+  - Timings: **10 s / 30 s / 50 s** · or slower, such as 15 / 45.
+  - Move on to the next objective after the step: **yes** · or stay on the first unfinished.
+  - A way to ask for a hint (a `? Hint` line in the Index, a small link in Classic) that skips straight to the nudge: **not now**, add it if playtesting shows people waiting for the timer.
+  - The nudge copy above: edit in place, or reply with the number.
+- **Build notes:** `HINTS` becomes pairs, `{ nudge, step }`, in all six levels. `useHint` keeps its signature (`active`, `completedIndices`) and returns the text for the current tier. The level files only change their `HINTS`. Tests: the tier timings, moving on, wrapping round, resetting on completion, and both museums showing the swap. Spec: "HintPill + useHint", and the Index museum's hint line. `docs/copy-pass.md` §4 gets the nudges.
 
 ---
 
@@ -96,9 +141,27 @@ Each needs a short list picked before approval, and one shared question: does a 
 - **Decide:** pages, search, or both · which links go somewhere · do results stay in the four-site world.
 
 #### iPhone: more apps
-Today only Notes opens.
-- **Guardrail:** only the June 2007 launch apps (Text, Calendar, Photos, Camera, YouTube, Stocks, Maps, Weather, Clock, Calculator, Notes, Settings; Phone, Mail, Safari, iPod in the dock). No App Store until July 2008. **High**, widely documented (cite Apple's 9 Jan 2007 press release on approval).
-- **Decide:** which first. Calculator, Clock, Weather, Photos are self-contained; Maps, Safari, YouTube need fake content.
+**Worked up 12 Nov 2026, ready for Matthew to approve or change.** Today only Notes opens (`handleAppOpen` in `src/levels/Level3.jsx` ignores every other id).
+
+- **First, a fidelity problem this turned up: the second home screen.** Objective 3 is "Swipe to the second home screen", and page 2 shows App Store and iTunes. Neither existed in June 2007, and the launch phone most likely had only one home screen:
+  - App Store: iPhone OS 2.0, July 2008. **High** · Wikipedia, "iPhone OS 2"; Apple's 9 Jan 2007 press release has no App Store or third-party apps ([Apple](https://www.apple.com/newsroom/2007/01/09Apple-Reinvents-the-Phone-with-iPhone/)); Wikipedia, "iPhone OS 1": "iPhone OS 1 did not have the App Store or a Software Development Kit".
+  - iTunes (the iTunes Wi-Fi Music Store): iPhone 1.1.1, 27 Sep 2007. **High** · [TidBITS, 27 Sep 2007](https://tidbits.com/2007/09/27/iphone-1-1-1-adds-features-and-updates-security/); [MacRumors, 27 Sep 2007](https://www.macrumors.com/2007/09/27/apple-releases-iphone-1-1-1-update).
+  - More than one home screen: iPhone 1.1.3, 15 Jan 2008, which let people move icons and create "up to nine different home screens" (Web Clips filled them). **High** for the feature arriving then · [Apple, 15 Jan 2008](https://www.apple.com/newsroom/2008/01/15Apple-Enhances-Revolutionary-iPhone-with-Software-Update/); [TidBITS, 25 Jan 2008](https://tidbits.com/2008/01/25/everything-you-need-to-know-about-iphone-1-1-3/) ("If you create more Web Clips than fit on the initial Home screen, a second screen is automatically added").
+  - That the June 2007 phone had one page and no swipe: **medium**. No source says so outright. It follows from the above: 1.0 had 12 apps and a 4-app dock, which fit one screen, and no way to add icons until 1.1.3. A screenshot or video of 1.0 swiping (or failing to) would settle it; I know of no browser emulator for iPhone OS 1.0, so launch-week video reviews are the likely source.
+  - **So the level teaches a 2008 gesture, with 2008 and 2007 icons, in a 2007 room.** This is a fidelity fix apart from new apps, but the apps below give it a natural replacement. Matthew's call, because it changes an objective.
+- **What the apps are for:** to explore, with no new objectives. Each level keeps three. The one exception is the swap for objective 3, if Matthew wants it.
+- **Which apps, in order:**
+  1. **Calculator.** Self-contained, and the four-function version is all there was in 2007: the scientific mode, turned sideways, came with iPhone OS 2.0 in July 2008. **High** for "four functions until 2.0" · [Dr. Drang, July 2008](https://leancrew.com/all-this/2008/07/iphone-20-calculator/) ("going beyond 4 functions to become a real scientific calculator"; the 2.0 version "no longer has the circular keys that mimic the design of the Braun ET calculators"); Wikipedia, "iPhone OS 2". The round keys in a Braun style: **medium**, one source; needs a 2007 screenshot. Memory keys: **low**, not found yet.
+  2. **Clock.** Four parts in one app (World Clock, Alarm, Stopwatch with laps, Timer). **High** · [GSMArena's 2007 review](https://m.gsmarena.com/apple_iphone-review-155p5.php); [Phone Scoop's review](https://www.phonescoop.com/articles/article.php?a=138&p=562) (the timer is set by flicking hour and minute dials, and can put the iPhone to sleep); [iPhone: The Missing Manual, Aug 2007](https://www.oreilly.com/library/view/iphone-the-missing/9780596513740/ch09s06.html) (World Clock starts with one clock, Cupertino; "only the world's major cities are in the iPhone's database"). The analog faces, white by day and black by night: **low**, from memory, not found in a source yet. The timer's dials are the period's flick-and-coast spinners, which fits the level's point about lists with weight.
+  3. **Photos**, only if objective 3 changes. Apple's January 2007 release: "Users can browse their photo library … with just a flick of a finger" and "zoom in … by simply tapping". **High** · [Apple, 9 Jan 2007](https://www.apple.com/newsroom/2007/01/09Apple-Reinvents-the-Phone-with-iPhone/). It needs fake content: a small 2007 camera roll, made the way Level 4's period photos were (sourced, credited).
+  - **Not yet:** Weather and Stocks need live-looking 2007 data, which is fake content with dates to get right. Maps, Safari and YouTube need a lot more fake content for less.
+- **Proposed objective 3, if Matthew wants the fix:** "Flick through your photos" (open Photos, flick to the next photo). Hint step: "Tap Photos, open a photo, then drag it to the left". The page-2 swipe and page 2 go. Every other icon stays, apart from App Store and iTunes. The discovery card's "you dragged, flicked and pinched" still fits.
+- **Needs before building, as the Mac and Instagram work did:** dated reference screenshots of iPhone OS 1.0 Calculator, Clock (all four tabs) and, if chosen, Photos, into `docs/reference/iphone 2007/`. The build matches them, not memory. Apple's 2007 iPhone pages on the Wayback Machine and launch-week reviews are the likely sources.
+- **Each app is the same shape as Notes:** a component under `src/components/` beside `notes/`, opened from `handleAppOpen` with the same open and close (zoom from the icon, Home button back), in `phone-theme.css`'s look. Taps are plain clicks under the touch cursor. Sound: only what the 2007 phone made, each with a source; until then, silent.
+- **Choices for Matthew (my recommendation first):**
+  - Fix objective 3 with Photos: **yes** · or leave the second page (and say so in the spec as a known anachronism).
+  - Apps: **Calculator and Clock** · plus Photos if the objective changes.
+  - Apps are for exploring only: **yes**.
 
 #### Instagram: more screens
 - **Guardrail:** spring 2016, before the May redesign. Stories (Aug 2016) is out. **High** (cite Instagram's announcement on approval). Direct (revamped Sept 2015, per Instagram's blog post of 1 Sep 2015) is in.
