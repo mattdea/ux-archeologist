@@ -26,7 +26,7 @@ import s from './IndexMuseum.module.css'
 import { ARTIFACTS } from '../../data/artifacts'
 import { isLevelComplete } from '../../state/state'
 import { cardsSeen, markCardsSeen } from '../devLooks'
-import { TITLE, WORDS, pad } from './words'
+import { WORDS, pad } from './words'
 import DotPicture from './DotPicture'
 import { peekHandlers } from './store'
 
@@ -137,7 +137,6 @@ function FoundFace({ a }) {
         <span className={s.cardName}>{a.name}</span>
         <span className={s.cardRoom}>{a.title}</span>
       </span>
-      <span className={s.cardFoot}><span className={s.footName}>{TITLE.name}</span><span>{a.level + 1} / {ARTIFACTS.length}</span></span>
     </>
   )
 }
@@ -147,7 +146,6 @@ function BlankFace({ a, next }) {
       <span className={s.cardHead}><span>No. {pad(a.level + 1)}</span><span>{a.year}</span></span>
       <span className={s.cardPicture}><span className={`${s.fill} ${s.dotGrid}`} /><span className={s.cardAsk}>?</span></span>
       <span className={s.cardBody}><span className={s.cardRoom}>{next ? WORDS.next : ' '}</span><span>{' '}</span></span>
-      <span className={s.cardFoot}><span className={s.footName}>{TITLE.name}</span><span>{a.level + 1} / {ARTIFACTS.length}</span></span>
     </>
   )
 }

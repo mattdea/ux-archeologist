@@ -135,9 +135,8 @@ describe('Index museum: the four timelines', () => {
     expect(rule('.face')).toMatch(/grid-area: 1 \/ 1/)
     // reduced motion still stops the turn
     expect(css).toMatch(/prefers-reduced-motion[\s\S]*\.card > \.turn \{ animation: none; \}/)
-    // the footer: "Interface Artifacts" goes where the card is too narrow for it
-    rooms().forEach(b => b.querySelectorAll('[class*="cardFoot"]').forEach(f => expect(f.firstElementChild.className).toMatch(/footName/)))
-    expect(rule('.tlCard')).toMatch(/container-type: inline-size/)
-    expect(css).toMatch(/@container \(max-width: 26\.99ch\) \{ \.footName \{ display: none; \}/)
+    // no footer: the cards end at the name and room, without "1 / 6"
+    rooms().forEach(b => expect(b.textContent).not.toMatch(/\d \/ \d/))
+    expect(css).not.toMatch(/cardFoot|footName/)
   })
 })

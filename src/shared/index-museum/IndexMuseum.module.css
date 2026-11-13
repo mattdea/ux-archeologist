@@ -170,9 +170,8 @@
   text-align: left;
 }
 .card > span { display: block; }
-.cardHead, .cardFoot { display: flex !important; justify-content: space-between; padding: 0 1ch; }
+.cardHead { display: flex !important; justify-content: space-between; padding: 0 1ch; }
 .cardHead { border-bottom: 1px solid currentColor; }
-.cardFoot { margin-top: auto; border-top: 1px solid currentColor; color: var(--ix-ink-2); }
 /* 4 / 3, not 16 / 10: the picture is bound by the box's height, so a
    taller box draws it about a fifth bigger (Matthew, 12 Nov 2026) */
 .cardPicture { position: relative; aspect-ratio: 4 / 3; border-bottom: 1px solid currentColor; overflow: hidden; }
@@ -191,7 +190,7 @@
 }
 .blank .cardName { color: var(--ix-ink-2); }
 .card:hover, .cardLit { background: var(--ix-ink); color: var(--ix-paper); }
-.card:hover .cardRoom, .cardLit .cardRoom, .card:hover .cardFoot, .cardLit .cardFoot,
+.card:hover .cardRoom, .cardLit .cardRoom,
 .card:hover .blank .cardName, .cardLit.blank .cardName, .card.blank:hover .cardName { color: var(--ix-paper); }
 .card:hover .cardRule, .cardLit .cardRule { border-color: var(--ix-paper); }
 
@@ -265,12 +264,9 @@
    the lines' text column (past the cursor and mark), under "Interface
    Artifacts" and About (Matthew, 12 Nov 2026) */
 .tlCards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--ix-row) 2ch; align-items: stretch; margin-left: calc(var(--ix-cursor) + var(--ix-mark)); }
-.tlCard { min-width: 0; container-type: inline-size; }
-/* the footer stays one line: where "Interface Artifacts  1 / 6" doesn't fit
-   the card (2ch padding, 19ch, a 1ch gap, 5ch), it's just "1 / 6" */
-@container (max-width: 26.99ch) { .footName { display: none; } .cardFoot { justify-content: flex-end; } }
+.tlCard { min-width: 0; }   /* no footer (Matthew, 12 Nov 2026: no "1 / 6") */
 .card:focus-visible { background: var(--ix-ink); color: var(--ix-paper); outline: none; }
-.card:focus-visible .cardRoom, .card:focus-visible .cardFoot, .card.blank:focus-visible .cardName { color: var(--ix-paper); }
+.card:focus-visible .cardRoom, .card.blank:focus-visible .cardName { color: var(--ix-paper); }
 .cardAsk {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   padding: 0 1ch; background: var(--ix-paper); color: var(--ix-ink);
