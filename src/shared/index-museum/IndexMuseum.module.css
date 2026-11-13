@@ -172,9 +172,10 @@
 .card > span { display: block; }
 .cardHead { display: flex !important; justify-content: space-between; padding: 0 1ch; }
 .cardHead { border-bottom: 1px solid currentColor; }
-/* 4 / 3, not 16 / 10: the picture is bound by the box's height, so a
-   taller box draws it about a fifth bigger (Matthew, 12 Nov 2026) */
-.cardPicture { position: relative; aspect-ratio: 4 / 3; border-bottom: 1px solid currentColor; overflow: hidden; }
+/* 6 / 5, not 16 / 10: the picture is bound by the box's height, so a
+   taller box draws it bigger, about 1.4 times (Matthew, 12 Nov 2026,
+   twice: first 4 / 3, then bigger still) */
+.cardPicture { position: relative; aspect-ratio: 6 / 5; border-bottom: 1px solid currentColor; overflow: hidden; }
 .fill { position: absolute; inset: 8px; }
 .cardBody { padding: calc(var(--ix-row) / 2) 1ch var(--ix-row); }
 .cardBody > span { display: block; }
@@ -186,7 +187,7 @@
   inset: 0;
   color: var(--ix-ink-2);
   background-image: radial-gradient(circle, currentColor 0.9px, transparent 1.4px);
-  background-size: calc(100% / 13) calc(100% / 10);   /* near-square cells in the 4 / 3 box */
+  background-size: calc(100% / 13) calc(100% / 11);   /* near-square cells in the 6 / 5 box */
 }
 .blank .cardName { color: var(--ix-ink-2); }
 .card:hover, .cardLit { background: var(--ix-ink); color: var(--ix-paper); }
