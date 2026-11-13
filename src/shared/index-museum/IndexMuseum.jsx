@@ -283,7 +283,9 @@ export default function IndexMuseum({ view, navigate, continueAction, hudReady }
 
   // The museum's name: a heading on the home page, a way back to it elsewhere
   if (home) push(<Line key="name" i={n} text={TITLE.name} />)
-  else push(<Line key="name" i={n} as="go" text={TITLE.name} arrow="→" onClick={() => navigate('/')} />)
+  // from a level, the museum's name goes back to the home page with the
+  // timeline open (/timeline), as Back to timeline does (Matthew, 12 Nov 2026)
+  else push(<Line key="name" i={n} as="go" text={TITLE.name} arrow="→" onClick={() => navigate('/timeline')} />)
 
   // Enter the exhibit opens the timeline under itself, the way About opens
   if (home) {
@@ -536,7 +538,7 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
     <div ref={listRef} className={s.corners}>
       {fade}
       <div className={`${s.corner} ${s.tl}`} data-hud="corner" data-corner="tl">
-        <Line as="go" text={TITLE.name} arrow="→" onClick={() => navigate('/')} />
+        <Line as="go" text={TITLE.name} arrow="→" onClick={() => navigate('/timeline')} />
         {room}
       </div>
       <div className={`${s.corner} ${s.tr}`} data-hud="corner" data-corner="tr">

@@ -7,7 +7,7 @@
 // order; useArtifactFit centres the device and clears the corners whatever
 // they show; the dev setting brings back the side layout, and production
 // always has corners.
-import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, act, cleanup, within } from '@testing-library/react'
 import { useState } from 'react'
 import IndexMuseum from '../shared/index-museum/IndexMuseum'
 import { _resetIndexSlots } from '../shared/index-museum/store'
@@ -77,6 +77,12 @@ describe('Index museum: the corners in a level', () => {
     vi.unstubAllEnvs()
     setIndexLevelLayout('corners')
     expect(localStorage.getItem('ux-archaeologist:index-level-layout')).toBeNull()
+  })
+
+  it('the museum\'s name goes back to the home page with the timeline open', () => {
+    const { navigate } = renderLevel()
+    fireEvent.click(within(corner('tl')).getByText('Interface Artifacts').closest('button'))
+    expect(navigate).toHaveBeenCalledWith('/timeline')
   })
 
   it('four corner blocks, each data-hud="corner", in reading order', () => {
