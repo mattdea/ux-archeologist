@@ -259,8 +259,10 @@
 .revealFade .tlOutline { animation: ixOutlineGo 600ms ease-in-out both; animation-delay: calc(700ms + var(--reveal) * 260ms); }
 @keyframes ixOutlineGo { to { border-color: transparent; } }
 
-/* Cards: one row of six, in time order; a grid when narrow */
-.tlCards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--ix-row) 2ch; align-items: stretch; }
+/* Cards: one row of six, in time order; a grid when narrow. They start in
+   the lines' text column (past the cursor and mark), under "Interface
+   Artifacts" and About (Matthew, 12 Nov 2026) */
+.tlCards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--ix-row) 2ch; align-items: stretch; margin-left: calc(var(--ix-cursor) + var(--ix-mark)); }
 .tlCard { min-width: 0; container-type: inline-size; }
 /* the footer stays one line: where "Interface Artifacts  1 / 6" doesn't fit
    the card (2ch padding, 19ch, a 1ch gap, 5ch), it's just "1 / 6" */
