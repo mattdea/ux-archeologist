@@ -562,7 +562,8 @@ function Corners({ listRef, menuRef, narrow, level, roomState, slots, continueAc
 // bottom-right corner, bottom-aligned with it, the text at most 80ch, the
 // picture at the band's left as tall as the text. It's position: fixed
 // inside the corner, which keeps its size, and not data-hud, so the device
-// stays exactly where it was in playing.
+// stays exactly where it was in playing; data-record-avoid keeps the
+// catalogue record off it.
 // It sits over the device's lower part where the device reaches that far;
 // the device is faded then (DeviceFade), so the text stays readable.
 const PICTURE_RATIO = 400 / 340
@@ -580,7 +581,7 @@ function DiscoveryBand({ level, children }) {
     return () => { cancelAnimationFrame(raf); ro?.disconnect(); window.removeEventListener('resize', measure) }
   }, [level])
   return (
-    <div className={`${s.band} ${s.findIn}`} data-ix-band>
+    <div className={`${s.band} ${s.findIn}`} data-ix-band data-record-avoid>
       <div className={s.bandInner}>
         {pictureH > 0 && (
           <span className={s.bandPicture} style={{ height: pictureH, width: Math.round(pictureH * PICTURE_RATIO) }} data-ix-find>

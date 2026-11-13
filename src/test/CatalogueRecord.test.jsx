@@ -13,7 +13,7 @@ import { resolve } from 'node:path'
 import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
 import Level1 from '../levels/Level1'
 import CatalogueRecord from '../shared/catalogue/CatalogueRecord'
-import { placeRecord, locateParts } from '../shared/catalogue/place'
+import { placeRecord, locateParts, hudRects } from '../shared/catalogue/place'
 import { RECORDS } from '../shared/catalogue/records'
 import { ARTIFACTS } from '../data/artifacts'
 import { HudCtx, ContinueCtx } from '../shared/SharedLayout'
@@ -270,6 +270,19 @@ describe('Catalogue record (experiment)', () => {
       expect(under.labels).toEqual([])
       const none = placeRecord({ ...base, fit: { scale: 0.42, left: 24, top: 452 }, viewport: { w: 375, h: 812 } })
       expect(none.mode).toBe('number')
+    })
+    it('keeps off text marked data-record-avoid (the Index discovery band), which is not data-hud', () => {
+      const band = document.createElement('div')
+      band.setAttribute('data-record-avoid', '')
+      band.getBoundingClientRect = () => ({ left: 24, top: 420, width: 327, height: 360, right: 351, bottom: 780 })
+      document.body.appendChild(band)
+      try {
+        const huds = hudRects()
+        expect(huds).toEqual([{ x: 8, y: 404, w: 359, h: 392 }])
+        // Under the device would have fitted; with the band there, the number alone
+        const l = placeRecord({ ...base, huds, fit: { scale: 0.42, left: 24, top: 60 }, viewport: { w: 375, h: 812 } })
+        expect(l.mode).toBe('number')
+      } finally { band.remove() }
     })
   })
 

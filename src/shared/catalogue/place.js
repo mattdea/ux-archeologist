@@ -1,7 +1,8 @@
 // src/shared/catalogue/place.js
 //
 // Where the catalogue record's pieces go (CatalogueRecord.jsx): beside the
-// device when a column fits, under it when not, else the number alone.
+// device when a column fits, under it when not, else the number alone,
+// never over a HUD block or text marked data-record-avoid.
 const ROW = 20        // index row
 const GAP = 16        // device → column
 const MARGIN = 16     // column → viewport edge or HUD
@@ -20,8 +21,11 @@ export function measureChar() {
 
 const hit = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
 
+// What the record keeps off: every [data-hud] block, and text that sits
+// over the device without moving it, marked data-record-avoid (the Index
+// discovery band; backlog, "Fixes: leaving during a boot…", item 3)
 export function hudRects() {
-  return [...document.querySelectorAll('[data-hud]')]
+  return [...document.querySelectorAll('[data-hud], [data-record-avoid]')]
     .map((el) => el.getBoundingClientRect())
     .filter((r) => r.width > 0 && r.height > 0)
     .map((r) => ({ x: r.left - MARGIN, y: r.top - MARGIN, w: r.width + MARGIN * 2, h: r.height + MARGIN * 2 }))

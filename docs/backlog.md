@@ -909,6 +909,7 @@ Three more from Matthew's review on 12 Nov 2026. Build and commit them one at a 
 - The record must avoid the discovery band (and, during intro, the intro text), the same way it avoids `data-hud` blocks. Pass the band's box into `placeRecord` as one more obstacle. The band stays out of `data-hud`, so the device doesn't move.
 - If there's no room beside the device or under it clear of the band, the record falls back to the number alone, as it already does elsewhere.
 - **Check:** every level at discovery and intro, at 1440 × 900, 1920 × 1080, about 1730 × 2000, and 375: no record text overlaps the band or the intro text.
+- **Status, 12 Nov 2026: built.** The band is marked `data-record-avoid`, and the record treats it like a HUD block: it measures again the moment the band mounts. Checked headless on every level at intro and discovery, at 1440 × 900, 1920 × 1080, 1730 × 2000 and 375 × 812 (plus 1500 × 2000, 1600 × 2000, 1200 × 1600 and others): nothing overlaps. Before the fix, Level 3's "home" label ran into the band at 1920 × 1080. The intro text was already clear, because its corner is `data-hud`. Matthew's exact "under the phone" case didn't come up at 1730 × 2000 here (the record fitted beside the phone). The fix covers it, since under-the-device now has to clear the band too.
 
 ---
 

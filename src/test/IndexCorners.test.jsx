@@ -134,6 +134,7 @@ describe('Index museum: the corners in a level', () => {
     const band = corner('bl').querySelector('[data-ix-band]')
     expect(band).not.toBeNull()
     expect(band.hasAttribute('data-hud')).toBe(false)               // never moves the device
+    expect(band.hasAttribute('data-record-avoid')).toBe(true)       // but the catalogue record keeps off it
     const pic = band.querySelector('[data-ix-find]')
     expect(pic.querySelector('[data-picture]')).not.toBeNull()
     expect(pic.style.height).toBe('120px')                          // as tall as the text

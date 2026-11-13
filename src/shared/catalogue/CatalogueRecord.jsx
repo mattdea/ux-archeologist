@@ -63,7 +63,16 @@ export default function CatalogueRecord({ level, record: given, show, fit, width
     const t = setTimeout(measure, 600)
     window.addEventListener('resize', measure)
     window.addEventListener('scroll', later, true)
+    // Text the record keeps off can arrive after the screen changes (the
+    // Index discovery band mounts a moment after the level's discovery):
+    // measure again as soon as it does.
+    const avoid = '[data-record-avoid]'
+    const mo = typeof MutationObserver !== 'undefined' ? new MutationObserver((list) => {
+      if (list.some((m) => [...m.addedNodes].some((n) => n.nodeType === 1 && (n.matches(avoid) || n.querySelector(avoid))))) later()
+    }) : null
+    mo?.observe(document.body, { childList: true, subtree: true })
     return () => {
+      mo?.disconnect()
       clearTimeout(t); cancelAnimationFrame(raf)
       window.removeEventListener('resize', measure)
       window.removeEventListener('scroll', later, true)
