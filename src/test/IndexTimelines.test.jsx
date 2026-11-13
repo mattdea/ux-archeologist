@@ -66,7 +66,12 @@ describe('Index museum: the four timelines', () => {
       expect(r.map(b => b.dataset.found)).toEqual(['true', 'true', 'true', 'false', 'false', 'false'])
       r.forEach(b => expect(b.tagName).toBe('BUTTON'))
       expect(document.activeElement).toBe(r[3])
-      expect(r[3].textContent).toContain('next')
+      // the cards say no "next"; a blank card shows its room's title, not its name
+      if (kind === 'cards') {
+        r.forEach(b => expect(b.textContent).not.toContain('next'))
+        expect(r[3].textContent).toContain(ARTIFACTS[3].title)
+        expect(r[3].textContent).not.toContain(ARTIFACTS[3].name)
+      } else expect(r[3].textContent).toContain('next')
       fireEvent.click(r[4])
       expect(navigate).toHaveBeenCalledWith('/level/4')
       // the picture beside the list goes; the timeline has the width

@@ -127,7 +127,8 @@ function LineTimeline({ navigate, i0 }) {
 
 // ── Cards ───────────────────────────────────────────────────────────────
 // The card from the collection's cards in the list's own terms; a room not
-// yet found is the blank card: its number and year, a `?`, no name.
+// yet found is the blank card: its number, year and title, a `?`, no name,
+// and no "next" (Matthew, 12 Nov 2026).
 function FoundFace({ a }) {
   return (
     <>
@@ -140,12 +141,12 @@ function FoundFace({ a }) {
     </>
   )
 }
-function BlankFace({ a, next }) {
+function BlankFace({ a }) {
   return (
     <>
       <span className={s.cardHead}><span>No. {pad(a.level + 1)}</span><span>{a.year}</span></span>
       <span className={s.cardPicture}><span className={`${s.fill} ${s.dotGrid}`} /><span className={s.cardAsk}>?</span></span>
-      <span className={s.cardBody}><span className={s.cardRoom}>{next ? WORDS.next : ' '}</span><span>{' '}</span></span>
+      <span className={s.cardBody}><span className={s.cardRoom}>{a.title}</span><span>{' '}</span></span>
     </>
   )
 }
@@ -162,7 +163,7 @@ function CardsTimeline({ navigate, i0 }) {
               <span className={`${s.face} ${s.faceBack}`}><BlankFace a={r.a} /></span>
               <span className={`${s.face} ${s.faceFront}`}><FoundFace a={r.a} /></span>
             </span>
-          ) : r.found ? <FoundFace a={r.a} /> : <BlankFace a={r.a} next={r.next} />}
+          ) : r.found ? <FoundFace a={r.a} /> : <BlankFace a={r.a} />}
         </Room>
       ))}
     </div>
