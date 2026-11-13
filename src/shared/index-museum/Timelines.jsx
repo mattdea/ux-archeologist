@@ -135,8 +135,10 @@ function FoundFace({ a }) {
       <span className={s.cardHead}><span>No. {pad(a.level + 1)}</span><span>{a.year}</span></span>
       <span className={s.cardPicture}><DotPicture level={a.level} className={s.fill} /></span>
       <span className={s.cardBody}>
-        <span className={s.cardName}>{a.name}</span>
+        {/* the room's title first, its name under it (Matthew, 12 Nov 2026),
+            so the title is on the same line found or not */}
         <span className={s.cardRoom}>{a.title}</span>
+        <span className={s.cardName}>{a.name}</span>
       </span>
     </>
   )
